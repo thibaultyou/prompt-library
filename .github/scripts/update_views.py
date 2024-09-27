@@ -38,11 +38,11 @@ def update_views():
                     
                     categories[formatted_category].append({
                         'name': prompt_dir,
+                        'title': metadata['title'],
                         'description': metadata['one_line_description'],
                         'path': f'prompts/{category}/{prompt_dir}/view.md'
                     })
 
-    # Update README
     readme_content = readme_template.render(categories=categories)
     with open('README.md', 'w') as f:
         f.write(readme_content)

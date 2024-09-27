@@ -10,7 +10,7 @@ Welcome to my **Prompt Library**. This repository contains a collection of promp
 
 
 
-- [Analyzes AI prompts and generates structured outputs with metadata and formatting](prompts/prompt_engineering/ai_prompt_analyzer_and_output_generator/view.md)
+- [AI Prompt Analyzer and Output Generator](prompts/prompt_engineering/ai_prompt_analyzer_and_output_generator/view.md) - Analyzes AI prompts and generates structured outputs with metadata and formatting
 
 
 
@@ -19,9 +19,9 @@ Welcome to my **Prompt Library**. This repository contains a collection of promp
 
 
 
-- [Generates concise, informative git commit messages with emojis following Conventional Commits](prompts/software_engineering/git_commit_message_writer_with_emojis/view.md)
+- [Git Commit Message Writer](prompts/software_engineering/git_commit_message_writer_with_emojis/view.md) - Generates concise, informative git commit messages with emojis following Conventional Commits
 
 
-- [Creates comprehensive software specifications based on user requirements](prompts/software_engineering/software_specification_generator/view.md)
+- [Software Specification Generator](prompts/software_engineering/software_specification_generator/view.md) - Creates comprehensive software specifications based on user requirements
 
 
