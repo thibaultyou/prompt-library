@@ -19,6 +19,9 @@ Welcome to my **Prompt Library**. This repository contains a collection of promp
 
 
 
+- [Generates concise, informative git commit messages with emojis following Conventional Commits](prompts/software_engineering/git_commit_message_writer_with_emojis/view.md)
+
+
 - [Creates comprehensive software specifications based on user requirements](prompts/software_engineering/software_specification_generator/view.md)
 
 
