@@ -1,4 +1,3 @@
-
 # 🚀 AI Prompt Analyzer and Output Generator
 
 ### 🔖 Tags
@@ -18,7 +17,7 @@ This prompt analyzes AI prompts and generates structured outputs including a fil
 
 ### 📜 Prompt
 
-```md
+````
 You are an AI assistant tasked with analyzing an AI prompt and producing specific outputs related to it. The prompt will be provided to you, and you should generate the following:
 
 1. A filename for storing the prompt as a markdown file
@@ -123,4 +122,4 @@ Present your final output in the following format:
 </output>
 
 Remember to be accurate, concise, and consistent in your analysis and output generation.
-```
+````

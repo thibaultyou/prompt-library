@@ -6,4 +6,8 @@ Welcome to my **Prompt Library**. This repository contains a collection of promp
 
 ### 🛠️ Prompt Engineering
 
-- [AI Prompt Analyzer and Output Generator](./ai_prompt_analyzer_and_output_generator.md)
+- [Analyzes AI prompts and generates structured outputs with metadata and formatting](./ai_prompt_analyzer_and_output_generator.md)
+
+### 💻 Software Engineering
+
+- [Creates comprehensive software specifications based on user requirements](./software_specification_generator.md)
