@@ -1,0 +1,11 @@
+title: Software Specification Generator
+category: software_engineering
+tags:
+  - software_specifications
+  - requirements_analysis
+  - product_management
+  - technical_writing
+one_line_description: Creates comprehensive software specifications based on user requirements
+description: This prompt guides an AI assistant through the process of analyzing user requirements, conducting an interactive review, and generating detailed software specifications. It ensures all aspects of the project are covered, from technical requirements to future considerations.
+variables:
+  - "{{USER_REQUIREMENTS}}"

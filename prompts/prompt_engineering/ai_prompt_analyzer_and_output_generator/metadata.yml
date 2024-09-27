@@ -1,0 +1,11 @@
+title: AI Prompt Analyzer and Output Generator
+category: prompt_engineering
+tags:
+  - prompt_analysis
+  - output_generation
+  - markdown_formatting
+  - metadata_extraction
+one_line_description: Analyzes AI prompts and generates structured outputs with metadata and formatting
+description: This prompt analyzes AI prompts and generates structured outputs including a filename, tags, descriptions, markdown links, commit messages, and user input variables. It provides a comprehensive metadata package for organizing and referencing AI prompts.
+variables:
+  - "{{PROMPT}}"

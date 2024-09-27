@@ -1,23 +1,39 @@
-# 🚀 AI Prompt Analyzer and Output Generator
+# AI Prompt Analyzer and Output Generator
 
 ### 🔖 Tags
+
+
+
 - prompt_analysis
+
+
 - output_generation
+
+
 - markdown_formatting
+
+
 - metadata_extraction
 
+
 ### ✏️ One-line Description
+
 **Analyzes AI prompts and generates structured outputs with metadata and formatting**
 
 ### 📄 Description
+
 This prompt analyzes AI prompts and generates structured outputs including a filename, tags, descriptions, markdown links, commit messages, and user input variables. It provides a comprehensive metadata package for organizing and referencing AI prompts.
 
 ### 🔧 Variables
+
+
+
 - `{{PROMPT}}`
+
 
 ### 📜 Prompt
 
-````
+```md
 You are an AI assistant tasked with analyzing an AI prompt and producing specific outputs related to it. The prompt will be provided to you, and you should generate the following:
 
 1. A filename for storing the prompt as a markdown file
@@ -31,13 +47,14 @@ You are an AI assistant tasked with analyzing an AI prompt and producing specifi
 Here's the AI prompt you need to analyze:
 
 <prompt>
-{{PROMPT}} 
+{{PROMPT}}
 </prompt>
 
 Now, follow these steps to generate the required outputs:
 
 1. Filename:
 Generate a filename for the prompt using the following convention:
+
 - Convert the prompt's main topic or purpose to lowercase
 - Replace spaces with underscores
 - Remove any special characters
@@ -46,6 +63,7 @@ Generate a filename for the prompt using the following convention:
 
 2. Tags:
 Create a list of 3-5 relevant tags for the prompt. These tags should:
+
 - Be single words or short phrases
 - Replace spaces with underscores
 - Remove any special characters
@@ -54,12 +72,14 @@ Create a list of 3-5 relevant tags for the prompt. These tags should:
 
 3. One-line description:
 Write a concise, one-line description of the prompt that:
+
 - Captures the main purpose or function of the prompt
 - Is no longer than 100 characters
 - Starts with a verb in the present tense (e.g., "Creates," "Generates," "Analyzes")
 
 4. Quick description:
 Provide a brief description of the prompt that:
+
 - Expands on the one-line description
 - Explains the key features or capabilities of the prompt
 - Is 2-3 sentences long
@@ -67,12 +87,14 @@ Provide a brief description of the prompt that:
 
 5. Markdown link:
 Create a markdown link that can be used to reference the prompt:
+
 - Use the one-line description as the link text
 - Use the filename as the link URL
 - Format it as: [One-line description](filename)
 
 6. Commit message:
 Create a commit message for version control with the following format:
+
 - Start with an emoji that relates to the content or purpose of the prompt
 - Follow with a short, descriptive message about the addition or change
 - Use present tense and imperative mood
@@ -85,41 +107,35 @@ List all variables in the prompt that require user input or replacement. These s
 Present your final output in the following format:
 
 <output>
-# 🚀 [Prompt's main topic or purpose as title]
+## metadata.yml
 
-### 🔖 Tags:
-- [Tag 1]
-- [Tag 2]
-- [Tag 3]
-(Add more tags if necessary)
+```yml
+title: [Prompt's main topic or purpose]
+category: [Your determined category]
+tags:
+  - [Tag 1]
+  - [Tag 2]
+  - [Tag 3]
+  [Add more tags if necessary]
+one_line_description: [Your one-line description]
+description: [Your quick description]
+variables:
+  - "{{VARIABLE_1}}"
+  - "{{VARIABLE_2}}"
+  [Add more variables if necessary]
+additional_info:
+  filename: [Your generated filename]
+  commit_message: [Your commit message]
+```
 
-### ✏️ One-line Description
-**[Your one-line description]**
-
-### 📄 Description
-[Your quick description]
-
-### 🔧 Variables
-- `{{VARIABLE_1}}`
-- `{{VARIABLE_2}}`
-(Add more variables if necessary)
-
----
-
-## 📂 Additional Information
-
-- **📝 Filename**: [Your generated filename]
-- **🔗 Markdown Link**: [[Your one-line description]]([Your generated filename])
-- **💬 Commit Message**: [Your commit message]
-
----
-
-### 📜 Prompt
+## prompt.md
 
 ```md
 [The provided prompt]
 ```
+
 </output>
 
 Remember to be accurate, concise, and consistent in your analysis and output generation.
-````
+
+```
