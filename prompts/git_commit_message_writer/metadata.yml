@@ -1,0 +1,20 @@
+title: Git Commit Message Writer
+category: version_control
+directory: git_commit_message_writer
+tags:
+- git
+- commit_messages
+- conventional_commits
+- emoji
+- version_control
+one_line_description: Generates concise, informative git commit messages with emojis
+  following Conventional Commits
+description: This prompt creates an AI assistant that writes git commit messages.
+  It follows the Conventional Commits specification, includes appropriate emojis,
+  and provides concise, informative summaries of code changes. The assistant considers
+  various commit types and uses a wide range of emojis to represent different kinds
+  of changes.
+variables:
+- '{{TASK_DESCRIPTION}}'
+- '{{CODE_CHANGES}}'
+content_hash: d75f5a23d8baf9506f8af20bc1324bf7
