@@ -6,22 +6,28 @@ Welcome to my **Prompt Library**. This repository contains a collection of promp
 
 
 
-### Prompt Engineering
+### Product Management
 
 
 
-- [AI Prompt Analyzer and Output Generator](prompts/prompt_engineering/ai_prompt_analyzer_and_output_generator/view.md) - Analyzes AI prompts and generates structured outputs with metadata and formatting
+- [Software Specification Generator](prompts/software_specification_generator/view.md) - Creates comprehensive software specifications based on user requirements and interactive review
 
 
 
 
-### Software Engineering
+### Version Control
 
 
 
-- [Git Commit Message Writer](prompts/software_engineering/git_commit_message_writer_with_emojis/view.md) - Generates concise, informative git commit messages with emojis following Conventional Commits
+- [Git Commit Message Writer](prompts/git_commit_message_writer/view.md) - Generates concise, informative git commit messages with emojis following Conventional Commits
 
 
-- [Software Specification Generator](prompts/software_engineering/software_specification_generator/view.md) - Creates comprehensive software specifications based on user requirements
+
+
+### Software Development
+
+
+
+- [GitHub Pull Request Generator](prompts/github_pull_request_generator/view.md) - Generates comprehensive and well-structured GitHub pull requests adhering to best practices
 
 

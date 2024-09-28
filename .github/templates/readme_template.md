@@ -10,7 +10,7 @@ Welcome to my **Prompt Library**. This repository contains a collection of promp
 
 {% for prompt in prompts %}
 
-- [{{ prompt.title }}]({{ prompt.path }}) - {{prompt.description}}
+- [{{ prompt.title }}]({{ prompt.path }}) - {{ prompt.description }}
 {% endfor %}
 
 {% endfor %}
