@@ -6,11 +6,32 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 
 
+### Code Documentation
+
+
+
+- [AI Code Repository Documentation Generator](prompts/ai_code_repository_documentation_generator/view.md) - Analyzes code repositories and generates comprehensive documentation autonomously
+
+
+
+
+### Code Improvement
+
+
+
+- [Code Refactoring AI Assistant](prompts/code_refactoring_ai_assistant/view.md) - Analyzes, refactors, and tests code to improve quality, readability, and performance
+
+
+
+
 ### Idea Generation
 
 
 
 - [God Tier Assistant Generator](prompts/god_tier_assistant_generator/view.md) - Generates innovative ideas for specialized AI assistants based on given topics
+
+
+- [AI Topic Idea Generator](prompts/ai_topic_idea_generator/view.md) - Generates innovative AI application ideas for specific domains and constraints
 
 
 
@@ -24,20 +45,23 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 
 
+### Software Development
+
+
+
+- [AI Software Development Assistant](prompts/ai_software_development_assistant/view.md) - Provides expert guidance and support throughout the software development lifecycle
+
+
+- [GitHub Pull Request Generator](prompts/github_pull_request_generator/view.md) - Generates comprehensive and well-structured GitHub pull requests based on change details and project context
+
+
+
+
 ### Version Control
 
 
 
 - [Git Commit Message Writer](prompts/git_commit_message_writer/view.md) - Generates concise, informative git commit messages with emojis following Conventional Commits
-
-
-
-
-### Software Development
-
-
-
-- [GitHub Pull Request Generator](prompts/github_pull_request_generator/view.md) - Generates comprehensive and well-structured GitHub pull requests based on change details and project context
 
 
 

@@ -1,24 +1,5 @@
 # GitHub Pull Request Generator
 
-### 🔖 Tags
-
-
-
-- github
-
-
-- pull_request
-
-
-- code_review
-
-
-- software_engineering
-
-
-- best_practices
-
-
 ### ✏️ One-line Description
 
 **Generates comprehensive and well-structured GitHub pull requests based on change details and project context**
@@ -108,3 +89,21 @@ Remember to:
 Your goal is to create a pull request that is easy to review, understand, and merge, while maintaining high code quality and project standards. The formatted markdown should be ready for direct copy/pasting into a GitHub PR description.
 
 ```
+
+### 🔖 Tags
+
+
+
+- github
+
+
+- pull_request
+
+
+- code_review
+
+
+- software_engineering
+
+
+- best_practices

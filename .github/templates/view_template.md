@@ -1,12 +1,5 @@
 # {{ metadata.title }}
 
-### 🔖 Tags
-
-{% for tag in metadata.tags %}
-
-- {{ tag }}
-{% endfor %}
-
 ### ✏️ One-line Description
 
 **{{ metadata.one_line_description }}**
@@ -27,3 +20,10 @@
 ```md
 {{ prompt_content }}
 ```
+
+### 🔖 Tags
+
+{% for tag in metadata.tags %}
+
+- {{ tag }}
+{% endfor %}
