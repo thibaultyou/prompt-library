@@ -37,7 +37,7 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 
 
-- [GitHub Pull Request Generator](prompts/github_pull_request_generator/view.md) - Generates comprehensive and well-structured GitHub pull requests adhering to best practices
+- [GitHub Pull Request Generator](prompts/github_pull_request_generator/view.md) - Generates comprehensive and well-structured GitHub pull requests based on change details and project context
 
 
 

@@ -8,12 +8,12 @@ tags:
 - software_engineering
 - best_practices
 one_line_description: Generates comprehensive and well-structured GitHub pull requests
-  adhering to best practices
-description: This prompt creates detailed GitHub pull requests based on provided change
-  details and project context. It generates a clear title, comprehensive description,
-  list of changes, documentation updates, and additional notes, ensuring high-quality
-  contributions that are easy to review and merge.
+  based on change details and project context
+description: This prompt creates perfect GitHub pull requests by analyzing change
+  details and project context. It generates a formatted markdown output that includes
+  a clear title, detailed description, list of changes, documentation updates, and
+  additional notes, adhering to best practices and project standards.
 variables:
 - '{{CHANGE_DETAILS}}'
 - '{{PROJECT_CONTEXT}}'
-content_hash: 3b22372d1f57cd40f383f3ea56f85c3d
+content_hash: b6ad0e1be1aa1be5150cdfc15b876e7a
