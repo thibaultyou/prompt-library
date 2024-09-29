@@ -6,6 +6,15 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 
 
+### Idea Generation
+
+
+
+- [God Tier Assistant Generator](prompts/god_tier_assistant_generator/view.md) - Generates innovative ideas for specialized AI assistants based on given topics
+
+
+
+
 ### Product Management
 
 
