@@ -1,24 +1,5 @@
 # Git Commit Message Writer
 
-### 🔖 Tags
-
-
-
-- git
-
-
-- commit_messages
-
-
-- conventional_commits
-
-
-- emoji
-
-
-- version_control
-
-
 ### ✏️ One-line Description
 
 **Generates concise, informative git commit messages with emojis following Conventional Commits**
@@ -160,3 +141,21 @@ Based on your analysis, generate a commit message that accurately and concisely 
 Output your commit message within <commit_message> tags. The message should be on a single line, starting with the emoji, followed by a space, then the commit type, optional scope, colon, space, and finally the concise description.
 
 ```
+
+### 🔖 Tags
+
+
+
+- git
+
+
+- commit_messages
+
+
+- conventional_commits
+
+
+- emoji
+
+
+- version_control

@@ -1,24 +1,5 @@
 # God Tier Assistant Generator
 
-### 🔖 Tags
-
-
-
-- ai_assistants
-
-
-- creativity
-
-
-- innovation
-
-
-- specialized_agents
-
-
-- brainstorming
-
-
 ### ✏️ One-line Description
 
 **Generates innovative ideas for specialized AI assistants based on given topics**
@@ -69,3 +50,21 @@ The ideal way to interact with this assistant would be [describe interaction sty
 Remember to tailor your idea specifically to the given topic and focus on creating a truly exceptional and valuable AI assistant concept.
 
 ```
+
+### 🔖 Tags
+
+
+
+- ai_assistants
+
+
+- creativity
+
+
+- innovation
+
+
+- specialized_agents
+
+
+- brainstorming

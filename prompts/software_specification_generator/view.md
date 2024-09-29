@@ -1,24 +1,5 @@
 # Software Specification Generator
 
-### 🔖 Tags
-
-
-
-- software_development
-
-
-- product_management
-
-
-- requirements_analysis
-
-
-- specification_writing
-
-
-- user_interaction
-
-
 ### ✏️ One-line Description
 
 **Creates comprehensive software specifications based on user requirements and interactive review**
@@ -113,3 +94,21 @@ Here's how you should proceed:
 Remember to maintain a professional and thorough approach throughout the process, and ensure that the final spec document is clear, concise, and actionable for the development team.
 
 ```
+
+### 🔖 Tags
+
+
+
+- software_development
+
+
+- product_management
+
+
+- requirements_analysis
+
+
+- specification_writing
+
+
+- user_interaction

@@ -32,44 +32,44 @@ def update_views():
         prompt_path = os.path.join(prompts_dir, prompt_dir)
         if os.path.isdir(prompt_path):
             logger.info(f"Processing prompt directory: {prompt_dir}")
-            
+
             # Read prompt content and metadata
             prompt_file = os.path.join(prompt_path, 'prompt.md')
             metadata_file = os.path.join(prompt_path, 'metadata.yml')
-            
+
             if not os.path.exists(prompt_file):
                 logger.warning(f"prompt.md not found in {prompt_dir}")
                 continue
             if not os.path.exists(metadata_file):
                 logger.warning(f"metadata.yml not found in {prompt_dir}")
                 continue
-            
+
             with open(prompt_file, 'r') as f:
                 prompt_content = f.read()
             logger.info(f"Read prompt content from {prompt_file}")
-            
+
             with open(metadata_file, 'r') as f:
                 metadata = yaml.safe_load(f)
             logger.info(f"Read metadata from {metadata_file}")
-            
+
             # Generate view content using the template
             view_content = view_template.render(
                 metadata=metadata,
                 prompt_content=prompt_content
             )
             logger.info("Generated view content using template")
-            
+
             # Write the view content to a file
             view_path = os.path.join(prompt_path, 'view.md')
             with open(view_path, 'w') as f:
                 f.write(view_content)
             logger.info(f"Wrote view content to {view_path}")
-            
+
             # Organize prompts by category for the README
             category = format_category(metadata.get('category', 'Uncategorized'))
             if category not in categories:
                 categories[category] = []
-            
+
             categories[category].append({
                 'title': metadata.get('title', 'Untitled'),
                 'description': metadata.get('one_line_description', 'No description'),
@@ -77,9 +77,12 @@ def update_views():
             })
             logger.info(f"Added prompt to category: {category}")
 
+    # Sort categories alphabetically
+    sorted_categories = dict(sorted(categories.items()))
+
     # Generate README content using the template and write to file
     logger.info("Generating README content")
-    readme_content = readme_template.render(categories=categories)
+    readme_content = readme_template.render(categories=sorted_categories)
     readme_path = 'README.md'
     with open(readme_path, 'w') as f:
         f.write(readme_content)
