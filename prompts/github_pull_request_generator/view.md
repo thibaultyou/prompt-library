@@ -21,11 +21,11 @@
 
 ### ✏️ One-line Description
 
-**Generates comprehensive and well-structured GitHub pull requests adhering to best practices**
+**Generates comprehensive and well-structured GitHub pull requests based on change details and project context**
 
 ### 📄 Description
 
-This prompt creates detailed GitHub pull requests based on provided change details and project context. It generates a clear title, comprehensive description, list of changes, documentation updates, and additional notes, ensuring high-quality contributions that are easy to review and merge.
+This prompt creates perfect GitHub pull requests by analyzing change details and project context. It generates a formatted markdown output that includes a clear title, detailed description, list of changes, documentation updates, and additional notes, adhering to best practices and project standards.
 
 ### 🔧 Variables
 
@@ -69,38 +69,32 @@ To generate a perfect pull request, follow these steps:
 7. Include any relevant links or references.
 8. Ensure the pull request adheres to the project's coding standards and best practices.
 
-Format your response as follows:
+Format your response using GitHub-flavored markdown, ready for copy/pasting into a GitHub PR. Use the following structure:
 
-<pull_request>
-<title>
-Provide a clear and concise title for the pull request.
-</title>
+```markdown
+# [Title]
 
-<description>
-Write a comprehensive description of the changes, including:
+## Description
+[Comprehensive description of the changes, including:]
 - Purpose of the changes
 - Impact on the project
-- Any important implementation details
+- Important implementation details
 - Testing performed
-- Any known limitations or future work
-</description>
+- Known limitations or future work
 
-<changes>
-List the files changed and provide a brief explanation of each change.
-</changes>
+## Changes
+[List of files changed and brief explanation of each change]
 
-<documentation>
-Include any necessary documentation updates or links to updated documentation.
-</documentation>
+## Documentation
+[Any necessary documentation updates or links to updated documentation]
 
-<labels_and_reviewers>
-Suggest appropriate labels for the pull request and recommend reviewers if applicable.
-</labels_and_reviewers>
+## Labels and Reviewers
+- Labels: [Suggested labels]
+- Reviewers: [Recommended reviewers]
 
-<additional_notes>
-Include any additional information, such as related issues, dependencies, or deployment instructions.
-</additional_notes>
-</pull_request>
+## Additional Notes
+[Any additional information, such as related issues, dependencies, or deployment instructions]
+```
 
 Remember to:
 
@@ -109,7 +103,8 @@ Remember to:
 3. Follow the project's specific guidelines and conventions.
 4. Consider the perspective of both reviewers and future maintainers.
 5. Highlight any areas that may need special attention or discussion.
+6. Use appropriate markdown formatting, such as headers, lists, code blocks, and emphasis where needed.
 
-Your goal is to create a pull request that is easy to review, understand, and merge, while maintaining high code quality and project standards.
+Your goal is to create a pull request that is easy to review, understand, and merge, while maintaining high code quality and project standards. The formatted markdown should be ready for direct copy/pasting into a GitHub PR description.
 
 ```
