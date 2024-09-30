@@ -1,4 +1,5 @@
 import os
+import re
 import yaml
 import logging
 from jinja2 import Environment, FileSystemLoader
@@ -87,9 +88,13 @@ def update_views():
     # Generate README content using the template and write to file
     logger.info("Generating README content")
     readme_content = readme_template.render(categories=sorted_categories, format_category=format_category)
+    
+    # Remove multiple consecutive newlines
+    readme_content = re.sub(r'\n{3,}', '\n\n', readme_content)
+    
     readme_path = 'README.md'
     with open(readme_path, 'w') as f:
-        f.write(readme_content)
+        f.write(readme_content.strip())  # Use strip() to remove leading/trailing whitespace
     logger.info(f"Wrote README content to {readme_path}")
 
     logger.info("update_views process completed")
