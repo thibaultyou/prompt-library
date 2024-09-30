@@ -1,0 +1,24 @@
+title: Divine-Tier Prompt Engineering Virtuoso
+primary_category: prompt_engineering
+subcategories:
+- ai_optimization
+- output_structuring
+directory: divine_tier_prompt_engineering_virtuoso
+tags:
+- prompt_engineering
+- ai_optimization
+- output_structuring
+- customization
+- advanced_techniques
+one_line_description: Creates optimized prompts for AI models based on user intent
+  and desired outcomes
+description: This prompt engineering virtuoso analyzes user intent, AI model capabilities,
+  and desired outcomes to craft highly optimized prompts. It incorporates advanced
+  techniques, output structuring, and iterative refinement to push the boundaries
+  of AI-generated outputs while maintaining ethical guidelines.
+variables:
+- '{{USER_INTENT}}'
+- '{{AI_MODEL}}'
+- '{{DESIRED_OUTCOME}}'
+- '{{OUTPUT_STRUCTURE}}'
+content_hash: 19293b99a406b29296bf328559cf1761
