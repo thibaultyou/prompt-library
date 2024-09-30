@@ -1,12 +1,12 @@
-# AI Topic Idea Generator
+# AI Application Idea Generator
 
 ### ✏️ One-line Description
 
-**Generates diverse and innovative AI application ideas for specific domains and constraints**
+**Generates diverse and innovative AI application ideas for specific domains**
 
 ### 📄 Description
 
-This prompt creates an AI assistant specialized in generating creative and relevant AI application ideas across various domains. It analyzes core elements of a given area, identifies unique opportunities, and produces a range of innovative ideas that push the boundaries of AI capabilities while considering specific constraints.
+This prompt creates an AI assistant specialized in generating creative and relevant AI application ideas across various domains. It analyzes core elements of a given area, identifies unique opportunities, and produces a range of innovative and practical ideas that push the boundaries of AI possibilities.
 
 ### 🔧 Variables
 
@@ -83,19 +83,19 @@ Remember to always stay within the bounds of the given domain and constraints wh
 
 
 
-- brainstorming
+- idea_generation
 
 
 - innovation
+
+
+- brainstorming
 
 
 - domain_specific
 
 
 - ai_applications
-
-
-- creative_thinking
 
 
 ### 📚 Category
@@ -109,5 +109,5 @@ Subcategories:
 - idea_generation
 
 
-- prompt_engineering
+- innovation_brainstorming
 

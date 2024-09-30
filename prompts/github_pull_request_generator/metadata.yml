@@ -5,16 +5,16 @@ subcategories:
 - collaboration
 directory: github_pull_request_generator
 tags:
-- github
 - pull_request
+- github
 - code_review
 - best_practices
-- collaboration
+- documentation
 one_line_description: Generates comprehensive and well-structured GitHub pull requests
-description: This prompt creates perfect pull requests for GitHub projects, adhering
-  to best practices. It generates a clear title, detailed description, list of changes,
-  documentation updates, and additional notes, ensuring easy review and high code
-  quality.
+description: This prompt creates perfectly formatted GitHub pull requests based on
+  provided change details and project context. It generates a clear title, detailed
+  description, list of changes, documentation updates, and adheres to best practices
+  for easy review and merging.
 variables:
 - '{{CHANGE_DETAILS}}'
 - '{{PROJECT_CONTEXT}}'

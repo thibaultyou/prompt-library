@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt creates perfect pull requests for GitHub projects, adhering to best practices. It generates a clear title, detailed description, list of changes, documentation updates, and additional notes, ensuring easy review and high code quality.
+This prompt creates perfectly formatted GitHub pull requests based on provided change details and project context. It generates a clear title, detailed description, list of changes, documentation updates, and adheres to best practices for easy review and merging.
 
 ### 🔧 Variables
 
@@ -94,10 +94,10 @@ Your goal is to create a pull request that is easy to review, understand, and me
 
 
 
-- github
-
-
 - pull_request
+
+
+- github
 
 
 - code_review
@@ -106,7 +106,7 @@ Your goal is to create a pull request that is easy to review, understand, and me
 - best_practices
 
 
-- collaboration
+- documentation
 
 
 ### 📚 Category

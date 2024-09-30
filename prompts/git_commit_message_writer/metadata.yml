@@ -8,14 +8,14 @@ tags:
 - git
 - commit_messages
 - conventional_commits
-- emojis
+- emoji
 - best_practices
 one_line_description: Generates concise, informative git commit messages following
   Conventional Commits with emojis
 description: This prompt creates an AI assistant that writes git commit messages adhering
-  to the Conventional Commits specification and includes appropriate emojis. It generates
-  concise, informative messages that effectively summarize changes while following
-  best practices for commit message writing.
+  to the Conventional Commits specification and includes appropriate emojis. It ensures
+  commit messages are concise, informative, and follow best practices for version
+  control documentation.
 variables:
 - '{{TASK_DESCRIPTION}}'
 - '{{CODE_CHANGES}}'

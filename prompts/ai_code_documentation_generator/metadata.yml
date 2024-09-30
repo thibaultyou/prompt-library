@@ -1,0 +1,21 @@
+title: AI Code Documentation Generator
+primary_category: documentation
+subcategories:
+- code_analysis
+- technical_writing
+directory: ai_code_documentation_generator
+tags:
+- documentation
+- code_analysis
+- repository_analysis
+- api_documentation
+- technical_writing
+one_line_description: Analyzes code repositories and generates comprehensive documentation
+description: This AI assistant specializes in analyzing code repositories to create
+  and maintain various types of documentation. It autonomously interprets codebases,
+  generates documentation for APIs, architecture, and usage guides, and provides insights
+  on code structure and best practices.
+variables:
+- '{{REPOSITORY_DATA}}'
+- '{{DOCUMENTATION_REQUEST}}'
+content_hash: None
