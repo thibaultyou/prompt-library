@@ -13,7 +13,7 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 - [God Tier Assistant Generator](prompts/god_tier_assistant_generator/view.md) - Generates innovative ideas for specialized AI assistants based on given topics
 
 
-- [AI Application Idea Generator](prompts/ai_application_idea_generator/view.md) - Generates diverse and innovative AI application ideas for specific domains
+- [AI Topic Idea Generator](prompts/ai_topic_idea_generator/view.md) - Generates diverse and innovative AI application ideas for specific domains
 
 
 
@@ -22,7 +22,7 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 
 
-- [AI Code Documentation Generator](prompts/ai_code_documentation_generator/view.md) - Analyzes code repositories and generates comprehensive documentation
+- [AI Code Repository Documentation Generator](prompts/ai_code_repository_documentation_generator/view.md) - Generates comprehensive documentation for code repositories using AI analysis
 
 
 
@@ -31,7 +31,7 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 
 
-- [Advanced AI Software Development Assistant](prompts/advanced_ai_software_development_assistant/view.md) - Provides comprehensive guidance and support throughout the software development lifecycle
+- [Advanced Software Development Assistant](prompts/advanced_software_development_assistant/view.md) - Provides comprehensive software development assistance throughout the entire lifecycle
 
 
 
@@ -43,7 +43,7 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 - [Software Specification Generator](prompts/software_specification_generator/view.md) - Generates comprehensive software specifications based on user requirements
 
 
-- [GitHub Issue Creator](prompts/github_issue_creator_from_user_input/view.md) - Creates well-structured GitHub Issues from user input and project context
+- [GitHub Issue Creator Assistant](prompts/github_issue_creator_assistant/view.md) - Creates well-structured GitHub Issues from various inputs
 
 
 
@@ -52,7 +52,7 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 
 
-- [Code Refactoring AI Assistant](prompts/code_refactoring_ai_assistant/view.md) - Analyzes, refactors, and tests code to improve quality, readability, and performance
+- [Code Refactoring and Analysis Assistant](prompts/code_refactoring_analysis_assistant/view.md) - Analyzes, refactors, and tests code to improve quality, readability, and performance
 
 
 

@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt creates a software product manager AI that interactively reviews user requirements and generates detailed software specifications. It guides users through a structured process, asking clarifying questions and providing expert suggestions to create a comprehensive spec document.
+This prompt creates an AI assistant that acts as a software product manager to define clear and precise software specifications. It conducts an interactive review process with the user, analyzes requirements, and produces a detailed specification document covering all aspects of the software project.
 
 ### 🔧 Variables
 
@@ -108,10 +108,10 @@ Remember to maintain a professional and thorough approach throughout the process
 - requirements_analysis
 
 
-- interactive_review
-
-
 - documentation
+
+
+- user_interaction
 
 
 ### 📚 Category

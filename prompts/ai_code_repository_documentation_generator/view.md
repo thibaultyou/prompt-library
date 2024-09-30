@@ -1,12 +1,12 @@
-# AI Code Documentation Generator
+# AI Code Repository Documentation Generator
 
 ### ✏️ One-line Description
 
-**Analyzes code repositories and generates comprehensive documentation**
+**Generates comprehensive documentation for code repositories using AI analysis**
 
 ### 📄 Description
 
-This AI assistant specializes in analyzing code repositories to create and maintain various types of documentation. It autonomously interprets codebases, generates documentation for APIs, architecture, and usage guides, and provides insights on code structure and best practices.
+This AI assistant analyzes code repositories to autonomously generate and maintain various types of documentation. It interprets codebases, creates README files, API documentation, usage guides, and architectural overviews while providing insights on best practices and suggesting improvements.
 
 ### 🔧 Variables
 
@@ -105,13 +105,13 @@ Remember to tailor your output to the specific documentation_request while ensur
 - code_analysis
 
 
-- repository_analysis
-
-
-- api_documentation
+- repository_management
 
 
 - technical_writing
+
+
+- ai_assistant
 
 
 ### 📚 Category

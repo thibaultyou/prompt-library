@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt creates an AI assistant that writes git commit messages adhering to the Conventional Commits specification and includes appropriate emojis. It ensures commit messages are concise, informative, and follow best practices for version control documentation.
+This prompt creates an AI assistant that writes git commit messages adhering to the Conventional Commits specification and includes appropriate emojis. It provides guidelines for creating clear, informative messages that effectively summarize code changes while following best practices for version control documentation.
 
 ### 🔧 Variables
 
