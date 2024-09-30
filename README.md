@@ -13,6 +13,8 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 ### Project Management
 - [Software Specification Generator](prompts/software_specification_generator/view.md) - Creates comprehensive software specifications based on user requirements
 - [GitHub Issue Creator Assistant](prompts/github_issue_creator_assistant/view.md) - Creates well-structured GitHub Issues from various types of input
+### Prompt Engineering
+- [AI Prompt Optimization Assistant](prompts/ai_prompt_optimization_assistant/view.md) - Dynamically refines and optimizes AI prompts based on user guidelines and goals
 ### Refactoring
 - [Code Refactoring AI Assistant](prompts/code_refactoring_ai_assistant/view.md) - Analyzes, refactors, and tests code to improve quality, readability, and performance
 ### Version Control
