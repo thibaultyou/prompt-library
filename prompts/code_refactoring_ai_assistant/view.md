@@ -1,4 +1,4 @@
-# Code Refactoring and Analysis Assistant
+# Code Refactoring AI Assistant
 
 ### ✏️ One-line Description
 
@@ -6,14 +6,12 @@
 
 ### 📄 Description
 
-This AI assistant specializes in code refactoring and analysis. It examines provided code, identifies areas for improvement, implements refactoring techniques, and ensures functionality through testing. The assistant focuses on enhancing code quality, readability, and performance while adhering to best practices.
+This AI assistant specializes in code refactoring, analyzing codebases to identify areas for improvement. It implements various refactoring techniques, ensures functionality through testing, and provides a summary of changes and improvements made.
 
 ### 🔧 Variables
 
 
-
 - `{{CODEBASE}}`
-
 
 - `{{REFACTOR_SCOPE}}`
 
@@ -81,18 +79,13 @@ Remember to think critically about each refactoring decision and its impact on t
 ### 🔖 Tags
 
 
-
 - refactoring
-
 
 - code_analysis
 
-
 - testing
 
-
 - optimization
-
 
 - best_practices
 
@@ -104,9 +97,7 @@ Primary Category: refactoring
 
 Subcategories:
 
-
 - code_quality
-
 
 - performance_optimization
 

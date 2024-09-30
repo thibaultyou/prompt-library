@@ -8,14 +8,14 @@ tags:
 - github
 - pull_request
 - code_review
+- collaboration
 - best_practices
-- documentation
 one_line_description: Generates comprehensive and well-structured GitHub pull requests
 description: This prompt creates perfect pull requests for GitHub projects. It generates
-  a detailed PR description including title, changes, documentation updates, and additional
-  notes, adhering to best practices and project standards. The output is formatted
-  in GitHub-flavored markdown for easy copy-pasting.
+  a comprehensive description, lists changes, includes documentation updates, and
+  suggests labels and reviewers. The output adheres to best practices and is formatted
+  in GitHub-flavored markdown.
 variables:
 - '{{CHANGE_DETAILS}}'
 - '{{PROJECT_CONTEXT}}'
-content_hash: None
+content_hash: b6ad0e1be1aa1be5150cdfc15b876e7a

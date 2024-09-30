@@ -78,15 +78,15 @@ def generate_metadata(prompt_content):
 def should_update_metadata(prompt_file, metadata_file):
     """Check if metadata should be updated based on content hash or force flag."""
     force_regenerate = os.environ.get('FORCE_REGENERATE', 'false').lower() == 'true'
-    
-    if force_regenerate:
-        logger.info("Forcing metadata regeneration due to system prompt changes.")
-        return True, None
 
     # Generate hash of the prompt file content
     with open(prompt_file, 'rb') as f:
         prompt_content = f.read()
     prompt_hash = hashlib.md5(prompt_content).hexdigest()
+
+    if force_regenerate:
+        logger.info("Forcing metadata regeneration due to system prompt changes.")
+        return True, prompt_hash
 
     # If metadata file doesn't exist, update is needed
     if not os.path.exists(metadata_file):
@@ -214,6 +214,12 @@ def update_prompt_metadata():
                     with open(metadata_path, 'w') as f:
                         yaml.dump(metadata, f, sort_keys=False)
                     
+                    # Ensure we have a valid hash
+                    if new_hash is None:
+                        with open(prompt_file, 'rb') as f:
+                            prompt_content = f.read()
+                        new_hash = hashlib.md5(prompt_content).hexdigest()
+
                     # Update content hash
                     update_metadata_hash(metadata_path, new_hash)
                 else:

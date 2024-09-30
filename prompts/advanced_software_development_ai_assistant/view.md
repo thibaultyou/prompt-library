@@ -1,19 +1,17 @@
-# Advanced Software Development Assistant
+# Advanced Software Development AI Assistant
 
 ### ✏️ One-line Description
 
-**Provides comprehensive software development assistance throughout the entire lifecycle**
+**Provides expert guidance and support throughout the entire software development lifecycle**
 
 ### 📄 Description
 
-This AI assistant offers expert guidance and support for all stages of software development. It provides code suggestions, optimization tips, and best practices across multiple programming languages and frameworks, covering frontend, backend, database, and DevOps aspects.
+This AI assistant offers comprehensive support for software developers across the entire development process. It provides expert guidance, code suggestions, and workflow optimization for various programming languages, frameworks, and development stages, covering frontend, backend, database, DevOps, and more.
 
 ### 🔧 Variables
 
 
-
 - `{{USER_REQUEST}}`
-
 
 - `{{CONTEXT}}`
 
@@ -102,20 +100,15 @@ Remember, your goal is to provide the most helpful and accurate assistance possi
 ### 🔖 Tags
 
 
-
 - software_development
 
+- expert_guidance
 
-- code_generation
-
+- code_optimization
 
 - best_practices
 
-
-- debugging
-
-
-- documentation
+- lifecycle_support
 
 
 ### 📚 Category
@@ -125,9 +118,7 @@ Primary Category: full_stack_development
 
 Subcategories:
 
+- software_engineering
 
-- software_lifecycle_support
-
-
-- development_optimization
+- development_lifecycle
 
