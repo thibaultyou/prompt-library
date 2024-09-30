@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This AI assistant specializes in code refactoring, analyzing codebases to identify areas for improvement. It implements various refactoring techniques, ensures functionality through testing, and provides a summary of changes made. The assistant follows best practices and principles of software engineering throughout the process.
+This AI assistant specializes in code refactoring, analyzing codebases to identify areas for improvement. It implements various refactoring techniques, ensures functionality through testing, and provides a summary of changes made. The assistant focuses on simplicity, DRY principle, and code readability.
 
 ### 🔧 Variables
 
@@ -82,16 +82,31 @@ Remember to think critically about each refactoring decision and its impact on t
 
 
 
-- code_refactoring
+- refactoring
 
 
 - code_analysis
 
 
-- code_optimization
+- optimization
 
 
-- software_engineering
+- testing
 
 
 - best_practices
+
+
+### 📚 Category
+
+Primary Category: refactoring
+
+
+Subcategories:
+
+
+- code_quality
+
+
+- performance_optimization
+

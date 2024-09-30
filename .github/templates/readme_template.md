@@ -6,7 +6,7 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 {% for category, prompts in categories.items() %}
 
-### {{ category }}
+### {{ format_category(category) }}
 
 {% for prompt in prompts %}
 

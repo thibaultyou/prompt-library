@@ -27,3 +27,15 @@
 
 - {{ tag }}
 {% endfor %}
+
+### 📚 Category
+
+Primary Category: {{ metadata.primary_category }}
+
+{% if metadata.subcategories %}
+Subcategories:
+{% for subcategory in metadata.subcategories %}
+
+- {{ subcategory }}
+{% endfor %}
+{% endif %}

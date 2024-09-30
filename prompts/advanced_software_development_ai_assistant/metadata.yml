@@ -1,0 +1,22 @@
+title: Advanced Software Development AI Assistant
+primary_category: full_stack_development
+subcategories:
+- ai_assisted_development
+- software_lifecycle_support
+directory: advanced_software_development_ai_assistant
+tags:
+- software_development
+- ai_assistant
+- code_generation
+- debugging
+- best_practices
+one_line_description: Provides expert guidance and support throughout the software
+  development lifecycle
+description: This AI assistant specializes in full-stack software development, offering
+  expert guidance, code suggestions, and workflow optimization. It supports developers
+  from ideation to deployment and maintenance, covering various programming languages,
+  frameworks, and development practices.
+variables:
+- '{{USER_REQUEST}}'
+- '{{CONTEXT}}'
+content_hash: None

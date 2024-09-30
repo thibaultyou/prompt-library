@@ -66,23 +66,27 @@ def update_views():
             logger.info(f"Wrote view content to {view_path}")
 
             # Organize prompts by category for the README
-            category = format_category(metadata.get('category', 'Uncategorized'))
-            if category not in categories:
-                categories[category] = []
+            primary_category = metadata.get('primary_category', 'uncategorized')
+            if primary_category not in categories:
+                categories[primary_category] = []
 
-            categories[category].append({
+            categories[primary_category].append({
                 'title': metadata.get('title', 'Untitled'),
                 'description': metadata.get('one_line_description', 'No description'),
-                'path': f'prompts/{prompt_dir}/view.md'
+                'path': f'prompts/{prompt_dir}/view.md',
+                'subcategories': metadata.get('subcategories', [])
             })
-            logger.info(f"Added prompt to category: {category}")
+            logger.info(f"Added prompt to category: {primary_category}")
+
+    # Remove empty categories
+    categories = {k: v for k, v in categories.items() if v}
 
     # Sort categories alphabetically
     sorted_categories = dict(sorted(categories.items()))
 
     # Generate README content using the template and write to file
     logger.info("Generating README content")
-    readme_content = readme_template.render(categories=sorted_categories)
+    readme_content = readme_template.render(categories=sorted_categories, format_category=format_category)
     readme_path = 'README.md'
     with open(readme_path, 'w') as f:
         f.write(readme_content)

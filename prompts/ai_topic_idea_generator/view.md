@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Generates innovative AI application ideas for specific domains and constraints**
+**Generates diverse and innovative AI application ideas for specific domains and constraints**
 
 ### 📄 Description
 
-This prompt creates an AI assistant that specializes in generating creative and relevant AI application ideas across various domains. It analyzes the given domain, considers specified constraints, and produces a diverse range of innovative concepts, from practical near-term applications to futuristic ideas.
+This prompt creates an AI assistant specialized in generating creative and relevant AI application ideas across various domains. It analyzes core elements of a given area, identifies unique opportunities, and produces a range of innovative ideas that push the boundaries of AI capabilities while considering specific constraints.
 
 ### 🔧 Variables
 
@@ -83,16 +83,31 @@ Remember to always stay within the bounds of the given domain and constraints wh
 
 
 
-- artificial_intelligence
-
-
 - brainstorming
 
 
 - innovation
 
 
+- domain_specific
+
+
+- ai_applications
+
+
 - creative_thinking
 
 
-- domain_specific
+### 📚 Category
+
+Primary Category: artificial_intelligence
+
+
+Subcategories:
+
+
+- idea_generation
+
+
+- prompt_engineering
+

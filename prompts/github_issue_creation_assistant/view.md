@@ -1,12 +1,12 @@
-# GitHub Issue Creator
+# GitHub Issue Creation Assistant
 
 ### ✏️ One-line Description
 
-**Creates well-structured GitHub Issues from user input and project context**
+**Creates well-structured GitHub Issues from various inputs**
 
 ### 📄 Description
 
-This prompt transforms natural language descriptions, code snippets, and contextual information into perfectly formatted GitHub Issues. It analyzes user input and project context to create comprehensive issue reports following best practices, including categorization, prioritization, and suggested labels, milestones, and assignees.
+This prompt engineers an AI assistant that specializes in creating well-structured GitHub Issues from diverse inputs. It analyzes user input and project context to generate comprehensive, properly formatted issues that follow best practices, including appropriate categorization, labeling, and assignment.
 
 ### 🔧 Variables
 
@@ -130,4 +130,22 @@ Remember to use your best judgment when creating the issue, and ensure that all 
 - project_management
 
 
-- task_organization
+- collaboration
+
+
+- documentation
+
+
+### 📚 Category
+
+Primary Category: project_management
+
+
+Subcategories:
+
+
+- issue_tracking
+
+
+- collaboration
+

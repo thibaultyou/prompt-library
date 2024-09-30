@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Generates comprehensive and well-structured GitHub pull requests based on change details and project context**
+**Generates comprehensive and well-structured GitHub pull requests**
 
 ### 📄 Description
 
-This prompt creates perfect GitHub pull requests by analyzing change details and project context. It generates a formatted markdown output that includes a clear title, detailed description, list of changes, documentation updates, and additional notes, adhering to best practices and project standards.
+This prompt creates perfect pull requests for GitHub projects, adhering to best practices. It generates a clear title, detailed description, list of changes, documentation updates, and additional notes, ensuring easy review and high code quality.
 
 ### 🔧 Variables
 
@@ -103,7 +103,22 @@ Your goal is to create a pull request that is easy to review, understand, and me
 - code_review
 
 
-- software_engineering
-
-
 - best_practices
+
+
+- collaboration
+
+
+### 📚 Category
+
+Primary Category: version_control
+
+
+Subcategories:
+
+
+- code_review
+
+
+- collaboration
+

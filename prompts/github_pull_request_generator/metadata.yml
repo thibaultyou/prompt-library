@@ -1,19 +1,21 @@
 title: GitHub Pull Request Generator
-category: software_development
+primary_category: version_control
+subcategories:
+- code_review
+- collaboration
 directory: github_pull_request_generator
 tags:
 - github
 - pull_request
 - code_review
-- software_engineering
 - best_practices
+- collaboration
 one_line_description: Generates comprehensive and well-structured GitHub pull requests
-  based on change details and project context
-description: This prompt creates perfect GitHub pull requests by analyzing change
-  details and project context. It generates a formatted markdown output that includes
-  a clear title, detailed description, list of changes, documentation updates, and
-  additional notes, adhering to best practices and project standards.
+description: This prompt creates perfect pull requests for GitHub projects, adhering
+  to best practices. It generates a clear title, detailed description, list of changes,
+  documentation updates, and additional notes, ensuring easy review and high code
+  quality.
 variables:
 - '{{CHANGE_DETAILS}}'
 - '{{PROJECT_CONTEXT}}'
-content_hash: b6ad0e1be1aa1be5150cdfc15b876e7a
+content_hash: None
