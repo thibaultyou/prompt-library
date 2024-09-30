@@ -11,7 +11,6 @@
 ### 🔧 Variables
 
 {% for variable in metadata.variables %}
-
 - `{{ variable }}`
 {% endfor %}
 
@@ -24,7 +23,6 @@
 ### 🔖 Tags
 
 {% for tag in metadata.tags %}
-
 - {{ tag }}
 {% endfor %}
 
@@ -35,7 +33,6 @@ Primary Category: {{ metadata.primary_category }}
 {% if metadata.subcategories %}
 Subcategories:
 {% for subcategory in metadata.subcategories %}
-
 - {{ subcategory }}
 {% endfor %}
 {% endif %}

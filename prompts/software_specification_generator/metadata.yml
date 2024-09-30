@@ -1,21 +1,21 @@
 title: Software Specification Generator
 primary_category: project_management
 subcategories:
-- requirements_gathering
-- documentation
+- software_requirements
+- product_management
 directory: software_specification_generator
 tags:
-- product_management
 - software_specs
 - requirements_analysis
-- documentation
+- product_management
 - user_interaction
-one_line_description: Generates comprehensive software specifications based on user
+- documentation
+one_line_description: Creates comprehensive software specifications based on user
   requirements
-description: This prompt creates an AI assistant that acts as a software product manager
-  to define clear and precise software specifications. It conducts an interactive
-  review process with the user, analyzes requirements, and produces a detailed specification
-  document covering all aspects of the software project.
+description: Generates detailed software specification documents through an interactive
+  process with users. Analyzes user requirements, asks clarifying questions, and produces
+  a structured spec document covering all aspects of software development, from project
+  overview to future considerations.
 variables:
 - '{{USER_REQUIREMENTS}}'
-content_hash: None
+content_hash: 0453cfb878dfeafebd5a8e9bbd45d44c

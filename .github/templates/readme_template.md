@@ -9,10 +9,8 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 ### {{ format_category(category) }}
 
 {% for prompt in prompts %}
-
 - [{{ prompt.title }}]({{ prompt.path }}) - {{ prompt.description }}
 {% endfor %}
-
 {% endfor %}
 
 ## 🚀 Getting Started

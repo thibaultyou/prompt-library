@@ -6,14 +6,12 @@
 
 ### 📄 Description
 
-This prompt creates perfect pull requests for GitHub projects. It generates a detailed PR description including title, changes, documentation updates, and additional notes, adhering to best practices and project standards. The output is formatted in GitHub-flavored markdown for easy copy-pasting.
+This prompt creates perfect pull requests for GitHub projects. It generates a comprehensive description, lists changes, includes documentation updates, and suggests labels and reviewers. The output adheres to best practices and is formatted in GitHub-flavored markdown.
 
 ### 🔧 Variables
 
 
-
 - `{{CHANGE_DETAILS}}`
-
 
 - `{{PROJECT_CONTEXT}}`
 
@@ -93,20 +91,15 @@ Your goal is to create a pull request that is easy to review, understand, and me
 ### 🔖 Tags
 
 
-
 - github
-
 
 - pull_request
 
-
 - code_review
 
+- collaboration
 
 - best_practices
-
-
-- documentation
 
 
 ### 📚 Category
@@ -116,9 +109,7 @@ Primary Category: version_control
 
 Subcategories:
 
-
 - code_review
-
 
 - collaboration
 

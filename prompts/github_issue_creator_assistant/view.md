@@ -2,18 +2,16 @@
 
 ### ✏️ One-line Description
 
-**Creates well-structured GitHub Issues from various inputs**
+**Creates well-structured GitHub Issues from various types of input**
 
 ### 📄 Description
 
-This prompt creates an AI assistant that specializes in generating perfectly formatted GitHub Issues. It takes user input and project context to create comprehensive issues following best practices, including proper categorization, labeling, and assignment suggestions.
+This prompt generates a specialized assistant that transforms user input and project context into perfectly formatted GitHub Issues. It analyzes the provided information, structures the issue following best practices, and suggests appropriate labels, milestones, and assignees based on the project context.
 
 ### 🔧 Variables
 
 
-
 - `{{USER_INPUT}}`
-
 
 - `{{PROJECT_CONTEXT}}`
 
@@ -120,20 +118,15 @@ Remember to use your best judgment when creating the issue, and ensure that all 
 ### 🔖 Tags
 
 
-
 - github
 
-
-- issues
-
-
-- formatting
-
-
-- best_practices
-
+- issue_tracking
 
 - project_management
+
+- documentation
+
+- collaboration
 
 
 ### 📚 Category
@@ -143,9 +136,7 @@ Primary Category: project_management
 
 Subcategories:
 
-
 - issue_tracking
-
 
 - collaboration
 

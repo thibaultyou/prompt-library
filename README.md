@@ -9,63 +9,48 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 ### Artificial Intelligence
 
 
-
 - [God Tier Assistant Generator](prompts/god_tier_assistant_generator/view.md) - Generates innovative ideas for specialized AI assistants based on given topics
 
-
 - [AI Topic Idea Generator](prompts/ai_topic_idea_generator/view.md) - Generates diverse and innovative AI application ideas for specific domains
-
 
 
 
 ### Documentation
 
 
-
-- [AI Code Repository Documentation Generator](prompts/ai_code_repository_documentation_generator/view.md) - Generates comprehensive documentation for code repositories using AI analysis
-
+- [AI-Powered Code Repository Documentation Generator](prompts/ai_code_repository_documentation_generator/view.md) - Analyzes code repositories and generates comprehensive documentation autonomously
 
 
 
 ### Full Stack Development
 
 
-
-- [Advanced Software Development Assistant](prompts/advanced_software_development_assistant/view.md) - Provides comprehensive software development assistance throughout the entire lifecycle
-
+- [Advanced Software Development AI Assistant](prompts/advanced_software_development_ai_assistant/view.md) - Provides expert guidance and support throughout the entire software development lifecycle
 
 
 
 ### Project Management
 
 
+- [Software Specification Generator](prompts/software_specification_generator/view.md) - Creates comprehensive software specifications based on user requirements
 
-- [Software Specification Generator](prompts/software_specification_generator/view.md) - Generates comprehensive software specifications based on user requirements
-
-
-- [GitHub Issue Creator Assistant](prompts/github_issue_creator_assistant/view.md) - Creates well-structured GitHub Issues from various inputs
-
+- [GitHub Issue Creator Assistant](prompts/github_issue_creator_assistant/view.md) - Creates well-structured GitHub Issues from various types of input
 
 
 
 ### Refactoring
 
 
-
-- [Code Refactoring and Analysis Assistant](prompts/code_refactoring_analysis_assistant/view.md) - Analyzes, refactors, and tests code to improve quality, readability, and performance
-
+- [Code Refactoring AI Assistant](prompts/code_refactoring_ai_assistant/view.md) - Analyzes, refactors, and tests code to improve quality, readability, and performance
 
 
 
 ### Version Control
 
 
-
 - [Git Commit Message Writer](prompts/git_commit_message_writer/view.md) - Generates concise, informative git commit messages following Conventional Commits with emojis
 
-
 - [GitHub Pull Request Generator](prompts/github_pull_request_generator/view.md) - Generates comprehensive and well-structured GitHub pull requests
-
 
 
 
