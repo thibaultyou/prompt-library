@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt transforms natural language descriptions, code snippets, and contextual information into perfectly formatted GitHub Issues. It analyzes user input and project context to create comprehensive issue reports following best practices, including categorization, prioritization, and suggested labels, milestones, and assignees.
+This prompt generates perfectly formatted GitHub Issues based on user input and project context. It analyzes the provided information, structures the issue following best practices, and suggests appropriate labels, milestones, and assignees.
 
 ### 🔧 Variables
 
@@ -127,7 +127,25 @@ Remember to use your best judgment when creating the issue, and ensure that all 
 - issue_tracking
 
 
+- markdown
+
+
 - project_management
 
 
-- task_organization
+- collaboration
+
+
+### 📚 Category
+
+Primary Category: project_management
+
+
+Subcategories:
+
+
+- issue_tracking
+
+
+- documentation
+

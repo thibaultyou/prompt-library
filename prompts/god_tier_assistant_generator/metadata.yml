@@ -1,17 +1,21 @@
 title: God Tier Assistant Generator
-category: idea_generation
+primary_category: artificial_intelligence
+subcategories:
+- creative_ideation
+- specialized_ai_assistants
 directory: god_tier_assistant_generator
 tags:
 - ai_assistants
-- creativity
-- innovation
+- creative_ideas
 - specialized_agents
-- brainstorming
+- prompt_engineering
+- innovation
 one_line_description: Generates innovative ideas for specialized AI assistants based
   on given topics
-description: Creates concepts for highly capable "god tier" AI assistants tailored
-  to specific topics or tasks. Produces creative and powerful ideas focusing on core
-  competencies, maximizing outcomes, and effective user interactions.
+description: Creates concepts for highly capable AI assistants tailored to specific
+  topics or roles. The prompt guides the AI to generate creative and valuable ideas
+  for "god tier" assistants, focusing on core competencies, interaction styles, and
+  maximizing outcomes.
 variables:
 - '{{TOPIC}}'
-content_hash: 21fc0c6a4790ef6f8b9e082eec146da7
+content_hash: None

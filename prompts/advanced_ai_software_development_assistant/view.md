@@ -1,12 +1,12 @@
-# AI Software Development Assistant
+# Advanced AI Software Development Assistant
 
 ### ✏️ One-line Description
 
-**Provides expert guidance and support throughout the software development lifecycle**
+**Provides comprehensive guidance and support throughout the software development lifecycle**
 
 ### 📄 Description
 
-This AI assistant specializes in software development, offering comprehensive support from ideation to deployment and maintenance. It provides expert advice, code suggestions, and workflow optimization across various programming languages, frameworks, and development stages.
+This AI assistant offers expert guidance, code suggestions, and workflow optimization for software developers across the entire development lifecycle. It covers various aspects including coding, debugging, documentation, and best practices in multiple programming languages and frameworks.
 
 ### 🔧 Variables
 
@@ -106,13 +106,28 @@ Remember, your goal is to provide the most helpful and accurate assistance possi
 - software_development
 
 
-- programming
+- code_generation
 
 
-- code_optimization
+- best_practices
 
 
-- devops
+- debugging
 
 
-- ai_assistance
+- documentation
+
+
+### 📚 Category
+
+Primary Category: full_stack_development
+
+
+Subcategories:
+
+
+- software_lifecycle_management
+
+
+- development_workflow_optimization
+

@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Creates comprehensive software specifications based on user requirements and interactive review**
+**Generates comprehensive software specifications based on user requirements**
 
 ### 📄 Description
 
-This prompt guides an AI assistant through the process of generating detailed software specifications. It involves analyzing user requirements, conducting an interactive review, and producing a structured specification document covering various aspects of software development.
+This prompt creates a software product manager AI that interactively reviews user requirements and generates detailed software specifications. It guides users through a structured process, asking clarifying questions and providing expert suggestions to create a comprehensive spec document.
 
 ### 🔧 Variables
 
@@ -99,16 +99,31 @@ Remember to maintain a professional and thorough approach throughout the process
 
 
 
-- software_development
-
-
 - product_management
+
+
+- software_specs
 
 
 - requirements_analysis
 
 
-- specification_writing
+- interactive_review
 
 
-- user_interaction
+- documentation
+
+
+### 📚 Category
+
+Primary Category: project_management
+
+
+Subcategories:
+
+
+- requirements_gathering
+
+
+- documentation
+

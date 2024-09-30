@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-Creates concepts for highly capable "god tier" AI assistants tailored to specific topics or tasks. Produces creative and powerful ideas focusing on core competencies, maximizing outcomes, and effective user interactions.
+Creates concepts for highly capable AI assistants tailored to specific topics or roles. The prompt guides the AI to generate creative and valuable ideas for "god tier" assistants, focusing on core competencies, interaction styles, and maximizing outcomes.
 
 ### 🔧 Variables
 
@@ -58,13 +58,28 @@ Remember to tailor your idea specifically to the given topic and focus on creati
 - ai_assistants
 
 
-- creativity
-
-
-- innovation
+- creative_ideas
 
 
 - specialized_agents
 
 
-- brainstorming
+- prompt_engineering
+
+
+- innovation
+
+
+### 📚 Category
+
+Primary Category: artificial_intelligence
+
+
+Subcategories:
+
+
+- creative_ideation
+
+
+- specialized_ai_assistants
+

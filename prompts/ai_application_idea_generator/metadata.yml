@@ -1,0 +1,22 @@
+title: AI Application Idea Generator
+primary_category: artificial_intelligence
+subcategories:
+- idea_generation
+- innovation_brainstorming
+directory: ai_application_idea_generator
+tags:
+- idea_generation
+- innovation
+- brainstorming
+- domain_specific
+- ai_applications
+one_line_description: Generates diverse and innovative AI application ideas for specific
+  domains
+description: This prompt creates an AI assistant specialized in generating creative
+  and relevant AI application ideas across various domains. It analyzes core elements
+  of a given area, identifies unique opportunities, and produces a range of innovative
+  and practical ideas that push the boundaries of AI possibilities.
+variables:
+- '{{DOMAIN}}'
+- '{{CONSTRAINTS}}'
+content_hash: None

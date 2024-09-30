@@ -43,7 +43,7 @@ def generate_metadata(prompt_content):
     logger.info("Sending request to Anthropic API")
     message = client.messages.create(
         model="claude-3-5-sonnet-20240620",
-        max_tokens=1000,
+        max_tokens=2500,
         messages=[
             {
                 "role": "user",
@@ -76,7 +76,13 @@ def generate_metadata(prompt_content):
     return metadata
 
 def should_update_metadata(prompt_file, metadata_file):
-    """Check if metadata should be updated based on content hash."""
+    """Check if metadata should be updated based on content hash or force flag."""
+    force_regenerate = os.environ.get('FORCE_REGENERATE', 'false').lower() == 'true'
+    
+    if force_regenerate:
+        logger.info("Forcing metadata regeneration due to system prompt changes.")
+        return True, None
+
     # Generate hash of the prompt file content
     with open(prompt_file, 'rb') as f:
         prompt_content = f.read()
@@ -200,7 +206,7 @@ def update_prompt_metadata():
                             shutil.rmtree(item_path)
                         else:
                             os.rename(item_path, new_dir_path)
-                        item_path = new_dir_path  # Update item_path for the new location
+                        item_path = new_dir_path
                     
                     # Save updated metadata
                     metadata_path = os.path.join(item_path, 'metadata.yml')

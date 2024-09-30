@@ -14,22 +14,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12.6"
           cache: "pip"
           cache-dependency-path: ".github/scripts/requirements.txt"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r .github/scripts/requirements.txt
+
+      - name: Check for system prompt changes
+        id: check_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q ".github/prompts/ai_prompt_analyzer_and_output_generator/"; then
+            echo "FORCE_REGENERATE=true" >> $GITHUB_ENV
+          else
+            echo "FORCE_REGENERATE=false" >> $GITHUB_ENV
+          fi
+
       - name: Generate metadata
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FORCE_REGENERATE: ${{ env.FORCE_REGENERATE }}
         run: python .github/scripts/generate_metadata.py
+
       - name: Update views
         run: python .github/scripts/update_views.py
+
       - name: Commit changes
         run: |
           git config --local user.name "github-actions[bot]"

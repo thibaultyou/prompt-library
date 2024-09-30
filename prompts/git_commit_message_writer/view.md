@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Generates concise, informative git commit messages with emojis following Conventional Commits**
+**Generates concise, informative git commit messages following Conventional Commits with emojis**
 
 ### 📄 Description
 
-This prompt creates an AI assistant that writes git commit messages. It follows the Conventional Commits specification, includes appropriate emojis, and provides concise, informative summaries of code changes. The assistant considers various commit types and uses a wide range of emojis to represent different kinds of changes.
+This prompt creates an AI assistant that writes git commit messages adhering to the Conventional Commits specification and includes appropriate emojis. It ensures commit messages are concise, informative, and follow best practices for version control documentation.
 
 ### 🔧 Variables
 
@@ -158,4 +158,19 @@ Output your commit message within <commit_message> tags. The message should be o
 - emoji
 
 
-- version_control
+- best_practices
+
+
+### 📚 Category
+
+Primary Category: version_control
+
+
+Subcategories:
+
+
+- commit_messages
+
+
+- conventional_commits
+

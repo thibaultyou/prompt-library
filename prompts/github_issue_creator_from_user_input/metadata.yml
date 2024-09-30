@@ -1,19 +1,22 @@
 title: GitHub Issue Creator
-category: issue_management
+primary_category: project_management
+subcategories:
+- issue_tracking
+- documentation
 directory: github_issue_creator_from_user_input
 tags:
 - github
 - issue_tracking
+- markdown
 - project_management
-- task_organization
+- collaboration
 one_line_description: Creates well-structured GitHub Issues from user input and project
   context
-description: This prompt transforms natural language descriptions, code snippets,
-  and contextual information into perfectly formatted GitHub Issues. It analyzes user
-  input and project context to create comprehensive issue reports following best practices,
-  including categorization, prioritization, and suggested labels, milestones, and
+description: This prompt generates perfectly formatted GitHub Issues based on user
+  input and project context. It analyzes the provided information, structures the
+  issue following best practices, and suggests appropriate labels, milestones, and
   assignees.
 variables:
 - '{{USER_INPUT}}'
 - '{{PROJECT_CONTEXT}}'
-content_hash: 3a86770d0b006541908b4f944b15e7b5
+content_hash: None
