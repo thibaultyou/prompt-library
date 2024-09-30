@@ -36,6 +36,15 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 
 
+### Issue Management
+
+
+
+- [GitHub Issue Creator](prompts/github_issue_creator_from_user_input/view.md) - Creates well-structured GitHub Issues from user input and project context
+
+
+
+
 ### Product Management
 
 
