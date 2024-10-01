@@ -1,0 +1,24 @@
+title: Divine GitHub Issue Creator
+primary_category: project_management
+subcategories:
+- issue_management
+- collaborative_development
+directory: divine_github_issue_creator
+tags:
+- github
+- issue_tracking
+- team_collaboration
+- project_optimization
+- workflow_management
+one_line_description: Creates optimized GitHub issues using code context, project
+  history, and team dynamics
+description: This prompt embodies a divine engineer role specializing in GitHub issue
+  management. It analyzes provided context, project documentation, team dynamics,
+  and project history to create comprehensive, actionable GitHub issues following
+  best practices and considering team dynamics.
+variables:
+- '{{CONTEXT}}'
+- '{{PROJECT_DOCUMENTATION}}'
+- '{{TEAM_DYNAMICS}}'
+- '{{PROJECT_HISTORY}}'
+content_hash: 38279018a1b8c9f3281bed5cd26f5b1d

@@ -1,0 +1,21 @@
+title: AI Concept Generator for Specialized Assistants
+primary_category: artificial_intelligence
+subcategories:
+- concept_generation
+- specialized_ai_assistants
+directory: ai_concept_generator_specialized_assistants
+tags:
+- creativity
+- innovation
+- ai_assistants
+- prompt_engineering
+- concept_development
+one_line_description: Generates innovative and feasible concepts for specialized AI
+  assistants
+description: This prompt guides the AI to create groundbreaking yet practical concepts
+  for specialized AI assistants. It emphasizes creativity, feasibility, and ethical
+  considerations while focusing on maximizing the assistant's potential impact in
+  a given domain.
+variables:
+- '{{TOPIC}}'
+content_hash: 46fdf466b661c338e49f3d34c07c2bc1

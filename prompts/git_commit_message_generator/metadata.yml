@@ -1,0 +1,22 @@
+title: Git Commit Message Generator
+primary_category: version_control
+subcategories:
+- commit_message_formatting
+- software_development_practices
+directory: git_commit_message_generator
+tags:
+- git
+- conventional_commits
+- version_control
+- code_changes
+- commit_message
+one_line_description: Generates perfectly formatted git commit messages based on code
+  changes
+description: This prompt creates an AI expert in crafting git commit messages that
+  adhere to the Conventional Commits specification. It generates concise, informative
+  commit messages with appropriate emojis, providing clear insights into code changes
+  for both developers and automated tools.
+variables:
+- '{{TASK_DESCRIPTION}}'
+- '{{CODE_CHANGES}}'
+content_hash: b15f73d644b948ff5cf129a2ca2412b2

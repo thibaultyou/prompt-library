@@ -57,22 +57,34 @@ def generate_metadata(prompt_content):
     logger.info(f"Response structure: {type(message)}")
     logger.info(f"Content structure: {type(message.content)}")
     
-    # Extract the YAML content from the AI response
+    # Extract the content from the AI response
     content = message.content[0].text if isinstance(message.content, list) else message.content
-    logger.info(f"Extracted content: {content[:100]}...") # Log first 100 characters
+    logger.info(f"Extracted content: {content[:100]}...")
     
+    # Check if the content is enclosed in output tags
     output_start = content.find("<output>")
     output_end = content.find("</output>")
+    
     if output_start != -1 and output_end != -1:
         yaml_content = content[output_start + 8:output_end].strip()
-        logger.info(f"Extracted YAML content: {yaml_content[:100]}...") # Log first 100 characters
-        metadata = yaml.safe_load(yaml_content)
-        logger.info("YAML content parsed successfully")
     else:
-        logger.error("Could not find metadata output in AI response")
-        raise ValueError("Could not find metadata output in AI response")
+        yaml_content = content.strip()
     
-    logger.info("Metadata generation completed successfully")
+    logger.info(f"Extracted YAML content: {yaml_content[:100]}...")
+
+    class SafeLoaderIgnoreUnknown(yaml.SafeLoader):
+        def ignore_unknown(self, node):
+            return None
+    
+    SafeLoaderIgnoreUnknown.add_constructor(None, SafeLoaderIgnoreUnknown.ignore_unknown)
+
+    try:
+        metadata = yaml.load(yaml_content, Loader=SafeLoaderIgnoreUnknown)
+        logger.info("YAML content parsed successfully")
+    except yaml.YAMLError as e:
+        logger.error(f"YAML parsing error: {e}")
+        metadata = {}
+    
     return metadata
 
 def should_update_metadata(prompt_file, metadata_file):
@@ -189,39 +201,46 @@ def update_prompt_metadata():
                     with open(prompt_file, 'r') as f:
                         prompt_content = f.read()
                     
-                    metadata = generate_metadata(prompt_content)
-                    new_dir_name = metadata['directory']
+                    try:
+                        metadata = generate_metadata(prompt_content)
+                        if not metadata:
+                            logger.warning(f"Failed to generate metadata for {item}. Skipping.")
+                            continue
+                        new_dir_name = metadata['directory']
                     
-                    # Rename directory if necessary
-                    if new_dir_name != item:
-                        new_dir_path = os.path.join(prompts_dir, new_dir_name)
-                        logger.info(f"Renaming directory from {item} to {new_dir_name}")
-                        if os.path.exists(new_dir_path):
-                            logger.warning(f"Directory {new_dir_name} already exists. Updating contents.")
-                            for file in os.listdir(item_path):
-                                src = os.path.join(item_path, file)
-                                dst = os.path.join(new_dir_path, file)
-                                if os.path.isfile(src):
-                                    shutil.copy2(src, dst)
-                            shutil.rmtree(item_path)
-                        else:
-                            os.rename(item_path, new_dir_path)
-                        item_path = new_dir_path
-                    
-                    # Save updated metadata
-                    metadata_path = os.path.join(item_path, 'metadata.yml')
-                    logger.info(f"Saving updated metadata to {metadata_path}")
-                    with open(metadata_path, 'w') as f:
-                        yaml.dump(metadata, f, sort_keys=False)
-                    
-                    # Ensure we have a valid hash
-                    if new_hash is None:
-                        with open(prompt_file, 'rb') as f:
-                            prompt_content = f.read()
-                        new_hash = hashlib.md5(prompt_content).hexdigest()
+                        # Rename directory if necessary
+                        if new_dir_name != item:
+                            new_dir_path = os.path.join(prompts_dir, new_dir_name)
+                            logger.info(f"Renaming directory from {item} to {new_dir_name}")
+                            if os.path.exists(new_dir_path):
+                                logger.warning(f"Directory {new_dir_name} already exists. Updating contents.")
+                                for file in os.listdir(item_path):
+                                    src = os.path.join(item_path, file)
+                                    dst = os.path.join(new_dir_path, file)
+                                    if os.path.isfile(src):
+                                        shutil.copy2(src, dst)
+                                shutil.rmtree(item_path)
+                            else:
+                                os.rename(item_path, new_dir_path)
+                            item_path = new_dir_path
+                        
+                        # Save updated metadata
+                        metadata_path = os.path.join(item_path, 'metadata.yml')
+                        logger.info(f"Saving updated metadata to {metadata_path}")
+                        with open(metadata_path, 'w') as f:
+                            yaml.dump(metadata, f, sort_keys=False)
+                        
+                        # Ensure we have a valid hash
+                        if new_hash is None:
+                            with open(prompt_file, 'rb') as f:
+                                prompt_content = f.read()
+                            new_hash = hashlib.md5(prompt_content).hexdigest()
 
-                    # Update content hash
-                    update_metadata_hash(metadata_path, new_hash)
+                        # Update content hash
+                        update_metadata_hash(metadata_path, new_hash)
+                    except Exception as e:
+                        logger.error(f"Error processing {item}: {str(e)}")
+                        continue    
                 else:
                     logger.info(f"Metadata for {item} is up to date")
             else:
