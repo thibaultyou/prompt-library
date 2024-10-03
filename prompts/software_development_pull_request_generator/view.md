@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt creates detailed, high-quality pull requests for software development projects. It analyzes the given context, identifies key changes and improvements, and generates a structured pull request adhering to GitHub best practices and conventions.
+This prompt creates detailed pull requests that optimize code architecture, identify issues, and suggest improvements. It follows GitHub best practices and provides a structured format for effective code review and project enhancement.
 
 ### 🔧 Variables
 
@@ -47,48 +47,41 @@ Output Format: Markdown
 
 3. Draft a comprehensive pull request:
     <pull_request>
-    <title>[LABEL] Concise summary of the main change</title>
+    ### [LABEL] Concise summary of the main change
 
-    <description>
+    ### Description
     Provide a detailed explanation of the purpose and impact of the changes. Include:
     - Overview of the problem being solved or feature being implemented
     - Rationale for the chosen approach
     - Expected benefits and potential risks
-    </description>
 
-    <changes>
+    ### Changes
     - Bullet point list of all modifications
-    - Include code snippets for critical changes
-    ```
-    // Insert relevant code snippet here
-    ```
-    </changes>
+    - Include code snippets for critical changes:
+        ```javascript
+        // Insert relevant code snippet here
+        ```
 
-    <performance_impact>
+    ### Performance Impact
     Describe any performance improvements or potential impacts:
     - Quantify improvements where possible (e.g., reduced response time, decreased resource usage)
     - Highlight any areas that may need further optimization
-    </performance_impact>
 
-    <testing>
+    ### Testing
     Detail the testing approach:
     - List new or updated unit tests
     - Describe integration test scenarios
     - Mention any manual testing performed
-    </testing>
 
-    <todo>
+    ### To-Do
     - [ ] List any remaining tasks or follow-up items
     - [ ] Highlight areas that need particular attention from reviewers
-    </todo>
 
-    <mentions>
+    ### Mentions
     @relevant-team Please review these changes, paying special attention to [specific areas of concern].
-    </mentions>
 
-    <related_issues>
+    ### Related Issues
     Related issues: #XXX, #YYY
-    </related_issues>
     </pull_request>
 
 4. Suggest optimizations and innovative features:
@@ -122,11 +115,11 @@ Generate a pull request based on the provided project context, following the str
 
 - code_review
 
-- software_development
+- best_practices
 
 - github
 
-- best_practices
+- software_development
 
 
 ### 📚 Category

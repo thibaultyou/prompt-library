@@ -7,15 +7,14 @@ directory: software_development_pull_request_generator
 tags:
 - pull_request
 - code_review
-- software_development
-- github
 - best_practices
+- github
+- software_development
 one_line_description: Generates comprehensive pull requests for software development
   projects
-description: This prompt creates detailed, high-quality pull requests for software
-  development projects. It analyzes the given context, identifies key changes and
-  improvements, and generates a structured pull request adhering to GitHub best practices
-  and conventions.
+description: This prompt creates detailed pull requests that optimize code architecture,
+  identify issues, and suggest improvements. It follows GitHub best practices and
+  provides a structured format for effective code review and project enhancement.
 variables:
 - '{{CONTEXT}}'
-content_hash: 9d520833579b0928b054217b9b2556d9
+content_hash: 405f0046d96dcf7338e351beee3b7f84
