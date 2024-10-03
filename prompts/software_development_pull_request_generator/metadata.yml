@@ -1,0 +1,20 @@
+title: Software Development Pull Request Generator
+primary_category: code_quality_and_best_practices
+subcategories:
+- pull_request_generation
+- code_review
+directory: software_development_pull_request_generator
+tags:
+- pull_request
+- code_review
+- best_practices
+- github
+- software_development
+one_line_description: Generates comprehensive pull requests for software development
+  projects
+description: This prompt creates detailed pull requests that optimize code architecture,
+  identify issues, and suggest improvements. It follows GitHub best practices and
+  provides a structured format for effective code review and project enhancement.
+variables:
+- '{{CONTEXT}}'
+content_hash: 405f0046d96dcf7338e351beee3b7f84

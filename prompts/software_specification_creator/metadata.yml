@@ -1,0 +1,23 @@
+title: Software Specification Creator
+primary_category: documentation
+subcategories:
+- software_requirements
+- technical_writing
+directory: software_specification_creator
+tags:
+- requirements_gathering
+- interactive_review
+- spec_document
+- project_planning
+- software_development
+one_line_description: Creates detailed software specification documents through interactive
+  requirement gathering
+description: This prompt guides the creation of comprehensive software specification
+  documents. It employs an interactive review process to gather and refine user requirements,
+  covering various aspects of software development from project overview to future
+  considerations.
+variables:
+- '{{USER_REQUIREMENTS}}'
+- '{{OUTPUT_FORMAT}}'
+- '{{AVAILABLE_OUTPUT_FORMATS}}'
+content_hash: c0bc0f6622f12af4a3f8349d0bf91f30

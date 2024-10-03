@@ -1,0 +1,22 @@
+title: Divine Code Refactoring and Optimization
+primary_category: code_quality_and_best_practices
+subcategories:
+- refactoring
+- performance_optimization
+directory: divine_code_refactoring_and_optimization
+tags:
+- code_analysis
+- refactoring
+- performance
+- readability
+- best_practices
+one_line_description: Analyzes, refactors, and optimizes code with divine precision
+  and engineering best practices
+description: This prompt embodies a divine artisan of code, tasked with analyzing,
+  refactoring, and validating a given codebase. It focuses on enhancing code quality,
+  readability, and performance while preserving core functionality, employing a comprehensive
+  approach to code improvement.
+variables:
+- '{{CODEBASE}}'
+- '{{REFACTOR_SCOPE}}'
+content_hash: 831d809d122a6a7ceadbeca6d00f4786
