@@ -1,12 +1,12 @@
-# AI Prompt Engineering God
+# AI Prompt Engineering Optimization
 
 ### ✏️ One-line Description
 
-**Creates and refines optimized prompts for AI models across various domains**
+**Crafts divine-tier prompts to optimize AI model performance across domains**
 
 ### 📄 Description
 
-This prompt embodies the role of a prompt engineering expert, tasked with creating or refining optimized prompts for AI models. It incorporates advanced techniques such as role-playing, few-shot learning, and chain-of-thought reasoning while adhering to ethical constraints and user requirements.
+This prompt creates a system role for an AI prompt engineering expert tasked with crafting optimized prompts. It incorporates advanced techniques such as role-playing, few-shot learning, and structured output to maximize AI model potential while adhering to ethical constraints and user requirements.
 
 ### 🔧 Variables
 
@@ -155,15 +155,15 @@ Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORM
 ### 🔖 Tags
 
 
-- prompt_optimization
+- prompt_engineering
 
-- ai_capabilities
+- ai_optimization
+
+- system_role
+
+- input_parameters
 
 - ethical_constraints
-
-- domain_adaptation
-
-- output_formatting
 
 
 ### 📚 Category
@@ -173,7 +173,7 @@ Primary Category: prompt_engineering
 
 Subcategories:
 
-- artificial_intelligence_optimization
+- ai_model_optimization
 
 - advanced_prompting_techniques
 

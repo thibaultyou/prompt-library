@@ -2,14 +2,14 @@ title: Software Specification Creator
 primary_category: documentation
 subcategories:
 - software_requirements
-- technical_writing
+- project_planning
 directory: software_specification_creator
 tags:
 - requirements_gathering
 - interactive_review
 - spec_document
-- project_planning
 - software_development
+- project_management
 one_line_description: Creates detailed software specification documents through interactive
   requirement gathering
 description: This prompt guides the creation of comprehensive software specification

@@ -1,12 +1,12 @@
-# AI Concept Generator for Specialized Assistants
+# AI Concept Architect for Specialized Assistants
 
 ### ✏️ One-line Description
 
-**Generates innovative and feasible AI assistant concepts for specific topics**
+**Generates innovative and feasible concepts for specialized AI assistants**
 
 ### 📄 Description
 
-This prompt creates an AI concept generator that develops unique, powerful, and practical ideas for specialized AI assistants. It focuses on maximizing potential impact while ensuring ethical considerations and feasibility.
+This prompt creates an AI concept architect tasked with developing groundbreaking yet practical ideas for specialized AI assistants. It emphasizes creativity, feasibility, and ethical considerations while focusing on maximizing the assistant's potential impact in a given topic area.
 
 ### 🔧 Variables
 
@@ -76,7 +76,7 @@ Primary Category: artificial_intelligence_and_machine_learning
 
 Subcategories:
 
-- concept_development
+- concept_generation
 
-- specialized_ai_assistants
+- ai_assistant_design
 

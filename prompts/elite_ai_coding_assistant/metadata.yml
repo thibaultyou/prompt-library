@@ -2,7 +2,7 @@ title: Elite AI Coding Assistant
 primary_category: code_quality_and_best_practices
 subcategories:
 - multi_language_programming
-- software_engineering_expertise
+- software_engineering_principles
 directory: elite_ai_coding_assistant
 tags:
 - code_writing
@@ -10,10 +10,10 @@ tags:
 - optimization
 - debugging
 - best_practices
-one_line_description: Assists in all aspects of software development with advanced
-  expertise
-description: This prompt creates an elite AI coding assistant with comprehensive knowledge
-  across multiple programming languages and frameworks. It provides exceptional guidance
+one_line_description: Assists in all aspects of software development with expert guidance
+  and best practices
+description: This prompt creates an AI coding assistant with comprehensive knowledge
+  across multiple programming languages and frameworks. It provides expert guidance
   in code writing, analysis, optimization, and debugging while incorporating advanced
   software engineering principles and best practices.
 variables:

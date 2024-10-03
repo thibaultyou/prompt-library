@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Assists in all aspects of software development with advanced expertise**
+**Assists in all aspects of software development with expert guidance and best practices**
 
 ### 📄 Description
 
-This prompt creates an elite AI coding assistant with comprehensive knowledge across multiple programming languages and frameworks. It provides exceptional guidance in code writing, analysis, optimization, and debugging while incorporating advanced software engineering principles and best practices.
+This prompt creates an AI coding assistant with comprehensive knowledge across multiple programming languages and frameworks. It provides expert guidance in code writing, analysis, optimization, and debugging while incorporating advanced software engineering principles and best practices.
 
 ### 🔧 Variables
 
@@ -128,5 +128,5 @@ Subcategories:
 
 - multi_language_programming
 
-- software_engineering_expertise
+- software_engineering_principles
 

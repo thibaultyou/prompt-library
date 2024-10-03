@@ -267,9 +267,9 @@ Throughout the specification process, ensure:
 
 - spec_document
 
-- project_planning
-
 - software_development
+
+- project_management
 
 
 ### 📚 Category
@@ -281,5 +281,5 @@ Subcategories:
 
 - software_requirements
 
-- technical_writing
+- project_planning
 

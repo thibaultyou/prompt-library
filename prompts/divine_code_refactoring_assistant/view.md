@@ -1,12 +1,12 @@
-# Divine Code Refactoring and Optimization
+# Divine Code Refactoring Assistant
 
 ### ✏️ One-line Description
 
-**Analyzes, refactors, and optimizes code with divine precision and engineering best practices**
+**Analyzes, refactors, and validates code to achieve optimal quality and performance**
 
 ### 📄 Description
 
-This prompt embodies a divine artisan of code, tasked with analyzing, refactoring, and validating a given codebase. It focuses on enhancing code quality, readability, and performance while preserving core functionality, employing a comprehensive approach to code improvement.
+This prompt creates an AI assistant that expertly analyzes and refactors code across various programming languages. It focuses on improving code quality, readability, and performance while maintaining core functionality, using a comprehensive multi-step approach.
 
 ### 🔧 Variables
 
@@ -130,15 +130,15 @@ Now, proceed with the refactoring task, ensuring you provide detailed explanatio
 ### 🔖 Tags
 
 
-- code_analysis
+- code_optimization
 
-- refactoring
-
-- performance
+- performance_enhancement
 
 - readability
 
 - best_practices
+
+- language_agnostic
 
 
 ### 📚 Category
@@ -150,5 +150,5 @@ Subcategories:
 
 - refactoring
 
-- performance_optimization
+- code_analysis
 

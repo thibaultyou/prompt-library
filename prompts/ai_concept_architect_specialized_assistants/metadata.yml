@@ -1,0 +1,21 @@
+title: AI Concept Architect for Specialized Assistants
+primary_category: artificial_intelligence_and_machine_learning
+subcategories:
+- concept_generation
+- ai_assistant_design
+directory: ai_concept_architect_specialized_assistants
+tags:
+- ai_concepts
+- creativity
+- innovation
+- specialized_assistants
+- prompt_engineering
+one_line_description: Generates innovative and feasible concepts for specialized AI
+  assistants
+description: This prompt creates an AI concept architect tasked with developing groundbreaking
+  yet practical ideas for specialized AI assistants. It emphasizes creativity, feasibility,
+  and ethical considerations while focusing on maximizing the assistant's potential
+  impact in a given topic area.
+variables:
+- '{{TOPIC}}'
+content_hash: 46fdf466b661c338e49f3d34c07c2bc1
