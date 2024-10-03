@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Generates innovative and feasible concepts for specialized AI assistants**
+**Generates innovative and feasible AI assistant concepts for specific topics**
 
 ### 📄 Description
 
-This prompt guides the AI to create groundbreaking yet practical concepts for specialized AI assistants. It emphasizes creativity, feasibility, and ethical considerations while focusing on maximizing the assistant's potential impact in a given domain.
+This prompt creates an AI concept generator that develops unique, powerful, and practical ideas for specialized AI assistants. It focuses on maximizing potential impact while ensuring ethical considerations and feasibility.
 
 ### 🔧 Variables
 
@@ -58,25 +58,25 @@ Now, based on the topic {{TOPIC}}, generate a groundbreaking yet feasible AI ass
 ### 🔖 Tags
 
 
+- ai_concepts
+
 - creativity
 
 - innovation
 
-- ai_assistants
+- specialized_assistants
 
 - prompt_engineering
-
-- concept_development
 
 
 ### 📚 Category
 
-Primary Category: artificial_intelligence
+Primary Category: artificial_intelligence_and_machine_learning
 
 
 Subcategories:
 
-- concept_generation
+- concept_development
 
 - specialized_ai_assistants
 

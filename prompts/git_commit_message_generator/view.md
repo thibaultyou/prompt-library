@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Generates perfectly formatted git commit messages based on code changes**
+**Generates perfect git commit messages following Conventional Commits specification**
 
 ### 📄 Description
 
-This prompt creates an AI expert in crafting git commit messages that adhere to the Conventional Commits specification. It generates concise, informative commit messages with appropriate emojis, providing clear insights into code changes for both developers and automated tools.
+This prompt creates an AI expert in crafting git commit messages that adhere to the Conventional Commits format. It generates concise, informative messages with appropriate emojis, providing clear insights into code changes for both developers and automated tools.
 
 ### 🔧 Variables
 
@@ -165,13 +165,13 @@ Output your commit message within <commit_message> tags. The message should be o
 
 - git
 
+- commit_messages
+
 - conventional_commits
 
-- version_control
+- emoji_usage
 
 - code_changes
-
-- commit_message
 
 
 ### 📚 Category
@@ -181,7 +181,7 @@ Primary Category: version_control
 
 Subcategories:
 
-- commit_message_formatting
+- commit_message_crafting
 
-- software_development_practices
+- conventional_commits
 

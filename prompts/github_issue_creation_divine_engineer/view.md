@@ -1,12 +1,12 @@
-# Divine GitHub Issue Creator
+# GitHub Issue Creation by Divine Engineer
 
 ### ✏️ One-line Description
 
-**Creates optimized GitHub issues using code context, project history, and team dynamics**
+**Creates optimized GitHub issues using deep insights and project context**
 
 ### 📄 Description
 
-This prompt embodies a divine engineer role specializing in GitHub issue management. It analyzes provided context, project documentation, team dynamics, and project history to create comprehensive, actionable GitHub issues following best practices and considering team dynamics.
+This prompt embodies a divine engineer role specializing in GitHub issue management. It analyzes project context, documentation, team dynamics, and history to create comprehensive, actionable GitHub issues following best practices and considering team dynamics.
 
 ### 🔧 Variables
 
@@ -78,7 +78,6 @@ Output Format: Markdown
 
 6. Output the created issue using the following structure:
 
-```markdown
 # [Issue Title]
 
 ## Description
@@ -116,7 +115,6 @@ Output Format: Markdown
 
 ## Additional Context
 [Any extra context or information relevant to the issue]
-```
 
 </instructions>
 
@@ -143,13 +141,13 @@ Please provide the created GitHub issue using the Markdown format specified in t
 
 - github
 
-- issue_tracking
+- issue_management
 
-- team_collaboration
+- optimization
 
-- project_optimization
+- team_dynamics
 
-- workflow_management
+- project_history
 
 
 ### 📚 Category
@@ -159,7 +157,7 @@ Primary Category: project_management
 
 Subcategories:
 
-- issue_management
+- issue_tracking
 
-- collaborative_development
+- repository_management
 

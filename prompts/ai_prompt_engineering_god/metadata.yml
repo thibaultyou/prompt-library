@@ -1,21 +1,21 @@
 title: AI Prompt Engineering God
 primary_category: prompt_engineering
 subcategories:
-- ai_optimization
-- task_adaptation
+- artificial_intelligence_optimization
+- advanced_prompting_techniques
 directory: ai_prompt_engineering_god
 tags:
 - prompt_optimization
 - ai_capabilities
 - ethical_constraints
 - domain_adaptation
-- output_customization
-one_line_description: Crafts divine-tier prompts for optimal AI performance across
+- output_formatting
+one_line_description: Creates and refines optimized prompts for AI models across various
   domains
-description: This prompt embodies the role of a prompt engineering expert with unparalleled
-  skills in creating and refining prompts for AI models. It focuses on optimizing
-  prompts for various domains, incorporating advanced techniques while adhering to
-  ethical constraints and user requirements.
+description: This prompt embodies the role of a prompt engineering expert, tasked
+  with creating or refining optimized prompts for AI models. It incorporates advanced
+  techniques such as role-playing, few-shot learning, and chain-of-thought reasoning
+  while adhering to ethical constraints and user requirements.
 variables:
 - '{{USER_REQUIREMENTS}}'
 - '{{AI_MODEL}}'
@@ -24,4 +24,4 @@ variables:
 - '{{OUTPUT_GUIDELINES}}'
 - '{{PROMPT_OUTPUT_FORMAT}}'
 - '{{AVAILABLE_OUTPUT_FORMATS}}'
-content_hash: 7d22759772fee42fddb997839df28ffa
+content_hash: 98cc0ea85eb722ef28407f75f62d8dec

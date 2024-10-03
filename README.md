@@ -3,20 +3,20 @@
 Welcome to the **Prompt Library**. This repository contains a collection of AI prompts categorized for easy navigation and reuse.
 
 ## 🗂️ Categories
-### Artificial Intelligence
-- [AI Concept Generator for Specialized Assistants](prompts/ai_concept_generator_specialized_assistants/view.md) - Generates innovative and feasible concepts for specialized AI assistants
-### Code Analysis And Review
-- [AI Coding Assistant](prompts/ai_coding_assistant/view.md) - Analyzes code, suggests optimizations, and provides real-time development assistance
-- [Expert Software Developer Pull Request Generator](prompts/expert_software_developer_pull_request_generator/view.md) - Generates comprehensive pull requests with expert code analysis and improvement suggestions
+### Artificial Intelligence And Machine Learning
+- [AI Concept Generator for Specialized Assistants](prompts/ai_concept_generator_specialized_assistants/view.md) - Generates innovative and feasible AI assistant concepts for specific topics
+### Code Quality And Best Practices
+- [Software Development Pull Request Generator](prompts/software_development_pull_request_generator/view.md) - Generates comprehensive pull requests for software development projects
+- [Divine Code Refactoring and Optimization](prompts/divine_code_refactoring_and_optimization/view.md) - Analyzes, refactors, and optimizes code with divine precision and engineering best practices
+- [Elite AI Coding Assistant](prompts/elite_ai_coding_assistant/view.md) - Assists in all aspects of software development with advanced expertise
+### Documentation
+- [Software Specification Creator](prompts/software_specification_creator/view.md) - Creates detailed software specification documents through interactive requirement gathering
 ### Project Management
-- [Software Specification Creator](prompts/software_specification_creator/view.md) - Creates detailed software specification documents through interactive requirements gathering
-- [Divine GitHub Issue Creator](prompts/divine_github_issue_creator/view.md) - Creates optimized GitHub issues using code context, project history, and team dynamics
+- [GitHub Issue Creation by Divine Engineer](prompts/github_issue_creation_divine_engineer/view.md) - Creates optimized GitHub issues using deep insights and project context
 ### Prompt Engineering
-- [AI Prompt Engineering God](prompts/ai_prompt_engineering_god/view.md) - Crafts divine-tier prompts for optimal AI performance across domains
-### Refactoring
-- [Divine Code Refactoring Artisan](prompts/divine_code_refactoring_artisan/view.md) - Analyzes, refactors, and optimizes code for divine quality and performance
+- [AI Prompt Engineering God](prompts/ai_prompt_engineering_god/view.md) - Creates and refines optimized prompts for AI models across various domains
 ### Version Control
-- [Git Commit Message Generator](prompts/git_commit_message_generator/view.md) - Generates perfectly formatted git commit messages based on code changes
+- [Git Commit Message Generator](prompts/git_commit_message_generator/view.md) - Generates perfect git commit messages following Conventional Commits specification
 
 ## 🚀 Getting Started
 

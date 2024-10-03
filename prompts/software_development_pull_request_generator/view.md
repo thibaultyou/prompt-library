@@ -1,12 +1,12 @@
-# Expert Software Developer Pull Request Generator
+# Software Development Pull Request Generator
 
 ### ✏️ One-line Description
 
-**Generates comprehensive pull requests with expert code analysis and improvement suggestions**
+**Generates comprehensive pull requests for software development projects**
 
 ### 📄 Description
 
-This prompt simulates an expert software developer to create detailed, high-quality pull requests. It analyzes code context, identifies improvements, suggests optimizations, and ensures adherence to best practices, providing a comprehensive review and enhancement proposal.
+This prompt creates detailed, high-quality pull requests for software development projects. It analyzes the given context, identifies key changes and improvements, and generates a structured pull request adhering to GitHub best practices and conventions.
 
 ### 🔧 Variables
 
@@ -118,25 +118,25 @@ Generate a pull request based on the provided project context, following the str
 ### 🔖 Tags
 
 
+- pull_request
+
 - code_review
-
-- pull_requests
-
-- best_practices
 
 - software_development
 
 - github
 
+- best_practices
+
 
 ### 📚 Category
 
-Primary Category: code_analysis_and_review
+Primary Category: code_quality_and_best_practices
 
 
 Subcategories:
 
-- pull_request_creation
+- pull_request_generation
 
-- software_quality_assurance
+- code_review
 

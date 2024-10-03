@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Crafts divine-tier prompts for optimal AI performance across domains**
+**Creates and refines optimized prompts for AI models across various domains**
 
 ### 📄 Description
 
-This prompt embodies the role of a prompt engineering expert with unparalleled skills in creating and refining prompts for AI models. It focuses on optimizing prompts for various domains, incorporating advanced techniques while adhering to ethical constraints and user requirements.
+This prompt embodies the role of a prompt engineering expert, tasked with creating or refining optimized prompts for AI models. It incorporates advanced techniques such as role-playing, few-shot learning, and chain-of-thought reasoning while adhering to ethical constraints and user requirements.
 
 ### 🔧 Variables
 
@@ -109,7 +109,7 @@ Analyze these parameters and formulate the perfect prompt using the following st
 </step2_prompt_crafting>
 
 <step3_output_formatting>
-5. Format the final prompt according to {{OUTPUT_FORMAT}} format:
+5. Format the final prompt according to {{PROMPT_OUTPUT_FORMAT}} format:
    <final_prompt>
    [Insert the final, optimized prompt here, strictly adhering to the specified output format and user requirements]
    </final_prompt>
@@ -148,7 +148,7 @@ Analyze these parameters and formulate the perfect prompt using the following st
 </output_quality_assurance>
 
 <output>
-Generate the final prompt output according to the specified {{OUTPUT_FORMAT}} format and user requirements, ensuring all variables use {{VARIABLE}} notation.
+Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORMAT}} format and user requirements, ensuring all variables use {{VARIABLE}} notation.
 </output>
 ```
 
@@ -163,7 +163,7 @@ Generate the final prompt output according to the specified {{OUTPUT_FORMAT}} fo
 
 - domain_adaptation
 
-- output_customization
+- output_formatting
 
 
 ### 📚 Category
@@ -173,7 +173,7 @@ Primary Category: prompt_engineering
 
 Subcategories:
 
-- ai_optimization
+- artificial_intelligence_optimization
 
-- task_adaptation
+- advanced_prompting_techniques
 

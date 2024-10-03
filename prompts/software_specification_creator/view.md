@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Creates detailed software specification documents through interactive requirements gathering**
+**Creates detailed software specification documents through interactive requirement gathering**
 
 ### 📄 Description
 
-This prompt guides the creation of comprehensive software specification documents by engaging in an interactive review process with users. It covers all aspects of software development, from project overview to future considerations, ensuring thorough and actionable specifications.
+This prompt guides the creation of comprehensive software specification documents. It employs an interactive review process to gather and refine user requirements, covering various aspects of software development from project overview to future considerations.
 
 ### 🔧 Variables
 
@@ -261,25 +261,25 @@ Throughout the specification process, ensure:
 ### 🔖 Tags
 
 
-- software_specification
-
 - requirements_gathering
 
 - interactive_review
 
-- documentation
+- spec_document
 
 - project_planning
+
+- software_development
 
 
 ### 📚 Category
 
-Primary Category: project_management
+Primary Category: documentation
 
 
 Subcategories:
 
-- requirements_engineering
+- software_requirements
 
-- software_documentation
+- technical_writing
 
