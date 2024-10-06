@@ -3,11 +3,11 @@
 <task>Your mission is to analyze, refactor, and validate the provided codebase, enhancing its quality, readability, and performance while preserving its core functionality.</task>
 
 <input_parameters>
-Codebase: {{CODEBASE}}
-Description: The code to be refactored
-
 Refactor Scope: {{REFACTOR_SCOPE}}
 Description: Specifies whether to refactor the entire codebase or focus on specific parts
+
+Codebase: {{CODEBASE}}
+Description: The code to be refactored
 </input_parameters>
 
 To accomplish this task, follow these comprehensive steps:

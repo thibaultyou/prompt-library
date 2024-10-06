@@ -1,0 +1,44 @@
+{
+    "name": "prompt-library-github-actions",
+    "version": "1.0.0",
+    "description": "GitHub Actions scripts for Prompt Library",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc",
+        "generate-metadata": "ts-node .github/scripts/generate_metadata.ts",
+        "update-views": "ts-node .github/scripts/update_views.ts",
+        "test": "jest --passWithNoTests",
+        "lint": "eslint '.github/**/*.ts' --ext .ts --no-ignore",
+        "lint:fix": "eslint '.github/**/*.ts' --ext .ts --no-ignore --fix",
+        "format": "prettier --write \"**/*.ts\"",
+        "type-check": "tsc --noEmit",
+        "validate-yaml": "yamllint .github/**/*.yml"
+    },
+    "keywords": [
+        "github-actions",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@anthropic-ai/sdk": "^0.27.3",
+        "js-yaml": "^4.1.0",
+        "nunjucks": "^3.2.3"
+    },
+    "devDependencies": {
+        "@types/jest": "^29.5.0",
+        "@types/js-yaml": "^4.0.5",
+        "@types/node": "^18.15.11",
+        "@types/nunjucks": "^3.2.2",
+        "@typescript-eslint/eslint-plugin": "^5.57.1",
+        "@typescript-eslint/parser": "^5.57.1",
+        "eslint": "^8.37.0",
+        "jest": "^29.5.0",
+        "npm-check-updates": "^17.1.3",
+        "prettier": "^2.8.7",
+        "ts-jest": "^29.1.0",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.0.3",
+        "yaml-lint": "^1.2.4"
+    }
+  }

@@ -10,9 +10,7 @@ This prompt creates detailed pull requests that optimize code architecture, iden
 
 ### 🔧 Variables
 
-
 - `{{CONTEXT}}`
-
 
 ### 📜 Prompt
 
@@ -110,26 +108,16 @@ Generate a pull request based on the provided project context, following the str
 
 ### 🔖 Tags
 
-
 - pull_request
-
 - code_review
-
 - best_practices
-
 - github
-
 - software_development
-
 
 ### 📚 Category
 
 Primary Category: code_quality_and_best_practices
-
-
 Subcategories:
 
 - pull_request_generation
-
 - code_review
-

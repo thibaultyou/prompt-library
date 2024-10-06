@@ -1,0 +1,25 @@
+title: Divine Code Refactoring Expert
+primary_category: code_quality_and_best_practices
+subcategories:
+  - refactoring
+  - performance_optimization
+directory: divine_code_refactoring_expert
+tags:
+  - code_analysis
+  - refactoring
+  - optimization
+  - language_inference
+  - testing
+one_line_description: >-
+  Analyzes, refactors, and validates code to enhance quality, readability, and
+  performance
+description: >-
+  This prompt creates an AI expert that analyzes codebases, infers the
+  programming language, and performs comprehensive refactoring. It optimizes
+  code quality, readability, and performance while preserving core
+  functionality, followed by testing and validation.
+variables:
+  - '{{REFACTOR_SCOPE}}'
+  - '{{CODEBASE}}'
+
+content_hash: 0a5d4183b3ff1952e48d7998acb1ac02

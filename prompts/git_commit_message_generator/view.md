@@ -10,11 +10,8 @@ This prompt creates an AI expert in crafting git commit messages that adhere to 
 
 ### 🔧 Variables
 
-
 - `{{TASK_DESCRIPTION}}`
-
 - `{{CODE_CHANGES}}`
-
 
 ### 📜 Prompt
 
@@ -162,26 +159,16 @@ Output your commit message within <commit_message> tags. The message should be o
 
 ### 🔖 Tags
 
-
 - git
-
 - commit_messages
-
 - conventional_commits
-
 - emoji
-
 - code_changes
-
 
 ### 📚 Category
 
 Primary Category: version_control
-
-
 Subcategories:
 
 - commit_message_formatting
-
 - conventional_commits
-

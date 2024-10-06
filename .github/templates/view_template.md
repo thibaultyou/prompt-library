@@ -9,10 +9,9 @@
 {{ metadata.description }}
 
 ### 🔧 Variables
-
 {% for variable in metadata.variables %}
 - `{{ variable }}`
-{% endfor %}
+{%- endfor %}
 
 ### 📜 Prompt
 
@@ -21,18 +20,17 @@
 ```
 
 ### 🔖 Tags
-
 {% for tag in metadata.tags %}
 - {{ tag }}
-{% endfor %}
+{%- endfor %}
 
 ### 📚 Category
 
 Primary Category: {{ metadata.primary_category }}
 
-{% if metadata.subcategories %}
+{%- if metadata.subcategories %}
 Subcategories:
 {% for subcategory in metadata.subcategories %}
 - {{ subcategory }}
-{% endfor %}
-{% endif %}
+{%- endfor %}
+{%- endif %}

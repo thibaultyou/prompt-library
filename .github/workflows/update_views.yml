@@ -17,17 +17,44 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Validate critical files
+        run: |
+          if [ ! -f ".github/prompts/ai_prompt_analyzer_and_output_generator/prompt.md" ]; then
+            echo "Error: AI prompt analyzer file is missing"
+            exit 1
+          fi
+
+      - name: Check environment
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "Error: ANTHROPIC_API_KEY is not set"
+            exit 1
+          fi
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: "3.12.6"
-          cache: "pip"
-          cache-dependency-path: ".github/scripts/requirements.txt"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
+        run: npm ci
+      
+      - name: Lint TypeScript files
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Run tests
+        run: npm test
+
+      - name: Validate YAML files
         run: |
-          python -m pip install --upgrade pip
-          pip install -r .github/scripts/requirements.txt
+          npm install -g yaml-lint
+          yamllint .github/**/*.yml
 
       - name: Check for system prompt changes
         id: check_changes
@@ -42,10 +69,10 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FORCE_REGENERATE: ${{ env.FORCE_REGENERATE }}
-        run: python .github/scripts/generate_metadata.py
+        run: npm run generate-metadata
 
       - name: Update views
-        run: python .github/scripts/update_views.py
+        run: npm run update-views
 
       - name: Commit changes
         run: |

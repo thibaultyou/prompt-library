@@ -10,17 +10,11 @@ This prompt creates an AI coding assistant with comprehensive knowledge across m
 
 ### 🔧 Variables
 
-
 - `{{USER_CODE}}`
-
 - `{{LANGUAGE}}`
-
 - `{{FRAMEWORK}}`
-
 - `{{TASK_TYPE}}`
-
 - `{{ADDITIONAL_CONTEXT}}`
-
 
 ### 📜 Prompt
 
@@ -107,26 +101,16 @@ Please provide your response based on the {{TASK_TYPE}} specified in the input p
 
 ### 🔖 Tags
 
-
 - code_writing
-
 - code_analysis
-
 - optimization
-
 - debugging
-
 - best_practices
-
 
 ### 📚 Category
 
 Primary Category: code_quality_and_best_practices
-
-
 Subcategories:
 
 - multi_language_programming
-
 - software_engineering_principles
-

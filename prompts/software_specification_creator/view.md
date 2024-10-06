@@ -10,13 +10,9 @@ This prompt guides the creation of comprehensive software specification document
 
 ### 🔧 Variables
 
-
 - `{{USER_REQUIREMENTS}}`
-
 - `{{OUTPUT_FORMAT}}`
-
 - `{{AVAILABLE_OUTPUT_FORMATS}}`
-
 
 ### 📜 Prompt
 
@@ -260,26 +256,16 @@ Throughout the specification process, ensure:
 
 ### 🔖 Tags
 
-
 - requirements_gathering
-
 - interactive_review
-
 - spec_document
-
 - software_development
-
 - project_management
-
 
 ### 📚 Category
 
 Primary Category: documentation
-
-
 Subcategories:
 
 - software_requirements
-
 - project_planning
-

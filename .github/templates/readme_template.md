@@ -4,9 +4,11 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 ## 🗂️ Categories
 
-{%- for category, prompts in categories.items() %}
+{%- for category, prompts in categories %}
+
 ### {{ format_category(category) }}
-{%- for prompt in prompts %}
+
+{% for prompt in prompts %}
 - [{{ prompt.title }}]({{ prompt.path }}) - {{ prompt.description }}
 {%- endfor %}
 {%- endfor %}

@@ -10,15 +10,10 @@ This prompt embodies an AI expert in GitHub issue management, capable of creatin
 
 ### 🔧 Variables
 
-
 - `{{CONTEXT}}`
-
 - `{{PROJECT_DOCUMENTATION}}`
-
 - `{{TEAM_DYNAMICS}}`
-
 - `{{PROJECT_HISTORY}}`
-
 
 ### 📜 Prompt
 
@@ -138,26 +133,16 @@ Please provide the created GitHub issue using the Markdown format specified in t
 
 ### 🔖 Tags
 
-
 - github
-
 - issue_management
-
 - project_optimization
-
 - team_dynamics
-
 - best_practices
-
 
 ### 📚 Category
 
 Primary Category: project_management
-
-
 Subcategories:
 
 - issue_tracking
-
 - software_development_lifecycle
-
