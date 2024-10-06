@@ -10,7 +10,7 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 ### Code Quality And Best Practices
 
-- [Divine Code Refactoring Assistant](prompts/divine_code_refactoring_assistant/view.md) - Analyzes, refactors, and validates code to enhance quality, readability, and performance
+- [Divine Code Refactoring Expert](prompts/divine_code_refactoring_expert/view.md) - Analyzes, refactors, and validates code to enhance quality, readability, and performance
 - [Elite AI Coding Assistant](prompts/elite_ai_coding_assistant/view.md) - Assists in all aspects of software development with expert guidance and best practices
 - [Software Development Pull Request Generator](prompts/software_development_pull_request_generator/view.md) - Generates comprehensive pull requests for software development projects
 
