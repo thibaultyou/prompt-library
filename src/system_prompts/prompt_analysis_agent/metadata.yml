@@ -1,0 +1,16 @@
+title: AI Prompt Analysis Expert
+primary_category: prompt_engineering
+subcategories:
+  - information_extraction
+  - categorization
+directory: prompt_analysis_agent
+tags:
+  - prompt_engineering
+  - analysis
+  - categorization
+  - information_extraction
+  - optimization
+one_line_description: Analyzes AI prompts to extract key information and provide insights for optimization
+description: This prompt creates an AI expert that specializes in analyzing and dissecting AI prompts. It extracts crucial information, categorizes the prompt, and provides actionable insights for prompt engineering and optimization.
+variables:
+  - "{{PROMPT}}"

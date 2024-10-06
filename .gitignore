@@ -1,0 +1,11 @@
+# Ignore environment config
+.env
+
+# Ignore specific directories
+dist/
+node_modules/
+archive/
+
+# Ignore local temporary files
+z_diff_output.txt
+z_dir2prompt_output.txt

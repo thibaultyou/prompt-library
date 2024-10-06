@@ -1,0 +1,24 @@
+content_hash: 0a5d4183b3ff1952e48d7998acb1ac02
+description: >-
+  This prompt creates an AI agent that analyzes code, infers the programming
+  language, and performs comprehensive refactoring. It optimizes code quality,
+  readability, and performance while preserving core functionality, and includes
+  testing and validation steps.
+directory: code_refactoring_agent
+one_line_description: >-
+  Analyzes, refactors, and validates code to improve quality, readability, and
+  performance
+primary_category: code_quality_and_best_practices
+subcategories:
+  - code_refactoring
+  - programming_languages
+tags:
+  - refactoring
+  - code_analysis
+  - optimization
+  - language_inference
+  - testing
+title: Divine Code Refactoring Agent
+variables:
+  - '{{REFACTOR_SCOPE}}'
+  - '{{CODEBASE}}'

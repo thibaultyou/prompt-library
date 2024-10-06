@@ -1,0 +1,23 @@
+# Ignore all README.md files in subdirectories
+**/README.md
+
+# Include the main README.md in the root directory
+!/README.md
+
+# Include the .github directory (e.g., for workflows)
+!.github/
+
+# Ignore environment config and lock file
+.env
+package-lock.json
+
+# Ignore specific directories
+dist/
+node_modules/
+archive/
+fragments/
+prompts/
+
+# Ignore local temporary files
+z_diff_output.txt
+z_dir2prompt_output.txt

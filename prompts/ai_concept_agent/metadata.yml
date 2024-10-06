@@ -1,0 +1,21 @@
+content_hash: 46fdf466b661c338e49f3d34c07c2bc1
+description: >-
+  This prompt engineers a creative AI system that conceptualizes novel, yet
+  practical AI assistants for given topics. It focuses on generating
+  groundbreaking ideas while ensuring feasibility, ethical considerations, and
+  maximum potential impact.
+directory: ai_concept_agent
+one_line_description: Generates innovative and feasible AI assistant concepts for specific topics
+primary_category: artificial_intelligence_and_machine_learning
+subcategories:
+  - concept_generation
+  - specialized_assistants
+tags:
+  - ai_ideation
+  - creative_thinking
+  - innovation
+  - specialized_assistants
+  - prompt_engineering
+title: AI Concept Creator
+variables:
+  - '{{TOPIC}}'

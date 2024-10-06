@@ -1,0 +1,27 @@
+content_hash: 98cc0ea85eb722ef28407f75f62d8dec
+description: >-
+  This prompt embodies advanced prompt engineering techniques to unlock the full
+  potential of AI models. It adapts to various domains, incorporates ethical
+  constraints, and employs cutting-edge optimization methods to generate
+  exceptional, tailored outputs for any user need.
+directory: prompt_engineering_agent
+one_line_description: Creates and refines optimized prompts for AI models across various domains
+primary_category: prompt_engineering
+subcategories:
+  - advanced_techniques
+  - ai_model_optimization
+tags:
+  - prompt_optimization
+  - ai_capabilities
+  - adaptive_prompting
+  - ethical_constraints
+  - multi_domain
+title: Prompt Engineering God
+variables:
+  - '{{USER_REQUIREMENTS}}'
+  - '{{AI_MODEL}}'
+  - '{{OPTIONAL_PROMPT_TO_REFINE}}'
+  - '{{PROMPT_ENGINEERING_GUIDELINES}}'
+  - '{{OUTPUT_GUIDELINES}}'
+  - '{{PROMPT_OUTPUT_FORMAT}}'
+  - '{{AVAILABLE_OUTPUT_FORMATS}}'

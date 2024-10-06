@@ -1,0 +1,26 @@
+content_hash: f692d056df3bb02f011848894db6a96a
+description: >-
+  This prompt embodies an AI expert in GitHub issue management, capable of
+  creating highly detailed and actionable issues. It analyzes project context,
+  documentation, history, and team dynamics to generate optimized GitHub issues
+  that follow best practices and consider team-specific factors.
+directory: github_issue_agent
+one_line_description: >-
+  Creates comprehensive, optimized GitHub issues based on context and team
+  dynamics
+primary_category: project_management
+subcategories:
+  - issue_tracking
+  - team_collaboration
+tags:
+  - github
+  - issue_management
+  - project_optimization
+  - team_dynamics
+  - repository_management
+title: GitHub Issue Creation Expert
+variables:
+  - '{{CONTEXT}}'
+  - '{{PROJECT_DOCUMENTATION}}'
+  - '{{TEAM_DYNAMICS}}'
+  - '{{PROJECT_HISTORY}}'

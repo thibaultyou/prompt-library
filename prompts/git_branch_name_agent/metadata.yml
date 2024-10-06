@@ -1,0 +1,27 @@
+content_hash: fc85ebcbe0ab76a21b72706335c49e4a
+description: >-
+  This prompt creates an AI assistant specialized in generating semantically
+  meaningful git branch names. It analyzes project context, user requirements,
+  and development workflows to produce branch names that adhere to best
+  practices and team-specific conventions.
+directory: git_branch_name_agent
+one_line_description: >-
+  Generates optimal git branch names based on project context and development
+  workflow
+primary_category: version_control
+subcategories:
+  - branch_naming
+  - software_development_workflow
+tags:
+  - git
+  - branch_naming
+  - version_control
+  - software_development
+  - best_practices
+title: Git Branch Name Generator
+variables:
+  - '{{PROJECT_CONTEXT}}'
+  - '{{USER_REQUIREMENTS}}'
+  - '{{DEVELOPMENT_WORKFLOW}}'
+  - '{{TEAM_CONVENTIONS}}'
+  - '{{CURRENT_BRANCH_NAME}}'
