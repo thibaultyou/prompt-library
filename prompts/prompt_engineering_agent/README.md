@@ -2,21 +2,21 @@
 
 ### ✏️ One-line Description
 
-**Crafts divine-tier prompts pushing AI model boundaries for exceptional, tailored outputs**
+**Crafts divine-tier prompts to optimize AI model performance across various domains**
 
 ### 📄 Description
 
-This prompt engineering expert creates and refines optimized prompts for any AI model and user need. It incorporates advanced techniques to maximize AI potential while adhering to ethical constraints and specific requirements.
+This prompt engineering expert creates and refines optimized prompts for AI models. It incorporates advanced techniques, adapts to various domains, and ensures ethical constraints while maximizing AI potential.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}`: Specifies the user's needs and desired outcomes for the prompt
-- `{{AI_MODEL}}`: Identifies the specific AI model for which the prompt is being optimized
+- `{{USER_REQUIREMENTS}}`: Specifies the user's specific needs and objectives for the prompt
+- `{{AI_MODEL}}`: Identifies the target AI model for which the prompt is being optimized
 - `{{OPTIONAL_PROMPT_TO_REFINE}}`: Provides an existing prompt to be refined and improved
-- `{{PROMPT_ENGINEERING_GUIDELINES}}`: Outlines specific guidelines for prompt creation and optimization
-- `{{OUTPUT_GUIDELINES}}`: Defines requirements for the AI-generated output
+- `{{PROMPT_ENGINEERING_GUIDELINES}}`: Outlines specific guidelines or constraints for prompt creation
+- `{{OUTPUT_GUIDELINES}}`: Defines requirements for the AI's output format or content
 - `{{PROMPT_OUTPUT_FORMAT}}`: Specifies the desired format for the final optimized prompt
-- `{{AVAILABLE_OUTPUT_FORMATS}}`: Lists the available output formats for the final prompt
+- `{{AVAILABLE_OUTPUT_FORMATS}}`: Lists the available output formats for the prompt
 
 ### 📜 Prompt
 
@@ -147,15 +147,15 @@ Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORM
 ### 🔖 Tags
 
 - prompt_optimization
-- AI_capabilities
+- ai_capabilities
 - ethical_constraints
-- task_tailoring
-- output_customization
+- domain_adaptation
+- output_formatting
 
 ### 📚 Category
 
 Primary category: prompt_engineering
 
 Subcategories:
-- AI_optimization
+- ai_optimization
 - task_adaptation

@@ -2,18 +2,18 @@
 
 ### ✏️ One-line Description
 
-**Assists in all aspects of software development with expert-level guidance**
+**Assists in all aspects of software development with expert-level guidance and optimization**
 
 ### 📄 Description
 
-This prompt creates an elite AI coding assistant with extensive knowledge across multiple programming languages and software engineering practices. It provides guidance on code writing, analysis, optimization, and debugging, adapting to various programming paradigms and technologies.
+This prompt creates an AI coding assistant with comprehensive knowledge across multiple programming languages and frameworks. It provides guidance on code writing, analysis, optimization, and debugging while incorporating advanced software engineering principles and best practices.
 
 ### 🔧 Variables
 
 - `{{LANGUAGE}}`: Specifies the programming language for the task
 - `{{FRAMEWORK}}`: Indicates the framework to be used, if applicable
-- `{{TASK_TYPE}}`: Defines the type of coding task (e.g., code writing, analysis, optimization, bug fixing)
-- `{{ADDITIONAL_CONTEXT}}`: Provides any additional information relevant to the task
+- `{{TASK_TYPE}}`: Defines the type of coding task (e.g., code writing, analysis, optimization)
+- `{{ADDITIONAL_CONTEXT}}`: Provides any extra information relevant to the task
 - `{{USER_CODE}}`: Contains the user's code for analysis or modification
 
 ### 📜 Prompt
@@ -101,16 +101,16 @@ Please provide your response based on the {{TASK_TYPE}} specified in the input p
 
 ### 🔖 Tags
 
-- programming
-- code_optimization
+- multi_language
+- code_analysis
 - debugging
 - software_engineering
-- multi_language
+- best_practices
 
 ### 📚 Category
 
 Primary category: coding
 
 Subcategories:
-- software_engineering
-- multi_language_programming
+- software_development
+- code_optimization

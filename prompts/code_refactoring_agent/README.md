@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Analyzes, refactors, and validates code to improve quality, readability, and performance**
+**Analyzes, refactors, and validates code to enhance quality, readability, and performance**
 
 ### 📄 Description
 
-This prompt creates an AI agent that expertly analyzes and refactors codebases. It infers the programming language, implements best practices, and optimizes code while preserving functionality. The agent also proposes testing strategies and provides comprehensive documentation of changes.
+This prompt creates an AI agent that expertly analyzes and refactors codebases. It infers the programming language, implements best practices, and optimizes code while preserving core functionality. The agent also provides comprehensive testing and documentation.
 
 ### 🔧 Variables
 
@@ -130,7 +130,7 @@ Now, proceed with the refactoring task, ensuring you provide detailed explanatio
 - code_quality
 - performance_optimization
 - best_practices
-- language_agnostic
+- programming_languages
 
 ### 📚 Category
 

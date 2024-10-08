@@ -2,15 +2,15 @@
 
 ### ✏️ One-line Description
 
-**Generates comprehensive pull requests for software projects with expert analysis**
+**Generates comprehensive pull requests for software development projects**
 
 ### 📄 Description
 
-This prompt creates detailed, high-quality pull requests for software projects. It analyzes code changes, suggests improvements, and adheres to best practices in software development and GitHub conventions.
+This prompt creates detailed, high-quality pull requests for software development projects. It analyzes code context, suggests improvements, and adheres to GitHub best practices, providing a thorough code review and project enhancement tool.
 
 ### 🔧 Variables
 
-- `{{CONTEXT}}`: Provides the necessary project context and code changes for analysis
+- `{{CONTEXT}}`: Provides the project context and code changes for the pull request
 
 ### 📜 Prompt
 
@@ -110,8 +110,8 @@ Generate a pull request based on the provided project context, following the str
 
 - pull_request
 - code_review
-- software_development
 - github
+- software_development
 - best_practices
 
 ### 📚 Category
@@ -120,4 +120,4 @@ Primary category: coding
 
 Subcategories:
 - code_review
-- project_management
+- software_engineering

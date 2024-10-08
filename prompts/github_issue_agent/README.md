@@ -1,4 +1,4 @@
-# GitHub Issue Creator
+# GitHub Issue Creation Expert
 
 ### ✏️ One-line Description
 
@@ -6,14 +6,14 @@
 
 ### 📄 Description
 
-This prompt creates highly detailed and actionable GitHub issues by analyzing project documentation, history, and team dynamics. It prioritizes issues, suggests assignees, and provides comprehensive descriptions tailored to the team's needs.
+This prompt embodies an AI agent specialized in crafting high-quality GitHub issues. It analyzes project context, documentation, history, and team dynamics to create detailed, actionable issues that follow best practices and consider team-specific factors.
 
 ### 🔧 Variables
 
-- `{{CONTEXT}}`: Provides specific information about the current issue or feature request
-- `{{PROJECT_DOCUMENTATION}}`: Contains relevant project documentation for reference
-- `{{TEAM_DYNAMICS}}`: Describes team composition, expertise, and working relationships
-- `{{PROJECT_HISTORY}}`: Outlines past issues, development patterns, and project evolution
+- `{{CONTEXT}}`: Provides current project context and specific issue details
+- `{{PROJECT_DOCUMENTATION}}`: Supplies relevant project documentation for reference
+- `{{TEAM_DYNAMICS}}`: Offers insights into team structure, expertise, and working patterns
+- `{{PROJECT_HISTORY}}`: Provides historical information about the project and past issues
 
 ### 📜 Prompt
 

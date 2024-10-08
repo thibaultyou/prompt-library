@@ -2,7 +2,7 @@
 
 ### ✏️ One-line Description
 
-**Generates optimal git branch names based on project context and requirements**
+**Generates optimal git branch names based on project context and development workflow**
 
 ### 📄 Description
 
@@ -12,8 +12,8 @@ Analyzes project context, user requirements, and development workflow to create 
 
 - `{{PROJECT_CONTEXT}}`: Provides background information about the project
 - `{{USER_REQUIREMENTS}}`: Specifies the specific task or feature to be addressed in the branch
-- `{{DEVELOPMENT_WORKFLOW}}`: Describes the team's current development process
-- `{{TEAM_CONVENTIONS}}`: Outlines any specific naming conventions used by the team
+- `{{DEVELOPMENT_WORKFLOW}}`: Describes the team's development process and branching strategy
+- `{{TEAM_CONVENTIONS}}`: Outlines any team-specific naming conventions for branches
 - `{{CURRENT_BRANCH_NAME}}`: Optional input for the existing branch name, if applicable
 
 ### 📜 Prompt

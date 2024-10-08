@@ -2,16 +2,16 @@
 
 ### ✏️ One-line Description
 
-**Generates optimized git commit messages following Conventional Commits specification**
+**Generates precise git commit messages following Conventional Commits specification**
 
 ### 📄 Description
 
-This prompt creates an AI agent specialized in crafting perfect git commit messages. It adheres to the Conventional Commits format, incorporates appropriate emojis, and provides concise yet informative descriptions of code changes within character limits.
+This prompt creates an AI agent specialized in crafting perfect git commit messages. It adheres to the Conventional Commits format, includes appropriate emojis, and provides concise yet informative descriptions of code changes within character limits.
 
 ### 🔧 Variables
 
-- `{{TASK_DESCRIPTION}}`: Brief description of the task or changes made
-- `{{CODE_CHANGES}}`: Detailed information about the code changes to be committed
+- `{{TASK_DESCRIPTION}}`: Provides context or specific requirements for the commit message
+- `{{CODE_CHANGES}}`: Details the actual code changes to be summarized in the commit message
 
 ### 📜 Prompt
 
