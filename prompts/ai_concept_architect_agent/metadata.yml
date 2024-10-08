@@ -1,24 +1,24 @@
 content_hash: 46fdf466b661c338e49f3d34c07c2bc1
 description: >-
   This prompt engineers a creative AI system that conceptualizes unique,
-  practical, and ethically sound specialized AI assistants. It focuses on
-  maximizing potential impact while ensuring feasibility and addressing ethical
+  powerful, yet practical AI assistant ideas. It focuses on generating
+  groundbreaking capabilities while ensuring feasibility and ethical
   considerations.
 directory: ai_concept_architect_agent
 one_line_description: Generates innovative and feasible concepts for specialized AI assistants
 primary_category: prompt_engineering
 subcategories:
-  - concept_generation
+  - conceptual_design
   - specialized_assistants
 tags:
   - creativity
   - innovation
-  - specialized_ai
   - feasibility
-  - ethical_design
+  - specialized_ai
+  - concept_generation
 title: AI Concept Architect
 variables:
   - name: '{{TOPIC}}'
     role: >-
-      Specific domain or field for which the AI assistant concept is to be
-      generated
+      Specifies the domain or subject area for which the AI assistant concept
+      should be developed

@@ -12,18 +12,18 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 ### Coding
 
-- [Git Branch Name Generator](prompts/git_branch_name_agent/README.md) - Generates optimal git branch names based on project context and development requirements
-- [Elite AI Coding Assistant](prompts/coding_agent/README.md) - Assists with comprehensive software development tasks across multiple programming languages
-- [GitHub Issue Management](prompts/github_issue_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
-- [Divine Code Refactoring Artisan](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates codebases to enhance quality, readability, and performance
-- [Software Development Pull Request Generator](prompts/software_dev_pr_agent/README.md) - Generates comprehensive pull requests for software development projects
-- [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates perfect git commit messages following Conventional Commits specification
+- [Divine Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to improve quality, readability, and performance
+- [Elite AI Coding Assistant](prompts/coding_agent/README.md) - Assists in all aspects of software development with expert-level guidance
+- [Git Branch Name Generator](prompts/git_branch_name_agent/README.md) - Generates optimal git branch names based on project context and requirements
+- [Git Commit Message Generator](prompts/git_commit_message_agent/README.md) - Generates optimized git commit messages following Conventional Commits specification
+- [GitHub Issue Creator](prompts/github_issue_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
+- [Software Development Pull Request Generator](prompts/software_dev_pr_agent/README.md) - Generates comprehensive pull requests for software projects with expert analysis
 
 ### Prompt Engineering
 
 - [AI Concept Architect](prompts/ai_concept_architect_agent/README.md) - Generates innovative and feasible concepts for specialized AI assistants
-- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts optimizing AI model performance across diverse domains
-- [Software Specification Creation](prompts/software_spec_agent/README.md) - Creates detailed software specifications through interactive requirements gathering
+- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts pushing AI model boundaries for exceptional, tailored outputs
+- [Software Specification Creator](prompts/software_spec_agent/README.md) - Creates detailed software specification documents through interactive requirements gathering
 
 ## 🚀 Getting Started
 

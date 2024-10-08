@@ -1,24 +1,24 @@
 content_hash: c0bc0f6622f12af4a3f8349d0bf91f30
 description: >-
-  This prompt engineers an AI agent to refine and expand user requirements into
-  comprehensive software specification documents. It employs an interactive
-  review process, considering various aspects of software development, and
-  generates a structured spec document.
+  This prompt engineers an AI agent that guides users through an interactive
+  process of refining and expanding software requirements. It creates
+  comprehensive specification documents covering all aspects of software
+  development, from project overview to future considerations.
 directory: software_spec_agent
 one_line_description: >-
-  Creates detailed software specifications through interactive requirements
-  gathering
+  Creates detailed software specification documents through interactive
+  requirements gathering
 primary_category: prompt_engineering
 subcategories:
   - software_development
-  - requirements_analysis
-tags:
-  - software_specification
   - requirements_gathering
+tags:
+  - software_specifications
+  - requirements_analysis
   - interactive_review
   - document_creation
   - project_management
-title: Software Specification Creation
+title: Software Specification Creator
 variables:
   - name: '{{USER_REQUIREMENTS}}'
     role: Initial user-provided requirements for the software project
