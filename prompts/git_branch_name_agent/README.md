@@ -2,11 +2,11 @@
 
 ### ✏️ One-line Description
 
-**Generates optimal git branch names based on project context and development workflow**
+**Generates optimal git branch names based on project context and development requirements**
 
 ### 📄 Description
 
-This prompt creates an AI assistant specialized in generating semantically meaningful git branch names. It analyzes project context, user requirements, and development workflows to produce branch names that adhere to best practices and team-specific conventions.
+This prompt creates an AI assistant specializing in version control and software development best practices. It analyzes project context, user requirements, and development workflows to generate semantically meaningful git branch names that adhere to best practices and team-specific conventions.
 
 ### 🔧 Variables
 

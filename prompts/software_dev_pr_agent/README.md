@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt creates detailed, high-quality pull requests for software projects. It analyzes given context, identifies improvements, suggests optimizations, and ensures adherence to GitHub best practices and conventions.
+This prompt creates detailed, high-quality pull requests for software projects. It analyzes the given context, identifies key changes and improvements, and generates a well-structured pull request adhering to GitHub best practices.
 
 ### 🔧 Variables
 
@@ -108,15 +108,15 @@ Generate a pull request based on the provided project context, following the str
 
 ### 🔖 Tags
 
-- github
-- code_review
 - pull_request
+- code_review
+- github
 - best_practices
 - software_development
 
 ### 📚 Category
 
-Primary Category: version_control
+Primary Category: development_tools_and_environments
 Subcategories:
 
 - code_review

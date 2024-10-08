@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt embodies advanced prompt engineering techniques to unlock the full potential of AI models. It adapts to various domains, incorporates ethical constraints, and employs cutting-edge optimization methods to generate exceptional, tailored outputs for any user need.
+This prompt engineering expert crafts highly optimized prompts for AI models, incorporating advanced techniques and ethical considerations. It adapts to various domains and task types, pushing the boundaries of AI capabilities while adhering to user requirements and output guidelines.
 
 ### 🔧 Variables
 
@@ -148,14 +148,14 @@ Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORM
 
 - prompt_optimization
 - ai_capabilities
-- adaptive_prompting
+- task_customization
 - ethical_constraints
-- multi_domain
+- output_generation
 
 ### 📚 Category
 
 Primary Category: prompt_engineering
 Subcategories:
 
-- advanced_techniques
-- ai_model_optimization
+- ai_optimization
+- task_adaptation

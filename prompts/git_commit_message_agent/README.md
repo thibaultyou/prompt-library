@@ -1,4 +1,4 @@
-# Git Commit Message Generator
+# Git Commit Message Expert
 
 ### ✏️ One-line Description
 
@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt creates an AI agent specialized in crafting perfect git commit messages. It adheres strictly to the Conventional Commits specification, incorporates appropriate emojis, and provides clear insights into code changes within character limits. The agent is designed to optimize commit messages for both human readability and automated tool processing.
+This prompt creates an AI expert in crafting git commit messages that adhere to the Conventional Commits specification. It generates concise, informative messages with appropriate emojis, types, and descriptions, ensuring clear communication of code changes for both developers and automated tools.
 
 ### 🔧 Variables
 
@@ -163,12 +163,12 @@ Output your commit message within <commit_message> tags. The message should be o
 - commit_messages
 - conventional_commits
 - emoji
-- code_changes
+- software_development
 
 ### 📚 Category
 
 Primary Category: version_control
 Subcategories:
 
-- commit_message_formatting
+- commit_message_generation
 - conventional_commits
