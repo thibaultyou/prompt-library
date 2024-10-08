@@ -10,6 +10,8 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 > **Note:** The prompts listed here serve as examples to demonstrate the structure and organization of this library. The primary goal is for you, the user, to create and maintain your own personalized library of prompts tailored to your specific needs and use cases. Feel free to modify, remove, or add prompts as you see fit.
 
+> **Tip:** Check out the Prompt Engineering category in this library. It contains prompts that can help you create high-quality prompts with ease and get started in building your own prompt library.
+
 {%- for category, prompts in categories %}
 
 ### {{ format_category(category) }}

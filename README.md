@@ -10,11 +10,13 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 > **Note:** The prompts listed here serve as examples to demonstrate the structure and organization of this library. The primary goal is for you, the user, to create and maintain your own personalized library of prompts tailored to your specific needs and use cases. Feel free to modify, remove, or add prompts as you see fit.
 
+> **Tip:** Check out the Prompt Engineering category in this library. It contains prompts that can help you create high-quality prompts with ease and get started in building your own prompt library.
+
 ### Coding
 
+- [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists with code writing, analysis, optimization, and debugging across multiple languages
 - [Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to improve quality, readability, and performance
 - [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimal git branch names based on project context and development workflow
-- [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists with code writing, analysis, optimization, and debugging across multiple languages
 - [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
 - [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
 - [Software Developer Pull Request Generator](prompts/software_dev_pr_generator/README.md) - Generates comprehensive pull requests for software development projects
@@ -32,6 +34,10 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 - [AI Assistant Concept Creator](prompts/ai_assistant_concept_creator/README.md) - Generates innovative and feasible concepts for specialized AI assistants
 - [Prompt Engineering Agent](prompts/prompt_engineering_agent/README.md) - Creates and refines optimized AI prompts tailored to specific user requirements and models
+
+### Translation
+
+- [Universal Translator Agent](prompts/universal_translator_agent/README.md) - Translates between any languages, concepts, or modes of expression across all dimensions
 
 ### Writing
 
