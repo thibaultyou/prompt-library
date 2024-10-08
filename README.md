@@ -1,41 +1,29 @@
 # 📚 Prompt Library
 
-> ### 🚧 **Project Under Active Development** 🚧
+> ### 🚧 **Project Under Development** 🚧
 > 
-> **Note:** This project is new and undergoing rapid development. You may encounter bugs or frequent changes. We appreciate your patience and encourage you to:
-> - Report any issues you encounter
-> - Check for updates regularly
-> - Contribute ideas or improvements
-> 
-> Your feedback is valuable in shaping this project. Thank you for your interest and support!
+> This project is evolving. You may encounter bugs or frequent changes. Your feedback and contributions are welcome!
 
 Welcome to the **Prompt Library**. This repository contains a collection of AI prompts categorized for easy navigation and reuse.
 
-## 🗂️ Categories
+## 📂 Categories
 
-### Artificial Intelligence And Machine Learning
+> **Note:** The prompts listed here serve as examples to demonstrate the structure and organization of this library. The primary goal is for you, the user, to create and maintain your own personalized library of prompts tailored to your specific needs and use cases. Feel free to modify, remove, or add prompts as you see fit.
 
-- [AI Concept Creator](prompts/ai_concept_agent/README.md) - Generates innovative and feasible concepts for specialized AI assistants
+### Coding
 
-### Code Quality And Best Practices
-
-- [Elite AI Coding Assistant](prompts/coding_assistant_agent/README.md) - Assists in all aspects of software development with expert-level guidance
 - [Divine Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to improve quality, readability, and performance
-- [Software Development Pull Request Generator](prompts/software_dev_pr_agent/README.md) - Generates comprehensive pull requests for software projects based on given context
-
-### Project Management
-
-- [GitHub Issue Creation Expert](prompts/github_issue_agent/README.md) - Creates comprehensive, actionable GitHub issues based on project context and team dynamics
-- [Software Specification Creator](prompts/software_spec_agent/README.md) - Generates comprehensive software specifications through interactive requirements gathering
+- [Elite AI Coding Assistant](prompts/coding_agent/README.md) - Assists in all aspects of software development with expert-level guidance
+- [Git Branch Name Generator](prompts/git_branch_name_agent/README.md) - Generates optimal git branch names based on project context and requirements
+- [Git Commit Message Generator](prompts/git_commit_message_agent/README.md) - Generates optimized git commit messages following Conventional Commits specification
+- [GitHub Issue Creator](prompts/github_issue_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
+- [Software Development Pull Request Generator](prompts/software_dev_pr_agent/README.md) - Generates comprehensive pull requests for software projects with expert analysis
 
 ### Prompt Engineering
 
-- [Divine-Tier Prompt Engineering](prompts/prompt_engineering_agent/README.md) - Creates or refines optimized prompts for AI models across diverse domains
-
-### Version Control
-
-- [Git Commit Message Generator](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
-- [Git Branch Name Generator](prompts/git_branch_name_agent/README.md) - Generates optimal git branch names based on project context and development requirements
+- [AI Concept Architect](prompts/ai_concept_architect_agent/README.md) - Generates innovative and feasible concepts for specialized AI assistants
+- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts pushing AI model boundaries for exceptional, tailored outputs
+- [Software Specification Creator](prompts/software_spec_agent/README.md) - Creates detailed software specification documents through interactive requirements gathering
 
 ## 🚀 Getting Started
 
@@ -96,6 +84,7 @@ To customize the metadata extraction process:
 3. Modify the content within these sections to adjust the behavior of the metadata extraction process. For example:
    - Update the `<instructions>` section to change how categories are assigned.
    - Modify the `<output>` section to alter the structure of the generated metadata.
+   - Adapt the categories in the `Top-Level Categories` list to better suit your needs.
 4. Save your changes to the file.
 
 After modifying the prompt:

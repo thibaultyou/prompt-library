@@ -17,7 +17,10 @@ export interface Metadata {
     /** A detailed description of the prompt */
     description: string;
     /** An array of variables used in the prompt */
-    variables: string[];
+    variables: Array<{
+        name: string;
+        role: string;
+    }>;
     /** The content hash of the prompt file */
     content_hash?: string;
 }

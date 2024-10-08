@@ -2,17 +2,17 @@
 
 ### ✏️ One-line Description
 
-**Generates comprehensive software specifications through interactive requirements gathering**
+**Creates detailed software specification documents through interactive requirements gathering**
 
 ### 📄 Description
 
-This prompt creates detailed software specification documents by engaging users in an interactive review process. It covers all aspects of software development, from project overview to future considerations, ensuring thorough and actionable specifications.
+This prompt engineers an AI agent that guides users through an interactive process of refining and expanding software requirements. It creates comprehensive specification documents covering all aspects of software development, from project overview to future considerations.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}`
-- `{{OUTPUT_FORMAT}}`
-- `{{AVAILABLE_OUTPUT_FORMATS}}`
+- `{{USER_REQUIREMENTS}}`: Initial user-provided requirements for the software project
+- `{{OUTPUT_FORMAT}}`: Desired format for the final specification document output
+- `{{AVAILABLE_OUTPUT_FORMATS}}`: List of available output formats for the specification document
 
 ### 📜 Prompt
 
@@ -256,16 +256,16 @@ Throughout the specification process, ensure:
 
 ### 🔖 Tags
 
-- software_development
+- software_specifications
 - requirements_analysis
-- specification_writing
 - interactive_review
-- documentation
+- document_creation
+- project_management
 
 ### 📚 Category
 
-Primary Category: project_management
-Subcategories:
+Primary category: prompt_engineering
 
+Subcategories:
+- software_development
 - requirements_gathering
-- software_design

@@ -2,19 +2,19 @@
 
 ### ✏️ One-line Description
 
-**Generates optimal git branch names based on project context and development requirements**
+**Generates optimal git branch names based on project context and requirements**
 
 ### 📄 Description
 
-This prompt creates an AI assistant specializing in version control and software development best practices. It analyzes project context, user requirements, and development workflows to generate semantically meaningful git branch names that adhere to best practices and team-specific conventions.
+Analyzes project context, user requirements, and development workflow to create semantically meaningful git branch names. Adheres to best practices and team-specific conventions while incorporating appropriate branch type prefixes.
 
 ### 🔧 Variables
 
-- `{{PROJECT_CONTEXT}}`
-- `{{USER_REQUIREMENTS}}`
-- `{{DEVELOPMENT_WORKFLOW}}`
-- `{{TEAM_CONVENTIONS}}`
-- `{{CURRENT_BRANCH_NAME}}`
+- `{{PROJECT_CONTEXT}}`: Provides background information about the project
+- `{{USER_REQUIREMENTS}}`: Specifies the specific task or feature to be addressed in the branch
+- `{{DEVELOPMENT_WORKFLOW}}`: Describes the team's current development process
+- `{{TEAM_CONVENTIONS}}`: Outlines any specific naming conventions used by the team
+- `{{CURRENT_BRANCH_NAME}}`: Optional input for the existing branch name, if applicable
 
 ### 📜 Prompt
 
@@ -124,8 +124,8 @@ Current Branch Name Analysis:
 
 ### 📚 Category
 
-Primary Category: version_control
-Subcategories:
+Primary category: coding
 
-- branch_naming
-- development_workflow
+Subcategories:
+- version_control
+- software_development

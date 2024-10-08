@@ -5,24 +5,31 @@
 <input_parameters>
 Prompt to Analyze: {{PROMPT}}
 Top-Level Categories: [
-  "architecture_and_design",
-  "artificial_intelligence_and_machine_learning",
-  "cloud_computing",
-  "code_quality_and_best_practices",
-  "data_management_and_analytics",
-  "development_tools_and_environments",
-  "devops_and_deployment",
-  "documentation",
-  "frontend_development",
-  "mobile_development",
-  "performance_and_optimization",
-  "project_management",
+  "analysis",
+  "art_and_design",
+  "business",
+  "coding",
+  "content_creation",
+  "customer_service",
+  "data_processing",
+  "education",
+  "entertainment",
+  "finance",
+  "gaming",
+  "healthcare",
+  "language",
+  "legal",
+  "marketing",
+  "music",
+  "personal_assistant",
+  "problem_solving",
+  "productivity",
   "prompt_engineering",
-  "security",
-  "software_testing",
-  "user_experience_and_interface_design",
-  "version_control",
-  "web_development"
+  "research",
+  "science",
+  "social_media",
+  "translation",
+  "writing"
 ]
 </input_parameters>
 
@@ -80,7 +87,9 @@ tags:
 one_line_description: [Your one-line description]
 description: [Your quick description]
 variables:
-  - "{{VARIABLE_1}}"
-  - "{{VARIABLE_2}}"
+  - name: "{{VARIABLE_1}}"
+    role: [Role description for VARIABLE_1]
+  - name: "{{VARIABLE_2}}"
+    role: [Role description for VARIABLE_2]
   [Add more variables if necessary]
 </output>

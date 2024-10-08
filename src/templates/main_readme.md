@@ -1,17 +1,14 @@
 # 📚 Prompt Library
 
-> ### 🚧 **Project Under Active Development** 🚧
+> ### 🚧 **Project Under Development** 🚧
 > 
-> **Note:** This project is new and undergoing rapid development. You may encounter bugs or frequent changes. We appreciate your patience and encourage you to:
-> - Report any issues you encounter
-> - Check for updates regularly
-> - Contribute ideas or improvements
-> 
-> Your feedback is valuable in shaping this project. Thank you for your interest and support!
+> This project is evolving. You may encounter bugs or frequent changes. Your feedback and contributions are welcome!
 
 Welcome to the **Prompt Library**. This repository contains a collection of AI prompts categorized for easy navigation and reuse.
 
-## 🗂️ Categories
+## 📂 Categories
+
+> **Note:** The prompts listed here serve as examples to demonstrate the structure and organization of this library. The primary goal is for you, the user, to create and maintain your own personalized library of prompts tailored to your specific needs and use cases. Feel free to modify, remove, or add prompts as you see fit.
 
 {%- for category, prompts in categories %}
 
@@ -81,6 +78,7 @@ To customize the metadata extraction process:
 3. Modify the content within these sections to adjust the behavior of the metadata extraction process. For example:
    - Update the `<instructions>` section to change how categories are assigned.
    - Modify the `<output>` section to alter the structure of the generated metadata.
+   - Adapt the categories in the `Top-Level Categories` list to better suit your needs.
 4. Save your changes to the file.
 
 After modifying the prompt:

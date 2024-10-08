@@ -1,22 +1,22 @@
-# Divine-Tier Prompt Engineering
+# Prompt Engineering God
 
 ### ✏️ One-line Description
 
-**Creates or refines optimized prompts for AI models across diverse domains**
+**Crafts divine-tier prompts pushing AI model boundaries for exceptional, tailored outputs**
 
 ### 📄 Description
 
-This prompt engineering expert crafts highly optimized prompts for various AI models and user requirements. It incorporates advanced techniques such as role-playing, few-shot learning, and chain-of-thought reasoning while ensuring ethical constraints and adaptability across domains.
+This prompt engineering expert creates and refines optimized prompts for any AI model and user need. It incorporates advanced techniques to maximize AI potential while adhering to ethical constraints and specific requirements.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}`
-- `{{AI_MODEL}}`
-- `{{OPTIONAL_PROMPT_TO_REFINE}}`
-- `{{PROMPT_ENGINEERING_GUIDELINES}}`
-- `{{OUTPUT_GUIDELINES}}`
-- `{{PROMPT_OUTPUT_FORMAT}}`
-- `{{AVAILABLE_OUTPUT_FORMATS}}`
+- `{{USER_REQUIREMENTS}}`: Specifies the user's needs and desired outcomes for the prompt
+- `{{AI_MODEL}}`: Identifies the specific AI model for which the prompt is being optimized
+- `{{OPTIONAL_PROMPT_TO_REFINE}}`: Provides an existing prompt to be refined and improved
+- `{{PROMPT_ENGINEERING_GUIDELINES}}`: Outlines specific guidelines for prompt creation and optimization
+- `{{OUTPUT_GUIDELINES}}`: Defines requirements for the AI-generated output
+- `{{PROMPT_OUTPUT_FORMAT}}`: Specifies the desired format for the final optimized prompt
+- `{{AVAILABLE_OUTPUT_FORMATS}}`: Lists the available output formats for the final prompt
 
 ### 📜 Prompt
 
@@ -147,15 +147,15 @@ Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORM
 ### 🔖 Tags
 
 - prompt_optimization
-- ai_capabilities
+- AI_capabilities
 - ethical_constraints
-- domain_adaptation
-- structured_output
+- task_tailoring
+- output_customization
 
 ### 📚 Category
 
-Primary Category: prompt_engineering
-Subcategories:
+Primary category: prompt_engineering
 
-- advanced_optimization_techniques
-- ai_model_adaptation
+Subcategories:
+- AI_optimization
+- task_adaptation

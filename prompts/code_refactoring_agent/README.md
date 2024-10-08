@@ -6,12 +6,12 @@
 
 ### 📄 Description
 
-This prompt creates an AI agent that analyzes codebases, infers the programming language, and performs comprehensive refactoring. It optimizes code quality, readability, and performance while preserving core functionality, and includes testing and validation steps.
+This prompt creates an AI agent that expertly analyzes and refactors codebases. It infers the programming language, implements best practices, and optimizes code while preserving functionality. The agent also proposes testing strategies and provides comprehensive documentation of changes.
 
 ### 🔧 Variables
 
-- `{{REFACTOR_SCOPE}}`
-- `{{CODEBASE}}`
+- `{{REFACTOR_SCOPE}}`: Specifies whether to refactor the entire codebase or focus on specific parts
+- `{{CODEBASE}}`: The code to be refactored
 
 ### 📜 Prompt
 
@@ -127,15 +127,15 @@ Now, proceed with the refactoring task, ensuring you provide detailed explanatio
 ### 🔖 Tags
 
 - refactoring
-- code_optimization
-- language_inference
-- testing
-- performance
+- code_quality
+- performance_optimization
+- best_practices
+- language_agnostic
 
 ### 📚 Category
 
-Primary Category: code_quality_and_best_practices
-Subcategories:
+Primary category: coding
 
-- refactoring
-- code_analysis
+Subcategories:
+- code_optimization
+- software_engineering
