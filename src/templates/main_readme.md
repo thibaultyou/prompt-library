@@ -13,32 +13,14 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 ## 🗂️ Categories
 
-### Artificial Intelligence And Machine Learning
+{%- for category, prompts in categories %}
 
-- [AI Concept Generator](prompts/ai_concept_agent/README.md) - Generates innovative and feasible concepts for specialized AI assistants
+### {{ format_category(category) }}
 
-### Code Quality And Best Practices
-
-- [Divine Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes and refactors code to improve quality, readability, and performance
-- [Elite AI Coding Assistant](prompts/coding_assistant_agent/README.md) - Assists in all aspects of software development with expert-level guidance
-
-### Development Tools And Environments
-
-- [Software Development Pull Request Generator](prompts/software_dev_pr_agent/README.md) - Generates comprehensive pull requests for software projects based on provided context
-
-### Project Management
-
-- [GitHub Issue Creator](prompts/github_issue_agent/README.md) - Creates comprehensive GitHub issues considering code context, project history, and team dynamics
-- [Software Specification Creator](prompts/software_spec_agent/README.md) - Creates detailed software specification documents through interactive requirement gathering
-
-### Prompt Engineering
-
-- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Creates and refines optimized prompts for AI models across various domains
-
-### Version Control
-
-- [Git Branch Name Generator](prompts/git_branch_name_agent/README.md) - Generates optimal git branch names based on project context and development requirements
-- [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates optimized git commit messages following Conventional Commits specification
+{% for prompt in prompts %}
+- [{{ prompt.title }}]({{ prompt.path }}) - {{ prompt.description }}
+{%- endfor %}
+{%- endfor %}
 
 ## 🚀 Getting Started
 

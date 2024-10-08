@@ -1,0 +1,27 @@
+content_hash: 98cc0ea85eb722ef28407f75f62d8dec
+description: >-
+  This prompt engineering expert crafts highly optimized prompts for AI models,
+  incorporating advanced techniques and ethical considerations. It adapts to
+  various domains and task types, pushing the boundaries of AI capabilities
+  while adhering to user requirements and output guidelines.
+directory: prompt_engineering_agent
+one_line_description: Creates and refines optimized prompts for AI models across various domains
+primary_category: prompt_engineering
+subcategories:
+  - ai_optimization
+  - task_adaptation
+tags:
+  - prompt_optimization
+  - ai_capabilities
+  - task_customization
+  - ethical_constraints
+  - output_generation
+title: Prompt Engineering God
+variables:
+  - '{{USER_REQUIREMENTS}}'
+  - '{{AI_MODEL}}'
+  - '{{OPTIONAL_PROMPT_TO_REFINE}}'
+  - '{{PROMPT_ENGINEERING_GUIDELINES}}'
+  - '{{OUTPUT_GUIDELINES}}'
+  - '{{PROMPT_OUTPUT_FORMAT}}'
+  - '{{AVAILABLE_OUTPUT_FORMATS}}'

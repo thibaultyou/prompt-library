@@ -1,0 +1,26 @@
+content_hash: f692d056df3bb02f011848894db6a96a
+description: >-
+  This prompt embodies an AI agent specialized in creating highly optimized
+  GitHub issues. It analyzes code context, project history, and team dynamics to
+  generate detailed, actionable issues that adhere to best practices and
+  consider team-specific factors.
+directory: github_issue_agent
+one_line_description: >-
+  Creates comprehensive GitHub issues considering code context, project history,
+  and team dynamics
+primary_category: project_management
+subcategories:
+  - issue_tracking
+  - team_collaboration
+tags:
+  - github
+  - issue_management
+  - team_dynamics
+  - project_history
+  - code_context
+title: GitHub Issue Creator
+variables:
+  - '{{CONTEXT}}'
+  - '{{PROJECT_DOCUMENTATION}}'
+  - '{{TEAM_DYNAMICS}}'
+  - '{{PROJECT_HISTORY}}'

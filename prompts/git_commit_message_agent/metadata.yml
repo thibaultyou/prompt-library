@@ -1,0 +1,24 @@
+content_hash: b15f73d644b948ff5cf129a2ca2412b2
+description: >-
+  This prompt creates an AI expert in crafting git commit messages that adhere
+  to the Conventional Commits specification. It generates concise, informative
+  messages with appropriate emojis, types, and descriptions, ensuring clear
+  communication of code changes for both developers and automated tools.
+directory: git_commit_message_agent
+one_line_description: >-
+  Generates optimized git commit messages following Conventional Commits
+  specification
+primary_category: version_control
+subcategories:
+  - commit_message_generation
+  - conventional_commits
+tags:
+  - git
+  - commit_messages
+  - conventional_commits
+  - emoji
+  - software_development
+title: Git Commit Message Expert
+variables:
+  - '{{TASK_DESCRIPTION}}'
+  - '{{CODE_CHANGES}}'
