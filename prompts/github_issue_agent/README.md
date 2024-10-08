@@ -1,12 +1,12 @@
-# GitHub Issue Creator
+# GitHub Issue Creation Expert
 
 ### ✏️ One-line Description
 
-**Creates comprehensive GitHub issues considering code context, project history, and team dynamics**
+**Creates comprehensive, actionable GitHub issues based on project context and team dynamics**
 
 ### 📄 Description
 
-This prompt embodies an AI agent specialized in creating highly optimized GitHub issues. It analyzes code context, project history, and team dynamics to generate detailed, actionable issues that adhere to best practices and consider team-specific factors.
+This prompt embodies an AI expert in GitHub issue management, capable of creating highly optimized issues. It analyzes project context, documentation, team dynamics, and project history to generate detailed, actionable GitHub issues following best practices.
 
 ### 🔧 Variables
 
@@ -136,7 +136,7 @@ Please provide the created GitHub issue using the Markdown format specified in t
 - github
 - issue_management
 - team_dynamics
-- project_history
+- project_documentation
 - code_context
 
 ### 📚 Category

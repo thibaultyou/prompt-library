@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt creates an AI coding assistant with extensive knowledge across multiple programming languages and frameworks. It provides guidance in code writing, analysis, optimization, and debugging while incorporating advanced software engineering principles and best practices.
+This prompt creates an AI coding assistant with extensive knowledge across multiple programming languages and software engineering best practices. It provides guidance in code writing, analysis, optimization, and debugging while incorporating advanced software engineering principles.
 
 ### 🔧 Variables
 

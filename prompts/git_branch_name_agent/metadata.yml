@@ -11,11 +11,11 @@ one_line_description: >-
 primary_category: version_control
 subcategories:
   - branch_naming
-  - software_development_workflow
+  - development_workflow
 tags:
   - git
-  - branch_naming
   - version_control
+  - branch_naming
   - software_development
   - best_practices
 title: Git Branch Name Generator

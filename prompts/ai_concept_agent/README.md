@@ -1,4 +1,4 @@
-# AI Concept Generator
+# AI Concept Creator
 
 ### ✏️ One-line Description
 
@@ -6,7 +6,7 @@
 
 ### 📄 Description
 
-This prompt creates an AI system that conceptualizes unique, powerful, and practical AI assistant ideas based on a given topic. It focuses on maximizing potential impact while ensuring ethical considerations and realistic implementation.
+This prompt engineers a creative AI system to develop unique and practical concepts for specialized AI assistants. It focuses on generating groundbreaking yet implementable ideas tailored to specific topics, emphasizing core competencies and transformative capabilities.
 
 ### 🔧 Variables
 
@@ -55,10 +55,10 @@ Now, based on the topic {{TOPIC}}, generate a groundbreaking yet feasible AI ass
 
 ### 🔖 Tags
 
-- ai_ideation
+- creative_ai
 - innovation
 - specialized_assistants
-- creativity
+- concept_development
 - feasibility
 
 ### 📚 Category
@@ -66,5 +66,5 @@ Now, based on the topic {{TOPIC}}, generate a groundbreaking yet feasible AI ass
 Primary Category: artificial_intelligence_and_machine_learning
 Subcategories:
 
-- concept_development
+- concept_generation
 - specialized_assistants

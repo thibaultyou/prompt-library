@@ -1,22 +1,21 @@
 content_hash: c0bc0f6622f12af4a3f8349d0bf91f30
 description: >-
-  This prompt guides the AI in creating comprehensive software specification
-  documents. It employs an interactive review process, asking clarifying
-  questions and offering suggestions to refine user requirements. The output is
-  a structured, detailed specification covering various aspects of software
-  development.
+  This prompt creates detailed software specification documents by engaging
+  users in an interactive review process. It covers all aspects of software
+  development, from project overview to future considerations, ensuring thorough
+  and actionable specifications.
 directory: software_spec_agent
 one_line_description: >-
-  Creates detailed software specification documents through interactive
-  requirement gathering
+  Generates comprehensive software specifications through interactive
+  requirements gathering
 primary_category: project_management
 subcategories:
   - requirements_gathering
-  - technical_documentation
+  - software_design
 tags:
   - software_development
-  - specification_writing
   - requirements_analysis
+  - specification_writing
   - interactive_review
   - documentation
 title: Software Specification Creator
