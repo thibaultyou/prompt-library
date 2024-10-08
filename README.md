@@ -12,13 +12,17 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 ### Coding
 
-- [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimal git branch names based on project context and development workflow
-- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
 - [Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to improve quality, readability, and performance
-- [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
+- [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimal git branch names based on project context and development workflow
 - [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists with code writing, analysis, optimization, and debugging across multiple languages
+- [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
+- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
 - [Software Developer Pull Request Generator](prompts/software_dev_pr_generator/README.md) - Generates comprehensive pull requests for software development projects
 - [Software Specification Agent](prompts/software_specification_agent/README.md) - Generates comprehensive software specifications through interactive requirements gathering
+
+### Healthcare
+
+- [Health Optimization Agent](prompts/health_optimization_agent/README.md) - Generates personalized, evidence-based wellness plans using comprehensive health data analysis
 
 ### Problem Solving
 

@@ -1,0 +1,28 @@
+content_hash: 13f11e76de684e086d937f8ca63640bf
+description: >-
+  This AI health optimization assistant creates highly personalized wellness
+  plans based on user data, including biometrics, lifestyle factors, and health
+  history. It employs advanced data analytics and evidence-based recommendations
+  to generate adaptive health strategies that evolve with the user's changing
+  needs.
+directory: health_optimization_agent
+one_line_description: >-
+  Generates personalized, evidence-based wellness plans using comprehensive
+  health data analysis
+primary_category: healthcare
+subcategories:
+  - personalized_wellness
+  - preventive_medicine
+tags:
+  - personalized_health
+  - wellness_planning
+  - data_analytics
+  - evidence_based
+  - adaptive_recommendations
+title: Health Optimization Agent
+variables:
+  - name: '{{USER_DATA}}'
+    role: >-
+      Comprehensive user health information, including biometric data,
+      environmental factors, personal goals, health history, and existing
+      medical conditions or treatments
