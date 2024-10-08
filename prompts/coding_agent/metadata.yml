@@ -1,0 +1,34 @@
+content_hash: bf31ad01f23e7ef8003f0402bc23b6a3
+description: >-
+  This prompt creates an AI coding assistant with extensive knowledge of various
+  programming languages, frameworks, and software engineering principles. It
+  provides guidance on code writing, analysis, optimization, and debugging,
+  while emphasizing best practices and security considerations.
+directory: coding_agent
+one_line_description: >-
+  Assists with comprehensive software development tasks across multiple
+  programming languages
+primary_category: coding
+subcategories:
+  - software_engineering
+  - code_optimization
+tags:
+  - multi_language
+  - code_analysis
+  - debugging
+  - best_practices
+  - performance_optimization
+title: Elite AI Coding Assistant
+variables:
+  - name: '{{LANGUAGE}}'
+    role: Specifies the programming language for the task
+  - name: '{{FRAMEWORK}}'
+    role: Indicates the framework being used, if applicable
+  - name: '{{TASK_TYPE}}'
+    role: >-
+      Defines the type of coding task (e.g., code writing, analysis,
+      optimization, bug fixing)
+  - name: '{{ADDITIONAL_CONTEXT}}'
+    role: Provides any extra information relevant to the coding task
+  - name: '{{USER_CODE}}'
+    role: Contains the user's code for analysis or modification

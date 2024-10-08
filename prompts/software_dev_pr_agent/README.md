@@ -2,15 +2,15 @@
 
 ### ✏️ One-line Description
 
-**Generates comprehensive pull requests for software projects based on given context**
+**Generates comprehensive pull requests for software development projects**
 
 ### 📄 Description
 
-This prompt creates detailed, high-quality pull requests for software projects. It analyzes code context, suggests improvements, and adheres to GitHub best practices, providing a thorough code review and project enhancement tool.
+This prompt creates detailed pull requests for software projects, incorporating code analysis, improvement suggestions, and adherence to GitHub best practices. It provides a structured approach to code review and project enhancement.
 
 ### 🔧 Variables
 
-- `{{CONTEXT}}`
+- `{{CONTEXT}}`: Provides the project context and code changes for the pull request
 
 ### 📜 Prompt
 
@@ -116,8 +116,8 @@ Generate a pull request based on the provided project context, following the str
 
 ### 📚 Category
 
-Primary Category: code_quality_and_best_practices
-Subcategories:
+Primary category: coding
 
-- pull_request_generation
+Subcategories:
 - code_review
+- version_control

@@ -10,7 +10,7 @@
 
 ### 🔧 Variables
 {% for variable in metadata.variables %}
-- `{{ variable }}`
+- `{{ variable.name }}`: {{ variable.role }}
 {%- endfor %}
 
 ### 📜 Prompt
@@ -26,11 +26,10 @@
 
 ### 📚 Category
 
-Primary Category: {{ metadata.primary_category }}
-
-{%- if metadata.subcategories %}
+Primary category: {{ metadata.primary_category }}
+{% if metadata.subcategories %}
 Subcategories:
-{% for subcategory in metadata.subcategories %}
+{%- for subcategory in metadata.subcategories %}
 - {{ subcategory }}
 {%- endfor %}
 {%- endif %}

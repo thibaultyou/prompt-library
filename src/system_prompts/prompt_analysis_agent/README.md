@@ -2,15 +2,15 @@
 
 ### ✏️ One-line Description
 
-**Analyzes AI prompts to extract key information and provide insights for optimization**
+**Analyzes AI prompts to provide insights for prompt engineering and optimization**
 
 ### 📄 Description
 
-This prompt creates an AI expert that specializes in analyzing and dissecting AI prompts. It extracts crucial information, categorizes the prompt, and provides actionable insights for prompt engineering and optimization.
+This prompt creates an AI expert specialized in dissecting and analyzing AI prompts. It extracts key information, categorizes prompts, and provides actionable insights for prompt engineering and optimization. The analysis is thorough, precise, and follows specific guidelines.
 
 ### 🔧 Variables
 
-- `{{PROMPT}}`
+- `{{PROMPT}}`: The AI prompt to be analyzed
 
 ### 📜 Prompt
 
@@ -22,24 +22,31 @@ This prompt creates an AI expert that specializes in analyzing and dissecting AI
 <input_parameters>
 Prompt to Analyze: {{PROMPT}}
 Top-Level Categories: [
-  "architecture_and_design",
-  "artificial_intelligence_and_machine_learning",
-  "cloud_computing",
-  "code_quality_and_best_practices",
-  "data_management_and_analytics",
-  "development_tools_and_environments",
-  "devops_and_deployment",
-  "documentation",
-  "frontend_development",
-  "mobile_development",
-  "performance_and_optimization",
-  "project_management",
+  "analysis",
+  "art_and_design",
+  "business",
+  "coding",
+  "content_creation",
+  "customer_service",
+  "data_processing",
+  "education",
+  "entertainment",
+  "finance",
+  "gaming",
+  "healthcare",
+  "language",
+  "legal",
+  "marketing",
+  "music",
+  "personal_assistant",
+  "problem_solving",
+  "productivity",
   "prompt_engineering",
-  "security",
-  "software_testing",
-  "user_experience_and_interface_design",
-  "version_control",
-  "web_development"
+  "research",
+  "science",
+  "social_media",
+  "translation",
+  "writing"
 ]
 </input_parameters>
 
@@ -97,24 +104,26 @@ tags:
 one_line_description: [Your one-line description]
 description: [Your quick description]
 variables:
-  - "{{VARIABLE_1}}"
-  - "{{VARIABLE_2}}"
+  - name: "{{VARIABLE_1}}"
+    role: [Role description for VARIABLE_1]
+  - name: "{{VARIABLE_2}}"
+    role: [Role description for VARIABLE_2]
   [Add more variables if necessary]
 </output>
 ```
 
 ### 🔖 Tags
 
-- prompt_engineering
-- analysis
+- prompt_analysis
 - categorization
-- information_extraction
 - optimization
+- information_extraction
+- prompt_engineering
 
 ### 📚 Category
 
-Primary Category: prompt_engineering
-Subcategories:
+Primary category: analysis
 
+Subcategories:
+- prompt_engineering
 - information_extraction
-- categorization

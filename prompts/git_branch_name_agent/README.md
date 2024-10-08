@@ -10,11 +10,11 @@ This prompt creates an AI assistant specializing in version control and software
 
 ### 🔧 Variables
 
-- `{{PROJECT_CONTEXT}}`
-- `{{USER_REQUIREMENTS}}`
-- `{{DEVELOPMENT_WORKFLOW}}`
-- `{{TEAM_CONVENTIONS}}`
-- `{{CURRENT_BRANCH_NAME}}`
+- `{{PROJECT_CONTEXT}}`: Provides background information about the project
+- `{{USER_REQUIREMENTS}}`: Specifies the specific task or feature to be implemented
+- `{{DEVELOPMENT_WORKFLOW}}`: Describes the team's development process
+- `{{TEAM_CONVENTIONS}}`: Outlines the team's specific naming conventions for branches
+- `{{CURRENT_BRANCH_NAME}}`: Optional input for the existing branch name, if applicable
 
 ### 📜 Prompt
 
@@ -117,15 +117,15 @@ Current Branch Name Analysis:
 ### 🔖 Tags
 
 - git
-- version_control
 - branch_naming
+- version_control
 - software_development
 - best_practices
 
 ### 📚 Category
 
-Primary Category: version_control
-Subcategories:
+Primary category: coding
 
-- branch_naming
-- development_workflow
+Subcategories:
+- version_control
+- software_development

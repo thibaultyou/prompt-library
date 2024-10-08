@@ -1,17 +1,17 @@
-# Divine Code Refactoring Agent
+# Divine Code Refactoring Artisan
 
 ### ✏️ One-line Description
 
-**Analyzes, refactors, and validates code to improve quality, readability, and performance**
+**Analyzes, refactors, and validates codebases to enhance quality, readability, and performance**
 
 ### 📄 Description
 
-This prompt creates an AI agent that analyzes codebases, infers the programming language, and performs comprehensive refactoring. It optimizes code quality, readability, and performance while preserving core functionality, and includes testing and validation steps.
+This prompt creates an AI agent that expertly analyzes and refactors codebases. It employs a comprehensive approach to improve code quality, readability, and performance while preserving core functionality. The agent provides detailed explanations and adheres to best practices in software engineering.
 
 ### 🔧 Variables
 
-- `{{REFACTOR_SCOPE}}`
-- `{{CODEBASE}}`
+- `{{REFACTOR_SCOPE}}`: Specifies whether to refactor the entire codebase or focus on specific parts
+- `{{CODEBASE}}`: The code to be refactored
 
 ### 📜 Prompt
 
@@ -127,15 +127,15 @@ Now, proceed with the refactoring task, ensuring you provide detailed explanatio
 ### 🔖 Tags
 
 - refactoring
-- code_optimization
-- language_inference
-- testing
-- performance
+- code_quality
+- performance_optimization
+- best_practices
+- divine_coding
 
 ### 📚 Category
 
-Primary Category: code_quality_and_best_practices
-Subcategories:
+Primary category: coding
 
-- refactoring
-- code_analysis
+Subcategories:
+- code_refactoring
+- software_engineering

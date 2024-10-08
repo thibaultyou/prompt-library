@@ -1,17 +1,15 @@
 content_hash: 405f0046d96dcf7338e351beee3b7f84
 description: >-
-  This prompt creates detailed, high-quality pull requests for software
-  projects. It analyzes code context, suggests improvements, and adheres to
-  GitHub best practices, providing a thorough code review and project
-  enhancement tool.
+  This prompt creates detailed pull requests for software projects,
+  incorporating code analysis, improvement suggestions, and adherence to GitHub
+  best practices. It provides a structured approach to code review and project
+  enhancement.
 directory: software_dev_pr_agent
-one_line_description: >-
-  Generates comprehensive pull requests for software projects based on given
-  context
-primary_category: code_quality_and_best_practices
+one_line_description: Generates comprehensive pull requests for software development projects
+primary_category: coding
 subcategories:
-  - pull_request_generation
   - code_review
+  - version_control
 tags:
   - pull_request
   - code_review
@@ -20,4 +18,5 @@ tags:
   - software_development
 title: Software Development Pull Request Generator
 variables:
-  - '{{CONTEXT}}'
+  - name: '{{CONTEXT}}'
+    role: Provides the project context and code changes for the pull request

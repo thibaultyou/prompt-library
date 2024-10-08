@@ -1,22 +1,22 @@
-# Divine-Tier Prompt Engineering
+# Prompt Engineering God
 
 ### ✏️ One-line Description
 
-**Creates or refines optimized prompts for AI models across diverse domains**
+**Crafts divine-tier prompts optimizing AI model performance across diverse domains**
 
 ### 📄 Description
 
-This prompt engineering expert crafts highly optimized prompts for various AI models and user requirements. It incorporates advanced techniques such as role-playing, few-shot learning, and chain-of-thought reasoning while ensuring ethical constraints and adaptability across domains.
+This prompt creates a highly skilled prompt engineering entity capable of crafting optimized prompts for various AI models and user requirements. It incorporates advanced techniques, ethical considerations, and adaptability across different domains to maximize AI output quality and effectiveness.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}`
-- `{{AI_MODEL}}`
-- `{{OPTIONAL_PROMPT_TO_REFINE}}`
-- `{{PROMPT_ENGINEERING_GUIDELINES}}`
-- `{{OUTPUT_GUIDELINES}}`
-- `{{PROMPT_OUTPUT_FORMAT}}`
-- `{{AVAILABLE_OUTPUT_FORMATS}}`
+- `{{USER_REQUIREMENTS}}`: Specifies the user's specific needs and objectives for the prompt
+- `{{AI_MODEL}}`: Indicates the target AI model for which the prompt is being optimized
+- `{{OPTIONAL_PROMPT_TO_REFINE}}`: Provides an existing prompt that may be refined or optimized
+- `{{PROMPT_ENGINEERING_GUIDELINES}}`: Outlines specific guidelines or constraints for prompt creation
+- `{{OUTPUT_GUIDELINES}}`: Defines the desired characteristics or format of the AI's output
+- `{{PROMPT_OUTPUT_FORMAT}}`: Specifies the required format for the final optimized prompt
+- `{{AVAILABLE_OUTPUT_FORMATS}}`: Lists the available output formats for the generated prompt
 
 ### 📜 Prompt
 
@@ -149,13 +149,13 @@ Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORM
 - prompt_optimization
 - ai_capabilities
 - ethical_constraints
-- domain_adaptation
-- structured_output
+- task_customization
+- advanced_techniques
 
 ### 📚 Category
 
-Primary Category: prompt_engineering
-Subcategories:
+Primary category: prompt_engineering
 
-- advanced_optimization_techniques
-- ai_model_adaptation
+Subcategories:
+- ai_optimization
+- task_adaptation

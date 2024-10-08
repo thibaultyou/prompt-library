@@ -1,17 +1,17 @@
-# Git Commit Message Generator
+# Git Commit Message Expert
 
 ### ✏️ One-line Description
 
-**Generates precise git commit messages following Conventional Commits specification**
+**Generates perfect git commit messages following Conventional Commits specification**
 
 ### 📄 Description
 
-This prompt creates an AI agent specialized in crafting git commit messages. It adheres strictly to the Conventional Commits specification, incorporates appropriate emojis, and provides concise yet informative descriptions of code changes within character limits.
+This prompt creates an AI expert in crafting git commit messages. It generates concise, informative messages that adhere to the Conventional Commits format, starting with an appropriate emoji. The expert provides clear insights into code changes for both developers and automated tools.
 
 ### 🔧 Variables
 
-- `{{TASK_DESCRIPTION}}`
-- `{{CODE_CHANGES}}`
+- `{{TASK_DESCRIPTION}}`: Provides context or specific requirements for the commit message generation task
+- `{{CODE_CHANGES}}`: Contains the actual code changes that need to be summarized in the commit message
 
 ### 📜 Prompt
 
@@ -167,8 +167,8 @@ Output your commit message within <commit_message> tags. The message should be o
 
 ### 📚 Category
 
-Primary Category: version_control
-Subcategories:
+Primary category: coding
 
-- commit_message_crafting
-- conventional_commits
+Subcategories:
+- version_control
+- software_development

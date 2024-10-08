@@ -1,4 +1,4 @@
-# AI Concept Creator
+# AI Concept Architect
 
 ### ✏️ One-line Description
 
@@ -6,11 +6,11 @@
 
 ### 📄 Description
 
-This prompt engineers a creative AI system to develop unique and practical concepts for specialized AI assistants. It focuses on generating groundbreaking yet implementable ideas tailored to specific topics, emphasizing core competencies and transformative capabilities.
+This prompt engineers a creative AI system that conceptualizes unique, practical, and ethically sound specialized AI assistants. It focuses on maximizing potential impact while ensuring feasibility and addressing ethical considerations.
 
 ### 🔧 Variables
 
-- `{{TOPIC}}`
+- `{{TOPIC}}`: Specific domain or field for which the AI assistant concept is to be generated
 
 ### 📜 Prompt
 
@@ -55,16 +55,16 @@ Now, based on the topic {{TOPIC}}, generate a groundbreaking yet feasible AI ass
 
 ### 🔖 Tags
 
-- creative_ai
+- creativity
 - innovation
-- specialized_assistants
-- concept_development
+- specialized_ai
 - feasibility
+- ethical_design
 
 ### 📚 Category
 
-Primary Category: artificial_intelligence_and_machine_learning
-Subcategories:
+Primary category: prompt_engineering
 
+Subcategories:
 - concept_generation
 - specialized_assistants

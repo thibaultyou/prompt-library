@@ -61,7 +61,12 @@ export function isValidMetadata(obj: unknown): obj is Metadata {
         Array.isArray(metadata.tags) &&
         typeof metadata.one_line_description === 'string' &&
         typeof metadata.description === 'string' &&
-        Array.isArray(metadata.variables)
+        Array.isArray(metadata.variables) &&
+        metadata.variables.every(v => 
+            typeof v === 'object' && v !== null &&
+            typeof v.name === 'string' &&
+            typeof v.role === 'string'
+        )
     );
 }
 

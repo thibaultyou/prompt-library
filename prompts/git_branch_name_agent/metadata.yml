@@ -8,20 +8,25 @@ directory: git_branch_name_agent
 one_line_description: >-
   Generates optimal git branch names based on project context and development
   requirements
-primary_category: version_control
+primary_category: coding
 subcategories:
-  - branch_naming
-  - development_workflow
+  - version_control
+  - software_development
 tags:
   - git
-  - version_control
   - branch_naming
+  - version_control
   - software_development
   - best_practices
 title: Git Branch Name Generator
 variables:
-  - '{{PROJECT_CONTEXT}}'
-  - '{{USER_REQUIREMENTS}}'
-  - '{{DEVELOPMENT_WORKFLOW}}'
-  - '{{TEAM_CONVENTIONS}}'
-  - '{{CURRENT_BRANCH_NAME}}'
+  - name: '{{PROJECT_CONTEXT}}'
+    role: Provides background information about the project
+  - name: '{{USER_REQUIREMENTS}}'
+    role: Specifies the specific task or feature to be implemented
+  - name: '{{DEVELOPMENT_WORKFLOW}}'
+    role: Describes the team's development process
+  - name: '{{TEAM_CONVENTIONS}}'
+    role: Outlines the team's specific naming conventions for branches
+  - name: '{{CURRENT_BRANCH_NAME}}'
+    role: Optional input for the existing branch name, if applicable
