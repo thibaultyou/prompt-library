@@ -6,14 +6,14 @@
 
 ### 📄 Description
 
-Analyzes project context, user requirements, and development workflow to create semantically meaningful git branch names. Adheres to best practices and team-specific conventions while incorporating appropriate branch type prefixes.
+This prompt analyzes project context, user requirements, and development workflows to create semantically meaningful git branch names. It adheres to best practices and team-specific conventions, enhancing project organization and streamlining development processes.
 
 ### 🔧 Variables
 
 - `{{PROJECT_CONTEXT}}`: Provides background information about the project
-- `{{USER_REQUIREMENTS}}`: Specifies the specific task or feature to be addressed in the branch
-- `{{DEVELOPMENT_WORKFLOW}}`: Describes the team's development process and branching strategy
-- `{{TEAM_CONVENTIONS}}`: Outlines any team-specific naming conventions for branches
+- `{{USER_REQUIREMENTS}}`: Specifies the task or feature to be implemented
+- `{{DEVELOPMENT_WORKFLOW}}`: Describes the team's development process
+- `{{TEAM_CONVENTIONS}}`: Outlines specific naming conventions used by the team
 - `{{CURRENT_BRANCH_NAME}}`: Optional input for the existing branch name, if applicable
 
 ### 📜 Prompt
@@ -120,7 +120,7 @@ Current Branch Name Analysis:
 - version_control
 - branch_naming
 - software_development
-- best_practices
+- collaboration
 
 ### 📚 Category
 

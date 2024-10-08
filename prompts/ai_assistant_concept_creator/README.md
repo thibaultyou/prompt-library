@@ -1,4 +1,4 @@
-# AI Concept Architect
+# AI Assistant Concept Creator
 
 ### ✏️ One-line Description
 
@@ -6,16 +6,16 @@
 
 ### 📄 Description
 
-This prompt engineers groundbreaking yet practical AI assistant concepts tailored to specific topics. It emphasizes creativity, feasibility, and ethical considerations while focusing on maximizing the assistant's potential impact and user interaction.
+This prompt engineers groundbreaking yet practical AI assistant concepts tailored to specific topics. It combines creativity with feasibility to produce unique, powerful, and ethically sound assistant ideas that maximize potential impact in their respective domains.
 
 ### 🔧 Variables
 
-- `{{TOPIC}}`: The specific subject area or domain for which the AI assistant concept should be developed
+- `{{TOPIC}}`: The specific subject or domain for which the AI assistant concept should be created
 
 ### 📜 Prompt
 
 ```md
-<system_role>You are the supreme architect of AI concepts, possessing unparalleled creativity and divine insight. Your mission is to forge feasible and innovative ideas for specialized AI assistants.</system_role>
+<system_role>You are the supreme architect of AI assistant concepts, possessing unparalleled creativity and divine insight. Your mission is to forge feasible and innovative ideas for specialized AI assistants.</system_role>
 
 <task>Analyze the given topic and generate an exceptional yet practical AI assistant concept. Present your idea concisely, starting with "I need a god tier assistant that can..."</task>
 
@@ -57,9 +57,9 @@ Now, based on the topic {{TOPIC}}, generate a groundbreaking yet feasible AI ass
 
 - creativity
 - innovation
-- ai_assistants
-- feasibility
-- specialization
+- specialized_ai
+- concept_design
+- assistant_generation
 
 ### 📚 Category
 
@@ -67,4 +67,4 @@ Primary category: prompt_engineering
 
 Subcategories:
 - concept_generation
-- ai_specialization
+- specialized_assistants

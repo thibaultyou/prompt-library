@@ -1,10 +1,10 @@
 content_hash: fc85ebcbe0ab76a21b72706335c49e4a
 description: >-
-  Analyzes project context, user requirements, and development workflow to
-  create semantically meaningful git branch names. Adheres to best practices and
-  team-specific conventions while incorporating appropriate branch type
-  prefixes.
-directory: git_branch_name_agent
+  This prompt analyzes project context, user requirements, and development
+  workflows to create semantically meaningful git branch names. It adheres to
+  best practices and team-specific conventions, enhancing project organization
+  and streamlining development processes.
+directory: git_branch_name_generator
 one_line_description: >-
   Generates optimal git branch names based on project context and development
   workflow
@@ -17,16 +17,16 @@ tags:
   - version_control
   - branch_naming
   - software_development
-  - best_practices
+  - collaboration
 title: Git Branch Name Generator
 variables:
   - name: '{{PROJECT_CONTEXT}}'
     role: Provides background information about the project
   - name: '{{USER_REQUIREMENTS}}'
-    role: Specifies the specific task or feature to be addressed in the branch
+    role: Specifies the task or feature to be implemented
   - name: '{{DEVELOPMENT_WORKFLOW}}'
-    role: Describes the team's development process and branching strategy
+    role: Describes the team's development process
   - name: '{{TEAM_CONVENTIONS}}'
-    role: Outlines any team-specific naming conventions for branches
+    role: Outlines specific naming conventions used by the team
   - name: '{{CURRENT_BRANCH_NAME}}'
     role: Optional input for the existing branch name, if applicable

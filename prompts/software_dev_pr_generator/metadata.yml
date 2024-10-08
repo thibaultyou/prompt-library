@@ -1,0 +1,22 @@
+content_hash: 405f0046d96dcf7338e351beee3b7f84
+description: >-
+  This prompt creates detailed pull requests for software projects, focusing on
+  code optimization, issue identification, and adherence to best practices. It
+  provides a structured approach to analyzing code changes and generating
+  informative pull request documentation.
+directory: software_dev_pr_generator
+one_line_description: Generates comprehensive pull requests for software development projects
+primary_category: coding
+subcategories:
+  - code_review
+  - pull_requests
+tags:
+  - github
+  - code_optimization
+  - best_practices
+  - software_development
+  - pull_request
+title: Software Developer Pull Request Generator
+variables:
+  - name: '{{CONTEXT}}'
+    role: Provides the project context and code changes for the pull request
