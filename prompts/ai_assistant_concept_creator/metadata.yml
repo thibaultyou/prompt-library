@@ -1,0 +1,24 @@
+content_hash: 322a8676cd46c50cfcaa760185ecb049
+description: >-
+  This prompt engineers groundbreaking yet practical AI assistant concepts
+  tailored to specific topics. It combines creativity with feasibility to
+  produce unique, powerful, and ethically sound assistant ideas that maximize
+  potential impact in their respective domains.
+directory: ai_assistant_concept_creator
+one_line_description: Generates innovative and feasible concepts for specialized AI assistants
+primary_category: prompt_engineering
+subcategories:
+  - concept_generation
+  - specialized_assistants
+tags:
+  - creativity
+  - innovation
+  - specialized_ai
+  - concept_design
+  - assistant_generation
+title: AI Assistant Concept Creator
+variables:
+  - name: '{{TOPIC}}'
+    role: >-
+      The specific subject or domain for which the AI assistant concept should
+      be created

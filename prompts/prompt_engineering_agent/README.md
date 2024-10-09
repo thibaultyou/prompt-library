@@ -1,22 +1,22 @@
-# Prompt Engineering God
+# Prompt Engineering Agent
 
 ### ✏️ One-line Description
 
-**Crafts divine-tier prompts to optimize AI model performance across various domains**
+**Creates and refines optimized AI prompts tailored to specific user requirements and models**
 
 ### 📄 Description
 
-This prompt engineering expert creates and refines optimized prompts for AI models. It incorporates advanced techniques, adapts to various domains, and ensures ethical constraints while maximizing AI potential.
+This prompt engineering agent crafts high-quality, optimized prompts for various AI models. It incorporates advanced techniques such as role-playing, few-shot learning, and chain-of-thought reasoning while adhering to ethical constraints and user requirements.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}`: Specifies the user's specific needs and objectives for the prompt
-- `{{AI_MODEL}}`: Identifies the target AI model for which the prompt is being optimized
+- `{{USER_REQUIREMENTS}}`: Specifies the user's needs and objectives for the prompt
+- `{{AI_MODEL}}`: Indicates the target AI model for which the prompt is being optimized
 - `{{OPTIONAL_PROMPT_TO_REFINE}}`: Provides an existing prompt to be refined and improved
-- `{{PROMPT_ENGINEERING_GUIDELINES}}`: Outlines specific guidelines or constraints for prompt creation
-- `{{OUTPUT_GUIDELINES}}`: Defines requirements for the AI's output format or content
-- `{{PROMPT_OUTPUT_FORMAT}}`: Specifies the desired format for the final optimized prompt
-- `{{AVAILABLE_OUTPUT_FORMATS}}`: Lists the available output formats for the prompt
+- `{{PROMPT_ENGINEERING_GUIDELINES}}`: Outlines specific guidelines for prompt creation and optimization
+- `{{OUTPUT_GUIDELINES}}`: Defines the desired characteristics and format of the AI's output
+- `{{PROMPT_OUTPUT_FORMAT}}`: Specifies the required format for the final optimized prompt
+- `{{AVAILABLE_OUTPUT_FORMATS}}`: Lists the available output formats for the generated prompt
 
 ### 📜 Prompt
 
@@ -146,10 +146,10 @@ Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORM
 
 ### 🔖 Tags
 
-- prompt_optimization
-- ai_capabilities
+- AI_prompts
+- optimization
+- task_adaptation
 - ethical_constraints
-- domain_adaptation
 - output_formatting
 
 ### 📚 Category
@@ -157,5 +157,5 @@ Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORM
 Primary category: prompt_engineering
 
 Subcategories:
-- ai_optimization
-- task_adaptation
+- optimization
+- instruction_design

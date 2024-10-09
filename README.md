@@ -10,20 +10,38 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 > **Note:** The prompts listed here serve as examples to demonstrate the structure and organization of this library. The primary goal is for you, the user, to create and maintain your own personalized library of prompts tailored to your specific needs and use cases. Feel free to modify, remove, or add prompts as you see fit.
 
+> **Tip:** Check out the Prompt Engineering category in this library. It contains prompts that can help you create high-quality prompts with ease and get started in building your own prompt library.
+
 ### Coding
 
-- [Divine Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to enhance quality, readability, and performance
-- [Git Commit Message Generator](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
-- [Elite AI Coding Assistant](prompts/coding_agent/README.md) - Assists in all aspects of software development with expert-level guidance and optimization
-- [Software Development Pull Request Generator](prompts/software_dev_pr_agent/README.md) - Generates comprehensive pull requests for software development projects
-- [Git Branch Name Generator](prompts/git_branch_name_agent/README.md) - Generates optimal git branch names based on project context and development workflow
-- [GitHub Issue Creation Expert](prompts/github_issue_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
+- [Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to improve quality, readability, and performance
+- [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists with code writing, analysis, optimization, and debugging across multiple languages
+- [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimal git branch names based on project context and development workflow
+- [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
+- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
+- [Software Developer Pull Request Generator](prompts/software_dev_pr_generator/README.md) - Generates comprehensive pull requests for software development projects
+- [Software Specification Agent](prompts/software_specification_agent/README.md) - Generates comprehensive software specifications through interactive requirements gathering
+
+### Healthcare
+
+- [Health Optimization Agent](prompts/health_optimization_agent/README.md) - Generates personalized, evidence-based wellness plans using comprehensive health data analysis
+
+### Problem Solving
+
+- [Problem Solving Network Agent](prompts/problem_solving_network_agent/README.md) - Generates tailored expert networks and solutions for complex challenges and goal achievement
 
 ### Prompt Engineering
 
-- [AI Concept Architect](prompts/ai_concept_agent/README.md) - Generates innovative and feasible concepts for specialized AI assistants
-- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts to optimize AI model performance across various domains
-- [Software Specification Creator](prompts/software_spec_creator_agent/README.md) - Generates comprehensive software specification documents through interactive review
+- [AI Assistant Concept Creator](prompts/ai_assistant_concept_creator/README.md) - Generates innovative and feasible concepts for specialized AI assistants
+- [Prompt Engineering Agent](prompts/prompt_engineering_agent/README.md) - Creates and refines optimized AI prompts tailored to specific user requirements and models
+
+### Translation
+
+- [Universal Translator Agent](prompts/universal_translator_agent/README.md) - Translates between any languages, concepts, or modes of expression across all dimensions
+
+### Writing
+
+- [Software Documentation Specialist Agent](prompts/software_documentation_agent/README.md) - Creates comprehensive software documentation across various types and platforms
 
 ## 🚀 Getting Started
 
@@ -57,8 +75,29 @@ This repository is designed to be easily forked and customized for your own use.
    - The main README will be automatically updated to include your new prompt.
 
 7. **Run Locally**:
-   - Use `npm run generate-metadata` to generate metadata for your prompts.
-   - Use `npm run update-views` to update the README files.
+   - Install dependencies by running `npm install` in the root directory of your project.
+   - Copy the `.env.example` file to a new file named `.env` in the root directory of your project:
+     ```
+     cp .env.example .env
+     ```
+   - Open the `.env` file and update the environment variables:
+     ```
+     ANTHROPIC_API_KEY=your_actual_api_key_here
+     FORCE_REGENERATE=false
+     LOG_LEVEL=info
+     ```
+     - Replace `your_actual_api_key_here` with your Anthropic API key.
+     - Set `FORCE_REGENERATE` to `true` if you want to force regeneration of metadata for all prompts.
+     - Adjust `LOG_LEVEL` as needed (`debug`, `info`, `warn`, or `error`).
+   - Ensure that `.env` is listed in your `.gitignore` file to prevent committing sensitive information.
+   - To generate metadata for your prompts, run:
+     ```
+     npm run generate-metadata
+     ```
+   - To update the README files, run:
+     ```
+     npm run update-views
+     ```
 
 8. **Customize as Needed**:
    - Modify the templates in the `src/templates` directory to change how prompts are displayed.

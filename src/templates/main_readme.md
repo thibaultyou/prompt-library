@@ -10,6 +10,8 @@ Welcome to the **Prompt Library**. This repository contains a collection of AI p
 
 > **Note:** The prompts listed here serve as examples to demonstrate the structure and organization of this library. The primary goal is for you, the user, to create and maintain your own personalized library of prompts tailored to your specific needs and use cases. Feel free to modify, remove, or add prompts as you see fit.
 
+> **Tip:** Check out the Prompt Engineering category in this library. It contains prompts that can help you create high-quality prompts with ease and get started in building your own prompt library.
+
 {%- for category, prompts in categories %}
 
 ### {{ format_category(category) }}
@@ -51,8 +53,29 @@ This repository is designed to be easily forked and customized for your own use.
    - The main README will be automatically updated to include your new prompt.
 
 7. **Run Locally**:
-   - Use `npm run generate-metadata` to generate metadata for your prompts.
-   - Use `npm run update-views` to update the README files.
+   - Install dependencies by running `npm install` in the root directory of your project.
+   - Copy the `.env.example` file to a new file named `.env` in the root directory of your project:
+     ```
+     cp .env.example .env
+     ```
+   - Open the `.env` file and update the environment variables:
+     ```
+     ANTHROPIC_API_KEY=your_actual_api_key_here
+     FORCE_REGENERATE=false
+     LOG_LEVEL=info
+     ```
+     - Replace `your_actual_api_key_here` with your Anthropic API key.
+     - Set `FORCE_REGENERATE` to `true` if you want to force regeneration of metadata for all prompts.
+     - Adjust `LOG_LEVEL` as needed (`debug`, `info`, `warn`, or `error`).
+   - Ensure that `.env` is listed in your `.gitignore` file to prevent committing sensitive information.
+   - To generate metadata for your prompts, run:
+     ```
+     npm run generate-metadata
+     ```
+   - To update the README files, run:
+     ```
+     npm run update-views
+     ```
 
 8. **Customize as Needed**:
    - Modify the templates in the `src/templates` directory to change how prompts are displayed.

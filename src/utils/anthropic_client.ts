@@ -10,7 +10,7 @@ import logger from '@utils/logger';
  * @returns {Anthropic} An initialized Anthropic client.
  */
 export function initializeAnthropicClient(): Anthropic {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = config.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
         logger.error('ANTHROPIC_API_KEY is not set in the environment.');

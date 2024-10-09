@@ -1,16 +1,16 @@
-# AI Prompt Analysis Expert
+# Prompt Analysis Agent
 
 ### ✏️ One-line Description
 
-**Analyzes AI prompts to provide insights for prompt engineering and optimization**
+**Analyzes AI prompts to extract key information and provide insights for optimization**
 
 ### 📄 Description
 
-This prompt creates an AI expert specialized in dissecting and analyzing AI prompts. It extracts key information, categorizes prompts, and provides actionable insights for prompt engineering and optimization. The analysis is thorough, precise, and follows specific guidelines.
+This prompt creates an AI agent specialized in dissecting and analyzing AI prompts. It extracts critical information, categorizes the prompt, and provides actionable insights for prompt engineering and optimization. The analysis is thorough, precise, and follows specific guidelines.
 
 ### 🔧 Variables
 
-- `{{PROMPT}}`: The AI prompt to be analyzed
+- `{{PROMPT}}`: The AI prompt to be analyzed and dissected
 
 ### 📜 Prompt
 
@@ -86,11 +86,16 @@ Follow these steps to analyze the prompt:
   - Keep it concise (max 30 characters)
   <thinking>Create a clear, descriptive name that reflects the prompt's primary function.</thinking>
 
+9. Create a title for the prompt based on the directory name:
+  - Remove underscores from the directory name
+  - Apply correct casing (capitalize the first letter of each word, except for articles and prepositions)
+  <thinking>Transform the directory name into a readable and properly formatted title.</thinking>
+
 Present your analysis using the specified output format, ensuring accuracy and adherence to the guidelines.
 </instructions>
 
 <output>
-title: [Prompt's main topic or purpose]
+title: [Your generated title based on the directory name]
 primary_category: [Your selected primary category]
 subcategories:
   - [Subcategory 1]
@@ -114,16 +119,16 @@ variables:
 
 ### 🔖 Tags
 
-- prompt_analysis
-- categorization
-- optimization
-- information_extraction
 - prompt_engineering
+- analysis
+- categorization
+- information_extraction
+- optimization
 
 ### 📚 Category
 
-Primary category: analysis
+Primary category: prompt_engineering
 
 Subcategories:
-- prompt_engineering
 - information_extraction
+- categorization

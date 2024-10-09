@@ -69,11 +69,16 @@ Follow these steps to analyze the prompt:
   - Keep it concise (max 30 characters)
   <thinking>Create a clear, descriptive name that reflects the prompt's primary function.</thinking>
 
+9. Create a title for the prompt based on the directory name:
+  - Remove underscores from the directory name
+  - Apply correct casing (capitalize the first letter of each word, except for articles and prepositions)
+  <thinking>Transform the directory name into a readable and properly formatted title.</thinking>
+
 Present your analysis using the specified output format, ensuring accuracy and adherence to the guidelines.
 </instructions>
 
 <output>
-title: [Prompt's main topic or purpose]
+title: [Your generated title based on the directory name]
 primary_category: [Your selected primary category]
 subcategories:
   - [Subcategory 1]
