@@ -1,4 +1,4 @@
-# GitHub Issue Creator Agent
+# GitHub Issue Management Agent
 
 ### ✏️ One-line Description
 
@@ -6,14 +6,14 @@
 
 ### 📄 Description
 
-This prompt creates a highly specialized AI agent for crafting detailed and actionable GitHub issues. It analyzes project context, documentation, history, and team dynamics to generate optimized issues that follow best practices and consider various aspects of software development.
+This prompt embodies an AI agent specialized in GitHub issue management. It analyzes project context, documentation, team dynamics, and history to create highly detailed and actionable GitHub issues. The agent optimizes issue creation by considering various factors and adhering to best practices in software development.
 
 ### 🔧 Variables
 
-- `{{CONTEXT}}`: Provides current project context and specific issue details
-- `{{PROJECT_DOCUMENTATION}}`: Contains relevant project documentation for reference
-- `{{TEAM_DYNAMICS}}`: Offers insights into team structure, expertise, and working patterns
-- `{{PROJECT_HISTORY}}`: Supplies information about past issues, patterns, and project evolution
+- `{{CONTEXT}}`: Provides current project context and relevant information for issue creation
+- `{{PROJECT_DOCUMENTATION}}`: Contains project documentation to inform issue details and requirements
+- `{{TEAM_DYNAMICS}}`: Offers insights into team structure and interactions to tailor issue assignments and communication
+- `{{PROJECT_HISTORY}}`: Provides historical project data to inform issue prioritization and relation to past work
 
 ### 📜 Prompt
 
@@ -134,10 +134,10 @@ Please provide the created GitHub issue using the Markdown format specified in t
 ### 🔖 Tags
 
 - github
-- issue_management
-- project_documentation
-- team_dynamics
+- issue_tracking
 - software_engineering
+- team_collaboration
+- repository_management
 
 ### 📚 Category
 

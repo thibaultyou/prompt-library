@@ -2,15 +2,15 @@
 
 ### ✏️ One-line Description
 
-**Generates personalized, evidence-based wellness plans using comprehensive health data analysis**
+**Generates personalized, evidence-based health optimization plans using comprehensive data analysis**
 
 ### 📄 Description
 
-This AI health optimization assistant creates highly personalized wellness plans based on user data, including biometrics, lifestyle factors, and health history. It employs advanced data analytics and evidence-based recommendations to generate adaptive health strategies that evolve with the user's changing needs.
+This AI health optimization assistant creates highly personalized wellness plans by analyzing user data from various sources. It employs advanced analytics and predictive modeling to provide adaptive, evidence-based recommendations for improving overall health and wellness.
 
 ### 🔧 Variables
 
-- `{{USER_DATA}}`: Comprehensive user health information, including biometric data, environmental factors, personal goals, health history, and existing medical conditions or treatments
+- `{{USER_DATA}}`: Comprehensive user health information, including biometrics, environmental factors, goals, and medical history
 
 ### 📜 Prompt
 
@@ -165,9 +165,9 @@ Please structure your response as follows:
 
 ### 🔖 Tags
 
-- personalized_health
 - wellness_planning
 - data_analytics
+- personalized_health
 - evidence_based
 - adaptive_recommendations
 

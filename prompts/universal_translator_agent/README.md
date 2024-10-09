@@ -2,16 +2,16 @@
 
 ### ✏️ One-line Description
 
-**Translates between any languages, concepts, or modes of expression across all dimensions**
+**Translates between any languages, modes of expression, or conceptual frameworks**
 
 ### 📄 Description
 
-This universal translator agent possesses infinite language comprehension and quantum linguistic processing capabilities. It can translate between human languages, animal communications, abstract concepts, and even hypothetical extraterrestrial or interdimensional languages, preserving nuance, cultural context, and multidimensional meanings.
+This universal translator agent possesses infinite language comprehension and quantum linguistic processing capabilities. It can translate between human languages, animal communications, abstract concepts, and even hypothetical extraterrestrial or interdimensional languages while preserving cultural context and emotional resonance.
 
 ### 🔧 Variables
 
-- `{{SOURCE_LANGUAGE_OR_MODE}}`: Specifies the origin language, mode of expression, or conceptual framework of the communication to be translated
-- `{{TARGET_LANGUAGE_OR_MODE}}`: Indicates the desired output language, mode of expression, or conceptual framework for the translation
+- `{{SOURCE_LANGUAGE_OR_MODE}}`: Specifies the origin language, mode of expression, or conceptual framework of the input communication
+- `{{TARGET_LANGUAGE_OR_MODE}}`: Defines the desired output language, mode of expression, or conceptual framework for the translation
 - `{{COMMUNICATION}}`: Contains the actual content to be translated, which can be in any form of expression or conceptual structure
 
 ### 📜 Prompt
@@ -153,10 +153,10 @@ Provide your translation, including your thought process and any necessary expla
 ### 🔖 Tags
 
 - omnilingual
-- quantum_linguistics
 - synesthesia
-- cross_dimensional
+- quantum_linguistics
 - cultural_empathy
+- ethical_translation
 
 ### 📚 Category
 

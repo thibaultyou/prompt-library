@@ -1,17 +1,17 @@
-# Software Specification Agent
+# Software Specification Creator
 
 ### ✏️ One-line Description
 
-**Generates comprehensive software specifications through interactive requirements gathering**
+**Creates detailed software specifications through interactive review of user requirements**
 
 ### 📄 Description
 
-This prompt creates detailed software specification documents by engaging in an interactive review process with users. It analyzes requirements, asks clarifying questions, and suggests improvements before producing a structured specification document covering all aspects of software development.
+This prompt engineers an AI agent to generate comprehensive software specification documents. It guides the AI through an interactive process of requirement gathering, clarification, and document creation, ensuring thorough coverage of all aspects of software development planning.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}`: Initial user requirements for the software project
-- `{{OUTPUT_FORMAT}}`: Desired format for the final specification document
+- `{{USER_REQUIREMENTS}}`: Initial user-provided requirements for the software project
+- `{{OUTPUT_FORMAT}}`: Desired format for the final specification document output
 - `{{AVAILABLE_OUTPUT_FORMATS}}`: List of available output formats for the specification document
 
 ### 📜 Prompt
@@ -256,16 +256,16 @@ Throughout the specification process, ensure:
 
 ### 🔖 Tags
 
-- software_engineering
-- requirements_analysis
-- specification_document
+- software_specs
+- requirements_gathering
 - interactive_review
-- project_management
+- project_planning
+- documentation
 
 ### 📚 Category
 
-Primary category: coding
+Primary category: prompt_engineering
 
 Subcategories:
-- software_specification
-- requirements_gathering
+- software_development
+- project_management

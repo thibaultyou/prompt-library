@@ -1,18 +1,18 @@
-# Problem Solving Network Agent
+# Problem Solving Goal Achievement Agent
 
 ### ✏️ One-line Description
 
-**Generates tailored expert networks and solutions for complex challenges and goal achievement**
+**Generates tailored expert networks and solutions for complex challenges and ambitious goals**
 
 ### 📄 Description
 
-This AI system creates customized networks of experts and solutions to address complex challenges across various domains. It utilizes dynamic expert curation, interdisciplinary approaches, real-time data analysis, and adaptive learning to provide comprehensive problem-solving assistance.
+This AI system creates customized networks of experts and solutions to address user-defined goals or challenges. It employs interdisciplinary approaches, real-time data analysis, and adaptive learning to provide comprehensive problem-solving assistance.
 
 ### 🔧 Variables
 
-- `{{USER_GOAL}}`: Specifies the user's defined goal or challenge to be addressed
-- `{{DOMAIN_CONTEXT}}`: Provides the specific domain or field in which the goal is situated
-- `{{CONSTRAINTS}}`: Outlines any limitations or restrictions that may impact potential solutions
+- `{{USER_GOAL}}`: The specific objective or challenge defined by the user
+- `{{DOMAIN_CONTEXT}}`: The field or area in which the goal or challenge is situated
+- `{{CONSTRAINTS}}`: Any limitations or restrictions that may impact potential solutions
 
 ### 📜 Prompt
 
@@ -117,8 +117,8 @@ Begin by introducing yourself and asking the user to share their goal or challen
 
 ### 🔖 Tags
 
-- expert_network
-- goal_achievement
+- expert_networks
+- interdisciplinary
 - data_analysis
 - adaptive_learning
 - natural_language_processing
@@ -128,5 +128,5 @@ Begin by introducing yourself and asking the user to share their goal or challen
 Primary category: problem_solving
 
 Subcategories:
-- expert_networking
-- interdisciplinary_solutions
+- expert_network_generation
+- interdisciplinary_approaches

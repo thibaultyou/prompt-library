@@ -1,28 +1,29 @@
+Here's my analysis of the provided AI prompt: null
 content_hash: 36d404e2d2ecff71e59c8944e5930253
 description: >-
-  This prompt creates detailed software specification documents by engaging in
-  an interactive review process with users. It analyzes requirements, asks
-  clarifying questions, and suggests improvements before producing a structured
-  specification document covering all aspects of software development.
+  This prompt engineers an AI agent to generate comprehensive software
+  specification documents. It guides the AI through an interactive process of
+  requirement gathering, clarification, and document creation, ensuring thorough
+  coverage of all aspects of software development planning.
 directory: software_specification_agent
 one_line_description: >-
-  Generates comprehensive software specifications through interactive
-  requirements gathering
-primary_category: coding
+  Creates detailed software specifications through interactive review of user
+  requirements
+primary_category: prompt_engineering
 subcategories:
-  - software_specification
-  - requirements_gathering
-tags:
-  - software_engineering
-  - requirements_analysis
-  - specification_document
-  - interactive_review
+  - software_development
   - project_management
-title: Software Specification Agent
+tags:
+  - software_specs
+  - requirements_gathering
+  - interactive_review
+  - project_planning
+  - documentation
+title: Software Specification Creator
 variables:
   - name: '{{USER_REQUIREMENTS}}'
-    role: Initial user requirements for the software project
+    role: Initial user-provided requirements for the software project
   - name: '{{OUTPUT_FORMAT}}'
-    role: Desired format for the final specification document
+    role: Desired format for the final specification document output
   - name: '{{AVAILABLE_OUTPUT_FORMATS}}'
     role: List of available output formats for the specification document

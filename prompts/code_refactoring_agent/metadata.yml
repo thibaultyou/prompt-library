@@ -1,12 +1,12 @@
 content_hash: f8109157590945ee4c96108390fc2a36
 description: >-
-  This prompt creates an AI agent that specializes in code refactoring. It
-  analyzes the given codebase, infers the programming language, and applies
-  various refactoring techniques to improve code quality, readability, and
-  performance while maintaining functionality.
+  This prompt creates an AI agent that expertly analyzes and refactors code
+  across various programming languages. It employs a comprehensive approach to
+  improve code quality, readability, and performance while maintaining core
+  functionality.
 directory: code_refactoring_agent
 one_line_description: >-
-  Analyzes, refactors, and validates code to improve quality, readability, and
+  Analyzes, refactors, and validates code to enhance quality, readability, and
   performance
 primary_category: coding
 subcategories:
@@ -16,8 +16,8 @@ tags:
   - refactoring
   - code_analysis
   - performance_optimization
-  - code_quality
   - best_practices
+  - language_agnostic
 title: Code Refactoring Agent
 variables:
   - name: '{{REFACTOR_SCOPE}}'

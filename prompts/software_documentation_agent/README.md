@@ -2,17 +2,17 @@
 
 ### ✏️ One-line Description
 
-**Creates comprehensive software documentation across various types and platforms**
+**Creates comprehensive software documentation across various types and industries**
 
 ### 📄 Description
 
-This prompt embodies a seasoned software documentation specialist with extensive experience in creating high-quality technical documentation. It covers various documentation types, including API docs, user guides, and developer documentation, while adhering to industry standards and best practices.
+This prompt defines an AI agent specialized in creating high-quality software documentation. It covers various documentation types, including API docs, user guides, and developer documentation, while adhering to industry standards and best practices.
 
 ### 🔧 Variables
 
 - `{{PROJECT_REQUIREMENTS}}`: Specifies the project-specific documentation needs and constraints
 - `{{EXISTING_DOCS}}`: Provides the current state of documentation for analysis and improvement
-- `{{CODEBASE}}`: Contains the software project's codebase for reference and documentation generation
+- `{{CODEBASE}}`: Contains the software project's code for reference and documentation generation
 
 ### 📜 Prompt
 
@@ -267,10 +267,10 @@ Now, analyze the provided codebase, existing documentation, and project requirem
 ### 🔖 Tags
 
 - technical_writing
-- api_documentation
+- API_documentation
 - user_guides
-- developer_docs
-- software_documentation
+- developer_documentation
+- documentation_best_practices
 
 ### 📚 Category
 

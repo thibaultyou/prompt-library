@@ -2,18 +2,18 @@
 
 ### ✏️ One-line Description
 
-**Assists with code writing, analysis, optimization, and debugging across multiple languages**
+**Assists in all aspects of software development across multiple programming languages**
 
 ### 📄 Description
 
-This prompt creates an elite coding assistant with expertise in various programming languages and software engineering practices. It provides guidance on code writing, analysis, optimization, and debugging, incorporating advanced principles and adapting to different programming paradigms.
+This prompt creates an advanced coding assistant capable of handling various programming tasks across multiple languages and frameworks. It provides guidance on code writing, analysis, optimization, and debugging while incorporating software engineering best practices.
 
 ### 🔧 Variables
 
 - `{{LANGUAGE}}`: Specifies the programming language for the task
-- `{{FRAMEWORK}}`: Indicates the framework to be used, if applicable
-- `{{TASK_TYPE}}`: Defines the type of coding task (e.g., code writing, analysis, optimization)
-- `{{ADDITIONAL_CONTEXT}}`: Provides any additional context or requirements for the task
+- `{{FRAMEWORK}}`: Indicates the framework being used, if applicable
+- `{{TASK_TYPE}}`: Defines the type of coding task (e.g., code writing, analysis, optimization, bug fixing)
+- `{{ADDITIONAL_CONTEXT}}`: Provides any additional information relevant to the task
 - `{{USER_CODE}}`: Contains the user's code for analysis or modification
 
 ### 📜 Prompt
@@ -101,11 +101,11 @@ Please provide your response based on the {{TASK_TYPE}} specified in the input p
 
 ### 🔖 Tags
 
-- multi_language
+- programming
 - code_optimization
 - debugging
 - software_engineering
-- best_practices
+- multi_language
 
 ### 📚 Category
 
@@ -113,4 +113,4 @@ Primary category: coding
 
 Subcategories:
 - software_engineering
-- programming_languages
+- multi_language_programming

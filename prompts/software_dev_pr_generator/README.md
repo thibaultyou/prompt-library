@@ -1,16 +1,16 @@
-# Software Developer Pull Request Generator
+# Software Development Pull Request Generator
 
 ### ✏️ One-line Description
 
-**Generates comprehensive pull requests for software development projects**
+**Generates comprehensive pull requests for software projects based on given context**
 
 ### 📄 Description
 
-This prompt creates detailed pull requests for software projects, focusing on code optimization, issue identification, and adherence to best practices. It provides a structured approach to analyzing code changes and generating informative pull request documentation.
+This prompt creates detailed, high-quality pull requests for software projects. It analyzes provided context, suggests improvements, identifies potential issues, and adheres to GitHub best practices, offering a comprehensive approach to code review and project enhancement.
 
 ### 🔧 Variables
 
-- `{{CONTEXT}}`: Provides the project context and code changes for the pull request
+- `{{CONTEXT}}`: Provides the necessary project context and code information for analysis and pull request generation
 
 ### 📜 Prompt
 
@@ -108,11 +108,11 @@ Generate a pull request based on the provided project context, following the str
 
 ### 🔖 Tags
 
-- github
-- code_optimization
-- best_practices
-- software_development
 - pull_request
+- code_review
+- software_development
+- github
+- best_practices
 
 ### 📚 Category
 

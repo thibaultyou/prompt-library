@@ -1,36 +1,34 @@
 content_hash: 98cc0ea85eb722ef28407f75f62d8dec
 description: >-
-  This prompt engineering agent crafts high-quality, optimized prompts for
-  various AI models. It incorporates advanced techniques such as role-playing,
-  few-shot learning, and chain-of-thought reasoning while adhering to ethical
-  constraints and user requirements.
+  This prompt engineering agent creates and optimizes prompts for AI models,
+  incorporating advanced techniques and ethical considerations. It adapts to
+  user requirements, ensures output quality, and maximizes AI potential across
+  diverse domains and task types.
 directory: prompt_engineering_agent
-one_line_description: >-
-  Creates and refines optimized AI prompts tailored to specific user
-  requirements and models
+one_line_description: Crafts and refines optimized prompts for AI models across various domains
 primary_category: prompt_engineering
 subcategories:
   - optimization
-  - instruction_design
+  - ai_instruction
 tags:
-  - AI_prompts
-  - optimization
+  - prompt_optimization
+  - ai_capabilities
   - task_adaptation
   - ethical_constraints
   - output_formatting
 title: Prompt Engineering Agent
 variables:
   - name: '{{USER_REQUIREMENTS}}'
-    role: Specifies the user's needs and objectives for the prompt
+    role: Specifies the user's specific needs and objectives for the prompt
   - name: '{{AI_MODEL}}'
-    role: Indicates the target AI model for which the prompt is being optimized
+    role: Identifies the target AI model for which the prompt is being optimized
   - name: '{{OPTIONAL_PROMPT_TO_REFINE}}'
-    role: Provides an existing prompt to be refined and improved
+    role: Provides an existing prompt that needs refinement or optimization
   - name: '{{PROMPT_ENGINEERING_GUIDELINES}}'
-    role: Outlines specific guidelines for prompt creation and optimization
+    role: Outlines specific guidelines or constraints for prompt creation
   - name: '{{OUTPUT_GUIDELINES}}'
-    role: Defines the desired characteristics and format of the AI's output
+    role: Defines the desired characteristics of the AI model's output
   - name: '{{PROMPT_OUTPUT_FORMAT}}'
     role: Specifies the required format for the final optimized prompt
   - name: '{{AVAILABLE_OUTPUT_FORMATS}}'
-    role: Lists the available output formats for the generated prompt
+    role: Lists the available output format options for the final prompt
