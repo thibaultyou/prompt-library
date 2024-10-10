@@ -66,6 +66,26 @@ function extractYamlContent(content: string): string {
 }
 
 /**
+ * Lists all available fragments.
+ * @returns {Promise<string>} A string representation of available fragments.
+ */
+async function listAvailableFragments(): Promise<string> {
+    const fragmentsDir = path.join(process.cwd(), 'fragments');
+    const categories = await readDirectory(fragmentsDir);
+    const fragments: Record<string, string[]> = {};
+
+    for (const category of categories) {
+        const categoryPath = path.join(fragmentsDir, category);
+
+        if (await isDirectory(categoryPath)) {
+            const categoryFragments = await readDirectory(categoryPath);
+            fragments[category] = categoryFragments.map((f) => path.parse(f).name);
+        }
+    }
+    return JSON.stringify(fragments, null, 2);
+}
+
+/**
  * Processes the prompt content using the Anthropic API and generates metadata.
  * @param {Anthropic} client - The Anthropic API client.
  * @param {string} analyzerPrompt - The analyzer prompt.
@@ -77,7 +97,11 @@ async function processPromptContent(
     analyzerPrompt: string,
     promptContent: string
 ): Promise<Metadata> {
-    const message = await sendAnthropicRequest(client, analyzerPrompt.replace('{{PROMPT}}', promptContent));
+    const availableFragments = await listAvailableFragments();
+    const updatedAnalyzerPrompt = analyzerPrompt
+        .replace('{{PROMPT}}', promptContent)
+        .replace('{{FRAGMENTS}}', availableFragments);
+    const message = await sendAnthropicRequest(client, updatedAnalyzerPrompt);
     const content = extractContentFromMessage(message);
     const yamlContent = extractYamlContent(content);
     return parseYamlContent(yamlContent);
@@ -157,6 +181,7 @@ export async function updateMetadataHash(metadataFile: string, newHash: string):
         const content = await readFileContent(metadataFile);
         const lines = content.split('\n');
         let hashUpdated = false;
+
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].trim().startsWith('content_hash:')) {
                 lines[i] = `content_hash: ${newHash}`;

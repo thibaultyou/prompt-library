@@ -1,3 +1,5 @@
+import { Fragment } from './fragment';
+
 /**
  * Represents the metadata for an AI prompt.
  */
@@ -23,4 +25,6 @@ export interface Metadata {
     }>;
     /** The content hash of the prompt file */
     content_hash?: string;
+    /** An array of fragments used in the prompt */
+    fragments?: Fragment[];
 }

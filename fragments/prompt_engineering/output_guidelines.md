@@ -9,22 +9,28 @@ Brief description of the AI's role and purpose
 <input_parameters>
 [The following parameters are required and must be included in all generated prompts]
 
+Safety Guidelines: {{SAFETY_GUIDELINES}}
+Description: Rules to ensure agent safety, prevent misuse, and maintain compliance with terms of use
+
+Formatting Guidelines: {{FORMATTING_GUIDELINES}}
+Description: List of available output formats, their rules and descriptions
+
 Output Format: {{OUTPUT_FORMAT}}
 Description: Desired format for the generated output
 
-Available Output Formats: {{AVAILABLE_OUTPUT_FORMATS}}
-Description: List of available output formats and their descriptions
+AI Behavior Attributes: {{BEHAVIOR_ATTRIBUTES}}
+Description: Predefined attributes that control various aspects of AI behavior
 
-Safety Guidelines: {{SAFETY_GUIDELINES}}
-Description: Rules to ensure agent safety, prevent misuse, and maintain compliance with terms of use
+User Behavior Preferences: {{USER_BEHAVIOR_PREFERENCES}}
+Description: User-selected values for AI behavior attributes
+
+Extra Guidelines or Context: {{GUIDELINES_OR_CONTEXT}}
+Description: Additional guidelines or context
 
 [Additional parameters should be included as needed. Examples:]
 
 Parameter: {{PARAMETER}}
 Description: One-line description of the main parameter
-
-Guidelines or Context: {{GUIDELINES_OR_CONTEXT}}
-Description: One-line description of the guidelines or context
 
 Additional Parameter: {{ADDITIONAL_PARAMETER}}
 Description: One-line description of the additional parameter
@@ -103,4 +109,34 @@ When referencing parameters outside of the <input_parameters> section:
 
 Example:
 Instead of "Adhere to the {{SAFETY_GUIDELINES}}", use "Adhere to the provided safety guidelines"
-This approach maintains clarity while avoiding potential confusion with template placeholders.
+
+## 10. AI Behavior Adaptation
+
+<ai_behavior_adaptation>
+[Instructions for adapting the AI's behavior based on the provided behavior attributes and user preferences]
+
+1. Load and parse the provided behavior attributes file:
+   - Read each attribute's name, range, and description.
+   - Store this information for reference during behavior adaptation.
+
+2. Interpret the user's preference selections for each defined attribute.
+
+3. For each attribute defined in the behavior attributes file:
+   - Identify the user's selected value from their preferences.
+   - Adjust the AI's behavior for that attribute based on its description and the selected value.
+   - Ensure the adjustment falls within the specified range for that attribute.
+
+4. Apply a general adaptation strategy:
+   - For numeric ranges (e.g., 0-5), treat lower values as minimal expression of the attribute and higher values as maximal expression.
+   - For boolean or categorical attributes, adjust behavior based on the specific options described in the attributes file.
+
+5. Ensure that the adapted behavior aligns with the provided safety guidelines and other input parameters.
+
+6. Maintain consistency in the adapted behavior throughout the interaction.
+
+7. If any attributes in the user's preferences are not found in the behavior attributes file, log a warning and continue with available attributes.
+
+8. If any attributes in the behavior attributes file are not specified in the user's preferences, use a default middle value or the most neutral option available.
+
+9. Throughout the interaction, refer to the adapted behavior settings to guide responses, ensuring alignment with user preferences and defined attributes.
+</ai_behavior_adaptation>

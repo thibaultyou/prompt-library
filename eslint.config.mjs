@@ -111,7 +111,7 @@ export default [
                 {
                     blankLine: 'always',
                     prev: '*',
-                    next: ['if', 'try', 'class', 'function', 'export']
+                    next: ['if', 'try', 'for', 'class', 'function', 'export']
                 },
                 {
                     blankLine: 'always',

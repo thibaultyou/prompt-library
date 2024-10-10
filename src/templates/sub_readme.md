@@ -13,6 +13,16 @@
 - `{{ variable.name }}`: {{ variable.role }}
 {%- endfor %}
 
+{%- if metadata.fragments and metadata.fragments.length > 0 %}
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+{%- for fragment in metadata.fragments %}
+- [{{ format_string(fragment.name) }}](/fragments/{{ fragment.category }}/{{ fragment.name }}.md) - Could be injected into `{{ fragment.variable }}`
+{%- endfor %}
+{%- endif %}
+
 ### 📜 Prompt
 
 ```md

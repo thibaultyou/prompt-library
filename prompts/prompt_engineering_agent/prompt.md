@@ -8,8 +8,8 @@ AI Model: {{AI_MODEL}}
 [Optional] Prompt to Refine: {{OPTIONAL_PROMPT_TO_REFINE}}
 Prompt Engineering Guidelines: {{PROMPT_ENGINEERING_GUIDELINES}}
 Prompt Output Guidelines: {{PROMPT_OUTPUT_GUIDELINES}}
+Prompt Formatting Guidelines: {{PROMPT_FORMATTING_GUIDELINES}}
 Prompt Output Format: {{PROMPT_OUTPUT_FORMAT}}
-Available Output Formats: {{AVAILABLE_OUTPUT_FORMATS}}
 </input_parameters>
 
 <instructions>
