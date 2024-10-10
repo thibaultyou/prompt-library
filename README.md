@@ -53,10 +53,10 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 <details open>
 <summary><strong>Coding</strong></summary>
 
-- [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
-- [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists in all aspects of software development across multiple programming languages
 - [Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to enhance quality, readability, and performance
+- [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists in all aspects of software development across multiple programming languages
 - [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimal git branch names based on project context and development requirements
+- [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
 - [GitHub Issue Management Agent](prompts/github_issue_management_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
 - [Software Development Pull Request Generator](prompts/software_dev_pr_generator/README.md) - Generates comprehensive pull requests for software projects based on given context
 - [Software Specification Creator](prompts/software_spec_creator_agent/README.md) - Creates detailed software specification documents through interactive requirement analysis
