@@ -5,13 +5,6 @@ description: >-
   implementation, and ethical considerations while maximizing potential impact
   and user interaction.
 directory: ai_assistant_concept_creator
-fragments:
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_max
-    variable: '{{TOPIC}}'
-  - category: prompt_engineering
-    name: safety_guidelines
-    variable: '{{TOPIC}}'
 one_line_description: Generates innovative and practical concepts for specialized AI assistants
 primary_category: prompt_engineering
 subcategories:

@@ -16,12 +16,6 @@ This prompt creates an elite coding assistant with expertise in various programm
 - `{{ADDITIONAL_CONTEXT}}`: Provides any additional information or context for the task
 - `{{USER_CODE}}`: Contains the user's code for analysis or modification
 
-### 🧩 Relevant Fragments
-
-This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be injected into `{{ADDITIONAL_CONTEXT}}`
-- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{ADDITIONAL_CONTEXT}}`
-
 ### 📜 Prompt
 
 ```md

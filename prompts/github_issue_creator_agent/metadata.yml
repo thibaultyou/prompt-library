@@ -5,13 +5,6 @@ description: >-
   and team dynamics to generate optimized issues that adhere to best practices
   and consider team-specific factors.
 directory: github_issue_creator_agent
-fragments:
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_core
-    variable: '{{CONTEXT}}'
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_max
-    variable: '{{PROJECT_DOCUMENTATION}}'
 one_line_description: >-
   Creates comprehensive and optimized GitHub issues based on project context and
   team dynamics

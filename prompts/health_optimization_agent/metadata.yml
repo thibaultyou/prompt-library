@@ -5,10 +5,6 @@ description: >-
   employs sophisticated data analysis and predictive modeling to generate
   adaptive recommendations across various health domains.
 directory: health_optimization_agent
-fragments:
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_max
-    variable: '{{USER_DATA}}'
 one_line_description: >-
   Generates personalized, evidence-based wellness plans that adapt to users'
   evolving needs

@@ -14,12 +14,6 @@ This prompt creates a specialized AI agent for producing high-quality software d
 - `{{EXISTING_DOCS}}`: Provides the current state of documentation for analysis and improvement
 - `{{CODEBASE}}`: Contains the software project's code for reference and documentation generation
 
-### 🧩 Relevant Fragments
-
-This prompt could potentially use the following fragments:
-- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be injected into `{{PROJECT_REQUIREMENTS}}`
-- [Output Guidelines](/fragments/prompt_engineering/output_guidelines.md) - Could be injected into `{{PROJECT_REQUIREMENTS}}`
-
 ### 📜 Prompt
 
 ```md

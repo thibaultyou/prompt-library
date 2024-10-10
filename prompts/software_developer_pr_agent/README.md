@@ -12,12 +12,6 @@ This prompt creates an AI agent that analyzes code changes and generates detaile
 
 - `{{CONTEXT}}`: Provides the project context and code changes for the pull request
 
-### 🧩 Relevant Fragments
-
-This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be injected into `{{CONTEXT}}`
-- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{CONTEXT}}`
-
 ### 📜 Prompt
 
 ```md

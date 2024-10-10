@@ -24,7 +24,6 @@ This prompt could potentially use the following fragments:
 - [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{PROMPT_ENGINEERING_GUIDELINES}}`
 - [Output Guidelines](/fragments/prompt_engineering/output_guidelines.md) - Could be injected into `{{PROMPT_OUTPUT_GUIDELINES}}`
 - [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be injected into `{{PROMPT_FORMATTING_GUIDELINES}}`
-- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be injected into `{{PROMPT_ENGINEERING_GUIDELINES}}`
 
 ### 📜 Prompt
 

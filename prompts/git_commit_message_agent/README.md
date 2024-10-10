@@ -13,12 +13,6 @@ This prompt creates an AI agent specialized in crafting git commit messages. It 
 - `{{TASK_DESCRIPTION}}`: Provides context about the changes made in the commit
 - `{{CODE_CHANGES}}`: Contains the specific code modifications for which the commit message is being created
 
-### 🧩 Relevant Fragments
-
-This prompt could potentially use the following fragments:
-- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be injected into `{{TASK_DESCRIPTION}}`
-- [Output Guidelines](/fragments/prompt_engineering/output_guidelines.md) - Could be injected into `{{TASK_DESCRIPTION}}`
-
 ### 📜 Prompt
 
 ```md

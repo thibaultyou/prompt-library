@@ -17,8 +17,7 @@ This prompt engineers an AI agent to guide users through the process of creating
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be injected into `{{FORMATTING_GUIDELINES}}`
-- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{OUTPUT_FORMAT}}`
+- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be injected into `{{FORMATTING_GUIDELINES}}`
 
 ### 📜 Prompt
 

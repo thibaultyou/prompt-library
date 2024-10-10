@@ -5,13 +5,6 @@ description: >-
   on code writing, analysis, optimization, and bug fixing, incorporating
   advanced principles and best practices.
 directory: coding_assistant_agent
-fragments:
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_core
-    variable: '{{ADDITIONAL_CONTEXT}}'
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_max
-    variable: '{{ADDITIONAL_CONTEXT}}'
 one_line_description: >-
   Assists with code writing, analysis, optimization, and debugging across
   multiple languages

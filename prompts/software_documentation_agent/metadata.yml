@@ -5,13 +5,6 @@ description: >-
   documentation, and adheres to industry standards and best practices across
   multiple documentation platforms.
 directory: software_documentation_agent
-fragments:
-  - category: prompt_engineering
-    name: formatting_guidelines
-    variable: '{{PROJECT_REQUIREMENTS}}'
-  - category: prompt_engineering
-    name: output_guidelines
-    variable: '{{PROJECT_REQUIREMENTS}}'
 one_line_description: >-
   Generates comprehensive software documentation across various types and
   platforms

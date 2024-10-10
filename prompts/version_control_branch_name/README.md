@@ -16,11 +16,6 @@ This prompt creates semantically meaningful git branch names adhering to best pr
 - `{{TEAM_CONVENTIONS}}`: Outlines any specific naming conventions used by the development team
 - `{{CURRENT_BRANCH_NAME}}`: Optional input for the existing branch name, if available
 
-### 🧩 Relevant Fragments
-
-This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be injected into `{{INSTRUCTIONS}}`
-
 ### 📜 Prompt
 
 ```md

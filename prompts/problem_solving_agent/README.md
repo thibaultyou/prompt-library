@@ -17,7 +17,6 @@ This AI system creates comprehensive expert networks and interdisciplinary appro
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{DOMAIN_CONTEXT}}`
 - [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be injected into `{{CONSTRAINTS}}`
 
 ### 📜 Prompt

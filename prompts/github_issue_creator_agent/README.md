@@ -15,12 +15,6 @@ This prompt embodies an AI agent specialized in creating highly detailed and act
 - `{{TEAM_DYNAMICS}}`: Offers insights into team structure, expertise, and working patterns
 - `{{PROJECT_HISTORY}}`: Provides historical context of the project, including past issues and decisions
 
-### 🧩 Relevant Fragments
-
-This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be injected into `{{CONTEXT}}`
-- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{PROJECT_DOCUMENTATION}}`
-
 ### 📜 Prompt
 
 ```md

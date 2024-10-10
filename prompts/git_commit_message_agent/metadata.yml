@@ -4,13 +4,6 @@ description: >-
   It adheres strictly to the Conventional Commits specification, incorporating
   emojis and providing clear insights into code changes within character limits.
 directory: git_commit_message_agent
-fragments:
-  - category: prompt_engineering
-    name: formatting_guidelines
-    variable: '{{TASK_DESCRIPTION}}'
-  - category: prompt_engineering
-    name: output_guidelines
-    variable: '{{TASK_DESCRIPTION}}'
 one_line_description: >-
   Generates precise git commit messages following Conventional Commits
   specification

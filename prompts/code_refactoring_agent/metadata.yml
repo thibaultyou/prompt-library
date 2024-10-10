@@ -5,10 +5,6 @@ description: >-
   optimizes code while maintaining functionality. The agent also proposes
   testing strategies and provides comprehensive documentation of changes.
 directory: code_refactoring_agent
-fragments:
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_max
-    variable: '{{CODEBASE}}'
 one_line_description: >-
   Analyzes, refactors, and validates code to enhance quality, readability, and
   performance

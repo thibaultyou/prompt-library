@@ -6,10 +6,6 @@ description: >-
   descriptive branch names that enhance project organization and streamline
   development processes.
 directory: version_control_branch_name
-fragments:
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_core
-    variable: '{{INSTRUCTIONS}}'
 one_line_description: >-
   Generates optimal git branch names based on project context and development
   workflow

@@ -5,13 +5,6 @@ description: >-
   architecture, identifying issues, suggesting improvements, and proposing
   innovative features while adhering to GitHub best practices.
 directory: software_developer_pr_agent
-fragments:
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_core
-    variable: '{{CONTEXT}}'
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_max
-    variable: '{{CONTEXT}}'
 one_line_description: Generates comprehensive pull requests for software development projects
 primary_category: coding
 subcategories:

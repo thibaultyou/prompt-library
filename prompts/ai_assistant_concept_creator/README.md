@@ -12,12 +12,6 @@ This prompt engineers groundbreaking yet feasible AI assistant concepts tailored
 
 - `{{TOPIC}}`: The specific domain or subject area for which the AI assistant concept should be created
 
-### 🧩 Relevant Fragments
-
-This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{TOPIC}}`
-- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be injected into `{{TOPIC}}`
-
 ### 📜 Prompt
 
 ```md

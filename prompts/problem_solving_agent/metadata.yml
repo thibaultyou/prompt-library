@@ -7,9 +7,6 @@ description: >-
 directory: problem_solving_agent
 fragments:
   - category: prompt_engineering
-    name: prompt_engineering_guidelines_max
-    variable: '{{DOMAIN_CONTEXT}}'
-  - category: prompt_engineering
     name: safety_guidelines
     variable: '{{CONSTRAINTS}}'
 one_line_description: Generates tailored expert networks and solutions for complex problem-solving

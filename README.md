@@ -8,19 +8,8 @@ Welcome to the **Prompt Library**, a collection of categorized AI prompts for ea
 
 ## 📚 Table of Contents
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [🎯 Purpose](#-purpose)
-- [🛠️ How It Works](#-how-it-works)
-- [📂 Prompt Library Example](#-prompt-library-example)
-- [🚀 Getting Started](#-getting-started)
-- [🔧 Customizing Metadata Extraction](#-customizing-metadata-extraction)
-- [🧩 Using Fragments](#-using-fragments)
-- [📝 Contributing](#-contributing)
-- [📄 License](#-license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<!-- START doctoc -->
+<!-- END doctoc -->
 
 ## 🎯 Purpose
 
@@ -54,11 +43,11 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 <summary><strong>Coding</strong></summary>
 
 - [Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to enhance quality, readability, and performance
-- [Elite Coding Assistant](prompts/coding_assistant_agent/README.md) - Assists with code writing, analysis, optimization, and debugging across multiple languages
 - [Git Commit Message Creator](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
+- [Elite Coding Assistant](prompts/coding_assistant_agent/README.md) - Assists with code writing, analysis, optimization, and debugging across multiple languages
 - [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and optimized GitHub issues based on project context and team dynamics
-- [Version Control Branch Name Generator](prompts/version_control_branch_name/README.md) - Generates optimal git branch names based on project context and development workflow
 - [Software Developer Pull Request Generator](prompts/software_developer_pr_agent/README.md) - Generates comprehensive pull requests for software development projects
+- [Version Control Branch Name Generator](prompts/version_control_branch_name/README.md) - Generates optimal git branch names based on project context and development workflow
 
 </details>
 <details open>

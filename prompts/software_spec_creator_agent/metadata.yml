@@ -7,11 +7,8 @@ description: >-
 directory: software_spec_creator_agent
 fragments:
   - category: prompt_engineering
-    name: prompt_engineering_guidelines_core
+    name: formatting_guidelines
     variable: '{{FORMATTING_GUIDELINES}}'
-  - category: prompt_engineering
-    name: prompt_engineering_guidelines_max
-    variable: '{{OUTPUT_FORMAT}}'
 one_line_description: >-
   Creates detailed software specification documents through interactive
   requirements analysis

@@ -15,9 +15,6 @@ fragments:
   - category: prompt_engineering
     name: formatting_guidelines
     variable: '{{PROMPT_FORMATTING_GUIDELINES}}'
-  - category: prompt_engineering
-    name: safety_guidelines
-    variable: '{{PROMPT_ENGINEERING_GUIDELINES}}'
 one_line_description: >-
   Crafts divine-tier prompts that push the boundaries of AI language model
   capabilities

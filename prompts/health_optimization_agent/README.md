@@ -12,11 +12,6 @@ This advanced AI health optimization assistant creates comprehensive, personaliz
 
 - `{{USER_DATA}}`: Contains comprehensive user health information, including biometrics, lifestyle factors, goals, and medical history
 
-### 🧩 Relevant Fragments
-
-This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{USER_DATA}}`
-
 ### 📜 Prompt
 
 ```md
