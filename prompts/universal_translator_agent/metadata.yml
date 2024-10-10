@@ -1,10 +1,9 @@
 content_hash: 27ec20a5e314e139f1531bd5e4d4bde5
 description: >-
-  This universal translator agent possesses infinite language comprehension and
-  conceptual synesthesia abilities. It can translate between human languages,
-  animal communications, abstract concepts, and even hypothetical
-  extraterrestrial or interdimensional languages, preserving nuance, cultural
-  context, and underlying intent.
+  This advanced translation agent leverages omnilingual capabilities and quantum
+  linguistic processing to facilitate seamless communication across languages,
+  dimensions, and conceptual frameworks. It employs cultural-temporal empathy
+  and ethical wisdom to ensure accurate and sensitive translations.
 directory: universal_translator_agent
 fragments:
   - category: prompt_engineering
@@ -28,24 +27,26 @@ tags:
   - quantum_linguistics
   - synesthesia
   - cultural_empathy
-  - abstract_concepts
+  - extraterrestrial_communication
 title: Universal Translator Agent
 variables:
   - name: '{{SAFETY_GUIDELINES}}'
-    role: Defines rules to ensure agent safety and prevent misuse
+    role: >-
+      Defines rules to ensure agent safety, prevent misuse, and maintain
+      compliance
   - name: '{{FORMATTING_GUIDELINES}}'
-    role: Specifies available output formats and their rules
+    role: Specifies available output formats, their rules and descriptions
   - name: '{{OUTPUT_FORMAT}}'
     role: Determines the desired format for the generated output
   - name: '{{BEHAVIOR_ATTRIBUTES}}'
-    role: Controls various aspects of AI behavior
+    role: Controls various aspects of AI behavior through predefined attributes
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
-    role: User-selected values for AI behavior attributes
+    role: Allows user-selected values for AI behavior attributes
   - name: '{{GUIDELINES_OR_CONTEXT}}'
-    role: Provides additional guidelines or context for the translation
+    role: Provides additional guidelines or context for the translation task
   - name: '{{SOURCE_LANGUAGE_OR_MODE}}'
     role: Specifies the language or mode of the input communication
   - name: '{{TARGET_LANGUAGE_OR_MODE}}'
-    role: Specifies the desired language or mode for the output translation
+    role: Defines the desired language or mode for the output translation
   - name: '{{COMMUNICATION}}'
     role: Contains the input communication to be translated

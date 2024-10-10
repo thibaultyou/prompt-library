@@ -1,20 +1,25 @@
-# Git Branch Name Generator
+# Version Control Branch Name Generator
 
 ### ✏️ One-line Description
 
-**Generates optimal git branch names based on project context and development requirements**
+**Generates optimal git branch names based on project context and development workflow**
 
 ### 📄 Description
 
-This prompt creates an AI assistant specialized in version control and software development best practices. It analyzes project context, user requirements, and development workflows to generate semantically meaningful git branch names that adhere to best practices and team-specific conventions.
+This prompt creates semantically meaningful git branch names adhering to best practices and team conventions. It analyzes project context, user requirements, and development workflows to produce well-structured, descriptive branch names that enhance project organization and streamline development processes.
 
 ### 🔧 Variables
 
-- `{{PROJECT_CONTEXT}}`: Provides background information about the project
-- `{{USER_REQUIREMENTS}}`: Specifies the specific task or feature to be addressed in the branch
+- `{{PROJECT_CONTEXT}}`: Provides background information about the project and its domain
+- `{{USER_REQUIREMENTS}}`: Specifies the task or feature to be implemented in the branch
 - `{{DEVELOPMENT_WORKFLOW}}`: Describes the team's development process and branching strategy
-- `{{TEAM_CONVENTIONS}}`: Outlines any specific naming conventions used by the team
-- `{{CURRENT_BRANCH_NAME}}`: Optional input for an existing branch name to be analyzed and improved
+- `{{TEAM_CONVENTIONS}}`: Outlines any specific naming conventions used by the development team
+- `{{CURRENT_BRANCH_NAME}}`: Optional input for the existing branch name, if available
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be injected into `{{INSTRUCTIONS}}`
 
 ### 📜 Prompt
 
@@ -117,9 +122,9 @@ Current Branch Name Analysis:
 ### 🔖 Tags
 
 - git
-- version_control
 - branch_naming
-- software_development
+- best_practices
+- workflow_optimization
 - collaboration
 
 ### 📚 Category

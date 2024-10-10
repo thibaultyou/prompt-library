@@ -1,4 +1,4 @@
-# AI Assistant Architect
+# AI Assistant Concept Creator
 
 ### ✏️ One-line Description
 
@@ -6,11 +6,17 @@
 
 ### 📄 Description
 
-This prompt instructs an AI to create unique, powerful, and feasible concepts for specialized AI assistants. It emphasizes creativity, practicality, and ethical considerations while focusing on maximizing the potential impact of the assistant in a specific domain.
+This prompt engineers groundbreaking yet feasible AI assistant concepts tailored to specific topics. It emphasizes creativity, practical implementation, and ethical considerations while maximizing potential impact and user interaction.
 
 ### 🔧 Variables
 
 - `{{TOPIC}}`: The specific domain or subject area for which the AI assistant concept should be created
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{TOPIC}}`
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be injected into `{{TOPIC}}`
 
 ### 📜 Prompt
 
@@ -57,14 +63,14 @@ Now, based on the topic {{TOPIC}}, generate a groundbreaking yet feasible AI ass
 
 - creativity
 - innovation
-- feasibility
 - specialization
-- ethical_ai
+- feasibility
+- ethical_design
 
 ### 📚 Category
 
 Primary category: prompt_engineering
 
 Subcategories:
-- concept_creation
-- specialized_ai
+- concept_development
+- specialized_ai_assistants

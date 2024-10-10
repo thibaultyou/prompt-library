@@ -1,10 +1,14 @@
 content_hash: f8109157590945ee4c96108390fc2a36
 description: >-
-  This prompt creates an AI agent that expertly analyzes and refactors code
-  across various programming languages. It employs a comprehensive approach to
-  improve code quality, readability, and performance while maintaining core
-  functionality.
+  This prompt creates an AI agent that expertly analyzes and refactors
+  codebases. It infers the programming language, implements best practices, and
+  optimizes code while maintaining functionality. The agent also proposes
+  testing strategies and provides comprehensive documentation of changes.
 directory: code_refactoring_agent
+fragments:
+  - category: prompt_engineering
+    name: prompt_engineering_guidelines_max
+    variable: '{{CODEBASE}}'
 one_line_description: >-
   Analyzes, refactors, and validates code to enhance quality, readability, and
   performance

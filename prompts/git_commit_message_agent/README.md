@@ -1,4 +1,4 @@
-# Git Commit Message Expert
+# Git Commit Message Creator
 
 ### ✏️ One-line Description
 
@@ -6,12 +6,18 @@
 
 ### 📄 Description
 
-This prompt creates an AI expert in crafting git commit messages. It generates concise, informative messages that adhere to the Conventional Commits format, include appropriate emojis, and provide clear insights into code changes for developers and automated tools.
+This prompt creates an AI agent specialized in crafting git commit messages. It adheres strictly to the Conventional Commits specification, incorporating emojis and providing clear insights into code changes within character limits.
 
 ### 🔧 Variables
 
-- `{{TASK_DESCRIPTION}}`: Provides context or specific requirements for the commit message
-- `{{CODE_CHANGES}}`: Contains the actual code changes to be summarized in the commit message
+- `{{TASK_DESCRIPTION}}`: Provides context about the changes made in the commit
+- `{{CODE_CHANGES}}`: Contains the specific code modifications for which the commit message is being created
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be injected into `{{TASK_DESCRIPTION}}`
+- [Output Guidelines](/fragments/prompt_engineering/output_guidelines.md) - Could be injected into `{{TASK_DESCRIPTION}}`
 
 ### 📜 Prompt
 
@@ -162,8 +168,8 @@ Output your commit message within <commit_message> tags. The message should be o
 - git
 - commit_messages
 - conventional_commits
-- emoji
-- code_changes
+- version_control
+- software_development
 
 ### 📚 Category
 

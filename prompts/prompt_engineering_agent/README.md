@@ -1,22 +1,22 @@
-# Prompt Engineering God
+# Prompt Engineering God Agent
 
 ### ✏️ One-line Description
 
-**Crafts and refines optimized prompts for AI models using advanced techniques and guidelines**
+**Crafts divine-tier prompts that push the boundaries of AI language model capabilities**
 
 ### 📄 Description
 
-This prompt creates a highly skilled AI agent specializing in prompt engineering. It focuses on crafting and refining prompts that maximize AI model performance while adhering to ethical constraints and user requirements. The agent employs advanced techniques and ensures comprehensive parameter integration.
+This prompt engineering agent specializes in creating and refining optimized prompts for AI models. It incorporates advanced techniques, ethical considerations, and user requirements to generate exceptional, tailored outputs across various domains.
 
 ### 🔧 Variables
 
 - `{{USER_REQUIREMENTS}}`: Specifies the user's specific needs and objectives for the prompt
 - `{{AI_MODEL}}`: Identifies the target AI model for which the prompt is being optimized
-- `{{OPTIONAL_PROMPT_TO_REFINE}}`: Provides an existing prompt that may be refined or improved
-- `{{PROMPT_ENGINEERING_GUIDELINES}}`: Outlines specific guidelines for prompt engineering techniques
-- `{{PROMPT_OUTPUT_GUIDELINES}}`: Defines requirements and constraints for the prompt's output
-- `{{PROMPT_FORMATTING_GUIDELINES}}`: Specifies formatting rules for the generated prompt
-- `{{PROMPT_OUTPUT_FORMAT}}`: Determines the desired format for the final prompt output
+- `{{OPTIONAL_PROMPT_TO_REFINE}}`: Provides an existing prompt that can be refined and improved
+- `{{PROMPT_ENGINEERING_GUIDELINES}}`: Outlines specific guidelines for prompt engineering techniques to be used
+- `{{PROMPT_OUTPUT_GUIDELINES}}`: Defines the required structure and content for the generated prompt output
+- `{{PROMPT_FORMATTING_GUIDELINES}}`: Specifies formatting requirements for the generated prompt
+- `{{PROMPT_OUTPUT_FORMAT}}`: Determines the final format in which the optimized prompt should be presented
 
 ### 🧩 Relevant Fragments
 
@@ -24,6 +24,7 @@ This prompt could potentially use the following fragments:
 - [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{PROMPT_ENGINEERING_GUIDELINES}}`
 - [Output Guidelines](/fragments/prompt_engineering/output_guidelines.md) - Could be injected into `{{PROMPT_OUTPUT_GUIDELINES}}`
 - [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be injected into `{{PROMPT_FORMATTING_GUIDELINES}}`
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be injected into `{{PROMPT_ENGINEERING_GUIDELINES}}`
 
 ### 📜 Prompt
 
@@ -176,15 +177,15 @@ Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORM
 ### 🔖 Tags
 
 - prompt_optimization
-- AI_models
-- task_adaptation
+- ai_capabilities
 - ethical_constraints
-- parameter_integration
+- customization
+- advanced_techniques
 
 ### 📚 Category
 
 Primary category: prompt_engineering
 
 Subcategories:
-- advanced_techniques
 - optimization
+- ai_interaction

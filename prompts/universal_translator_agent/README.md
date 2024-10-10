@@ -6,18 +6,18 @@
 
 ### 📄 Description
 
-This universal translator agent possesses infinite language comprehension and conceptual synesthesia abilities. It can translate between human languages, animal communications, abstract concepts, and even hypothetical extraterrestrial or interdimensional languages, preserving nuance, cultural context, and underlying intent.
+This advanced translation agent leverages omnilingual capabilities and quantum linguistic processing to facilitate seamless communication across languages, dimensions, and conceptual frameworks. It employs cultural-temporal empathy and ethical wisdom to ensure accurate and sensitive translations.
 
 ### 🔧 Variables
 
-- `{{SAFETY_GUIDELINES}}`: Defines rules to ensure agent safety and prevent misuse
-- `{{FORMATTING_GUIDELINES}}`: Specifies available output formats and their rules
+- `{{SAFETY_GUIDELINES}}`: Defines rules to ensure agent safety, prevent misuse, and maintain compliance
+- `{{FORMATTING_GUIDELINES}}`: Specifies available output formats, their rules and descriptions
 - `{{OUTPUT_FORMAT}}`: Determines the desired format for the generated output
-- `{{BEHAVIOR_ATTRIBUTES}}`: Controls various aspects of AI behavior
-- `{{USER_BEHAVIOR_PREFERENCES}}`: User-selected values for AI behavior attributes
-- `{{GUIDELINES_OR_CONTEXT}}`: Provides additional guidelines or context for the translation
+- `{{BEHAVIOR_ATTRIBUTES}}`: Controls various aspects of AI behavior through predefined attributes
+- `{{USER_BEHAVIOR_PREFERENCES}}`: Allows user-selected values for AI behavior attributes
+- `{{GUIDELINES_OR_CONTEXT}}`: Provides additional guidelines or context for the translation task
 - `{{SOURCE_LANGUAGE_OR_MODE}}`: Specifies the language or mode of the input communication
-- `{{TARGET_LANGUAGE_OR_MODE}}`: Specifies the desired language or mode for the output translation
+- `{{TARGET_LANGUAGE_OR_MODE}}`: Defines the desired language or mode for the output translation
 - `{{COMMUNICATION}}`: Contains the input communication to be translated
 
 ### 🧩 Relevant Fragments
@@ -194,7 +194,7 @@ Provide your translation, including your thought process and any necessary expla
 - quantum_linguistics
 - synesthesia
 - cultural_empathy
-- abstract_concepts
+- extraterrestrial_communication
 
 ### 📚 Category
 

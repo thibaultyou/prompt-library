@@ -2,22 +2,23 @@
 
 ### ✏️ One-line Description
 
-**Creates detailed software specification documents through interactive requirement analysis**
+**Creates detailed software specification documents through interactive requirements analysis**
 
 ### 📄 Description
 
-This prompt guides the AI in creating comprehensive software specification documents. It employs an interactive review process to gather and refine user requirements, covering various aspects of software development from project overview to future considerations.
+This prompt engineers an AI agent to guide users through the process of creating comprehensive software specification documents. It employs an interactive review process, gathering detailed requirements and producing structured documentation for software development projects.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}`: Initial user requirements for the software project
+- `{{USER_REQUIREMENTS}}`: Initial user-provided requirements for the software project
 - `{{FORMATTING_GUIDELINES}}`: Specific formatting instructions for the output document
 - `{{OUTPUT_FORMAT}}`: Desired structure and format for the final specification document
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be injected into `{{FORMATTING_GUIDELINES}}`
+- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be injected into `{{FORMATTING_GUIDELINES}}`
+- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{OUTPUT_FORMAT}}`
 
 ### 📜 Prompt
 
@@ -260,16 +261,16 @@ Throughout the specification process, ensure:
 
 ### 🔖 Tags
 
-- software_specification
-- requirements_analysis
-- project_planning
+- software_specifications
+- requirements_gathering
 - interactive_review
 - documentation
+- project_management
 
 ### 📚 Category
 
-Primary category: coding
+Primary category: prompt_engineering
 
 Subcategories:
 - software_development
-- project_management
+- requirements_analysis

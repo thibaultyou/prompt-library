@@ -1,19 +1,25 @@
-# GitHub Issue Management Agent
+# GitHub Issue Creator Agent
 
 ### ✏️ One-line Description
 
-**Creates comprehensive, optimized GitHub issues based on project context and team dynamics**
+**Creates comprehensive and optimized GitHub issues based on project context and team dynamics**
 
 ### 📄 Description
 
-This prompt embodies an AI agent specialized in GitHub issue management. It analyzes project context, documentation, team dynamics, and history to create highly detailed and actionable GitHub issues. The agent optimizes issue creation by considering various factors and adhering to best practices in software development.
+This prompt embodies an AI agent specialized in creating highly detailed and actionable GitHub issues. It analyzes project context, documentation, history, and team dynamics to generate optimized issues that adhere to best practices and consider team-specific factors.
 
 ### 🔧 Variables
 
-- `{{CONTEXT}}`: Provides current project context and relevant information for issue creation
-- `{{PROJECT_DOCUMENTATION}}`: Contains project documentation to inform issue details and requirements
-- `{{TEAM_DYNAMICS}}`: Offers insights into team structure and interactions to tailor issue assignments and communication
-- `{{PROJECT_HISTORY}}`: Provides historical project data to inform issue prioritization and relation to past work
+- `{{CONTEXT}}`: Provides specific information about the current issue or feature request
+- `{{PROJECT_DOCUMENTATION}}`: Contains relevant project documentation to inform issue creation
+- `{{TEAM_DYNAMICS}}`: Offers insights into team structure, expertise, and working patterns
+- `{{PROJECT_HISTORY}}`: Provides historical context of the project, including past issues and decisions
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be injected into `{{CONTEXT}}`
+- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{PROJECT_DOCUMENTATION}}`
 
 ### 📜 Prompt
 
@@ -134,10 +140,10 @@ Please provide the created GitHub issue using the Markdown format specified in t
 ### 🔖 Tags
 
 - github
-- issue_tracking
-- software_engineering
+- issue_management
+- software_development
 - team_collaboration
-- repository_management
+- project_optimization
 
 ### 📚 Category
 
@@ -145,4 +151,4 @@ Primary category: coding
 
 Subcategories:
 - project_management
-- software_development
+- issue_tracking

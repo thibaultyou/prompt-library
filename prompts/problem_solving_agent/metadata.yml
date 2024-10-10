@@ -1,0 +1,35 @@
+content_hash: 23ea459445b0648812be6cf5228f1ee2
+description: >-
+  This AI system creates comprehensive expert networks and interdisciplinary
+  approaches to tackle complex challenges. It utilizes real-time data analysis,
+  advanced natural language processing, and adaptive learning to provide
+  customized solutions across various domains.
+directory: problem_solving_agent
+fragments:
+  - category: prompt_engineering
+    name: prompt_engineering_guidelines_max
+    variable: '{{DOMAIN_CONTEXT}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{CONSTRAINTS}}'
+one_line_description: Generates tailored expert networks and solutions for complex problem-solving
+primary_category: problem_solving
+subcategories:
+  - expert_network_generation
+  - interdisciplinary_approach
+tags:
+  - goal_achievement
+  - expert_networks
+  - data_analysis
+  - adaptive_learning
+  - natural_language_processing
+title: Problem Solving Agent
+variables:
+  - name: '{{USER_GOAL}}'
+    role: Defines the specific objective or challenge the user wants to address
+  - name: '{{DOMAIN_CONTEXT}}'
+    role: Provides the specific field or area in which the problem exists
+  - name: '{{CONSTRAINTS}}'
+    role: >-
+      Outlines any limitations or restrictions that must be considered in the
+      solution

@@ -1,20 +1,26 @@
-# Coding Assistant Agent
+# Elite Coding Assistant
 
 ### ✏️ One-line Description
 
-**Assists in all aspects of software development across multiple programming languages**
+**Assists with code writing, analysis, optimization, and debugging across multiple languages**
 
 ### 📄 Description
 
-This prompt creates an advanced coding assistant capable of handling various programming tasks across multiple languages and frameworks. It provides guidance on code writing, analysis, optimization, and debugging while incorporating software engineering best practices.
+This prompt creates an elite coding assistant with expertise in various programming languages and software engineering practices. It provides guidance on code writing, analysis, optimization, and bug fixing, incorporating advanced principles and best practices.
 
 ### 🔧 Variables
 
 - `{{LANGUAGE}}`: Specifies the programming language for the task
 - `{{FRAMEWORK}}`: Indicates the framework being used, if applicable
-- `{{TASK_TYPE}}`: Defines the type of coding task (e.g., code writing, analysis, optimization, bug fixing)
-- `{{ADDITIONAL_CONTEXT}}`: Provides any additional information relevant to the task
+- `{{TASK_TYPE}}`: Defines the type of coding task (e.g., code writing, analysis, optimization)
+- `{{ADDITIONAL_CONTEXT}}`: Provides any additional information or context for the task
 - `{{USER_CODE}}`: Contains the user's code for analysis or modification
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be injected into `{{ADDITIONAL_CONTEXT}}`
+- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{ADDITIONAL_CONTEXT}}`
 
 ### 📜 Prompt
 
@@ -101,11 +107,11 @@ Please provide your response based on the {{TASK_TYPE}} specified in the input p
 
 ### 🔖 Tags
 
-- programming
-- code_optimization
-- debugging
-- software_engineering
 - multi_language
+- code_analysis
+- debugging
+- best_practices
+- performance_optimization
 
 ### 📚 Category
 
@@ -113,4 +119,4 @@ Primary category: coding
 
 Subcategories:
 - software_engineering
-- multi_language_programming
+- code_optimization

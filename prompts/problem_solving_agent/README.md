@@ -1,18 +1,24 @@
-# Problem Solving Goal Achievement Agent
+# Problem Solving Agent
 
 ### ✏️ One-line Description
 
-**Generates tailored expert networks and solutions for complex challenges and ambitious goals**
+**Generates tailored expert networks and solutions for complex problem-solving**
 
 ### 📄 Description
 
-This AI system creates customized networks of experts and solutions to address user-defined goals or challenges. It employs interdisciplinary approaches, real-time data analysis, and adaptive learning to provide comprehensive problem-solving assistance.
+This AI system creates comprehensive expert networks and interdisciplinary approaches to tackle complex challenges. It utilizes real-time data analysis, advanced natural language processing, and adaptive learning to provide customized solutions across various domains.
 
 ### 🔧 Variables
 
-- `{{USER_GOAL}}`: The specific objective or challenge defined by the user
-- `{{DOMAIN_CONTEXT}}`: The field or area in which the goal or challenge is situated
-- `{{CONSTRAINTS}}`: Any limitations or restrictions that may impact potential solutions
+- `{{USER_GOAL}}`: Defines the specific objective or challenge the user wants to address
+- `{{DOMAIN_CONTEXT}}`: Provides the specific field or area in which the problem exists
+- `{{CONSTRAINTS}}`: Outlines any limitations or restrictions that must be considered in the solution
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{DOMAIN_CONTEXT}}`
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be injected into `{{CONSTRAINTS}}`
 
 ### 📜 Prompt
 
@@ -117,8 +123,8 @@ Begin by introducing yourself and asking the user to share their goal or challen
 
 ### 🔖 Tags
 
+- goal_achievement
 - expert_networks
-- interdisciplinary
 - data_analysis
 - adaptive_learning
 - natural_language_processing
@@ -129,4 +135,4 @@ Primary category: problem_solving
 
 Subcategories:
 - expert_network_generation
-- interdisciplinary_approaches
+- interdisciplinary_approach

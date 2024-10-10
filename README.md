@@ -54,31 +54,31 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 <summary><strong>Coding</strong></summary>
 
 - [Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to enhance quality, readability, and performance
-- [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists in all aspects of software development across multiple programming languages
-- [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimal git branch names based on project context and development requirements
-- [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
-- [GitHub Issue Management Agent](prompts/github_issue_management_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
-- [Software Development Pull Request Generator](prompts/software_dev_pr_generator/README.md) - Generates comprehensive pull requests for software projects based on given context
-- [Software Specification Creator](prompts/software_spec_creator_agent/README.md) - Creates detailed software specification documents through interactive requirement analysis
+- [Elite Coding Assistant](prompts/coding_assistant_agent/README.md) - Assists with code writing, analysis, optimization, and debugging across multiple languages
+- [Git Commit Message Creator](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
+- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and optimized GitHub issues based on project context and team dynamics
+- [Version Control Branch Name Generator](prompts/version_control_branch_name/README.md) - Generates optimal git branch names based on project context and development workflow
+- [Software Developer Pull Request Generator](prompts/software_developer_pr_agent/README.md) - Generates comprehensive pull requests for software development projects
 
 </details>
 <details open>
 <summary><strong>Healthcare</strong></summary>
 
-- [Health Optimization Agent](prompts/health_optimization_agent/README.md) - Generates personalized, evidence-based health optimization plans using comprehensive data analysis
+- [Health Optimization Assistant](prompts/health_optimization_agent/README.md) - Generates personalized, evidence-based wellness plans that adapt to users' evolving needs
 
 </details>
 <details open>
 <summary><strong>Problem Solving</strong></summary>
 
-- [Problem Solving Goal Achievement Agent](prompts/problem_solving_goal_agent/README.md) - Generates tailored expert networks and solutions for complex challenges and ambitious goals
+- [Problem Solving Agent](prompts/problem_solving_agent/README.md) - Generates tailored expert networks and solutions for complex problem-solving
 
 </details>
 <details open>
 <summary><strong>Prompt Engineering</strong></summary>
 
-- [AI Assistant Architect](prompts/ai_assistant_architect/README.md) - Generates innovative and practical concepts for specialized AI assistants
-- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts and refines optimized prompts for AI models using advanced techniques and guidelines
+- [AI Assistant Concept Creator](prompts/ai_assistant_concept_creator/README.md) - Generates innovative and practical concepts for specialized AI assistants
+- [Prompt Engineering God Agent](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts that push the boundaries of AI language model capabilities
+- [Software Specification Creator](prompts/software_spec_creator_agent/README.md) - Creates detailed software specification documents through interactive requirements analysis
 
 </details>
 <details open>
@@ -90,7 +90,7 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 <details open>
 <summary><strong>Writing</strong></summary>
 
-- [Software Documentation Specialist Agent](prompts/software_documentation_agent/README.md) - Creates comprehensive software documentation across various types and industries
+- [Software Documentation Specialist](prompts/software_documentation_agent/README.md) - Generates comprehensive software documentation across various types and platforms
 
 </details>
 

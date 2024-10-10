@@ -1,18 +1,24 @@
-# Software Documentation Specialist Agent
+# Software Documentation Specialist
 
 ### ✏️ One-line Description
 
-**Creates comprehensive software documentation across various types and industries**
+**Generates comprehensive software documentation across various types and platforms**
 
 ### 📄 Description
 
-This prompt defines an AI agent specialized in creating high-quality software documentation. It covers various documentation types, including API docs, user guides, and developer documentation, while adhering to industry standards and best practices.
+This prompt creates a specialized AI agent for producing high-quality software documentation. It covers API documentation, user guides, developer documentation, and adheres to industry standards and best practices across multiple documentation platforms.
 
 ### 🔧 Variables
 
 - `{{PROJECT_REQUIREMENTS}}`: Specifies the project-specific documentation needs and constraints
 - `{{EXISTING_DOCS}}`: Provides the current state of documentation for analysis and improvement
 - `{{CODEBASE}}`: Contains the software project's code for reference and documentation generation
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be injected into `{{PROJECT_REQUIREMENTS}}`
+- [Output Guidelines](/fragments/prompt_engineering/output_guidelines.md) - Could be injected into `{{PROJECT_REQUIREMENTS}}`
 
 ### 📜 Prompt
 
@@ -266,11 +272,11 @@ Now, analyze the provided codebase, existing documentation, and project requirem
 
 ### 🔖 Tags
 
-- technical_writing
 - API_documentation
 - user_guides
-- developer_documentation
-- documentation_best_practices
+- developer_docs
+- technical_writing
+- software_engineering
 
 ### 📚 Category
 

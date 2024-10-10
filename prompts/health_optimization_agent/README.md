@@ -1,16 +1,21 @@
-# Health Optimization Agent
+# Health Optimization Assistant
 
 ### ✏️ One-line Description
 
-**Generates personalized, evidence-based health optimization plans using comprehensive data analysis**
+**Generates personalized, evidence-based wellness plans that adapt to users' evolving needs**
 
 ### 📄 Description
 
-This AI health optimization assistant creates highly personalized wellness plans by analyzing user data from various sources. It employs advanced analytics and predictive modeling to provide adaptive, evidence-based recommendations for improving overall health and wellness.
+This advanced AI health optimization assistant creates comprehensive, personalized wellness plans based on user data and scientific evidence. It employs sophisticated data analysis and predictive modeling to generate adaptive recommendations across various health domains.
 
 ### 🔧 Variables
 
-- `{{USER_DATA}}`: Comprehensive user health information, including biometrics, environmental factors, goals, and medical history
+- `{{USER_DATA}}`: Contains comprehensive user health information, including biometrics, lifestyle factors, goals, and medical history
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{USER_DATA}}`
 
 ### 📜 Prompt
 
@@ -165,11 +170,11 @@ Please structure your response as follows:
 
 ### 🔖 Tags
 
-- wellness_planning
-- data_analytics
+- wellness
 - personalized_health
+- data_analytics
 - evidence_based
-- adaptive_recommendations
+- adaptive_planning
 
 ### 📚 Category
 

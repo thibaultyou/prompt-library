@@ -6,12 +6,17 @@
 
 ### 📄 Description
 
-This prompt creates an AI agent that expertly analyzes and refactors code across various programming languages. It employs a comprehensive approach to improve code quality, readability, and performance while maintaining core functionality.
+This prompt creates an AI agent that expertly analyzes and refactors codebases. It infers the programming language, implements best practices, and optimizes code while maintaining functionality. The agent also proposes testing strategies and provides comprehensive documentation of changes.
 
 ### 🔧 Variables
 
 - `{{REFACTOR_SCOPE}}`: Specifies whether to refactor the entire codebase or focus on specific parts
 - `{{CODEBASE}}`: The code to be refactored
+
+### 🧩 Relevant Fragments
+
+This prompt could potentially use the following fragments:
+- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{CODEBASE}}`
 
 ### 📜 Prompt
 

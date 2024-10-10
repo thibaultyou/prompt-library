@@ -1,24 +1,31 @@
 content_hash: bbbff8375300f2033088cbbeb0832edb
 description: >-
-  This prompt defines an AI agent specialized in creating high-quality software
-  documentation. It covers various documentation types, including API docs, user
-  guides, and developer documentation, while adhering to industry standards and
-  best practices.
+  This prompt creates a specialized AI agent for producing high-quality software
+  documentation. It covers API documentation, user guides, developer
+  documentation, and adheres to industry standards and best practices across
+  multiple documentation platforms.
 directory: software_documentation_agent
+fragments:
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{PROJECT_REQUIREMENTS}}'
+  - category: prompt_engineering
+    name: output_guidelines
+    variable: '{{PROJECT_REQUIREMENTS}}'
 one_line_description: >-
-  Creates comprehensive software documentation across various types and
-  industries
+  Generates comprehensive software documentation across various types and
+  platforms
 primary_category: writing
 subcategories:
   - technical_writing
   - software_documentation
 tags:
-  - technical_writing
   - API_documentation
   - user_guides
-  - developer_documentation
-  - documentation_best_practices
-title: Software Documentation Specialist Agent
+  - developer_docs
+  - technical_writing
+  - software_engineering
+title: Software Documentation Specialist
 variables:
   - name: '{{PROJECT_REQUIREMENTS}}'
     role: Specifies the project-specific documentation needs and constraints

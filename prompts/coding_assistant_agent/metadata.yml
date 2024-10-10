@@ -1,24 +1,31 @@
 content_hash: 16c7766ab5e71a147d08da3484b1f046
 description: >-
-  This prompt creates an advanced coding assistant capable of handling various
-  programming tasks across multiple languages and frameworks. It provides
-  guidance on code writing, analysis, optimization, and debugging while
-  incorporating software engineering best practices.
+  This prompt creates an elite coding assistant with expertise in various
+  programming languages and software engineering practices. It provides guidance
+  on code writing, analysis, optimization, and bug fixing, incorporating
+  advanced principles and best practices.
 directory: coding_assistant_agent
+fragments:
+  - category: prompt_engineering
+    name: prompt_engineering_guidelines_core
+    variable: '{{ADDITIONAL_CONTEXT}}'
+  - category: prompt_engineering
+    name: prompt_engineering_guidelines_max
+    variable: '{{ADDITIONAL_CONTEXT}}'
 one_line_description: >-
-  Assists in all aspects of software development across multiple programming
-  languages
+  Assists with code writing, analysis, optimization, and debugging across
+  multiple languages
 primary_category: coding
 subcategories:
   - software_engineering
-  - multi_language_programming
-tags:
-  - programming
   - code_optimization
-  - debugging
-  - software_engineering
+tags:
   - multi_language
-title: Coding Assistant Agent
+  - code_analysis
+  - debugging
+  - best_practices
+  - performance_optimization
+title: Elite Coding Assistant
 variables:
   - name: '{{LANGUAGE}}'
     role: Specifies the programming language for the task
@@ -27,8 +34,8 @@ variables:
   - name: '{{TASK_TYPE}}'
     role: >-
       Defines the type of coding task (e.g., code writing, analysis,
-      optimization, bug fixing)
+      optimization)
   - name: '{{ADDITIONAL_CONTEXT}}'
-    role: Provides any additional information relevant to the task
+    role: Provides any additional information or context for the task
   - name: '{{USER_CODE}}'
     role: Contains the user's code for analysis or modification
