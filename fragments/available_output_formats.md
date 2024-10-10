@@ -1,4 +1,5 @@
-The output format can have the following values:
+# Available output formats
+
 - "xml": All output parts should be enclosed in XML tags
 - "structured": A mix of XML tags and natural language
 - "natural": No specific structuring, just plain text in natural language

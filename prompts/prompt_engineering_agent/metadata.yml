@@ -1,34 +1,36 @@
-content_hash: 98cc0ea85eb722ef28407f75f62d8dec
+content_hash: 9e993995662b5feb45fe9de0c1a42e8a
 description: >-
-  This prompt engineering agent creates and optimizes prompts for AI models,
-  incorporating advanced techniques and ethical considerations. It adapts to
-  user requirements, ensures output quality, and maximizes AI potential across
-  diverse domains and task types.
+  This prompt engineering agent crafts highly optimized prompts for AI models.
+  It analyzes user requirements, adapts to various domains, and incorporates
+  advanced techniques while ensuring ethical compliance and adherence to output
+  guidelines.
 directory: prompt_engineering_agent
-one_line_description: Crafts and refines optimized prompts for AI models across various domains
+one_line_description: >-
+  Generates optimized AI prompts tailored to specific models and user
+  requirements
 primary_category: prompt_engineering
 subcategories:
-  - optimization
-  - ai_instruction
-tags:
-  - prompt_optimization
-  - ai_capabilities
+  - ai_optimization
   - task_adaptation
+tags:
+  - AI_prompts
+  - optimization
+  - customization
+  - task_analysis
   - ethical_constraints
-  - output_formatting
 title: Prompt Engineering Agent
 variables:
   - name: '{{USER_REQUIREMENTS}}'
-    role: Specifies the user's specific needs and objectives for the prompt
+    role: Specifies the user's needs and desired outcomes for the prompt
   - name: '{{AI_MODEL}}'
-    role: Identifies the target AI model for which the prompt is being optimized
+    role: Identifies the specific AI model for which the prompt is being optimized
   - name: '{{OPTIONAL_PROMPT_TO_REFINE}}'
-    role: Provides an existing prompt that needs refinement or optimization
+    role: Provides an existing prompt to be refined and improved
   - name: '{{PROMPT_ENGINEERING_GUIDELINES}}'
-    role: Outlines specific guidelines or constraints for prompt creation
-  - name: '{{OUTPUT_GUIDELINES}}'
-    role: Defines the desired characteristics of the AI model's output
+    role: Outlines specific techniques and best practices for prompt creation
+  - name: '{{PROMPT_OUTPUT_GUIDELINES}}'
+    role: Defines the required structure and content for the generated prompt
   - name: '{{PROMPT_OUTPUT_FORMAT}}'
-    role: Specifies the required format for the final optimized prompt
+    role: Specifies the desired format for the final prompt output
   - name: '{{AVAILABLE_OUTPUT_FORMATS}}'
-    role: Lists the available output format options for the final prompt
+    role: Lists the available formats for the prompt output

@@ -95,8 +95,8 @@ To start building your own prompt library, follow these steps:
 
 ### Coding
 
-- [Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to enhance quality, readability, and performance
 - [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists in all aspects of software development across multiple programming languages
+- [Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to enhance quality, readability, and performance
 - [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimal git branch names based on project context and development requirements
 - [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
 - [GitHub Issue Management Agent](prompts/github_issue_management_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
@@ -113,7 +113,7 @@ To start building your own prompt library, follow these steps:
 ### Prompt Engineering
 
 - [AI Assistant Concept Creator](prompts/ai_assistant_concept_creator/README.md) - Generates innovative and feasible AI assistant concepts for specific topics
-- [Prompt Engineering Agent](prompts/prompt_engineering_agent/README.md) - Crafts and refines optimized prompts for AI models across various domains
+- [Prompt Engineering Agent](prompts/prompt_engineering_agent/README.md) - Generates optimized AI prompts tailored to specific models and user requirements
 - [Software Specification Creator](prompts/software_specification_agent/README.md) - Creates detailed software specifications through interactive review of user requirements
 
 ### Translation
