@@ -1,11 +1,21 @@
-content_hash: f45d98bc1d2278591b14ed22796a28be
+content_hash: 27ec20a5e314e139f1531bd5e4d4bde5
 description: >-
   This universal translator agent possesses infinite language comprehension and
-  quantum linguistic processing capabilities. It can translate between human
-  languages, animal communications, abstract concepts, and even hypothetical
-  extraterrestrial or interdimensional languages while preserving cultural
-  context and emotional resonance.
+  conceptual synesthesia abilities. It can translate between human languages,
+  animal communications, abstract concepts, and even hypothetical
+  extraterrestrial or interdimensional languages, preserving nuance, cultural
+  context, and underlying intent.
 directory: universal_translator_agent
+fragments:
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{BEHAVIOR_ATTRIBUTES}}'
 one_line_description: >-
   Translates between any languages, modes of expression, or conceptual
   frameworks
@@ -15,21 +25,27 @@ subcategories:
   - conceptual_translation
 tags:
   - omnilingual
-  - synesthesia
   - quantum_linguistics
+  - synesthesia
   - cultural_empathy
-  - ethical_translation
+  - abstract_concepts
 title: Universal Translator Agent
 variables:
+  - name: '{{SAFETY_GUIDELINES}}'
+    role: Defines rules to ensure agent safety and prevent misuse
+  - name: '{{FORMATTING_GUIDELINES}}'
+    role: Specifies available output formats and their rules
+  - name: '{{OUTPUT_FORMAT}}'
+    role: Determines the desired format for the generated output
+  - name: '{{BEHAVIOR_ATTRIBUTES}}'
+    role: Controls various aspects of AI behavior
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    role: User-selected values for AI behavior attributes
+  - name: '{{GUIDELINES_OR_CONTEXT}}'
+    role: Provides additional guidelines or context for the translation
   - name: '{{SOURCE_LANGUAGE_OR_MODE}}'
-    role: >-
-      Specifies the origin language, mode of expression, or conceptual framework
-      of the input communication
+    role: Specifies the language or mode of the input communication
   - name: '{{TARGET_LANGUAGE_OR_MODE}}'
-    role: >-
-      Defines the desired output language, mode of expression, or conceptual
-      framework for the translation
+    role: Specifies the desired language or mode for the output translation
   - name: '{{COMMUNICATION}}'
-    role: >-
-      Contains the actual content to be translated, which can be in any form of
-      expression or conceptual structure
+    role: Contains the input communication to be translated

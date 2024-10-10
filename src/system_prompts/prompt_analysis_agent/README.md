@@ -6,11 +6,12 @@
 
 ### 📄 Description
 
-This prompt creates an AI agent specialized in dissecting and analyzing AI prompts. It extracts critical information, categorizes the prompt, and provides actionable insights for prompt engineering and optimization. The analysis is thorough, precise, and follows specific guidelines.
+This prompt creates an AI agent specialized in analyzing and dissecting AI prompts. It extracts crucial information, categorizes the prompt, and provides actionable insights for prompt engineering and optimization.
 
 ### 🔧 Variables
 
-- `{{PROMPT}}`: The AI prompt to be analyzed and dissected
+- `{{PROMPT}}`: The AI prompt to be analyzed
+- `{{FRAGMENTS}}`: Available prompt engineering fragments that can be used to enhance the prompt
 
 ### 📜 Prompt
 
@@ -21,6 +22,7 @@ This prompt creates an AI agent specialized in dissecting and analyzing AI promp
 
 <input_parameters>
 Prompt to Analyze: {{PROMPT}}
+Available fragments: {{FRAGMENTS}}
 Top-Level Categories: [
   "analysis",
   "art_and_design",
@@ -91,6 +93,9 @@ Follow these steps to analyze the prompt:
   - Apply correct casing (capitalize the first letter of each word, except for articles and prepositions)
   <thinking>Transform the directory name into a readable and properly formatted title.</thinking>
 
+10. Analyze the provided list of available fragments and identify the most relevant ones that could be injected into the prompt's specified input variables. Consider how each fragment might enhance or complement the prompt's functionality.
+  <thinking>Evaluate each available fragment's content and purpose. Determine which fragments align closely with the prompt's objectives and could potentially be used within the prompt's input variables to enhance its functionality.</thinking>
+  
 Present your analysis using the specified output format, ensuring accuracy and adherence to the guidelines.
 </instructions>
 
@@ -114,6 +119,11 @@ variables:
   - name: "{{VARIABLE_2}}"
     role: [Role description for VARIABLE_2]
   [Add more variables if necessary]
+fragments:
+  - name: [Fragment Name]
+    category: [Fragment Category]
+    variable: "{{VARIABLE_NAME}}"
+  [Add more relevant fragments if necessary, or remove if none are relevant]
 </output>
 ```
 

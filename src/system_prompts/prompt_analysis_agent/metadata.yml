@@ -1,9 +1,8 @@
-content_hash: f05e208ff5d886ebed3475be7b40a48b
+content_hash: 6ab2f7694651e9521405a775b8230804
 description: >-
-  This prompt creates an AI agent specialized in dissecting and analyzing AI
-  prompts. It extracts critical information, categorizes the prompt, and
-  provides actionable insights for prompt engineering and optimization. The
-  analysis is thorough, precise, and follows specific guidelines.
+  This prompt creates an AI agent specialized in analyzing and dissecting AI
+  prompts. It extracts crucial information, categorizes the prompt, and provides
+  actionable insights for prompt engineering and optimization.
 directory: prompt_analysis_agent
 one_line_description: >-
   Analyzes AI prompts to extract key information and provide insights for
@@ -21,4 +20,8 @@ tags:
 title: Prompt Analysis Agent
 variables:
   - name: '{{PROMPT}}'
-    role: The AI prompt to be analyzed and dissected
+    role: The AI prompt to be analyzed
+  - name: '{{FRAGMENTS}}'
+    role: >-
+      Available prompt engineering fragments that can be used to enhance the
+      prompt

@@ -73,6 +73,9 @@ jobs:
       - name: Update views
         run: npm run update-views
 
+      - name: Generate TOC
+        run: npm run toc
+
       - name: Commit changes
         run: |
           git config --local user.name "github-actions[bot]"

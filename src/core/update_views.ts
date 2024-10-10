@@ -7,6 +7,7 @@ import { Metadata } from '@types';
 import { isDirectory, readDirectory, readFileContent, writeFileContent } from '@utils/file_operations';
 import logger from '@utils/logger';
 import { parseYamlContent } from '@utils/yaml_operations';
+
 /**
  * Represents an item in a category.
  */
@@ -18,12 +19,12 @@ interface CategoryItem {
 }
 
 /**
- * Formats a category string by capitalizing each word and replacing underscores with spaces.
- * @param {string} category - The category string to format.
- * @returns {string} The formatted category string.
+ * Formats a string by capitalizing each word and replacing underscores with spaces.
+ * @param {string} str - The string to format.
+ * @returns {string} The formatted string.
  */
-function formatCategory(category: string): string {
-    return category
+function formatString(str: string): string {
+    return str
         .replace(/_/g, ' ')
         .split(' ')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -53,14 +54,18 @@ async function processPromptDirectory(promptDir: string, categories: Record<stri
         ]);
         const metadata = parseYamlContent(metadataContent) as Metadata;
         logger.debug(`Read metadata from ${metadataFile}`);
+
         const viewContent = nunjucks.render(config.VIEW_TEMPLATE_NAME, {
             metadata,
-            prompt_content: promptContent
+            prompt_content: promptContent,
+            format_string: formatString
         });
         logger.debug('Generated view content using template');
+
         const viewPath = path.join(promptPath, config.VIEW_FILE_NAME);
         await writeFileContent(viewPath, viewContent);
         logger.info(`Wrote view content to ${viewPath}`);
+
         const primaryCategory = metadata.primary_category || config.DEFAULT_CATEGORY;
         categories[primaryCategory] = categories[primaryCategory] || [];
         categories[primaryCategory].push({
@@ -97,7 +102,7 @@ export async function updateViews(): Promise<void> {
     logger.info('Generating README content');
     const readmeContent = nunjucks.render(config.README_TEMPLATE_NAME, {
         categories: sortedCategories,
-        format_category: formatCategory
+        format_string: formatString
     });
     await writeFileContent(config.README_PATH, readmeContent.replace(/\n{3,}/g, '\n\n').trim() + '\n');
     logger.info(`Wrote README content to ${config.README_PATH}`);
