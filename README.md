@@ -95,9 +95,9 @@ To start building your own prompt library, follow these steps:
 
 ### Coding
 
-- [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists in all aspects of software development across multiple programming languages
 - [Code Refactoring Agent](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates code to enhance quality, readability, and performance
 - [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimal git branch names based on project context and development requirements
+- [Coding Assistant Agent](prompts/coding_assistant_agent/README.md) - Assists in all aspects of software development across multiple programming languages
 - [Git Commit Message Expert](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
 - [GitHub Issue Management Agent](prompts/github_issue_management_agent/README.md) - Creates comprehensive, optimized GitHub issues based on project context and team dynamics
 - [Software Development Pull Request Generator](prompts/software_dev_pr_generator/README.md) - Generates comprehensive pull requests for software projects based on given context
