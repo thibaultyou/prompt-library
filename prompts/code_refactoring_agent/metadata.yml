@@ -1,28 +1,57 @@
-content_hash: f8109157590945ee4c96108390fc2a36
+content_hash: 67c56d22e863b4dfca7094d29d297023
 description: >-
-  This prompt creates an AI agent that expertly analyzes and refactors
-  codebases. It infers the programming language, implements best practices, and
-  optimizes code while maintaining functionality. The agent also proposes
-  testing strategies and provides comprehensive documentation of changes.
+  This prompt creates an AI agent specialized in code refactoring across all
+  programming languages. It meticulously analyzes codebases, applies best
+  practices and design patterns, and optimizes code while preserving
+  functionality. The agent provides detailed explanations of its refactoring
+  process and decisions.
 directory: code_refactoring_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Analyzes, refactors, and validates code to enhance quality, readability, and
-  performance
+  Analyzes, refactors, and validates codebases to improve efficiency,
+  readability, and maintainability
 primary_category: coding
 subcategories:
-  - code_optimization
   - software_engineering
+  - code_optimization
 tags:
   - refactoring
-  - code_analysis
-  - performance_optimization
+  - optimization
   - best_practices
-  - language_agnostic
-title: Code Refactoring Agent
+  - design_patterns
+  - code_quality
+title: Code Refactoring Specialist
 variables:
+  - name: '{{SAFETY_GUIDELINES}}'
+    role: Defines rules for agent safety and compliance
+  - name: '{{FORMATTING_GUIDELINES}}'
+    role: Specifies available output formats and their rules
+  - name: '{{OUTPUT_FORMAT}}'
+    role: Indicates the desired format for the generated output
+  - name: '{{BEHAVIOR_ATTRIBUTES}}'
+    role: Controls various aspects of AI behavior
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    role: User-selected values for AI behavior attributes
   - name: '{{REFACTOR_SCOPE}}'
-    role: >-
-      Specifies whether to refactor the entire codebase or focus on specific
-      parts
+    role: Specifies the extent of refactoring (entire codebase or specific parts)
+  - name: '{{PROGRAMMING_LANGUAGE}}'
+    role: Indicates the programming language of the codebase
+  - name: '{{PROJECT_CONTEXT}}'
+    role: Provides additional information about the project
+  - name: '{{PERFORMANCE_CONSTRAINTS}}'
+    role: Specifies performance requirements or limitations
+  - name: '{{CODING_STANDARDS}}'
+    role: Defines specific coding standards or style guides to follow
   - name: '{{CODEBASE}}'
-    role: The code to be refactored
+    role: Contains the code to be refactored
+  - name: '{{GUIDELINES_OR_CONTEXT}}'
+    role: Provides additional guidelines or context for refactoring

@@ -1,34 +1,63 @@
-content_hash: 16c7766ab5e71a147d08da3484b1f046
+content_hash: 5a6c71ae5142d58da2bda4165504c1f3
 description: >-
-  This prompt creates an elite coding assistant with expertise in various
-  programming languages and software engineering practices. It provides guidance
-  on code writing, analysis, optimization, and bug fixing, incorporating
-  advanced principles and best practices.
+  This prompt creates an advanced AI coding assistant capable of providing
+  guidance in various programming languages and frameworks. It offers support
+  for code writing, analysis, optimization, and debugging, while adhering to
+  software engineering best practices and ensuring code quality, performance,
+  and security.
 directory: coding_assistant_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Assists with code writing, analysis, optimization, and debugging across
-  multiple languages
+  Assists in all aspects of software development with expertise across multiple
+  languages
 primary_category: coding
 subcategories:
+  - Software Engineering
+  - Programming Languages
+tags:
   - software_engineering
   - code_optimization
-tags:
-  - multi_language
-  - code_analysis
   - debugging
+  - multi_language
   - best_practices
-  - performance_optimization
-title: Elite Coding Assistant
+title: Ultimate Coding Assistant
 variables:
-  - name: '{{LANGUAGE}}'
-    role: Specifies the programming language for the task
+  - name: '{{SAFETY_GUIDELINES}}'
+    role: Defines rules for ethical coding practices and data protection
+  - name: '{{FORMATTING_GUIDELINES}}'
+    role: Specifies rules for code formatting and documentation
+  - name: '{{OUTPUT_FORMAT}}'
+    role: Determines the desired format for the generated output
+  - name: '{{BEHAVIOR_ATTRIBUTES}}'
+    role: Controls various aspects of AI behavior, such as verbosity or creativity
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    role: Allows users to customize AI behavior attributes
+  - name: '{{PROGRAMMING_LANGUAGE}}'
+    role: Specifies the primary programming language for the task
   - name: '{{FRAMEWORK}}'
-    role: Indicates the framework being used, if applicable
+    role: Indicates the specific framework or library being used
   - name: '{{TASK_TYPE}}'
-    role: >-
-      Defines the type of coding task (e.g., code writing, analysis,
-      optimization)
-  - name: '{{ADDITIONAL_CONTEXT}}'
-    role: Provides any additional information or context for the task
+    role: Defines the type of coding task required
+  - name: '{{COMPLEXITY_LEVEL}}'
+    role: Specifies the desired complexity level of the solution or explanation
+  - name: '{{PERFORMANCE_REQUIREMENTS}}'
+    role: Outlines specific performance criteria or constraints for the code
+  - name: '{{CODE_STYLE_GUIDE}}'
+    role: References a specific coding style guide to follow
+  - name: '{{TARGET_ENVIRONMENT}}'
+    role: Specifies the intended deployment environment or platform for the code
   - name: '{{USER_CODE}}'
-    role: Contains the user's code for analysis or modification
+    role: >-
+      Contains the code provided by the user for analysis, optimization, or
+      debugging
+  - name: '{{GUIDELINES_OR_CONTEXT}}'
+    role: Provides additional project-specific guidelines or contextual information
