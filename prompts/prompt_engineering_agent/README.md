@@ -1,29 +1,31 @@
-# Prompt Engineering God Agent
+# Prompt Engineering God
 
 ### ✏️ One-line Description
 
-**Crafts divine-tier prompts that push the boundaries of AI language model capabilities**
+**Creates and refines optimized prompts for AI models across various domains**
 
 ### 📄 Description
 
-This prompt engineering agent specializes in creating and refining optimized prompts for AI models. It incorporates advanced techniques, ethical considerations, and user requirements to generate exceptional, tailored outputs across various domains.
+This prompt engineering expert crafts highly optimized prompts for AI models, incorporating advanced techniques and ethical considerations. It adapts to various domains and task types, ensuring exceptional, tailored outputs that push the boundaries of AI capabilities.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}`: Specifies the user's specific needs and objectives for the prompt
-- `{{AI_MODEL}}`: Identifies the target AI model for which the prompt is being optimized
-- `{{OPTIONAL_PROMPT_TO_REFINE}}`: Provides an existing prompt that can be refined and improved
-- `{{PROMPT_ENGINEERING_GUIDELINES}}`: Outlines specific guidelines for prompt engineering techniques to be used
-- `{{PROMPT_OUTPUT_GUIDELINES}}`: Defines the required structure and content for the generated prompt output
-- `{{PROMPT_FORMATTING_GUIDELINES}}`: Specifies formatting requirements for the generated prompt
-- `{{PROMPT_OUTPUT_FORMAT}}`: Determines the final format in which the optimized prompt should be presented
+- `{{USER_REQUIREMENTS}}` - Specific requirements provided by the user for the prompt
+- `{{AI_MODEL}}` - The AI model for which the prompt is being optimized
+- `{{PROMPT_TO_REFINE}}` - 🔧 **Optional** - Prompt to be refined or improved
+- `{{FORMATTING_GUIDELINES}}` - List of available output formats, their rules and descriptions
+- `{{PROMPT_OUTPUT_FORMAT}}` - Desired format for the generated output
+- `{{PROMPT_ENGINEERING_GUIDELINES}}` - Guidelines for creating effective prompts
+- `{{PROMPT_OUTPUT_GUIDELINES}}` - Guidelines for the desired output of the prompt
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Additional guidelines or context
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be injected into `{{PROMPT_ENGINEERING_GUIDELINES}}`
-- [Output Guidelines](/fragments/prompt_engineering/output_guidelines.md) - Could be injected into `{{PROMPT_OUTPUT_GUIDELINES}}`
-- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be injected into `{{PROMPT_FORMATTING_GUIDELINES}}`
+- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be used into `{{PROMPT_ENGINEERING_GUIDELINES}}`
+- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
+- [Prompt Output Guidelines](/fragments/prompt_engineering/prompt_output_guidelines.md) - Could be used into `{{PROMPT_OUTPUT_GUIDELINES}}`
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{EXTRA_GUIDELINES_OR_CONTEXT}}`
 
 ### 📜 Prompt
 
@@ -33,13 +35,66 @@ This prompt could potentially use the following fragments:
 <task>Your mission is to create or refine an optimized prompt. This prompt should embody the pinnacle of prompt engineering, incorporating advanced techniques to unlock the full potential of AI models while adhering to ethical constraints, user requirements, and including all required and necessary parameters as specified in the provided output guidelines.</task>
 
 <input_parameters>
-User Requirements: {{USER_REQUIREMENTS}}
-AI Model: {{AI_MODEL}}
-[Optional] Prompt to Refine: {{OPTIONAL_PROMPT_TO_REFINE}}
-Prompt Engineering Guidelines: {{PROMPT_ENGINEERING_GUIDELINES}}
-Prompt Output Guidelines: {{PROMPT_OUTPUT_GUIDELINES}}
-Prompt Formatting Guidelines: {{PROMPT_FORMATTING_GUIDELINES}}
-Prompt Output Format: {{PROMPT_OUTPUT_FORMAT}}
+  <user_requirements>
+    <description>Specific requirements provided by the user for the prompt</description>
+    <value>{{USER_REQUIREMENTS}}</value>
+    <examples>
+      - I need an assistant that can help me write engaging blog posts about technology trends
+      - I require a prompt that can analyze and summarize complex scientific research papers
+      - Please refine the provided prompt to make it more effective
+    </examples>
+  </user_requirements>
+
+  <ai_model>
+    <description>The AI model for which the prompt is being optimized</description>
+    <value>{{AI_MODEL}}</value>
+    <examples>
+      - any
+      - claude
+      - chatgpt
+      - llama
+    </examples>
+  </ai_model>
+
+  <prompt_to_refine>
+    <description>Prompt to be refined or improved</description>
+    <optional>true</optional>
+    <value>{{PROMPT_TO_REFINE}}</value>
+  </prompt_to_refine>
+
+  <formatting_guidelines>
+    <description>List of available output formats, their rules and descriptions</description>
+    <value>{{FORMATTING_GUIDELINES}}</value>
+  </formatting_guidelines>
+
+  <output_format>
+    <description>Desired format for the generated output</description>
+    <value>{{PROMPT_OUTPUT_FORMAT}}</value>
+    <examples>
+      - markdown
+      - structured
+      - natural
+      - json
+      - xml
+      - html
+    </examples>
+  </output_format>
+
+  <prompt_engineering_guidelines>
+    <description>Guidelines for creating effective prompts</description>
+    <value>{{PROMPT_ENGINEERING_GUIDELINES}}</value>
+  </prompt_engineering_guidelines>
+
+  <prompt_output_guidelines>
+    <description>Guidelines for the desired output of the prompt</description>
+    <value>{{PROMPT_OUTPUT_GUIDELINES}}</value>
+  </prompt_output_guidelines>
+
+  <extra_guidelines_or_context>
+    <description>Additional guidelines or context</description>
+    <optional>true</optional>
+    <value>{{EXTRA_GUIDELINES_OR_CONTEXT}}</value>
+  </extra_guidelines_or_context>
 </input_parameters>
 
 <instructions>
@@ -177,14 +232,14 @@ Generate the final prompt output according to the specified {{PROMPT_OUTPUT_FORM
 
 - prompt_optimization
 - ai_capabilities
+- task_refinement
 - ethical_constraints
-- customization
-- advanced_techniques
+- domain_expertise
 
 ### 📚 Category
 
 Primary category: prompt_engineering
 
 Subcategories:
-- optimization
-- ai_interaction
+- ai_optimization
+- task_adaptation

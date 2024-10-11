@@ -56,14 +56,21 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 1. **Fork the Repository**: Click "Fork" to create a copy in your GitHub account.
 2. **Clone Your Fork**:
    ```
-   git clone https://github.com/YOUR_USERNAME/REPO_NAME.git
+   git clone https://github.com/YOUR_USERNAME/prompt-library.git
    ```
 3. **Set Up Anthropic API Key**:
    - In repository settings: **Secrets and variables** > **Actions**.
    - Create a secret named `ANTHROPIC_API_KEY` with your API key.
 4. **Install Dependencies**:
    - Ensure Node.js (v22+ recommended) is installed.
-   - Run `npm install`.
+   - Navigate to the directory:
+      ```
+      cd prompt-library
+      ```
+   - Install dependencies:
+     ```
+     npm install
+     ```
 5. **Add Prompts**:
    - Create a `prompt.md` file in the `prompts` directory.
    - Write your prompt content.
@@ -94,16 +101,29 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 
 ## 🔧 Customizing Metadata Extraction
 
-The system prompt for metadata extraction is at:
+1. Navigate to the directory:
+   ```
+   cd src/system_prompts/prompt_analysis_agent
+   ```
 
-[`src/system_prompts/prompt_analysis_agent/prompt.md`](src/system_prompts/prompt_analysis_agent/prompt.md)
+2. Edit the system prompt:
+   ```
+   nano prompt.md
+   ```
+   Modify `<instructions>` or `<output>` sections as needed.
 
-To customize:
+3. Test changes:
+   ```
+   cd ../../../
+   npm run generate-metadata
+   ```
 
-1. Open `prompt.md` and modify sections like `<instructions>` or `<output>` to adjust metadata extraction.
-2. Save your changes.
-3. Run `npm run generate-metadata` to test.
-4. Commit and push changes to trigger GitHub Actions.
+4. Commit and push:
+   ```
+   git add src/system_prompts/prompt_analysis_agent/prompt.md
+   git commit -m "Update metadata extraction"
+   git push
+   ```
 
 > **Note**: Changes affect future metadata generations. Test thoroughly.
 

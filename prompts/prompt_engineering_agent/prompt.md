@@ -3,13 +3,66 @@
 <task>Your mission is to create or refine an optimized prompt. This prompt should embody the pinnacle of prompt engineering, incorporating advanced techniques to unlock the full potential of AI models while adhering to ethical constraints, user requirements, and including all required and necessary parameters as specified in the provided output guidelines.</task>
 
 <input_parameters>
-User Requirements: {{USER_REQUIREMENTS}}
-AI Model: {{AI_MODEL}}
-[Optional] Prompt to Refine: {{OPTIONAL_PROMPT_TO_REFINE}}
-Prompt Engineering Guidelines: {{PROMPT_ENGINEERING_GUIDELINES}}
-Prompt Output Guidelines: {{PROMPT_OUTPUT_GUIDELINES}}
-Prompt Formatting Guidelines: {{PROMPT_FORMATTING_GUIDELINES}}
-Prompt Output Format: {{PROMPT_OUTPUT_FORMAT}}
+  <user_requirements>
+    <description>Specific requirements provided by the user for the prompt</description>
+    <value>{{USER_REQUIREMENTS}}</value>
+    <examples>
+      - I need an assistant that can help me write engaging blog posts about technology trends
+      - I require a prompt that can analyze and summarize complex scientific research papers
+      - Please refine the provided prompt to make it more effective
+    </examples>
+  </user_requirements>
+
+  <ai_model>
+    <description>The AI model for which the prompt is being optimized</description>
+    <value>{{AI_MODEL}}</value>
+    <examples>
+      - any
+      - claude
+      - chatgpt
+      - llama
+    </examples>
+  </ai_model>
+
+  <prompt_to_refine>
+    <description>Prompt to be refined or improved</description>
+    <optional>true</optional>
+    <value>{{PROMPT_TO_REFINE}}</value>
+  </prompt_to_refine>
+
+  <formatting_guidelines>
+    <description>List of available output formats, their rules and descriptions</description>
+    <value>{{FORMATTING_GUIDELINES}}</value>
+  </formatting_guidelines>
+
+  <output_format>
+    <description>Desired format for the generated output</description>
+    <value>{{PROMPT_OUTPUT_FORMAT}}</value>
+    <examples>
+      - markdown
+      - structured
+      - natural
+      - json
+      - xml
+      - html
+    </examples>
+  </output_format>
+
+  <prompt_engineering_guidelines>
+    <description>Guidelines for creating effective prompts</description>
+    <value>{{PROMPT_ENGINEERING_GUIDELINES}}</value>
+  </prompt_engineering_guidelines>
+
+  <prompt_output_guidelines>
+    <description>Guidelines for the desired output of the prompt</description>
+    <value>{{PROMPT_OUTPUT_GUIDELINES}}</value>
+  </prompt_output_guidelines>
+
+  <extra_guidelines_or_context>
+    <description>Additional guidelines or context</description>
+    <optional>true</optional>
+    <value>{{EXTRA_GUIDELINES_OR_CONTEXT}}</value>
+  </extra_guidelines_or_context>
 </input_parameters>
 
 <instructions>

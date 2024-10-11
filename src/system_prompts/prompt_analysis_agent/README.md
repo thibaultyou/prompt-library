@@ -6,12 +6,13 @@
 
 ### 📄 Description
 
-This prompt creates an AI agent specialized in analyzing and dissecting AI prompts. It extracts crucial information, categorizes the prompt, and provides actionable insights for prompt engineering and optimization.
+This prompt creates an AI agent specialized in analyzing and dissecting AI prompts. It extracts critical information, categorizes the prompt, and provides actionable insights for prompt engineering and optimization.
 
 ### 🔧 Variables
 
-- `{{PROMPT}}`: The AI prompt to be analyzed
-- `{{FRAGMENTS}}`: Available prompt engineering fragments that can be used to enhance the prompt
+- `{{PROMPT}}` - The AI prompt to be analyzed
+- `{{FRAGMENTS}}` - List of available prompt fragments for potential injection
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Additional guidelines or context for the analysis
 
 ### 📜 Prompt
 
@@ -21,35 +22,26 @@ This prompt creates an AI agent specialized in analyzing and dissecting AI promp
 <task>Analyze the provided AI prompt and extract key information according to the specified guidelines. Your analysis should be thorough, precise, and actionable.</task>
 
 <input_parameters>
-Prompt to Analyze: {{PROMPT}}
-Available fragments: {{FRAGMENTS}}
-Top-Level Categories: [
-  "analysis",
-  "art_and_design",
-  "business",
-  "coding",
-  "content_creation",
-  "customer_service",
-  "data_processing",
-  "education",
-  "entertainment",
-  "finance",
-  "gaming",
-  "healthcare",
-  "language",
-  "legal",
-  "marketing",
-  "music",
-  "personal_assistant",
-  "problem_solving",
-  "productivity",
-  "prompt_engineering",
-  "research",
-  "science",
-  "social_media",
-  "translation",
-  "writing"
-]
+  <prompt_to_analyze>
+    <description>The AI prompt to be analyzed</description>
+    <value>{{PROMPT}}</value>
+  </prompt_to_analyze>
+
+  <available_fragments>
+    <description>List of available prompt fragments for potential injection</description>
+    <value>{{FRAGMENTS}}</value>
+  </available_fragments>
+
+  <top_level_categories>
+    <description>List of available top-level categories for classification</description>
+    <value>["analysis", "art_and_design", "business", "coding", "content_creation", "customer_service", "data_processing", "education", "entertainment", "finance", "gaming", "healthcare", "language", "legal", "marketing", "music", "personal_assistant", "problem_solving", "productivity", "prompt_engineering", "research", "science", "social_media", "translation", "writing"]</value>
+  </top_level_categories>
+
+  <extra_guidelines_or_context>
+    <description>Additional guidelines or context</description>
+    <optional>true</optional>
+    <value>{{EXTRA_GUIDELINES_OR_CONTEXT}}</value>
+  </extra_guidelines_or_context>
 </input_parameters>
 
 <instructions>
@@ -116,8 +108,10 @@ description: [Your quick description]
 variables:
   - name: "{{VARIABLE_1}}"
     role: [Role description for VARIABLE_1]
+    optional: [true/false]
   - name: "{{VARIABLE_2}}"
     role: [Role description for VARIABLE_2]
+    optional: [true/false]
   [Add more variables if necessary]
 fragments:
   - name: [Fragment Name]
@@ -129,16 +123,16 @@ fragments:
 
 ### 🔖 Tags
 
-- prompt_engineering
-- analysis
+- prompt_analysis
 - categorization
 - information_extraction
+- prompt_engineering
 - optimization
 
 ### 📚 Category
 
-Primary category: prompt_engineering
+Primary category: analysis
 
 Subcategories:
+- prompt_engineering
 - information_extraction
-- categorization

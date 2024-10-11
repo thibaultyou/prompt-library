@@ -1,48 +1,57 @@
-content_hash: 46e601af9a00293c174377e48f639bf7
+content_hash: f83c2283a40d0b75d3d4069dfbe262eb
 description: >-
-  This prompt engineering agent specializes in creating and refining optimized
-  prompts for AI models. It incorporates advanced techniques, ethical
-  considerations, and user requirements to generate exceptional, tailored
-  outputs across various domains.
+  This prompt engineering expert crafts highly optimized prompts for AI models,
+  incorporating advanced techniques and ethical considerations. It adapts to
+  various domains and task types, ensuring exceptional, tailored outputs that
+  push the boundaries of AI capabilities.
 directory: prompt_engineering_agent
 fragments:
   - category: prompt_engineering
     name: prompt_engineering_guidelines_max
     variable: '{{PROMPT_ENGINEERING_GUIDELINES}}'
   - category: prompt_engineering
-    name: output_guidelines
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: prompt_output_guidelines
     variable: '{{PROMPT_OUTPUT_GUIDELINES}}'
   - category: prompt_engineering
-    name: formatting_guidelines
-    variable: '{{PROMPT_FORMATTING_GUIDELINES}}'
-one_line_description: >-
-  Crafts divine-tier prompts that push the boundaries of AI language model
-  capabilities
+    name: safety_guidelines
+    variable: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+one_line_description: Creates and refines optimized prompts for AI models across various domains
 primary_category: prompt_engineering
 subcategories:
-  - optimization
-  - ai_interaction
+  - ai_optimization
+  - task_adaptation
 tags:
   - prompt_optimization
   - ai_capabilities
+  - task_refinement
   - ethical_constraints
-  - customization
-  - advanced_techniques
-title: Prompt Engineering God Agent
+  - domain_expertise
+title: Prompt Engineering God
 variables:
   - name: '{{USER_REQUIREMENTS}}'
-    role: Specifies the user's specific needs and objectives for the prompt
+    optional: false
+    role: Specific requirements provided by the user for the prompt
   - name: '{{AI_MODEL}}'
-    role: Identifies the target AI model for which the prompt is being optimized
-  - name: '{{OPTIONAL_PROMPT_TO_REFINE}}'
-    role: Provides an existing prompt that can be refined and improved
-  - name: '{{PROMPT_ENGINEERING_GUIDELINES}}'
-    role: Outlines specific guidelines for prompt engineering techniques to be used
-  - name: '{{PROMPT_OUTPUT_GUIDELINES}}'
-    role: Defines the required structure and content for the generated prompt output
-  - name: '{{PROMPT_FORMATTING_GUIDELINES}}'
-    role: Specifies formatting requirements for the generated prompt
+    optional: false
+    role: The AI model for which the prompt is being optimized
+  - name: '{{PROMPT_TO_REFINE}}'
+    optional: true
+    role: Prompt to be refined or improved
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional: false
+    role: List of available output formats, their rules and descriptions
   - name: '{{PROMPT_OUTPUT_FORMAT}}'
-    role: >-
-      Determines the final format in which the optimized prompt should be
-      presented
+    optional: false
+    role: Desired format for the generated output
+  - name: '{{PROMPT_ENGINEERING_GUIDELINES}}'
+    optional: false
+    role: Guidelines for creating effective prompts
+  - name: '{{PROMPT_OUTPUT_GUIDELINES}}'
+    optional: false
+    role: Guidelines for the desired output of the prompt
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional: true
+    role: Additional guidelines or context

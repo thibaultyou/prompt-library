@@ -27,4 +27,6 @@ export interface Metadata {
     content_hash?: string;
     /** An array of fragments used in the prompt */
     fragments?: Fragment[];
+    /** Indicates if the prompt is optional */
+    optional: boolean;
 }
