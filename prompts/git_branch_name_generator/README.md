@@ -6,30 +6,30 @@
 
 ### 📄 Description
 
-This prompt creates semantically rich git branch names tailored to specific project requirements and development workflows. It incorporates best practices, team conventions, and relevant project identifiers to enhance collaboration and streamline development processes.
+This prompt analyzes project requirements and context to create semantically rich, convention-compliant git branch names. It enhances development workflows, improves team communication, and streamlines code review processes.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}` - Specifies the main task or feature for which the branch is being created
-- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Provides background information about the project to inform branch naming decisions
-- `{{DEVELOPMENT_WORKFLOW}}` - 🔧 **Optional** - Describes the team's development process and branching strategy
-- `{{TEAM_CONVENTIONS}}` - 🔧 **Optional** - Outlines any specific naming conventions or rules followed by the team
-- `{{CURRENT_BRANCH_NAME}}` - 🔧 **Optional** - Specifies the existing branch name if improvements are needed
-- `{{PROJECT_MANAGEMENT_TOOL}}` - 🔧 **Optional** - Indicates the project management tool used, if any, for integration purposes
-- `{{TICKET_NUMBER}}` - 🔧 **Optional** - Provides the associated ticket or issue number for traceability
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines any safety or ethical considerations for branch naming
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI in generating branch names
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI interaction and output style
+- `{{USER_REQUIREMENTS}}` - Specifies the main purpose or task for the new branch
+- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Provides background information about the project
+- `{{DEVELOPMENT_WORKFLOW}}` - 🔧 **Optional** - Describes the team's development process
+- `{{TEAM_CONVENTIONS}}` - 🔧 **Optional** - Outlines specific naming conventions used by the team
+- `{{CURRENT_BRANCH_NAME}}` - 🔧 **Optional** - Specifies the current branch name for comparison and improvement
+- `{{PROJECT_MANAGEMENT_TOOL}}` - 🔧 **Optional** - Indicates the project management tool in use
+- `{{TICKET_NUMBER}}` - 🔧 **Optional** - Provides a reference number for the associated task or issue
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety and ethical considerations for branch naming
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior characteristics
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for AI interaction
 - `{{FORMATTING_GUIDELINES}}` - Provides specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired structure and components of the output
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired structure of the generated output
 - `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Allows for additional instructions or context to be provided
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
 - [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
-- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
+- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
 
 ### 📜 Prompt
 
@@ -239,9 +239,9 @@ Future Considerations:
 
 - git
 - branch_naming
-- version_control
 - software_development
-- project_management
+- collaboration
+- workflow_optimization
 
 ### 📚 Category
 

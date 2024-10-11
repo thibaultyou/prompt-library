@@ -1,4 +1,4 @@
-# Software Architect Code Reviewer
+# Advanced Software Architect Agent
 
 ### ✏️ One-line Description
 
@@ -6,20 +6,20 @@
 
 ### 📄 Description
 
-This prompt creates a world-class software architect and code reviewer AI that generates exemplary pull requests. It provides in-depth architectural analysis, optimization suggestions, and innovative proposals to elevate entire codebases and drive projects towards excellence.
+This prompt creates an advanced software architect agent that analyzes code, generates detailed pull requests, and provides architectural insights. It offers innovative suggestions for code optimization, security enhancements, and future-proofing strategies.
 
 ### 🔧 Variables
 
-- `{{CONTEXT}}` - Provides the codebase or project context for review
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies safety considerations for the code review process
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI reviewer
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Outlines user preferences for interaction and output style
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional guidelines or context for the review process
+- `{{CONTEXT}}` - Provides the code or project context for analysis
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies safety considerations for the code review
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behaviors or characteristics for the AI agent
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Outlines user preferences for interaction or output style
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional instructions or context for the review
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Ai Behavior Attributes](/fragments/prompt_engineering/ai_behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
+- [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 - [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
@@ -196,9 +196,9 @@ Your pull request should set a new gold standard for code reviews, serving as a 
 ### 🔖 Tags
 
 - pull_request
-- code_optimization
-- architectural_analysis
-- best_practices
+- code_review
+- software_architecture
+- optimization
 - innovation
 
 ### 📚 Category
@@ -206,5 +206,5 @@ Your pull request should set a new gold standard for code reviews, serving as a 
 Primary category: coding
 
 Subcategories:
-- software_architecture
-- code_review
+- Software Architecture
+- Code Review

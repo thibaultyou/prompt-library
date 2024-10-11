@@ -2,22 +2,22 @@
 
 ### ✏️ One-line Description
 
-**Creates optimized prompts to maximize AI potential while adhering to ethical standards**
+**Crafts divine-tier prompts to maximize AI potential while adhering to ethical standards**
 
 ### 📄 Description
 
-This prompt engineering agent specializes in crafting advanced prompts that push the boundaries of AI capabilities. It incorporates cutting-edge techniques, ethical considerations, and user requirements to create highly optimized prompts across various domains.
+This prompt engineering expert specializes in creating optimized prompts that push the boundaries of AI capabilities. It incorporates advanced techniques, ethical considerations, and user requirements to generate highly effective and adaptable prompts across various domains.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}` - Specifies the user's objectives and constraints for the prompt
-- `{{AI_MODEL}}` - 🔧 **Optional** - Identifies the specific AI model to optimize the prompt for
-- `{{PROMPT_TO_REFINE}}` - 🔧 **Optional** - Provides an existing prompt to be improved upon
-- `{{FORMATTING_GUIDELINES}}` - Outlines specific formatting requirements for the prompt
-- `{{PROMPT_OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the generated prompt
-- `{{PROMPT_ENGINEERING_GUIDELINES}}` - Provides additional guidelines for prompt creation
-- `{{PROMPT_OUTPUT_GUIDELINES}}` - Specifies requirements for the prompt's output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Offers additional context or guidelines for prompt creation
+- `{{USER_REQUIREMENTS}}` - Specifies the user's requirements for the prompt to be created or refined
+- `{{AI_MODEL}}` - 🔧 **Optional** - Indicates the specific AI model to be used, if applicable
+- `{{PROMPT_TO_REFINE}}` - 🔧 **Optional** - Provides an existing prompt to be optimized, if applicable
+- `{{FORMATTING_GUIDELINES}}` - Specifies any formatting requirements for the output prompt
+- `{{PROMPT_OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the desired format for the generated prompt
+- `{{PROMPT_ENGINEERING_GUIDELINES}}` - Provides specific guidelines for prompt engineering techniques to be used
+- `{{PROMPT_OUTPUT_GUIDELINES}}` - Specifies requirements for the final output of the generated prompt
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for prompt creation
 
 ### 🧩 Relevant Fragments
 
@@ -213,11 +213,11 @@ Ensure all parameters in your generated prompt use the {{PARAMETER}} notation wi
 
 ### 🔖 Tags
 
-- prompt_crafting
-- AI_optimization
-- ethical_constraints
+- divine_tier
+- optimization
+- ethical_ai
 - advanced_techniques
-- meta_learning
+- customization
 
 ### 📚 Category
 

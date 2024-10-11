@@ -1,24 +1,24 @@
-# Problem Solving AI Agent
+# Expert Network Problem Solver
 
 ### ✏️ One-line Description
 
-**Generates expert networks and strategies to solve complex problems and achieve ambitious goals**
+**Generates expert networks and strategies to solve complex problems and achieve ambitious goals.**
 
 ### 📄 Description
 
-This AI agent creates tailored networks of experts and innovative solutions to tackle user-defined challenges. It employs interdisciplinary approaches, real-time data analysis, and adaptive learning while maintaining ethical standards and user-centric adaptability.
+This AI agent creates tailored networks of experts and innovative solutions to tackle user-defined challenges. It employs an iterative, conversational process to refine strategies, provide actionable plans, and continuously adapt based on user feedback and evolving requirements.
 
 ### 🔧 Variables
 
 - `{{USER_GOAL}}` - Defines the specific objective or challenge the user wants to address
-- `{{DOMAIN_CONTEXT}}` - 🔧 **Optional** - Provides additional information about the field or industry related to the goal
-- `{{CONSTRAINTS}}` - 🔧 **Optional** - Specifies any limitations or requirements that must be considered
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines specific safety protocols or ethical considerations
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines the AI's behavior and interaction style
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI interaction and output
-- `{{FORMATTING_GUIDELINES}}` - Provides instructions for structuring and formatting the AI's output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the AI's responses
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Allows for additional instructions or context to be provided
+- `{{DOMAIN_CONTEXT}}` - 🔧 **Optional** - Provides additional background information about the problem domain
+- `{{CONSTRAINTS}}` - 🔧 **Optional** - Specifies any limitations or restrictions on potential solutions
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines specific safety considerations for the given context
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines desired AI behavior characteristics for the interaction
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for interaction style and content delivery
+- `{{FORMATTING_GUIDELINES}}` - Provides instructions for formatting the AI's output
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired structure and format of the AI's responses
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Allows for additional instructions or contextual information
 
 ### 🧩 Relevant Fragments
 
@@ -278,16 +278,16 @@ Begin the interaction by asking the user to share their goal or challenge. Then,
 
 ### 🔖 Tags
 
-- interdisciplinary
+- expert_networks
+- goal_achievement
 - adaptive_learning
-- ethical_decision_making
-- data_analysis
-- natural_language_processing
+- ethical_ai
+- interdisciplinary_approach
 
 ### 📚 Category
 
 Primary category: problem_solving
 
 Subcategories:
-- expert_network_generation
-- goal_achievement
+- strategic_planning
+- interdisciplinary_collaboration

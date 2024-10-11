@@ -2,27 +2,28 @@
 
 ### ✏️ One-line Description
 
-**Analyzes user requirements and creates comprehensive software specification documents**
+**Analyzes requirements and creates comprehensive software specification documents**
 
 ### 📄 Description
 
-This prompt creates an AI agent that acts as an elite software engineering architect. It analyzes user requirements, engages in Socratic dialogue, and produces detailed software specification documents incorporating cutting-edge technologies and future-proofing strategies.
+This prompt embodies an elite software engineering architect with expertise in AI, quantum computing, and emerging technologies. It guides the creation of visionary software specification documents, incorporating cutting-edge concepts and anticipating future challenges.
 
 ### 🔧 Variables
 
 - `{{USER_REQUIREMENTS}}` - Contains the initial user requirements for the software project
-- `{{FORMATTING_GUIDELINES}}` - Specifies formatting guidelines for the output document
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the desired format for the final output
+- `{{FORMATTING_GUIDELINES}}` - Specifies formatting rules for the output document
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and presentation of the final output
 - `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for the software development process
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired behavioral attributes for the AI agent
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for interaction with the AI agent
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the specification process
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior characteristics
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for interaction and output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the task
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 - [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
+- [Prompt Output Guidelines](/fragments/prompt_engineering/prompt_output_guidelines.md) - Could be used into `{{OUTPUT_FORMAT}}`
 - [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
@@ -261,9 +262,9 @@ To manage potential issues during the specification process:
 
 - AI
 - quantum_computing
+- emerging_technologies
 - software_specification
 - visionary_planning
-- emerging_technologies
 
 ### 📚 Category
 

@@ -6,21 +6,21 @@
 
 ### 📄 Description
 
-This advanced AI assistant offers 24/7 mental health care, combining natural language processing, emotion recognition, and therapeutic techniques. It adapts to user needs, manages crises, and adheres to strict ethical guidelines while providing empathetic, evidence-based support.
+This advanced AI assistant offers 24/7 mental health care, combining natural language processing, emotion recognition, and therapeutic techniques. It adapts to user needs, manages crises, and maintains strict ethical standards while providing accessible and empathetic support.
 
 ### 🔧 Variables
 
 - `{{USER_DATA}}` - Provides essential information about the user for personalized care
-- `{{PHYSIOLOGICAL_DATA}}` - 🔧 **Optional** - Offers insights from wearable devices to inform therapeutic approach
-- `{{THERAPEUTIC_TECHNIQUES}}` - 🔧 **Optional** - Specifies available therapeutic techniques for the AI to utilize
+- `{{PHYSIOLOGICAL_DATA}}` - 🔧 **Optional** - Incorporates physical health data to inform therapeutic approaches
+- `{{THERAPEUTIC_TECHNIQUES}}` - 🔧 **Optional** - Specifies available therapeutic methods for the AI to utilize
 - `{{INTERACTION_HISTORY}}` - 🔧 **Optional** - Provides context from previous sessions for continuity of care
-- `{{CRISIS_PROTOCOLS}}` - 🔧 **Optional** - Outlines procedures for handling crisis situations
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Defines safety parameters for the AI's interactions
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior characteristics
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user's preferences for interaction style
-- `{{FORMATTING_GUIDELINES}}` - Provides instructions for formatting AI responses
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for AI outputs
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Offers additional context or guidelines for the AI
+- `{{CRISIS_PROTOCOLS}}` - 🔧 **Optional** - Defines procedures for handling emergency situations
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines rules to ensure user safety and ethical practice
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behaviors and characteristics
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user's preferred interaction styles and approaches
+- `{{FORMATTING_GUIDELINES}}` - Provides instructions for structuring AI responses
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for AI-generated content
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Offers additional instructions or contextual information
 
 ### 🧩 Relevant Fragments
 

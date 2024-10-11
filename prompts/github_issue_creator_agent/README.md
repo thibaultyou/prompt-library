@@ -2,27 +2,27 @@
 
 ### ✏️ One-line Description
 
-**Creates comprehensive and actionable GitHub issues based on provided project context**
+**Creates comprehensive and actionable GitHub issues based on provided context and parameters**
 
 ### 📄 Description
 
-This prompt creates a hyper-intelligent AI system designed to generate exceptional GitHub issues. It analyzes project context, synthesizes information, and crafts detailed, well-structured issues that balance clarity, actionability, and technical depth.
+This prompt engineers an AI agent specialized in crafting detailed GitHub issues. It synthesizes project information, analyzes technical contexts, and generates structured, informative issues adaptable to various levels of input detail.
 
 ### 🔧 Variables
 
 - `{{CONTEXT}}` - Provides essential information about the issue or feature request
-- `{{PROJECT_DOCUMENTATION}}` - 🔧 **Optional** - Offers additional project-specific information to enhance issue context
+- `{{PROJECT_DOCUMENTATION}}` - 🔧 **Optional** - Offers additional project-specific details to enhance issue context
 - `{{TEAM_DYNAMICS}}` - 🔧 **Optional** - Provides insights into team structure and collaboration patterns
-- `{{PROJECT_HISTORY}}` - 🔧 **Optional** - Offers background on past decisions and project evolution
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies any safety or ethical considerations for the project
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific AI behavior parameters for issue creation
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI interaction and output style
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional guidelines or context for issue creation
+- `{{PROJECT_HISTORY}}` - 🔧 **Optional** - Gives background on past project decisions and development trajectory
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines any specific safety or ethical considerations for the project
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior parameters for the AI agent
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows customization of AI interaction based on user preferences
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional instructions or context for issue creation
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Core](/fragments/prompt_engineering/prompt_engineering_guidelines_core.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
+- [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 - [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
@@ -259,8 +259,8 @@ Generate the GitHub issue in Markdown format as specified in the instructions. E
 - github
 - issue_tracking
 - software_development
-- project_management
 - collaboration
+- project_management
 
 ### 📚 Category
 

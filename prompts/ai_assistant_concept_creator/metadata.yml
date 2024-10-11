@@ -1,10 +1,10 @@
 content_hash: ab57f41336e519c1002ec34f2d7b305a
 description: >-
   This prompt engineers groundbreaking AI assistant concepts that balance
-  innovation with practical implementation. It focuses on creating exceptional
-  capabilities while ensuring ethical considerations, technological feasibility,
-  and user-centric design.
-directory: ai_assistant_concept_architect
+  innovation with practical implementation. It focuses on creating ethically
+  sound, user-friendly designs that address real-world challenges using
+  cutting-edge AI technologies.
+directory: ai_assistant_concept_creator
 fragments:
   - category: prompt_engineering
     name: behavior_attributes
@@ -15,43 +15,37 @@ fragments:
   - category: prompt_engineering
     name: safety_guidelines
     variable: '{{SAFETY_GUIDELINES}}'
-one_line_description: >-
-  Generates innovative and feasible AI assistant concepts based on user-provided
-  topics
+one_line_description: Generates innovative and feasible AI assistant concepts based on given topics
 primary_category: prompt_engineering
 subcategories:
-  - ai_assistant_design
-  - concept_development
-tags:
   - ai_design
+  - concept_generation
+tags:
+  - ai_architecture
   - innovation
-  - feasibility
   - ethical_ai
-  - user_experience
-title: AI Assistant Concept Architect
+  - user_centric
+  - technological_feasibility
+title: AI Assistant Concept Creator
 variables:
   - name: '{{TOPIC}}'
     optional_for_user: false
-    role: >-
-      The main subject or domain for which the AI assistant concept should be
-      developed
+    role: Specifies the domain or subject area for the AI assistant concept
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: >-
-      Specific safety and ethical guidelines to be followed in the concept
-      development
+    role: Provides specific safety and ethical guidelines for the AI assistant
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Desired behavioral characteristics for the AI assistant
+    role: Defines the behavioral characteristics of the AI assistant
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: User-specific preferences for AI assistant behavior
+    role: Specifies user preferences for AI assistant behavior
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Specific formatting requirements for the output
+    role: Outlines specific formatting requirements for the output
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Desired structure or format for the concept presentation
+    role: Defines the structure and format of the generated concept
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Additional context or guidelines for concept development
+    role: Provides additional context or guidelines for concept creation

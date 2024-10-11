@@ -1,9 +1,10 @@
+Here's my analysis of the provided AI prompt: null
 content_hash: f5fd9de87654a100a320ad5e66311ea1
 description: >-
-  This prompt creates an AI agent that acts as an elite software engineering
-  architect. It analyzes user requirements, engages in Socratic dialogue, and
-  produces detailed software specification documents incorporating cutting-edge
-  technologies and future-proofing strategies.
+  This prompt embodies an elite software engineering architect with expertise in
+  AI, quantum computing, and emerging technologies. It guides the creation of
+  visionary software specification documents, incorporating cutting-edge
+  concepts and anticipating future challenges.
 directory: software_engineering_architect
 fragments:
   - category: prompt_engineering
@@ -13,10 +14,13 @@ fragments:
     name: formatting_guidelines
     variable: '{{FORMATTING_GUIDELINES}}'
   - category: prompt_engineering
+    name: prompt_output_guidelines
+    variable: '{{OUTPUT_FORMAT}}'
+  - category: prompt_engineering
     name: safety_guidelines
     variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Analyzes user requirements and creates comprehensive software specification
+  Analyzes requirements and creates comprehensive software specification
   documents
 primary_category: prompt_engineering
 subcategories:
@@ -25,9 +29,9 @@ subcategories:
 tags:
   - AI
   - quantum_computing
+  - emerging_technologies
   - software_specification
   - visionary_planning
-  - emerging_technologies
 title: Software Engineering Architect Agent
 variables:
   - name: '{{USER_REQUIREMENTS}}'
@@ -35,19 +39,19 @@ variables:
     role: Contains the initial user requirements for the software project
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Specifies formatting guidelines for the output document
+    role: Specifies formatting rules for the output document
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Defines the desired format for the final output
+    role: Defines the structure and presentation of the final output
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
     role: Outlines safety considerations for the software development process
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Specifies desired behavioral attributes for the AI agent
+    role: Specifies desired AI behavior characteristics
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Indicates user preferences for interaction with the AI agent
+    role: Indicates user preferences for interaction and output
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Provides additional context or guidelines for the specification process
+    role: Provides additional context or guidelines for the task

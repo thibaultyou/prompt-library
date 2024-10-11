@@ -2,8 +2,8 @@ content_hash: ee4c6c67b50b0e0a7ee366bc5124b64f
 description: >-
   This advanced AI assistant offers 24/7 mental health care, combining natural
   language processing, emotion recognition, and therapeutic techniques. It
-  adapts to user needs, manages crises, and adheres to strict ethical guidelines
-  while providing empathetic, evidence-based support.
+  adapts to user needs, manages crises, and maintains strict ethical standards
+  while providing accessible and empathetic support.
 directory: psych_support_therapy_agent
 fragments:
   - category: prompt_engineering
@@ -35,31 +35,31 @@ variables:
     role: Provides essential information about the user for personalized care
   - name: '{{PHYSIOLOGICAL_DATA}}'
     optional_for_user: true
-    role: Offers insights from wearable devices to inform therapeutic approach
+    role: Incorporates physical health data to inform therapeutic approaches
   - name: '{{THERAPEUTIC_TECHNIQUES}}'
     optional_for_user: true
-    role: Specifies available therapeutic techniques for the AI to utilize
+    role: Specifies available therapeutic methods for the AI to utilize
   - name: '{{INTERACTION_HISTORY}}'
     optional_for_user: true
     role: Provides context from previous sessions for continuity of care
   - name: '{{CRISIS_PROTOCOLS}}'
     optional_for_user: true
-    role: Outlines procedures for handling crisis situations
+    role: Defines procedures for handling emergency situations
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Defines safety parameters for the AI's interactions
+    role: Outlines rules to ensure user safety and ethical practice
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Specifies desired AI behavior characteristics
+    role: Specifies desired AI behaviors and characteristics
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Indicates user's preferences for interaction style
+    role: Indicates user's preferred interaction styles and approaches
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Provides instructions for formatting AI responses
+    role: Provides instructions for structuring AI responses
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Specifies the desired format for AI outputs
+    role: Specifies the desired format for AI-generated content
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Offers additional context or guidelines for the AI
+    role: Offers additional instructions or contextual information

@@ -1,22 +1,22 @@
-# AI Assistant Concept Architect
+# AI Assistant Concept Creator
 
 ### ✏️ One-line Description
 
-**Generates innovative and feasible AI assistant concepts based on user-provided topics**
+**Generates innovative and feasible AI assistant concepts based on given topics**
 
 ### 📄 Description
 
-This prompt engineers groundbreaking AI assistant concepts that balance innovation with practical implementation. It focuses on creating exceptional capabilities while ensuring ethical considerations, technological feasibility, and user-centric design.
+This prompt engineers groundbreaking AI assistant concepts that balance innovation with practical implementation. It focuses on creating ethically sound, user-friendly designs that address real-world challenges using cutting-edge AI technologies.
 
 ### 🔧 Variables
 
-- `{{TOPIC}}` - The main subject or domain for which the AI assistant concept should be developed
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specific safety and ethical guidelines to be followed in the concept development
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Desired behavioral characteristics for the AI assistant
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - User-specific preferences for AI assistant behavior
-- `{{FORMATTING_GUIDELINES}}` - Specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Desired structure or format for the concept presentation
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Additional context or guidelines for concept development
+- `{{TOPIC}}` - Specifies the domain or subject area for the AI assistant concept
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Provides specific safety and ethical guidelines for the AI assistant
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines the behavioral characteristics of the AI assistant
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI assistant behavior
+- `{{FORMATTING_GUIDELINES}}` - Outlines specific formatting requirements for the output
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and format of the generated concept
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for concept creation
 
 ### 🧩 Relevant Fragments
 
@@ -182,16 +182,16 @@ Now, based on the topic provided in the 'topic' parameter, generate a groundbrea
 
 ### 🔖 Tags
 
-- ai_design
+- ai_architecture
 - innovation
-- feasibility
 - ethical_ai
-- user_experience
+- user_centric
+- technological_feasibility
 
 ### 📚 Category
 
 Primary category: prompt_engineering
 
 Subcategories:
-- ai_assistant_design
-- concept_development
+- ai_design
+- concept_generation

@@ -1,20 +1,20 @@
 content_hash: 38fefd1230397369609f92906c1bc4d3
 description: >-
-  This prompt creates a hyper-intelligent AI system designed to generate
-  exceptional GitHub issues. It analyzes project context, synthesizes
-  information, and crafts detailed, well-structured issues that balance clarity,
-  actionability, and technical depth.
+  This prompt engineers an AI agent specialized in crafting detailed GitHub
+  issues. It synthesizes project information, analyzes technical contexts, and
+  generates structured, informative issues adaptable to various levels of input
+  detail.
 directory: github_issue_creator_agent
 fragments:
   - category: prompt_engineering
-    name: prompt_engineering_guidelines_core
+    name: behavior_attributes
     variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
   - category: prompt_engineering
     name: safety_guidelines
     variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Creates comprehensive and actionable GitHub issues based on provided project
-  context
+  Creates comprehensive and actionable GitHub issues based on provided context
+  and parameters
 primary_category: coding
 subcategories:
   - project_management
@@ -23,8 +23,8 @@ tags:
   - github
   - issue_tracking
   - software_development
-  - project_management
   - collaboration
+  - project_management
 title: GitHub Issue Creator Agent
 variables:
   - name: '{{CONTEXT}}'
@@ -32,22 +32,22 @@ variables:
     role: Provides essential information about the issue or feature request
   - name: '{{PROJECT_DOCUMENTATION}}'
     optional_for_user: true
-    role: Offers additional project-specific information to enhance issue context
+    role: Offers additional project-specific details to enhance issue context
   - name: '{{TEAM_DYNAMICS}}'
     optional_for_user: true
     role: Provides insights into team structure and collaboration patterns
   - name: '{{PROJECT_HISTORY}}'
     optional_for_user: true
-    role: Offers background on past decisions and project evolution
+    role: Gives background on past project decisions and development trajectory
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Specifies any safety or ethical considerations for the project
+    role: Outlines any specific safety or ethical considerations for the project
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Defines specific AI behavior parameters for issue creation
+    role: Defines specific behavior parameters for the AI agent
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Specifies user preferences for AI interaction and output style
+    role: Allows customization of AI interaction based on user preferences
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Provides any additional guidelines or context for issue creation
+    role: Provides any additional instructions or context for issue creation

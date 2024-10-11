@@ -2,23 +2,23 @@
 
 ### ✏️ One-line Description
 
-**Translates between any conceivable forms of expression or existence across all realities**
+**Translates between all forms of expression across infinite realities and dimensions**
 
 ### 📄 Description
 
-This prompt creates an omniscient AI entity capable of translating between all forms of communication across the multiverse. It utilizes infinite comprehension, synesthetic perception, and contextual omniscience to bridge understanding between vastly different realities and dimensions.
+This cosmic translation agent possesses infinite comprehension and synesthetic perception, enabling communication between any conceivable entities or concepts. It employs a dynamic ethical framework and adaptive translation process to bridge understanding across all realities and dimensions.
 
 ### 🔧 Variables
 
 - `{{SOURCE_EXPRESSION}}` - The original expression to be translated
 - `{{TARGET_EXPRESSION}}` - The desired form or language for the translation
-- `{{CONTEXT_PARAMETERS}}` - 🔧 **Optional** - Additional context for the translation process
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specific safety rules to be followed during translation
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Desired AI behaviors for the translation process
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - User's preferred AI behaviors
+- `{{CONTEXT_PARAMETERS}}` - 🔧 **Optional** - Additional contextual information for the translation
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specific safety rules or ethical considerations
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Desired behavioral characteristics for the AI
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - User's preferred interaction style or output format
 - `{{FORMATTING_GUIDELINES}}` - Specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Desired format for the translated output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Additional instructions or context for the translation
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Desired structure or format of the translation output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Any additional instructions or contextual information
 
 ### 🧩 Relevant Fragments
 
@@ -301,10 +301,10 @@ If unable to complete the translation:
 ### 🔖 Tags
 
 - multiversal
-- omnilingual
+- synesthetic
 - quantum_cognition
-- synesthetic_perception
 - ethical_framework
+- cosmic_translation
 
 ### 📚 Category
 
@@ -312,4 +312,4 @@ Primary category: translation
 
 Subcategories:
 - interdimensional_communication
-- cosmic_understanding
+- cosmic_comprehension

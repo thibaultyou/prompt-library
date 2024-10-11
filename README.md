@@ -53,11 +53,17 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 <details open>
 <summary><strong>Coding</strong></summary>
 
-- [Git Commit Message Generator](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
 - [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimized git branch names based on project context and best practices
-- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and actionable GitHub issues based on provided project context
-- [Software Architect Code Reviewer](prompts/software_architect_code_reviewer/README.md) - Generates comprehensive pull requests with architectural insights and optimization proposals
-- [Software Development Expert Agent](prompts/software_development_agent/README.md) - Provides expert assistance across all aspects of the software development lifecycle.
+- [Git Commit Message Generator](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification and emoji usage
+- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and actionable GitHub issues based on provided context and parameters
+- [Advanced Software Architect Agent](prompts/software_architect_agent/README.md) - Generates comprehensive pull requests with architectural insights and optimization proposals
+- [Software Development Expert Agent](prompts/software_dev_expert_agent/README.md) - Provides expert software development assistance across the entire development lifecycle
+
+</details>
+<details open>
+<summary><strong>Content Creation</strong></summary>
+
+- [Advanced AI Documentation Specialist](prompts/ai_documentation_agent/README.md) - Generates revolutionary software documentation using advanced AI techniques and industry expertise
 
 </details>
 <details open>
@@ -70,22 +76,21 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 <details open>
 <summary><strong>Problem Solving</strong></summary>
 
-- [Problem Solving AI Agent](prompts/problem_solving_ai_agent/README.md) - Generates expert networks and strategies to solve complex problems and achieve ambitious goals
+- [Expert Network Problem Solver](prompts/expert_network_problem_solver/README.md) - Generates expert networks and strategies to solve complex problems and achieve ambitious goals.
 
 </details>
 <details open>
 <summary><strong>Prompt Engineering</strong></summary>
 
-- [AI Assistant Concept Architect](prompts/ai_assistant_concept_architect/README.md) - Generates innovative and feasible AI assistant concepts based on user-provided topics
-- [Advanced Documentation Specialist Agent](prompts/documentation_specialist_agent/README.md) - Generates revolutionary software documentation using advanced AI techniques
-- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Creates optimized prompts to maximize AI potential while adhering to ethical standards
-- [Software Engineering Architect Agent](prompts/software_engineering_architect/README.md) - Analyzes user requirements and creates comprehensive software specification documents
+- [AI Assistant Concept Creator](prompts/ai_assistant_concept_creator/README.md) - Generates innovative and feasible AI assistant concepts based on given topics
+- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts to maximize AI potential while adhering to ethical standards
+- [Software Engineering Architect Agent](prompts/software_engineering_architect/README.md) - Analyzes requirements and creates comprehensive software specification documents
 
 </details>
 <details open>
 <summary><strong>Translation</strong></summary>
 
-- [Omniscient Translation Agent](prompts/omniscient_translation_agent/README.md) - Translates between any conceivable forms of expression or existence across all realities
+- [Omniscient Translation Agent](prompts/omniscient_translation_agent/README.md) - Translates between all forms of expression across infinite realities and dimensions
 
 </details>
 

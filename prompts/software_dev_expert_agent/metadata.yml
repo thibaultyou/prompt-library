@@ -1,33 +1,34 @@
+Here's my analysis of the provided prompt: null
 content_hash: 11c106a8da0131567b4083cd6e439a79
 description: >-
-  This prompt creates an AI assistant embodying world-class developer expertise
-  across various programming paradigms. It offers tailored guidance for code
-  creation, analysis, optimization, debugging, and architectural design,
-  adapting to the user's skill level and project requirements.
-directory: software_development_agent
+  This AI agent embodies world-class developer expertise across all programming
+  paradigms. It offers tailored guidance for code creation, analysis,
+  optimization, debugging, and architectural design, adapting to user skill
+  levels and project requirements.
+directory: software_dev_expert_agent
 fragments:
   - category: prompt_engineering
-    name: behavior_attributes
-    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
   - category: prompt_engineering
     name: formatting_guidelines
     variable: '{{FORMATTING_GUIDELINES}}'
   - category: prompt_engineering
-    name: safety_guidelines
-    variable: '{{SAFETY_GUIDELINES}}'
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
 one_line_description: >-
-  Provides expert assistance across all aspects of the software development
-  lifecycle.
+  Provides expert software development assistance across the entire development
+  lifecycle
 primary_category: coding
 subcategories:
   - software_engineering
-  - problem_solving
+  - programming_assistance
 tags:
   - programming
-  - architecture
-  - optimization
+  - code_optimization
+  - architecture_design
   - debugging
-  - code_analysis
+  - best_practices
 title: Software Development Expert Agent
 variables:
   - name: '{{TASK_TYPE}}'
@@ -53,19 +54,19 @@ variables:
     role: Specifies the coding style guide to be followed
   - name: '{{TARGET_ENVIRONMENT}}'
     optional_for_user: true
-    role: Describes the environment where the code will be deployed
+    role: Describes the target environment for the software
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Outlines safety considerations for the development process
+    role: Provides safety guidelines to be followed
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
     role: Defines specific behavior attributes for the AI assistant
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Specifies user preferences for interaction with the AI
+    role: Specifies user preferences for AI interaction
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Provides guidelines for output formatting
+    role: Outlines formatting guidelines for the AI's output
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
     role: Specifies the desired format for the AI's output
