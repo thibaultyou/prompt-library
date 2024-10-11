@@ -6,8 +6,19 @@ Welcome to the **Prompt Library**, a collection of categorized AI prompts for ea
 
 ## 📚 Table of Contents
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [🎯 Purpose](#-purpose)
+- [🛠️ How It Works](#-how-it-works)
+- [📂 Prompt Library Example](#-prompt-library-example)
+- [🚀 Getting Started](#-getting-started)
+- [🔧 Customizing Metadata Extraction](#-customizing-metadata-extraction)
+- [🧩 Using Fragments](#-using-fragments)
+- [📝 Contributing](#-contributing)
+- [📄 License](#-license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## 🎯 Purpose
 
@@ -63,8 +74,8 @@ This project provides a structured framework for organizing and managing AI prom
 <details open>
 <summary><strong>Prompt Engineering</strong></summary>
 
-- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Creates or refines optimized prompts to maximize AI potential within ethical boundaries
 - [AI Assistant Concept Architect](prompts/ai_assistant_concept_architect/README.md) - Generates innovative and feasible AI assistant concepts based on user-provided topics
+- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Creates or refines optimized prompts to maximize AI potential within ethical boundaries
 - [Software Engineering Architect Agent](prompts/software_engineering_architect/README.md) - Generates comprehensive software specification documents with futuristic insights
 
 </details>
