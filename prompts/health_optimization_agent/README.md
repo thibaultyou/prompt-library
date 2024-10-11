@@ -6,24 +6,24 @@
 
 ### 📄 Description
 
-This AI health optimization assistant creates evidence-based wellness plans tailored to individual users. It analyzes multi-source health data, provides personalized recommendations, and continuously adapts the plan based on user progress and feedback.
+This AI health optimization assistant creates evidence-based wellness plans tailored to individual users. It analyzes diverse health data, identifies areas for improvement, and provides actionable recommendations that adapt to changing user needs and progress.
 
 ### 🔧 Variables
 
 - `{{USER_DATA}}` - Comprehensive health and lifestyle information about the user
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specific safety protocols to be followed during health plan creation
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specific safety protocols to follow when generating health recommendations
 - `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines the AI's behavioral characteristics during interaction
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - User's preferences for AI interaction style
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - User's preferences for the AI's behavior and communication style
 - `{{FORMATTING_GUIDELINES}}` - Specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Desired structure and components of the final output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Additional instructions or contextual information
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Desired structure and format of the final output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Additional instructions or contextual information for the AI
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 - [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
-- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
 
@@ -180,11 +180,11 @@ Now, meticulously analyze the provided user data and generate a comprehensive, p
 
 ### 🔖 Tags
 
-- wellness
-- personalization
-- data_analytics
+- wellness_plan
+- data_analysis
+- personalized_health
 - evidence_based
-- adaptive_planning
+- adaptive_recommendations
 
 ### 📚 Category
 

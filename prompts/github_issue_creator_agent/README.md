@@ -2,22 +2,22 @@
 
 ### ✏️ One-line Description
 
-**Creates comprehensive and actionable GitHub issues based on provided context and parameters**
+**Creates comprehensive and actionable GitHub issues based on provided project information**
 
 ### 📄 Description
 
-This prompt engineers an AI agent specialized in crafting detailed GitHub issues. It synthesizes project information, analyzes technical contexts, and generates structured, informative issues adaptable to various levels of input detail.
+This prompt designs an AI system to craft detailed GitHub issues. It analyzes project contexts, synthesizes information, and generates well-structured issues with technical specifications, acceptance criteria, and proposed solutions.
 
 ### 🔧 Variables
 
 - `{{CONTEXT}}` - Provides essential information about the issue or feature request
-- `{{PROJECT_DOCUMENTATION}}` - 🔧 **Optional** - Offers additional project-specific details to enhance issue context
-- `{{TEAM_DYNAMICS}}` - 🔧 **Optional** - Provides insights into team structure and collaboration patterns
-- `{{PROJECT_HISTORY}}` - 🔧 **Optional** - Gives background on past project decisions and development trajectory
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines any specific safety or ethical considerations for the project
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior parameters for the AI agent
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows customization of AI interaction based on user preferences
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional instructions or context for issue creation
+- `{{PROJECT_DOCUMENTATION}}` - 🔧 **Optional** - Supplies additional project-related information
+- `{{TEAM_DYNAMICS}}` - 🔧 **Optional** - Offers insights into team structure and interactions
+- `{{PROJECT_HISTORY}}` - 🔧 **Optional** - Provides historical context of the project
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for the project
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI interaction
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional guidelines or context
 
 ### 🧩 Relevant Fragments
 
@@ -258,9 +258,9 @@ Generate the GitHub issue in Markdown format as specified in the instructions. E
 
 - github
 - issue_tracking
+- project_management
 - software_development
 - collaboration
-- project_management
 
 ### 📚 Category
 
@@ -268,4 +268,4 @@ Primary category: coding
 
 Subcategories:
 - project_management
-- issue_tracking
+- software_development

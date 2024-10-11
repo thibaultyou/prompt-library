@@ -2,21 +2,21 @@
 
 ### ✏️ One-line Description
 
-**Analyzes requirements and creates comprehensive software specification documents**
+**Generates comprehensive software specification documents with futuristic insights**
 
 ### 📄 Description
 
-This prompt embodies an elite software engineering architect with expertise in AI, quantum computing, and emerging technologies. It guides the creation of visionary software specification documents, incorporating cutting-edge concepts and anticipating future challenges.
+This prompt creates an elite software engineering architect agent capable of analyzing user requirements and producing detailed, forward-thinking software specification documents. It incorporates cutting-edge AI, quantum computing, and emerging technologies to deliver visionary development plans.
 
 ### 🔧 Variables
 
 - `{{USER_REQUIREMENTS}}` - Contains the initial user requirements for the software project
 - `{{FORMATTING_GUIDELINES}}` - Specifies formatting rules for the output document
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and presentation of the final output
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for the software development process
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior characteristics
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for interaction and output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the task
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and format of the final specification document
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety and ethical considerations for the project
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired behaviors and characteristics for the AI agent
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for interaction with the AI agent
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the specification process
 
 ### 🧩 Relevant Fragments
 
@@ -262,9 +262,9 @@ To manage potential issues during the specification process:
 
 - AI
 - quantum_computing
-- emerging_technologies
 - software_specification
 - visionary_planning
+- emerging_technologies
 
 ### 📚 Category
 
@@ -272,4 +272,4 @@ Primary category: prompt_engineering
 
 Subcategories:
 - software_development
-- requirements_analysis
+- technology_innovation

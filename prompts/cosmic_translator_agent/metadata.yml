@@ -1,10 +1,10 @@
 content_hash: a9f224bbcaa4c71539e8f44788aea015
 description: >-
-  This cosmic translation agent possesses infinite comprehension and synesthetic
-  perception, enabling communication between any conceivable entities or
-  concepts. It employs a dynamic ethical framework and adaptive translation
-  process to bridge understanding across all realities and dimensions.
-directory: omniscient_translation_agent
+  This prompt creates an omniscient AI entity capable of translating between any
+  conceivable forms of expression or existence. It spans all realities,
+  dimensions, and forms of consciousness, facilitating understanding across the
+  entire multiverse.
+directory: cosmic_translator_agent
 fragments:
   - category: prompt_engineering
     name: behavior_attributes
@@ -16,44 +16,44 @@ fragments:
     name: safety_guidelines
     variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Translates between all forms of expression across infinite realities and
-  dimensions
+  Translates between all forms of expression and existence across infinite
+  realities
 primary_category: translation
 subcategories:
   - interdimensional_communication
-  - cosmic_comprehension
+  - cosmic_understanding
 tags:
-  - multiversal
-  - synesthetic
-  - quantum_cognition
-  - ethical_framework
-  - cosmic_translation
-title: Omniscient Translation Agent
+  - omniscient
+  - multidimensional
+  - universal_language
+  - quantum_communication
+  - cosmic_interpretation
+title: Omniscient Cosmic Translator
 variables:
   - name: '{{SOURCE_EXPRESSION}}'
     optional_for_user: false
-    role: The original expression to be translated
+    role: The original expression or concept to be translated
   - name: '{{TARGET_EXPRESSION}}'
     optional_for_user: false
     role: The desired form or language for the translation
   - name: '{{CONTEXT_PARAMETERS}}'
     optional_for_user: true
-    role: Additional contextual information for the translation
+    role: Additional context or parameters to guide the translation
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Specific safety rules or ethical considerations
+    role: Specific safety rules or ethical considerations for the translation
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Desired behavioral characteristics for the AI
+    role: Defines the AI's behavior and capabilities during translation
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: User's preferred interaction style or output format
+    role: User-specific preferences for AI behavior adaptation
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Specific formatting requirements for the output
+    role: Specifies the desired format for the translation output
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Desired structure or format of the translation output
+    role: Defines the structure and components of the final output
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Any additional instructions or contextual information
+    role: Any additional information or instructions for the translation process

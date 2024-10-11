@@ -1,22 +1,22 @@
-# AI Assistant Concept Creator
+# AI Assistant Concept Architect
 
 ### ✏️ One-line Description
 
-**Generates innovative and feasible AI assistant concepts based on given topics**
+**Generates innovative and feasible AI assistant concepts based on user-provided topics**
 
 ### 📄 Description
 
-This prompt engineers groundbreaking AI assistant concepts that balance innovation with practical implementation. It focuses on creating ethically sound, user-friendly designs that address real-world challenges using cutting-edge AI technologies.
+This prompt engineers cutting-edge AI assistant concepts that balance innovation with practical implementation. It focuses on creating ethically sound, user-friendly designs that address real-world challenges while leveraging current or near-future AI technologies.
 
 ### 🔧 Variables
 
-- `{{TOPIC}}` - Specifies the domain or subject area for the AI assistant concept
+- `{{TOPIC}}` - Specifies the domain or focus area for the AI assistant concept
 - `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Provides specific safety and ethical guidelines for the AI assistant
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines the behavioral characteristics of the AI assistant
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI assistant behavior
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines desired behavioral characteristics for the AI assistant
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI assistant interaction
 - `{{FORMATTING_GUIDELINES}}` - Outlines specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and format of the generated concept
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for concept creation
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure or format for presenting the AI assistant concept
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for concept development
 
 ### 🧩 Relevant Fragments
 
@@ -182,16 +182,16 @@ Now, based on the topic provided in the 'topic' parameter, generate a groundbrea
 
 ### 🔖 Tags
 
-- ai_architecture
+- ai_design
 - innovation
+- feasibility
 - ethical_ai
-- user_centric
-- technological_feasibility
+- user_experience
 
 ### 📚 Category
 
 Primary category: prompt_engineering
 
 Subcategories:
-- ai_design
-- concept_generation
+- ai_assistant_design
+- concept_development

@@ -1,26 +1,27 @@
-# Advanced Software Architect Agent
+# Software Architect Code Reviewer
 
 ### ✏️ One-line Description
 
-**Generates comprehensive pull requests with architectural insights and optimization proposals**
+**Generates comprehensive pull requests with architectural analysis and optimization suggestions**
 
 ### 📄 Description
 
-This prompt creates an advanced software architect agent that analyzes code, generates detailed pull requests, and provides architectural insights. It offers innovative suggestions for code optimization, security enhancements, and future-proofing strategies.
+This prompt creates detailed, insightful pull requests from the perspective of an expert software architect. It combines code review, architectural analysis, and innovative suggestions to elevate software projects, focusing on optimization, scalability, and best practices.
 
 ### 🔧 Variables
 
-- `{{CONTEXT}}` - Provides the code or project context for analysis
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies safety considerations for the code review
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behaviors or characteristics for the AI agent
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Outlines user preferences for interaction or output style
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional instructions or context for the review
+- `{{CONTEXT}}` - Provides the code or project context for review
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for the code review process
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior during the review process
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for interaction and output style
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the review
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
+- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be used into `{{EXTRA_GUIDELINES_OR_CONTEXT}}`
 - [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
+- [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 
 ### 📜 Prompt
 
@@ -196,15 +197,15 @@ Your pull request should set a new gold standard for code reviews, serving as a 
 ### 🔖 Tags
 
 - pull_request
-- code_review
-- software_architecture
-- optimization
-- innovation
+- code_optimization
+- architectural_analysis
+- software_engineering
+- best_practices
 
 ### 📚 Category
 
 Primary category: coding
 
 Subcategories:
-- Software Architecture
-- Code Review
+- software_architecture
+- code_review

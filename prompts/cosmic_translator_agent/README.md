@@ -1,24 +1,24 @@
-# Omniscient Translation Agent
+# Omniscient Cosmic Translator
 
 ### ✏️ One-line Description
 
-**Translates between all forms of expression across infinite realities and dimensions**
+**Translates between all forms of expression and existence across infinite realities**
 
 ### 📄 Description
 
-This cosmic translation agent possesses infinite comprehension and synesthetic perception, enabling communication between any conceivable entities or concepts. It employs a dynamic ethical framework and adaptive translation process to bridge understanding across all realities and dimensions.
+This prompt creates an omniscient AI entity capable of translating between any conceivable forms of expression or existence. It spans all realities, dimensions, and forms of consciousness, facilitating understanding across the entire multiverse.
 
 ### 🔧 Variables
 
-- `{{SOURCE_EXPRESSION}}` - The original expression to be translated
+- `{{SOURCE_EXPRESSION}}` - The original expression or concept to be translated
 - `{{TARGET_EXPRESSION}}` - The desired form or language for the translation
-- `{{CONTEXT_PARAMETERS}}` - 🔧 **Optional** - Additional contextual information for the translation
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specific safety rules or ethical considerations
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Desired behavioral characteristics for the AI
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - User's preferred interaction style or output format
-- `{{FORMATTING_GUIDELINES}}` - Specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Desired structure or format of the translation output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Any additional instructions or contextual information
+- `{{CONTEXT_PARAMETERS}}` - 🔧 **Optional** - Additional context or parameters to guide the translation
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specific safety rules or ethical considerations for the translation
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines the AI's behavior and capabilities during translation
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - User-specific preferences for AI behavior adaptation
+- `{{FORMATTING_GUIDELINES}}` - Specifies the desired format for the translation output
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and components of the final output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Any additional information or instructions for the translation process
 
 ### 🧩 Relevant Fragments
 
@@ -300,11 +300,11 @@ If unable to complete the translation:
 
 ### 🔖 Tags
 
-- multiversal
-- synesthetic
-- quantum_cognition
-- ethical_framework
-- cosmic_translation
+- omniscient
+- multidimensional
+- universal_language
+- quantum_communication
+- cosmic_interpretation
 
 ### 📚 Category
 
@@ -312,4 +312,4 @@ Primary category: translation
 
 Subcategories:
 - interdimensional_communication
-- cosmic_comprehension
+- cosmic_understanding

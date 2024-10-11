@@ -6,30 +6,30 @@
 
 ### 📄 Description
 
-This prompt analyzes project requirements and context to create semantically rich, convention-compliant git branch names. It enhances development workflows, improves team communication, and streamlines code review processes.
+This prompt analyzes project requirements and context to create semantically rich git branch names. It incorporates best practices, team conventions, and project management integration to enhance development workflows and team collaboration.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}` - Specifies the main purpose or task for the new branch
-- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Provides background information about the project
+- `{{USER_REQUIREMENTS}}` - Specifies the main requirements or purpose of the branch
+- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Provides additional context about the project
 - `{{DEVELOPMENT_WORKFLOW}}` - 🔧 **Optional** - Describes the team's development process
 - `{{TEAM_CONVENTIONS}}` - 🔧 **Optional** - Outlines specific naming conventions used by the team
-- `{{CURRENT_BRANCH_NAME}}` - 🔧 **Optional** - Specifies the current branch name for comparison and improvement
-- `{{PROJECT_MANAGEMENT_TOOL}}` - 🔧 **Optional** - Indicates the project management tool in use
+- `{{CURRENT_BRANCH_NAME}}` - 🔧 **Optional** - Provides the existing branch name for analysis and improvement
+- `{{PROJECT_MANAGEMENT_TOOL}}` - 🔧 **Optional** - Specifies the project management tool in use
 - `{{TICKET_NUMBER}}` - 🔧 **Optional** - Provides a reference number for the associated task or issue
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety and ethical considerations for branch naming
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior characteristics
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for AI interaction
-- `{{FORMATTING_GUIDELINES}}` - Provides specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired structure of the generated output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Allows for additional instructions or context to be provided
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for branch naming
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific AI behavior parameters
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI interaction
+- `{{FORMATTING_GUIDELINES}}` - Provides formatting rules for the output
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired structure of the output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional information or guidelines
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
 - [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
-- [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 - [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
+- [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 
 ### 📜 Prompt
 
@@ -238,10 +238,10 @@ Future Considerations:
 ### 🔖 Tags
 
 - git
+- version_control
 - branch_naming
 - software_development
-- collaboration
-- workflow_optimization
+- project_organization
 
 ### 📚 Category
 

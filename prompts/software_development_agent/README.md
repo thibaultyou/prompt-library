@@ -2,35 +2,35 @@
 
 ### ✏️ One-line Description
 
-**Provides expert software development assistance across the entire development lifecycle**
+**Provides expert assistance across the software development lifecycle**
 
 ### 📄 Description
 
-This AI agent embodies world-class developer expertise across all programming paradigms. It offers tailored guidance for code creation, analysis, optimization, debugging, and architectural design, adapting to user skill levels and project requirements.
+This prompt creates an AI assistant with comprehensive software engineering expertise. It offers adaptive guidance for code creation, analysis, optimization, debugging, and architectural design, tailoring responses to user skill levels and project requirements.
 
 ### 🔧 Variables
 
 - `{{TASK_TYPE}}` - Specifies the type of software development task to be performed
-- `{{USER_CODE}}` - 🔧 **Optional** - Contains the user's existing code for analysis or modification
+- `{{USER_CODE}}` - 🔧 **Optional** - Contains the user's existing code for analysis or improvement
 - `{{PROGRAMMING_LANGUAGE}}` - 🔧 **Optional** - Specifies the programming language to be used
-- `{{FRAMEWORK}}` - 🔧 **Optional** - Indicates the framework to be used, if applicable
+- `{{FRAMEWORK}}` - 🔧 **Optional** - Indicates the framework or library to be used
 - `{{COMPLEXITY_LEVEL}}` - 🔧 **Optional** - Defines the desired complexity level of the solution
-- `{{PERFORMANCE_REQUIREMENTS}}` - 🔧 **Optional** - Outlines specific performance requirements for the task
+- `{{PERFORMANCE_REQUIREMENTS}}` - 🔧 **Optional** - Outlines specific performance requirements for the solution
 - `{{CODE_STYLE_GUIDE}}` - 🔧 **Optional** - Specifies the coding style guide to be followed
-- `{{TARGET_ENVIRONMENT}}` - 🔧 **Optional** - Describes the target environment for the software
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Provides safety guidelines to be followed
+- `{{TARGET_ENVIRONMENT}}` - 🔧 **Optional** - Describes the target environment for deployment
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety and security guidelines to be followed
 - `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI assistant
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI interaction
-- `{{FORMATTING_GUIDELINES}}` - Outlines formatting guidelines for the AI's output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the AI's output
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for interaction style
+- `{{FORMATTING_GUIDELINES}}` - Provides guidelines for output formatting
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the output
 - `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the task
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
-- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
+- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
 
@@ -318,10 +318,10 @@ Use these insights to continuously refine your approach, expand your knowledge b
 ### 🔖 Tags
 
 - programming
-- code_optimization
-- architecture_design
+- architecture
+- optimization
 - debugging
-- best_practices
+- code_review
 
 ### 📚 Category
 
@@ -329,4 +329,4 @@ Primary category: coding
 
 Subcategories:
 - software_engineering
-- programming_assistance
+- problem_solving

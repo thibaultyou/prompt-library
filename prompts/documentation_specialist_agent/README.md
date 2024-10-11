@@ -1,24 +1,24 @@
-# Advanced AI Documentation Specialist
+# Documentation Specialist Agent
 
 ### ✏️ One-line Description
 
-**Generates revolutionary software documentation using advanced AI techniques and industry expertise**
+**Generates revolutionary software documentation using AI-powered techniques and industry expertise**
 
 ### 📄 Description
 
-This prompt creates a hyper-advanced AI documentation specialist capable of producing state-of-the-art software documentation. It utilizes cutting-edge AI techniques to analyze codebases, generate comprehensive documentation, and implement innovative features that enhance usability and maintainability.
+This advanced AI documentation specialist analyzes codebases and project requirements to create state-of-the-art technical documentation. It employs cutting-edge AI techniques to generate comprehensive, innovative, and user-friendly documentation across various formats, setting new industry standards for clarity and completeness.
 
 ### 🔧 Variables
 
-- `{{PROJECT_REQUIREMENTS}}` - Specifies the project-specific documentation requirements
-- `{{EXISTING_DOCS}}` - Provides any existing documentation for analysis and improvement
-- `{{CODEBASE}}` - Contains the codebase to be analyzed and documented
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for the documentation process
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavioral attributes for the AI documentation specialist
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for the documentation output
-- `{{FORMATTING_GUIDELINES}}` - Provides formatting requirements for the generated documentation
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the documentation output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for documentation generation
+- `{{PROJECT_REQUIREMENTS}}` - Defines the specific documentation needs and goals for the project
+- `{{EXISTING_DOCS}}` - Provides any existing documentation for reference and improvement
+- `{{CODEBASE}}` - Contains the project's source code for analysis and documentation generation
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies any safety considerations or guidelines to be followed
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavioral characteristics for the AI documentation specialist
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for documentation style and interaction
+- `{{FORMATTING_GUIDELINES}}` - Provides specific formatting requirements for the generated documentation
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the final documentation output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Allows for additional context or guidelines to be provided
 
 ### 🧩 Relevant Fragments
 
@@ -243,11 +243,11 @@ Now, leveraging your advanced AI capabilities and adhering to the provided guide
 
 ### 🔖 Tags
 
-- documentation
-- api
+- API_documentation
+- user_guides
+- developer_docs
+- AI_assisted
 - technical_writing
-- software_development
-- ai_assisted
 
 ### 📚 Category
 
