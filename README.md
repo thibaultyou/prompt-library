@@ -1,26 +1,13 @@
 # 🧠 Prompt Library
 
-> ### 🚧 **Project Under Development** 🚧
-> 
-> This project is evolving. You may encounter bugs or frequent changes. Feedback and contributions are welcome!
+> 🚧 **Project Under Development** - Evolving project, expect changes. Feedback welcome!
 
 Welcome to the **Prompt Library**, a collection of categorized AI prompts for easy navigation and reuse. Fork and customize this repository to build your own personalized prompt library tailored to your needs.
 
 ## 📚 Table of Contents
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [🎯 Purpose](#-purpose)
-- [🛠️ How It Works](#-how-it-works)
-- [📂 Prompt Library Example](#-prompt-library-example)
-- [🚀 Getting Started](#-getting-started)
-- [🔧 Customizing Metadata Extraction](#-customizing-metadata-extraction)
-- [🧩 Using Fragments](#-using-fragments)
-- [📝 Contributing](#-contributing)
-- [📄 License](#-license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<!-- START doctoc -->
+<!-- END doctoc -->
 
 ## 🎯 Purpose
 
@@ -34,16 +21,10 @@ This project provides a structured framework for organizing and managing AI prom
 
 ## 🛠️ How It Works
 
-User input and automated processes manage your prompt library:
-
-1. **Add Prompts**: Create `prompt.md` files in the `prompts` directory.
+1. **Add Prompts**: Create a `prompt.md` file in the `prompts` directory.
 2. **Commit Changes**: Push your changes to the repository.
-3. **Automation**: GitHub Actions:
-   - Generate metadata using `generate_metadata.ts` and the Anthropic API.
-   - Update `README.md` files using `update_views.ts`.
+3. **Automation**: GitHub Actions generate metadata and update README files.
 4. **Update Repository**: Changes are automatically committed back.
-
-Monitor these processes in the "Actions" tab of your GitHub repository.
 
 ## 📂 Prompt Library Example
 
@@ -82,8 +63,8 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 <details open>
 <summary><strong>Prompt Engineering</strong></summary>
 
-- [AI Assistant Concept Architect](prompts/ai_assistant_concept_architect/README.md) - Generates innovative and feasible AI assistant concepts based on user-provided topics
 - [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Creates or refines optimized prompts to maximize AI potential within ethical boundaries
+- [AI Assistant Concept Architect](prompts/ai_assistant_concept_architect/README.md) - Generates innovative and feasible AI assistant concepts based on user-provided topics
 - [Software Engineering Architect Agent](prompts/software_engineering_architect/README.md) - Generates comprehensive software specification documents with futuristic insights
 
 </details>
@@ -99,21 +80,15 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 1. **Fork the Repository**: Click "Fork" to create a copy in your GitHub account.
 2. **Clone Your Fork**:
    ```
-   git clone https://github.com/YOUR_USERNAME/prompt-library.git
+   git clone https://github.com/YOUR_USERNAME/REPO_NAME.git
    ```
 3. **Set Up Anthropic API Key**:
+   - Create an Anthropic account and generate an API key at the [Anthropic Console](https://console.anthropic.com/).
    - In repository settings: **Secrets and variables** > **Actions**.
    - Create a secret named `ANTHROPIC_API_KEY` with your API key.
 4. **Install Dependencies**:
-   - Ensure Node.js (v22+ recommended) is installed.
-   - Navigate to the directory:
-      ```
-      cd prompt-library
-      ```
-   - Install dependencies:
-     ```
-     npm install
-     ```
+   - Ensure [Node.js](https://nodejs.org/en) (v22+ recommended) is installed.
+   - Run `npm install`.
 5. **Add Prompts**:
    - Create a `prompt.md` file in the `prompts` directory.
    - Write your prompt content.
@@ -144,29 +119,11 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 
 ## 🔧 Customizing Metadata Extraction
 
-1. Navigate to the directory:
-   ```
-   cd src/system_prompts/prompt_analysis_agent
-   ```
+To customize metadata extraction:
 
-2. Edit the system prompt:
-   ```
-   nano prompt.md
-   ```
-   Modify `<instructions>` or `<output>` sections as needed.
-
-3. Test changes:
-   ```
-   cd ../../../
-   npm run generate-metadata
-   ```
-
-4. Commit and push:
-   ```
-   git add src/system_prompts/prompt_analysis_agent/prompt.md
-   git commit -m "Update metadata extraction"
-   git push
-   ```
+1. Open and edit `src/system_prompts/prompt_analysis_agent/prompt.md`.
+2. Run `npm run generate-metadata` to test.
+3. Commit and push changes to trigger GitHub Actions.
 
 > **Note**: Changes affect future metadata generations. Test thoroughly.
 
@@ -177,11 +134,13 @@ Fragments are reusable prompt components.
 To use fragments:
 
 1. **Create a Fragment**:
-   - In `fragments`, create a subdirectory under the appropriate category.
-   - Create a new `.md` file with your fragment content.
-2. **Add Fragment to a Prompt**:
-   - Include the fragment content in your prompt file.
-3. **Update Metadata and Views**:
+   - In `fragments`, create a new `.md` file under the appropriate category (categories are listed [here](/src/system_prompts/prompt_analysis_agent/prompt.md)).
+   - Create your fragment content.
+   - To match a variable in a prompt, name the fragment file to correspond with that variable.
+
+     **Example:** `awesome_guidelines.md` → `AWESOME_GUIDELINES`
+
+2. **Update Metadata and Views**:
    - Regenerate metadata:
      ```
      FORCE_REGENERATE=true npm run generate-metadata
@@ -190,9 +149,8 @@ To use fragments:
      ```
      npm run update-views
      ```
-4. **Selective Updates**:
-   - Manually edit metadata files if needed.
-   - Run `npm run update-views` to reflect changes.
+
+Once metadata and views are regenerated, each prompt's README will list compatible fragments.
 
 > **Note**: Forcing metadata regeneration can be costly; consider running selectively.
 
