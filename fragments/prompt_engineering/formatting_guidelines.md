@@ -10,3 +10,5 @@
 8. "html": Output should be formatted as HTML.
 9. "bullet_points": Information presented in a concise, bulleted list.
 10. "table": Data presented in a formatted table structure.
+
+Default Output Format: structured

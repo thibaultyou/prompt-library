@@ -1,0 +1,53 @@
+content_hash: f5fd9de87654a100a320ad5e66311ea1
+description: >-
+  This prompt creates an AI agent that acts as an elite software engineering
+  architect. It analyzes user requirements, engages in Socratic dialogue, and
+  produces detailed software specification documents incorporating cutting-edge
+  technologies and future-proofing strategies.
+directory: software_engineering_architect
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Analyzes user requirements and creates comprehensive software specification
+  documents
+primary_category: prompt_engineering
+subcategories:
+  - software_development
+  - requirements_analysis
+tags:
+  - AI
+  - quantum_computing
+  - software_specification
+  - visionary_planning
+  - emerging_technologies
+title: Software Engineering Architect Agent
+variables:
+  - name: '{{USER_REQUIREMENTS}}'
+    optional_for_user: false
+    role: Contains the initial user requirements for the software project
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Specifies formatting guidelines for the output document
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Defines the desired format for the final output
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Outlines safety considerations for the software development process
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Specifies desired behavioral attributes for the AI agent
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Indicates user preferences for interaction with the AI agent
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Provides additional context or guidelines for the specification process

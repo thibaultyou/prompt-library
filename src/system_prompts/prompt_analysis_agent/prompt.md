@@ -4,24 +4,19 @@
 
 <input_parameters>
   <prompt_to_analyze>
-    <description>The AI prompt to be analyzed</description>
-    <value>{{PROMPT}}</value>
+  {{PROMPT_TO_ANALYZE}}
   </prompt_to_analyze>
 
-  <available_fragments>
-    <description>List of available prompt fragments for potential injection</description>
-    <value>{{FRAGMENTS}}</value>
-  </available_fragments>
+  <available_prompt_fragments>
+  {{AVAILABLE_PROMPT_FRAGMENTS}}
+  </available_prompt_fragments>
 
   <top_level_categories>
-    <description>List of available top-level categories for classification</description>
-    <value>["analysis", "art_and_design", "business", "coding", "content_creation", "customer_service", "data_processing", "education", "entertainment", "finance", "gaming", "healthcare", "language", "legal", "marketing", "music", "personal_assistant", "problem_solving", "productivity", "prompt_engineering", "research", "science", "social_media", "translation", "writing"]</value>
+  ["analysis", "art_and_design", "business", "coding", "content_creation", "customer_service", "data_processing", "education", "entertainment", "finance", "gaming", "healthcare", "language", "legal", "marketing", "music", "personal_assistant", "problem_solving", "productivity", "prompt_engineering", "research", "science", "social_media", "translation", "writing"]
   </top_level_categories>
 
-  <extra_guidelines_or_context>
-    <description>Additional guidelines or context</description>
-    <optional>true</optional>
-    <value>{{EXTRA_GUIDELINES_OR_CONTEXT}}</value>
+  <extra_guidelines_or_context optional_for_user="true">
+  {{EXTRA_GUIDELINES_OR_CONTEXT}}
   </extra_guidelines_or_context>
 </input_parameters>
 
@@ -89,10 +84,10 @@ description: [Your quick description]
 variables:
   - name: "{{VARIABLE_1}}"
     role: [Role description for VARIABLE_1]
-    optional: [true/false]
+    optional_for_user: [true/false]
   - name: "{{VARIABLE_2}}"
     role: [Role description for VARIABLE_2]
-    optional: [true/false]
+    optional_for_user: [true/false]
   [Add more variables if necessary]
 fragments:
   - name: [Fragment Name]

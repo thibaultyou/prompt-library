@@ -1,26 +1,53 @@
-content_hash: 13f11e76de684e086d937f8ca63640bf
+content_hash: f67befa3434943b7b26445431bf5e4ac
 description: >-
-  This advanced AI health optimization assistant creates comprehensive,
-  personalized wellness plans based on user data and scientific evidence. It
-  employs sophisticated data analysis and predictive modeling to generate
-  adaptive recommendations across various health domains.
+  This AI health optimization assistant creates evidence-based wellness plans by
+  analyzing diverse user data. It provides personalized recommendations, adapts
+  to changing needs, and offers actionable insights for improving overall health
+  and well-being.
 directory: health_optimization_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Generates personalized, evidence-based wellness plans that adapt to users'
-  evolving needs
+  Generates personalized, adaptive health optimization plans based on
+  comprehensive user data analysis
 primary_category: healthcare
 subcategories:
   - personalized_wellness
-  - preventive_medicine
+  - health_analytics
 tags:
-  - wellness
+  - wellness_planning
+  - data_integration
   - personalized_health
-  - data_analytics
   - evidence_based
-  - adaptive_planning
-title: Health Optimization Assistant
+  - adaptive_recommendations
+title: Health Optimization Agent
 variables:
   - name: '{{USER_DATA}}'
-    role: >-
-      Contains comprehensive user health information, including biometrics,
-      lifestyle factors, goals, and medical history
+    optional_for_user: false
+    role: Comprehensive health and lifestyle information about the user
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specific safety protocols to follow when generating health recommendations
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Parameters to adjust the AI's behavior and communication style
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: User's preferences for the AI's behavior and communication style
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Specific formatting requirements for the output
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Desired structure or format for the AI's response
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Additional instructions or context for the AI to consider

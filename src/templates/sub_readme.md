@@ -10,7 +10,7 @@
 
 ### 🔧 Variables
 {% for variable in metadata.variables %}
-- `{{ variable.name }}` - {% if variable.optional %}🔧 **Optional** - {% endif %}{{ variable.role }}
+- `{{ variable.name }}` - {% if variable.optional_for_user %}🔧 **Optional** - {% endif %}{{ variable.role }}
 {%- endfor %}
 
 {%- if metadata.fragments and metadata.fragments.length > 0 %}

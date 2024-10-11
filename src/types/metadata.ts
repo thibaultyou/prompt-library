@@ -28,5 +28,5 @@ export interface Metadata {
     /** An array of fragments used in the prompt */
     fragments?: Fragment[];
     /** Indicates if the prompt is optional */
-    optional: boolean;
+    optional_for_user: boolean;
 }

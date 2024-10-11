@@ -1,0 +1,75 @@
+content_hash: ba14fedd0a8ff70c16e3a6c19c51126f
+description: >-
+  This prompt creates semantically rich git branch names tailored to specific
+  project requirements and development workflows. It incorporates best
+  practices, team conventions, and relevant project identifiers to enhance
+  collaboration and streamline development processes.
+directory: git_branch_name_generator
+fragments:
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+one_line_description: >-
+  Generates optimized git branch names based on project context and best
+  practices
+primary_category: coding
+subcategories:
+  - version_control
+  - project_management
+tags:
+  - git
+  - branch_naming
+  - version_control
+  - software_development
+  - project_management
+title: Git Branch Name Generator
+variables:
+  - name: '{{USER_REQUIREMENTS}}'
+    optional_for_user: false
+    role: Specifies the main task or feature for which the branch is being created
+  - name: '{{PROJECT_CONTEXT}}'
+    optional_for_user: true
+    role: >-
+      Provides background information about the project to inform branch naming
+      decisions
+  - name: '{{DEVELOPMENT_WORKFLOW}}'
+    optional_for_user: true
+    role: Describes the team's development process and branching strategy
+  - name: '{{TEAM_CONVENTIONS}}'
+    optional_for_user: true
+    role: Outlines any specific naming conventions or rules followed by the team
+  - name: '{{CURRENT_BRANCH_NAME}}'
+    optional_for_user: true
+    role: Specifies the existing branch name if improvements are needed
+  - name: '{{PROJECT_MANAGEMENT_TOOL}}'
+    optional_for_user: true
+    role: >-
+      Indicates the project management tool used, if any, for integration
+      purposes
+  - name: '{{TICKET_NUMBER}}'
+    optional_for_user: true
+    role: Provides the associated ticket or issue number for traceability
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Outlines any safety or ethical considerations for branch naming
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific behavior attributes for the AI in generating branch names
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Specifies user preferences for AI interaction and output style
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Provides specific formatting requirements for the output
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Specifies the desired structure and components of the output
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Allows for additional instructions or context to be provided

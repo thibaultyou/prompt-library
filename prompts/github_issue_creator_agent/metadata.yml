@@ -1,32 +1,53 @@
-content_hash: f692d056df3bb02f011848894db6a96a
+content_hash: 38fefd1230397369609f92906c1bc4d3
 description: >-
-  This prompt embodies an AI agent specialized in creating highly detailed and
-  actionable GitHub issues. It analyzes project context, documentation, history,
-  and team dynamics to generate optimized issues that adhere to best practices
-  and consider team-specific factors.
+  This prompt creates a hyper-intelligent AI system designed to generate
+  exceptional GitHub issues. It analyzes project context, synthesizes
+  information, and crafts detailed, well-structured issues that balance clarity,
+  actionability, and technical depth.
 directory: github_issue_creator_agent
+fragments:
+  - category: prompt_engineering
+    name: prompt_engineering_guidelines_core
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Creates comprehensive and optimized GitHub issues based on project context and
-  team dynamics
+  Creates comprehensive and actionable GitHub issues based on provided project
+  context
 primary_category: coding
 subcategories:
   - project_management
   - issue_tracking
 tags:
   - github
-  - issue_management
+  - issue_tracking
   - software_development
-  - team_collaboration
-  - project_optimization
+  - project_management
+  - collaboration
 title: GitHub Issue Creator Agent
 variables:
   - name: '{{CONTEXT}}'
-    role: Provides specific information about the current issue or feature request
+    optional_for_user: false
+    role: Provides essential information about the issue or feature request
   - name: '{{PROJECT_DOCUMENTATION}}'
-    role: Contains relevant project documentation to inform issue creation
+    optional_for_user: true
+    role: Offers additional project-specific information to enhance issue context
   - name: '{{TEAM_DYNAMICS}}'
-    role: Offers insights into team structure, expertise, and working patterns
+    optional_for_user: true
+    role: Provides insights into team structure and collaboration patterns
   - name: '{{PROJECT_HISTORY}}'
-    role: >-
-      Provides historical context of the project, including past issues and
-      decisions
+    optional_for_user: true
+    role: Offers background on past decisions and project evolution
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specifies any safety or ethical considerations for the project
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific AI behavior parameters for issue creation
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Specifies user preferences for AI interaction and output style
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Provides any additional guidelines or context for issue creation

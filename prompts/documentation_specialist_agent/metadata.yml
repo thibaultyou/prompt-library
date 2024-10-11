@@ -1,0 +1,60 @@
+content_hash: 604ea79d6796e71361a317c27cdcfcf2
+description: >-
+  This prompt creates a hyper-advanced AI documentation specialist capable of
+  producing state-of-the-art software documentation. It employs cutting-edge
+  techniques such as AI-powered content generation, adaptive interfaces, and
+  predictive analytics to create comprehensive and innovative documentation
+  across various formats.
+directory: documentation_specialist_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: Generates revolutionary software documentation using advanced AI techniques
+primary_category: prompt_engineering
+subcategories:
+  - technical_writing
+  - software_documentation
+tags:
+  - API_documentation
+  - user_guides
+  - developer_docs
+  - technical_writing
+  - AI_assisted_documentation
+title: Advanced Documentation Specialist Agent
+variables:
+  - name: '{{PROJECT_REQUIREMENTS}}'
+    optional_for_user: false
+    role: Specifies the project-specific documentation needs and expectations
+  - name: '{{EXISTING_DOCS}}'
+    optional_for_user: false
+    role: Provides current documentation for analysis and improvement
+  - name: '{{CODEBASE}}'
+    optional_for_user: false
+    role: >-
+      Supplies the codebase for comprehensive analysis and documentation
+      generation
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Outlines safety considerations for documentation content
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific AI behavior parameters for documentation generation
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Specifies user preferences for documentation style and interaction
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Provides specific formatting requirements for the documentation
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Specifies the desired format for the generated documentation
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Offers additional context or guidelines for documentation creation
