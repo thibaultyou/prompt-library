@@ -10,7 +10,7 @@
 
 ### 🔧 Variables
 {% for variable in metadata.variables %}
-- `{{ variable.name }}`: {{ variable.role }}
+- `{{ variable.name }}` - {% if variable.optional_for_user %}🔧 **Optional** - {% endif %}{{ variable.role }}
 {%- endfor %}
 
 {%- if metadata.fragments and metadata.fragments.length > 0 %}
@@ -19,7 +19,7 @@
 
 This prompt could potentially use the following fragments:
 {%- for fragment in metadata.fragments %}
-- [{{ format_string(fragment.name) }}](/fragments/{{ fragment.category }}/{{ fragment.name }}.md) - Could be injected into `{{ fragment.variable }}`
+- [{{ format_string(fragment.name) }}](/fragments/{{ fragment.category }}/{{ fragment.name }}.md) - Could be used into `{{ fragment.variable }}`
 {%- endfor %}
 {%- endif %}
 

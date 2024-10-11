@@ -99,8 +99,8 @@ async function processPromptContent(
 ): Promise<Metadata> {
     const availableFragments = await listAvailableFragments();
     const updatedAnalyzerPrompt = analyzerPrompt
-        .replace('{{PROMPT}}', promptContent)
-        .replace('{{FRAGMENTS}}', availableFragments);
+        .replace('{{PROMPT_TO_ANALYZE}}', promptContent)
+        .replace('{{AVAILABLE_PROMPT_FRAGMENTS}}', availableFragments);
     const message = await sendAnthropicRequest(client, updatedAnalyzerPrompt);
     const content = extractContentFromMessage(message);
     const yamlContent = extractYamlContent(content);

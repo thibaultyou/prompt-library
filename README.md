@@ -53,44 +53,44 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 <details open>
 <summary><strong>Coding</strong></summary>
 
-- [Code Refactoring Specialist](prompts/code_refactoring_agent/README.md) - Analyzes, refactors, and validates codebases to improve efficiency, readability, and maintainability
-- [Git Commit Message Creator](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
-- [Ultimate Coding Assistant](prompts/coding_assistant_agent/README.md) - Assists in all aspects of software development with expertise across multiple languages
-- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and optimized GitHub issues based on project context and team dynamics
-- [Software Developer Pull Request Generator](prompts/software_developer_pr_agent/README.md) - Generates comprehensive pull requests for software development projects
-- [Version Control Branch Name Generator](prompts/version_control_branch_name/README.md) - Generates optimal git branch names based on project context and development workflow
+- [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimized git branch names based on project context and best practices
+- [Git Commit Message Generator](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification and emoji usage
+- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and actionable GitHub issues based on provided context and parameters
+- [Advanced Software Architect Agent](prompts/software_architect_agent/README.md) - Generates comprehensive pull requests with architectural insights and optimization proposals
+- [Software Development Expert Agent](prompts/software_dev_expert_agent/README.md) - Provides expert software development assistance across the entire development lifecycle
+
+</details>
+<details open>
+<summary><strong>Content Creation</strong></summary>
+
+- [Advanced AI Documentation Specialist](prompts/ai_documentation_agent/README.md) - Generates revolutionary software documentation using advanced AI techniques and industry expertise
 
 </details>
 <details open>
 <summary><strong>Healthcare</strong></summary>
 
-- [Health Optimization Assistant](prompts/health_optimization_agent/README.md) - Generates personalized, evidence-based wellness plans that adapt to users' evolving needs
+- [Health Optimization Agent](prompts/health_optimization_agent/README.md) - Generates personalized, adaptive health optimization plans based on comprehensive user data analysis
+- [Psychological Support Therapy Assistant](prompts/psych_support_therapy_agent/README.md) - Provides personalized, AI-driven psychological support and therapy through digital platforms
 
 </details>
 <details open>
 <summary><strong>Problem Solving</strong></summary>
 
-- [Problem Solving Agent](prompts/problem_solving_agent/README.md) - Generates tailored expert networks and solutions for complex problem-solving
+- [Expert Network Problem Solver](prompts/expert_network_problem_solver/README.md) - Generates expert networks and strategies to solve complex problems and achieve ambitious goals.
 
 </details>
 <details open>
 <summary><strong>Prompt Engineering</strong></summary>
 
-- [AI Assistant Concept Creator](prompts/ai_assistant_concept_creator/README.md) - Generates innovative and practical concepts for specialized AI assistants
-- [Prompt Engineering God Agent](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts that push the boundaries of AI language model capabilities
-- [Software Specification Creator](prompts/software_spec_creator_agent/README.md) - Creates detailed software specification documents through interactive requirements analysis
+- [AI Assistant Concept Creator](prompts/ai_assistant_concept_creator/README.md) - Generates innovative and feasible AI assistant concepts based on given topics
+- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts to maximize AI potential while adhering to ethical standards
+- [Software Engineering Architect Agent](prompts/software_engineering_architect/README.md) - Analyzes requirements and creates comprehensive software specification documents
 
 </details>
 <details open>
 <summary><strong>Translation</strong></summary>
 
-- [Universal Translator Agent](prompts/universal_translator_agent/README.md) - Translates between any languages, modes of expression, or conceptual frameworks
-
-</details>
-<details open>
-<summary><strong>Writing</strong></summary>
-
-- [Software Documentation Specialist](prompts/software_documentation_agent/README.md) - Generates comprehensive software documentation across various types and platforms
+- [Omniscient Translation Agent](prompts/omniscient_translation_agent/README.md) - Translates between all forms of expression across infinite realities and dimensions
 
 </details>
 
@@ -99,14 +99,21 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 1. **Fork the Repository**: Click "Fork" to create a copy in your GitHub account.
 2. **Clone Your Fork**:
    ```
-   git clone https://github.com/YOUR_USERNAME/REPO_NAME.git
+   git clone https://github.com/YOUR_USERNAME/prompt-library.git
    ```
 3. **Set Up Anthropic API Key**:
    - In repository settings: **Secrets and variables** > **Actions**.
    - Create a secret named `ANTHROPIC_API_KEY` with your API key.
 4. **Install Dependencies**:
    - Ensure Node.js (v22+ recommended) is installed.
-   - Run `npm install`.
+   - Navigate to the directory:
+      ```
+      cd prompt-library
+      ```
+   - Install dependencies:
+     ```
+     npm install
+     ```
 5. **Add Prompts**:
    - Create a `prompt.md` file in the `prompts` directory.
    - Write your prompt content.
@@ -137,16 +144,29 @@ Monitor these processes in the "Actions" tab of your GitHub repository.
 
 ## 🔧 Customizing Metadata Extraction
 
-The system prompt for metadata extraction is at:
+1. Navigate to the directory:
+   ```
+   cd src/system_prompts/prompt_analysis_agent
+   ```
 
-[`src/system_prompts/prompt_analysis_agent/prompt.md`](src/system_prompts/prompt_analysis_agent/prompt.md)
+2. Edit the system prompt:
+   ```
+   nano prompt.md
+   ```
+   Modify `<instructions>` or `<output>` sections as needed.
 
-To customize:
+3. Test changes:
+   ```
+   cd ../../../
+   npm run generate-metadata
+   ```
 
-1. Open `prompt.md` and modify sections like `<instructions>` or `<output>` to adjust metadata extraction.
-2. Save your changes.
-3. Run `npm run generate-metadata` to test.
-4. Commit and push changes to trigger GitHub Actions.
+4. Commit and push:
+   ```
+   git add src/system_prompts/prompt_analysis_agent/prompt.md
+   git commit -m "Update metadata extraction"
+   git push
+   ```
 
 > **Note**: Changes affect future metadata generations. Test thoroughly.
 

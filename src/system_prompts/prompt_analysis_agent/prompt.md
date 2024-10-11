@@ -3,35 +3,21 @@
 <task>Analyze the provided AI prompt and extract key information according to the specified guidelines. Your analysis should be thorough, precise, and actionable.</task>
 
 <input_parameters>
-Prompt to Analyze: {{PROMPT}}
-Available fragments: {{FRAGMENTS}}
-Top-Level Categories: [
-  "analysis",
-  "art_and_design",
-  "business",
-  "coding",
-  "content_creation",
-  "customer_service",
-  "data_processing",
-  "education",
-  "entertainment",
-  "finance",
-  "gaming",
-  "healthcare",
-  "language",
-  "legal",
-  "marketing",
-  "music",
-  "personal_assistant",
-  "problem_solving",
-  "productivity",
-  "prompt_engineering",
-  "research",
-  "science",
-  "social_media",
-  "translation",
-  "writing"
-]
+  <prompt_to_analyze>
+  {{PROMPT_TO_ANALYZE}}
+  </prompt_to_analyze>
+
+  <available_prompt_fragments>
+  {{AVAILABLE_PROMPT_FRAGMENTS}}
+  </available_prompt_fragments>
+
+  <top_level_categories>
+  ["analysis", "art_and_design", "business", "coding", "content_creation", "customer_service", "data_processing", "education", "entertainment", "finance", "gaming", "healthcare", "language", "legal", "marketing", "music", "personal_assistant", "problem_solving", "productivity", "prompt_engineering", "research", "science", "social_media", "translation", "writing"]
+  </top_level_categories>
+
+  <extra_guidelines_or_context optional_for_user="true">
+  {{EXTRA_GUIDELINES_OR_CONTEXT}}
+  </extra_guidelines_or_context>
 </input_parameters>
 
 <instructions>
@@ -98,8 +84,10 @@ description: [Your quick description]
 variables:
   - name: "{{VARIABLE_1}}"
     role: [Role description for VARIABLE_1]
+    optional_for_user: [true/false]
   - name: "{{VARIABLE_2}}"
     role: [Role description for VARIABLE_2]
+    optional_for_user: [true/false]
   [Add more variables if necessary]
 fragments:
   - name: [Fragment Name]

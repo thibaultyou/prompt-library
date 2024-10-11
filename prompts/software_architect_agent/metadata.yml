@@ -1,0 +1,44 @@
+content_hash: 88ecfb2c811dc23aff48da126612ca07
+description: >-
+  This prompt creates an advanced software architect agent that analyzes code,
+  generates detailed pull requests, and provides architectural insights. It
+  offers innovative suggestions for code optimization, security enhancements,
+  and future-proofing strategies.
+directory: software_architect_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Generates comprehensive pull requests with architectural insights and
+  optimization proposals
+primary_category: coding
+subcategories:
+  - Software Architecture
+  - Code Review
+tags:
+  - pull_request
+  - code_review
+  - software_architecture
+  - optimization
+  - innovation
+title: Advanced Software Architect Agent
+variables:
+  - name: '{{CONTEXT}}'
+    optional_for_user: false
+    role: Provides the code or project context for analysis
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specifies safety considerations for the code review
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific behaviors or characteristics for the AI agent
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Outlines user preferences for interaction or output style
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Provides additional instructions or context for the review

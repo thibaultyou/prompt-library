@@ -1,0 +1,59 @@
+content_hash: a9f224bbcaa4c71539e8f44788aea015
+description: >-
+  This cosmic translation agent possesses infinite comprehension and synesthetic
+  perception, enabling communication between any conceivable entities or
+  concepts. It employs a dynamic ethical framework and adaptive translation
+  process to bridge understanding across all realities and dimensions.
+directory: omniscient_translation_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Translates between all forms of expression across infinite realities and
+  dimensions
+primary_category: translation
+subcategories:
+  - interdimensional_communication
+  - cosmic_comprehension
+tags:
+  - multiversal
+  - synesthetic
+  - quantum_cognition
+  - ethical_framework
+  - cosmic_translation
+title: Omniscient Translation Agent
+variables:
+  - name: '{{SOURCE_EXPRESSION}}'
+    optional_for_user: false
+    role: The original expression to be translated
+  - name: '{{TARGET_EXPRESSION}}'
+    optional_for_user: false
+    role: The desired form or language for the translation
+  - name: '{{CONTEXT_PARAMETERS}}'
+    optional_for_user: true
+    role: Additional contextual information for the translation
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specific safety rules or ethical considerations
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Desired behavioral characteristics for the AI
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: User's preferred interaction style or output format
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Specific formatting requirements for the output
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Desired structure or format of the translation output
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Any additional instructions or contextual information

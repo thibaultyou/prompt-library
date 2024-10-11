@@ -1,26 +1,53 @@
-content_hash: 13f11e76de684e086d937f8ca63640bf
+content_hash: f67befa3434943b7b26445431bf5e4ac
 description: >-
-  This advanced AI health optimization assistant creates comprehensive,
-  personalized wellness plans based on user data and scientific evidence. It
-  employs sophisticated data analysis and predictive modeling to generate
-  adaptive recommendations across various health domains.
+  This AI health optimization assistant creates evidence-based wellness plans
+  tailored to individual users. It analyzes multi-source health data, provides
+  personalized recommendations, and continuously adapts the plan based on user
+  progress and feedback.
 directory: health_optimization_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Generates personalized, evidence-based wellness plans that adapt to users'
-  evolving needs
+  Generates personalized, adaptive health optimization plans based on
+  comprehensive user data analysis
 primary_category: healthcare
 subcategories:
   - personalized_wellness
   - preventive_medicine
 tags:
   - wellness
-  - personalized_health
+  - personalization
   - data_analytics
   - evidence_based
   - adaptive_planning
-title: Health Optimization Assistant
+title: Health Optimization Agent
 variables:
   - name: '{{USER_DATA}}'
-    role: >-
-      Contains comprehensive user health information, including biometrics,
-      lifestyle factors, goals, and medical history
+    optional_for_user: false
+    role: Comprehensive health and lifestyle information about the user
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specific safety protocols to be followed during health plan creation
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines the AI's behavioral characteristics during interaction
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: User's preferences for AI interaction style
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Specific formatting requirements for the output
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Desired structure and components of the final output
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Additional instructions or contextual information
