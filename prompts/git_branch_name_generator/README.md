@@ -248,5 +248,6 @@ Future Considerations:
 Primary category: coding
 
 Subcategories:
+
 - version_control
 - project_management

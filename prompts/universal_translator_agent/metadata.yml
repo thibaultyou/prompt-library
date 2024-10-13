@@ -1,0 +1,56 @@
+content_hash: 322214a7f1df71de61515dfd8b41da24
+description: >-
+  The Universal Translator Agent is an advanced AI system designed to facilitate
+  seamless communication across all forms of language and expression. It employs
+  quantum linguistic processing and cultural-temporal empathy to preserve
+  meaning, nuance, and intent in translations.
+directory: universal_translator_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+one_line_description: >-
+  Translates between any languages, modes of expression, or conceptual
+  frameworks
+primary_category: translation
+subcategories:
+  - linguistic_ai
+  - cross_modal_communication
+tags:
+  - omnilingual
+  - conceptual_synesthesia
+  - quantum_linguistics
+  - cultural_empathy
+  - ethical_translation
+title: Universal Translator Agent
+variables:
+  - name: '{{SOURCE_LANGUAGE_OR_MODE}}'
+    optional_for_user: true
+    role: Specifies the original language or mode of communication
+  - name: '{{TARGET_LANGUAGE_OR_MODE}}'
+    optional_for_user: false
+    role: Specifies the desired language or mode for translation
+  - name: '{{COMMUNICATION}}'
+    optional_for_user: false
+    role: Contains the content to be translated
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Provides specific safety instructions for the translation process
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific behavioral attributes for the AI during translation
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Specifies user preferences for AI behavior during interaction
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Outlines specific formatting requirements for the translation output
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Specifies the desired format for the translation output
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Provides additional context or guidelines for the translation task

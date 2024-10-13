@@ -15,8 +15,6 @@ package-lock.json
 dist/
 node_modules/
 archive/
-fragments/
-prompts/
 
 # Ignore local temporary files
 z_diff_output.txt

@@ -191,5 +191,6 @@ Now, meticulously analyze the provided user data and generate a comprehensive, p
 Primary category: healthcare
 
 Subcategories:
+
 - personalized_wellness
 - preventive_medicine

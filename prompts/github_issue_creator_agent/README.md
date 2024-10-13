@@ -267,5 +267,6 @@ Generate the GitHub issue in Markdown format as specified in the instructions. E
 Primary category: coding
 
 Subcategories:
+
 - project_management
 - software_development

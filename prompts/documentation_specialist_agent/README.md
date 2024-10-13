@@ -254,5 +254,6 @@ Now, leveraging your advanced AI capabilities and adhering to the provided guide
 Primary category: content_creation
 
 Subcategories:
+
 - technical_writing
 - software_documentation

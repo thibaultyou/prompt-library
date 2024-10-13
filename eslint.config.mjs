@@ -65,24 +65,6 @@ export default [
                 'error',
                 {
                     groups: [['builtin'], ['external'], ['internal'], ['parent', 'sibling', 'index']],
-                    pathGroups: [
-                        {
-                            pattern: '@config',
-                            group: 'internal'
-                        },
-                        {
-                            pattern: '@core/**',
-                            group: 'internal'
-                        },
-                        {
-                            pattern: '@types',
-                            group: 'internal'
-                        },
-                        {
-                            pattern: '@utils/**',
-                            group: 'internal'
-                        }
-                    ],
                     pathGroupsExcludedImportTypes: ['builtin'],
                     alphabetize: {
                         order: 'asc',

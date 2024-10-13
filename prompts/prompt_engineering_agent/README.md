@@ -225,5 +225,6 @@ Ensure all parameters in your generated prompt use the {{PARAMETER}} notation wi
 Primary category: prompt_engineering
 
 Subcategories:
+
 - ai_optimization
 - ethical_ai

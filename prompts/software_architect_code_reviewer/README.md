@@ -207,5 +207,6 @@ Your pull request should set a new gold standard for code reviews, serving as a 
 Primary category: coding
 
 Subcategories:
+
 - software_architecture
 - code_review

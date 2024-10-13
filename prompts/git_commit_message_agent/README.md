@@ -322,5 +322,6 @@ Ensure that you process all provided parameters, including those marked as optio
 Primary category: coding
 
 Subcategories:
+
 - version_control
 - software_development

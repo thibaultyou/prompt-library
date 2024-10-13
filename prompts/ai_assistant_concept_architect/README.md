@@ -193,5 +193,6 @@ Now, based on the topic provided in the 'topic' parameter, generate a groundbrea
 Primary category: prompt_engineering
 
 Subcategories:
+
 - ai_assistant_design
 - concept_development

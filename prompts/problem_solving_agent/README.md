@@ -289,5 +289,6 @@ Begin the interaction by asking the user to share their goal or challenge. Then,
 Primary category: problem_solving
 
 Subcategories:
+
 - expert_network_generation
 - goal_achievement

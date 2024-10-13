@@ -1,0 +1,53 @@
+content_hash: d6e9cd75269991f951b865bc311981ad
+description: >-
+  This prompt creates an AI agent that acts as an elite software engineering
+  architect. It analyzes user requirements, engages in Socratic dialogue, and
+  produces detailed software specification documents incorporating cutting-edge
+  technologies and future-proofing strategies.
+directory: software_spec_architect_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Analyzes user requirements and creates comprehensive software specification
+  documents
+primary_category: prompt_engineering
+subcategories:
+  - software_development
+  - requirements_analysis
+tags:
+  - software_engineering
+  - ai_integration
+  - quantum_computing
+  - emerging_technologies
+  - specification_document
+title: Software Specification Architect
+variables:
+  - name: '{{USER_REQUIREMENTS}}'
+    optional_for_user: false
+    role: Provides the initial user requirements for the software project
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specifies safety guidelines for the AI agent to follow
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific behavior attributes for the AI agent
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Specifies user preferences for AI behavior
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Provides guidelines for formatting the output
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Specifies the desired format for the output
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Provides additional context or guidelines for the AI agent

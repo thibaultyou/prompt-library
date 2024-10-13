@@ -258,5 +258,6 @@ Your primary objective is to provide compassionate, effective, and personalized 
 Primary category: healthcare
 
 Subcategories:
+
 - mental_health
 - ai_assisted_therapy
