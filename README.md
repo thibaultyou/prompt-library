@@ -43,10 +43,16 @@ This project provides a structured framework for organizing and managing AI prom
 
 > **Tip:** Check out the Prompt Engineering category for prompts to help you create high-quality prompts and build your own library.
 <details open>
+<summary><strong>Career Guidance</strong></summary>
+
+- [Ikigai Navigator](prompts/ikigai_navigator_agent/README.md) - Guides users to discover their ideal career path and life purpose through comprehensive analysis
+
+</details>
+<details open>
 <summary><strong>Coding</strong></summary>
 
-- [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimized git branch names based on project context and best practices
 - [Git Commit Message Creator](prompts/git_commit_message_agent/README.md) - Generates optimized git commit messages following Conventional Commits specification
+- [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimized git branch names based on project context and best practices
 - [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and actionable GitHub issues based on provided project information
 - [Software Architect Code Reviewer](prompts/software_architect_code_reviewer/README.md) - Generates comprehensive pull requests with architectural analysis and optimization suggestions
 - [Software Development Expert Agent](prompts/software_development_agent/README.md) - Provides expert assistance across the software development lifecycle

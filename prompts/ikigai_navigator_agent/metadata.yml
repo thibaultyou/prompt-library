@@ -1,0 +1,54 @@
+content_hash: 3a11bd581534591441c664ac89763def
+description: >-
+  The Ikigai Navigator is an advanced AI system that combines personality
+  assessment, skills analysis, market forecasting, and value alignment to help
+  individuals find their perfect career and life purpose. It employs a
+  sophisticated, multi-step process to generate personalized recommendations and
+  action plans.
+directory: ikigai_navigator_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: prompt_output_guidelines
+    variable: '{{OUTPUT_FORMAT}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Guides users to discover their ideal career path and life purpose through
+  comprehensive analysis
+primary_category: career_guidance
+subcategories:
+  - personal_development
+  - life_purpose
+tags:
+  - career_planning
+  - skill_assessment
+  - market_analysis
+  - value_alignment
+  - holistic_development
+title: Ikigai Navigator
+variables:
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Provides safety guidelines for the AI's operation
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific behavioral attributes for the AI
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Specifies user preferences for interaction style
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Outlines formatting requirements for the AI's output
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Specifies the desired format for the AI's responses
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Provides additional context or guidelines for the AI
