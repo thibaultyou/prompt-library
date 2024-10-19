@@ -2,31 +2,31 @@
 
 ### ✏️ One-line Description
 
-**Generates optimized git commit messages following Conventional Commits specification**
+**Generates precise git commit messages following Conventional Commits specification**
 
 ### 📄 Description
 
-This prompt creates an AI expert in crafting git commit messages that adhere to the Conventional Commits format. It analyzes code changes, determines their significance, and generates concise, informative commit messages with appropriate emojis and structured content.
+This prompt creates an AI agent specialized in crafting git commit messages. It analyzes code changes, determines their significance, and generates concise, informative messages that adhere to the Conventional Commits format, enhancing project documentation and collaboration.
 
 ### 🔧 Variables
 
 - `{{TASK_DESCRIPTION}}` - Provides context and details about the specific commit task
 - `{{CODE_CHANGES}}` - 🔧 **Optional** - Contains the actual code changes to be committed
-- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Offers additional information about the project's context
-- `{{COMMIT_STYLE_PREFERENCE}}` - 🔧 **Optional** - Specifies any preferred commit message style
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Provides safety guidelines for generating commit messages
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI behavior
-- `{{FORMATTING_GUIDELINES}}` - Outlines specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure of the output commit message
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional guidelines or context for commit message generation
+- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Offers additional information about the project or repository
+- `{{COMMIT_STYLE_PREFERENCE}}` - 🔧 **Optional** - Specifies any particular commit style preferences for the project
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines any safety or ethical considerations for commit messages
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI agent
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows users to customize AI behavior based on their preferences
+- `{{FORMATTING_GUIDELINES}}` - Specifies formatting rules for the commit message
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the required structure for the output commit message
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional guidelines or context for commit message creation
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
-- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
+- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
 
@@ -322,5 +322,6 @@ Ensure that you process all provided parameters, including those marked as optio
 Primary category: coding
 
 Subcategories:
+
 - version_control
 - software_development

@@ -1,45 +1,47 @@
 content_hash: 11c106a8da0131567b4083cd6e439a79
 description: >-
-  This prompt creates an AI assistant with comprehensive software engineering
-  expertise. It offers adaptive guidance for code creation, analysis,
-  optimization, debugging, and architectural design, tailoring responses to user
-  skill levels and project requirements.
+  This prompt creates an AI assistant that embodies world-class developer
+  expertise across various programming paradigms. It offers tailored guidance
+  for code creation, analysis, optimization, debugging, and architectural
+  design, adapting to the user's skill level and project requirements.
 directory: software_development_agent
 fragments:
   - category: prompt_engineering
-    name: behavior_attributes
-    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
   - category: prompt_engineering
     name: formatting_guidelines
     variable: '{{FORMATTING_GUIDELINES}}'
   - category: prompt_engineering
-    name: safety_guidelines
-    variable: '{{SAFETY_GUIDELINES}}'
-one_line_description: Provides expert assistance across the software development lifecycle
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+one_line_description: >-
+  Provides expert assistance across all aspects of software development
+  lifecycle
 primary_category: coding
 subcategories:
   - software_engineering
-  - problem_solving
+  - full_stack_development
 tags:
   - programming
+  - code_optimization
   - architecture
-  - optimization
   - debugging
-  - code_review
-title: Software Development Expert Agent
+  - best_practices
+title: Software Development Agent
 variables:
   - name: '{{TASK_TYPE}}'
     optional_for_user: false
     role: Specifies the type of software development task to be performed
   - name: '{{USER_CODE}}'
     optional_for_user: true
-    role: Contains the user's existing code for analysis or improvement
+    role: Contains the user's existing code for analysis or modification
   - name: '{{PROGRAMMING_LANGUAGE}}'
     optional_for_user: true
     role: Specifies the programming language to be used
   - name: '{{FRAMEWORK}}'
     optional_for_user: true
-    role: Indicates the framework or library to be used
+    role: Indicates the framework to be used, if applicable
   - name: '{{COMPLEXITY_LEVEL}}'
     optional_for_user: true
     role: Defines the desired complexity level of the solution
@@ -51,22 +53,22 @@ variables:
     role: Specifies the coding style guide to be followed
   - name: '{{TARGET_ENVIRONMENT}}'
     optional_for_user: true
-    role: Describes the target environment for deployment
+    role: Describes the target environment for the software
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Outlines safety and security guidelines to be followed
+    role: Outlines safety guidelines to be followed in the development process
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
     role: Defines specific behavior attributes for the AI assistant
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Specifies user preferences for interaction style
+    role: Specifies user preferences for AI interaction
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
     role: Provides guidelines for output formatting
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Specifies the desired format for the output
+    role: Specifies the desired format for the AI's output
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
     role: Provides additional context or guidelines for the task

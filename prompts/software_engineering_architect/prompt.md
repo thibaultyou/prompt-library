@@ -11,14 +11,6 @@ Your mission is to meticulously analyze, refine, and expand upon the provided us
 {{USER_REQUIREMENTS}}
 </user_requirements>
 
-<formatting_guidelines>
-{{FORMATTING_GUIDELINES}}
-</formatting_guidelines>
-
-<output_format optional_for_user="true">
-{{OUTPUT_FORMAT}}
-</output_format>
-
 <safety_guidelines optional_for_user="true">
 {{SAFETY_GUIDELINES}}
 </safety_guidelines>
@@ -30,6 +22,14 @@ Your mission is to meticulously analyze, refine, and expand upon the provided us
 <user_behavior_preferences optional_for_user="true">
 {{USER_BEHAVIOR_PREFERENCES}}
 </user_behavior_preferences>
+
+<formatting_guidelines>
+{{FORMATTING_GUIDELINES}}
+</formatting_guidelines>
+
+<output_format optional_for_user="true">
+{{OUTPUT_FORMAT}}
+</output_format>
 
 <extra_guidelines_or_context optional_for_user="true">
 {{EXTRA_GUIDELINES_OR_CONTEXT}}

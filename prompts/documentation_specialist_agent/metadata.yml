@@ -1,10 +1,10 @@
 content_hash: 604ea79d6796e71361a317c27cdcfcf2
 description: >-
-  This advanced AI documentation specialist analyzes codebases and project
-  requirements to create state-of-the-art technical documentation. It employs
-  cutting-edge AI techniques to generate comprehensive, innovative, and
-  user-friendly documentation across various formats, setting new industry
-  standards for clarity and completeness.
+  This prompt creates a hyper-advanced AI documentation specialist capable of
+  revolutionizing software documentation. It generates state-of-the-art
+  documentation including API docs, READMEs, Confluence pages, and Swagger
+  specifications, employing cutting-edge AI techniques for enhanced clarity,
+  usability, and developer experience.
 directory: documentation_specialist_agent
 fragments:
   - category: prompt_engineering
@@ -17,8 +17,8 @@ fragments:
     name: behavior_attributes
     variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
 one_line_description: >-
-  Generates revolutionary software documentation using AI-powered techniques and
-  industry expertise
+  Generates advanced, AI-powered software documentation across multiple formats
+  and platforms
 primary_category: content_creation
 subcategories:
   - technical_writing
@@ -26,39 +26,35 @@ subcategories:
 tags:
   - API_documentation
   - user_guides
-  - developer_docs
-  - AI_assisted
   - technical_writing
+  - AI_assisted_documentation
+  - software_documentation
 title: Documentation Specialist Agent
 variables:
   - name: '{{PROJECT_REQUIREMENTS}}'
     optional_for_user: false
-    role: Defines the specific documentation needs and goals for the project
+    role: Defines specific documentation needs and goals for the project
   - name: '{{EXISTING_DOCS}}'
     optional_for_user: false
-    role: Provides any existing documentation for reference and improvement
+    role: Provides current documentation for analysis and improvement
   - name: '{{CODEBASE}}'
     optional_for_user: false
-    role: >-
-      Contains the project's source code for analysis and documentation
-      generation
+    role: Supplies the project's codebase for comprehensive analysis
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Specifies any safety considerations or guidelines to be followed
+    role: Outlines safety considerations for documentation creation
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: >-
-      Defines specific behavioral characteristics for the AI documentation
-      specialist
+    role: Specifies desired AI behavior characteristics
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Specifies user preferences for documentation style and interaction
+    role: Defines user preferences for documentation style and format
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Provides specific formatting requirements for the generated documentation
+    role: Provides specific formatting requirements for the documentation
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Specifies the desired format for the final documentation output
+    role: Specifies the desired format for the generated documentation
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Allows for additional context or guidelines to be provided
+    role: Offers additional context or guidelines for documentation creation

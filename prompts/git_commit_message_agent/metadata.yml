@@ -1,22 +1,22 @@
 content_hash: 4a85baa663e23a91c506cdee5ba69301
 description: >-
-  This prompt creates an AI expert in crafting git commit messages that adhere
-  to the Conventional Commits format. It analyzes code changes, determines their
-  significance, and generates concise, informative commit messages with
-  appropriate emojis and structured content.
+  This prompt creates an AI agent specialized in crafting git commit messages.
+  It analyzes code changes, determines their significance, and generates
+  concise, informative messages that adhere to the Conventional Commits format,
+  enhancing project documentation and collaboration.
 directory: git_commit_message_agent
 fragments:
   - category: prompt_engineering
-    name: safety_guidelines
-    variable: '{{SAFETY_GUIDELINES}}'
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
   - category: prompt_engineering
     name: formatting_guidelines
     variable: '{{FORMATTING_GUIDELINES}}'
   - category: prompt_engineering
-    name: behavior_attributes
-    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Generates optimized git commit messages following Conventional Commits
+  Generates precise git commit messages following Conventional Commits
   specification
 primary_category: coding
 subcategories:
@@ -38,27 +38,25 @@ variables:
     role: Contains the actual code changes to be committed
   - name: '{{PROJECT_CONTEXT}}'
     optional_for_user: true
-    role: Offers additional information about the project's context
+    role: Offers additional information about the project or repository
   - name: '{{COMMIT_STYLE_PREFERENCE}}'
     optional_for_user: true
-    role: Specifies any preferred commit message style
+    role: Specifies any particular commit style preferences for the project
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Provides safety guidelines for generating commit messages
+    role: Outlines any safety or ethical considerations for commit messages
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Defines specific behavior attributes for the AI
+    role: Defines specific behavior attributes for the AI agent
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Specifies user preferences for AI behavior
+    role: Allows users to customize AI behavior based on their preferences
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Outlines specific formatting requirements for the output
+    role: Specifies formatting rules for the commit message
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Defines the structure of the output commit message
+    role: Defines the required structure for the output commit message
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: >-
-      Provides any additional guidelines or context for commit message
-      generation
+    role: Provides any additional guidelines or context for commit message creation

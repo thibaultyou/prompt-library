@@ -2,22 +2,22 @@
 
 ### ✏️ One-line Description
 
-**Creates comprehensive and actionable GitHub issues based on provided project information**
+**Creates comprehensive and actionable GitHub issues based on provided context and parameters**
 
 ### 📄 Description
 
-This prompt designs an AI system to craft detailed GitHub issues. It analyzes project contexts, synthesizes information, and generates well-structured issues with technical specifications, acceptance criteria, and proposed solutions.
+This prompt creates a hyper-intelligent AI system designed to craft exceptional GitHub issues. It analyzes provided information, synthesizes context, and generates detailed, well-structured issues adaptable to various levels of input detail.
 
 ### 🔧 Variables
 
 - `{{CONTEXT}}` - Provides essential information about the issue or feature request
-- `{{PROJECT_DOCUMENTATION}}` - 🔧 **Optional** - Supplies additional project-related information
-- `{{TEAM_DYNAMICS}}` - 🔧 **Optional** - Offers insights into team structure and interactions
-- `{{PROJECT_HISTORY}}` - 🔧 **Optional** - Provides historical context of the project
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for the project
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI interaction
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional guidelines or context
+- `{{PROJECT_DOCUMENTATION}}` - 🔧 **Optional** - Offers additional project-specific information to enhance issue creation
+- `{{TEAM_DYNAMICS}}` - 🔧 **Optional** - Provides insights into team structure and collaboration patterns
+- `{{PROJECT_HISTORY}}` - 🔧 **Optional** - Offers historical context to inform issue creation and avoid past pitfalls
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies any safety or ethical considerations to be adhered to
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior parameters for the AI system
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows customization of AI behavior based on user preferences
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional information or guidelines for issue creation
 
 ### 🧩 Relevant Fragments
 
@@ -258,14 +258,15 @@ Generate the GitHub issue in Markdown format as specified in the instructions. E
 
 - github
 - issue_tracking
-- project_management
 - software_development
 - collaboration
+- project_management
 
 ### 📚 Category
 
 Primary category: coding
 
 Subcategories:
+
+- issue_tracking
 - project_management
-- software_development

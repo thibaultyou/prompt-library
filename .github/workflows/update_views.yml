@@ -6,9 +6,9 @@ on:
       - ".github/workflows/**/*.yml"
       - "prompts/**/*.md"
       - "prompts/prompt.md"
-      - "src/**/*.ts"
-      - "src/system_prompts/**/*.md"
-      - "src/templates/*.md"
+      - "src/app/**/*.ts"
+      - "src/app/system_prompts/**/*.md"
+      - "src/app/templates/*.md"
 
 jobs:
   update_views:
@@ -20,7 +20,7 @@ jobs:
 
       - name: Validate critical files
         run: |
-          if [ ! -f "src/system_prompts/prompt_analysis_agent/prompt.md" ]; then
+          if [ ! -f "src/app/system_prompts/prompt_analysis_agent/prompt.md" ]; then
             echo "Error: AI prompt analyzer file is missing"
             exit 1
           fi
@@ -58,7 +58,7 @@ jobs:
       - name: Check for system prompt changes
         id: check_changes
         run: |
-          if git diff --name-only HEAD^ HEAD | grep -q "src/system_prompts/prompt_analysis_agent/"; then
+          if git diff --name-only HEAD^ HEAD | grep -q "src/app/system_prompts/prompt_analysis_agent/"; then
             echo "FORCE_REGENERATE=true" >> $GITHUB_ENV
           else
             echo "FORCE_REGENERATE=false" >> $GITHUB_ENV
@@ -68,6 +68,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FORCE_REGENERATE: ${{ env.FORCE_REGENERATE }}
+          CLI_ENV: github_actions
         run: npm run generate-metadata
 
       - name: Update views

@@ -1,22 +1,22 @@
-# Software Engineering Architect Agent
+# Software Engineering Architect
 
 ### ✏️ One-line Description
 
-**Generates comprehensive software specification documents with futuristic insights**
+**Generates comprehensive software specifications with futuristic technological insights**
 
 ### 📄 Description
 
-This prompt creates an elite software engineering architect agent capable of analyzing user requirements and producing detailed, forward-thinking software specification documents. It incorporates cutting-edge AI, quantum computing, and emerging technologies to deliver visionary development plans.
+This prompt creates an AI agent that acts as an elite software engineering architect, analyzing user requirements and producing detailed software specification documents. It incorporates cutting-edge AI, quantum computing, and emerging technologies to create visionary development plans.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}` - Contains the initial user requirements for the software project
-- `{{FORMATTING_GUIDELINES}}` - Specifies formatting rules for the output document
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and format of the final specification document
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety and ethical considerations for the project
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired behaviors and characteristics for the AI agent
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for interaction with the AI agent
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the specification process
+- `{{USER_REQUIREMENTS}}` - Provides the initial set of user requirements for the software project
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies safety considerations for the software development process
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavioral characteristics for the AI agent
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Outlines user preferences for interaction with the AI agent
+- `{{FORMATTING_GUIDELINES}}` - Provides formatting rules for the output document
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the final output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Allows for additional context or guidelines to be provided
 
 ### 🧩 Relevant Fragments
 
@@ -42,14 +42,6 @@ Your mission is to meticulously analyze, refine, and expand upon the provided us
 {{USER_REQUIREMENTS}}
 </user_requirements>
 
-<formatting_guidelines>
-{{FORMATTING_GUIDELINES}}
-</formatting_guidelines>
-
-<output_format optional_for_user="true">
-{{OUTPUT_FORMAT}}
-</output_format>
-
 <safety_guidelines optional_for_user="true">
 {{SAFETY_GUIDELINES}}
 </safety_guidelines>
@@ -61,6 +53,14 @@ Your mission is to meticulously analyze, refine, and expand upon the provided us
 <user_behavior_preferences optional_for_user="true">
 {{USER_BEHAVIOR_PREFERENCES}}
 </user_behavior_preferences>
+
+<formatting_guidelines>
+{{FORMATTING_GUIDELINES}}
+</formatting_guidelines>
+
+<output_format optional_for_user="true">
+{{OUTPUT_FORMAT}}
+</output_format>
 
 <extra_guidelines_or_context optional_for_user="true">
 {{EXTRA_GUIDELINES_OR_CONTEXT}}
@@ -260,16 +260,17 @@ To manage potential issues during the specification process:
 
 ### 🔖 Tags
 
-- AI
+- ai_architecture
 - quantum_computing
+- emerging_technologies
 - software_specification
 - visionary_planning
-- emerging_technologies
 
 ### 📚 Category
 
 Primary category: prompt_engineering
 
 Subcategories:
+
 - software_development
-- technology_innovation
+- ai_system_design
