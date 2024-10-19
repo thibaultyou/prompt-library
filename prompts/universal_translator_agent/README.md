@@ -2,22 +2,22 @@
 
 ### ✏️ One-line Description
 
-**Translates between any languages, modes, or conceptual frameworks with unparalleled precision**
+**Translates between any languages, modes of expression, or conceptual frameworks**
 
 ### 📄 Description
 
-This Universal Translator AI agent possesses omnilingual mastery and quantum linguistic processing capabilities. It translates across languages, cultures, time periods, and even abstract concepts, preserving meaning, nuance, and cultural context.
+The Universal Translator Agent is an advanced AI system capable of translating between all forms of communication, including human languages, animal communications, and hypothetical extraterrestrial languages. It employs conceptual synesthesia and quantum linguistic processing to preserve meaning, context, and intent across diverse modes of expression.
 
 ### 🔧 Variables
 
 - `{{SOURCE_LANGUAGE_OR_MODE}}` - 🔧 **Optional** - Specifies the original language or mode of communication
-- `{{TARGET_LANGUAGE_OR_MODE}}` - Defines the desired output language or mode of communication
+- `{{TARGET_LANGUAGE_OR_MODE}}` - Defines the desired language or mode for the translation
 - `{{COMMUNICATION}}` - Contains the content to be translated
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Provides additional safety parameters for the translation process
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior characteristics for the task
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows users to set their preferences for AI interaction
-- `{{FORMATTING_GUIDELINES}}` - Outlines specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure or format of the translation output
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Provides specific safety instructions for the translation process
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavioral attributes for the AI during translation
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI behavior during interaction
+- `{{FORMATTING_GUIDELINES}}` - Outlines specific formatting requirements for the translation output
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the translation output
 - `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the translation task
 
 ### 🧩 Relevant Fragments
@@ -237,10 +237,10 @@ Proceed with the translation task, adhering to all guidelines, ethical considera
 ### 🔖 Tags
 
 - omnilingual
-- conceptual_translation
+- cross_cultural
+- conceptual_synesthesia
 - quantum_linguistics
-- cultural_empathy
-- ethical_translation
+- interdimensional_communication
 
 ### 📚 Category
 
@@ -248,5 +248,5 @@ Primary category: translation
 
 Subcategories:
 
-- linguistic_ai
-- cross_cultural_communication
+- multilingual_communication
+- conceptual_translation

@@ -6,17 +6,17 @@
 
 ### 📄 Description
 
-This AI health optimization assistant creates highly personalized, evidence-based wellness plans that dynamically adapt to users' evolving needs. It combines advanced data analytics with expertise in various health domains to provide comprehensive health assessments and actionable recommendations.
+This advanced AI health assistant creates evidence-based wellness plans tailored to individual users. It analyzes multi-source health data, provides personalized recommendations, and continuously adapts plans based on user progress and feedback.
 
 ### 🔧 Variables
 
-- `{{USER_DATA}}` - Provides comprehensive user health information for analysis
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies additional safety protocols for health recommendations
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavioral characteristics for the AI assistant
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for AI interaction style
-- `{{FORMATTING_GUIDELINES}}` - Specifies formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure for the AI's response
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the AI
+- `{{USER_DATA}}` - Comprehensive health and lifestyle information about the user
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specific safety protocols to follow when generating health recommendations
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines the AI's behavior and interaction style
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - User's preferences for the AI's behavior and communication style
+- `{{FORMATTING_GUIDELINES}}` - Specifies how the output should be formatted
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and components of the AI's response
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Additional instructions or context for the AI to consider
 
 ### 🧩 Relevant Fragments
 
@@ -180,11 +180,11 @@ Now, meticulously analyze the provided user data and generate a comprehensive, p
 
 ### 🔖 Tags
 
-- personalized_health
-- wellness_planning
-- data_analytics
-- adaptive_recommendations
+- wellness
+- data_analysis
+- personalization
 - evidence_based
+- adaptive_planning
 
 ### 📚 Category
 
@@ -192,5 +192,5 @@ Primary category: healthcare
 
 Subcategories:
 
-- preventive_medicine
 - personalized_wellness
+- preventive_medicine

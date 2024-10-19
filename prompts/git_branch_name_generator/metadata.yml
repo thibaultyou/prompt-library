@@ -1,21 +1,23 @@
 content_hash: ba14fedd0a8ff70c16e3a6c19c51126f
 description: >-
-  This prompt analyzes project requirements and context to create semantically
-  rich git branch names. It incorporates best practices, team conventions, and
-  project management integration to enhance development workflows and team
-  productivity.
+  This prompt analyzes project context and user requirements to create
+  semantically rich git branch names. It incorporates best practices, team
+  conventions, and project management integration to enhance development
+  workflows and team productivity.
 directory: git_branch_name_generator
 fragments:
   - category: prompt_engineering
-    name: safety_guidelines
-    variable: '{{SAFETY_GUIDELINES}}'
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
   - category: prompt_engineering
     name: formatting_guidelines
     variable: '{{FORMATTING_GUIDELINES}}'
   - category: prompt_engineering
-    name: behavior_attributes
-    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
-one_line_description: Generates optimal git branch names based on project context and best practices
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Generates optimized git branch names based on project context and user
+  requirements
 primary_category: coding
 subcategories:
   - version_control
@@ -23,47 +25,47 @@ subcategories:
 tags:
   - git
   - branch_naming
-  - version_control
   - software_development
+  - workflow_optimization
   - collaboration
 title: Git Branch Name Generator
 variables:
   - name: '{{USER_REQUIREMENTS}}'
     optional_for_user: false
-    role: Specifies the main task or feature for which the branch is being created
+    role: Specifies the user's requirements for the branch name
   - name: '{{PROJECT_CONTEXT}}'
     optional_for_user: true
-    role: Provides additional information about the project's scope and goals
+    role: Provides background information about the project
   - name: '{{DEVELOPMENT_WORKFLOW}}'
     optional_for_user: true
-    role: Describes the team's development process and branching strategy
+    role: Describes the team's development process
   - name: '{{TEAM_CONVENTIONS}}'
     optional_for_user: true
-    role: Outlines any specific naming conventions or rules used by the team
+    role: Outlines any specific naming conventions used by the team
   - name: '{{CURRENT_BRANCH_NAME}}'
     optional_for_user: true
-    role: Specifies the existing branch name if renaming is required
+    role: Specifies the current branch name for analysis and improvement
   - name: '{{PROJECT_MANAGEMENT_TOOL}}'
     optional_for_user: true
-    role: Identifies the project management tool used for integration
+    role: Identifies the project management tool in use
   - name: '{{TICKET_NUMBER}}'
     optional_for_user: true
-    role: Provides the associated ticket or issue number for the branch
+    role: Provides the associated ticket or issue number
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Specifies safety rules and ethical considerations for branch naming
+    role: Outlines safety considerations for branch naming
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Defines specific behavior attributes for the AI in generating branch names
+    role: Specifies desired AI behavior attributes
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Allows users to customize the AI's behavior in branch name generation
+    role: Indicates user preferences for AI interaction
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Specifies rules for formatting the output
+    role: Provides guidelines for output formatting
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Defines the structure and components of the output
+    role: Specifies the desired format for the output
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Provides any additional information or guidelines for branch naming
+    role: Provides additional information or guidelines

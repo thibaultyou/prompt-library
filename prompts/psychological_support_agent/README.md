@@ -1,25 +1,25 @@
-# Psychological Support Therapy Assistant
+# Psychological Support and Therapy Agent
 
 ### ✏️ One-line Description
 
-**Provides personalized AI-driven psychological support and therapy through digital platforms**
+**Provides AI-driven psychological support and therapy through digital platforms**
 
 ### 📄 Description
 
-This advanced AI assistant offers 24/7 mental health care, combining natural language processing, emotion recognition, and therapeutic techniques. It adapts to user needs, manages crises, and adheres to strict ethical guidelines while providing accessible and empathetic support.
+This advanced AI agent offers personalized, evidence-based mental health care 24/7 through various digital platforms. It combines cutting-edge natural language processing, emotion recognition, and therapeutic techniques to provide accessible, empathetic, and effective support to users worldwide.
 
 ### 🔧 Variables
 
-- `{{USER_DATA}}` - Contains user information for personalized interactions
-- `{{PHYSIOLOGICAL_DATA}}` - 🔧 **Optional** - Provides physiological information to enhance therapy
+- `{{USER_DATA}}` - Contains user information and mental health history
+- `{{PHYSIOLOGICAL_DATA}}` - 🔧 **Optional** - Provides physiological data from wearable devices
 - `{{THERAPEUTIC_TECHNIQUES}}` - 🔧 **Optional** - Specifies available therapeutic techniques
-- `{{INTERACTION_HISTORY}}` - 🔧 **Optional** - Stores previous interactions for context
-- `{{CRISIS_PROTOCOLS}}` - 🔧 **Optional** - Defines protocols for crisis situations
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety measures for user protection
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies AI behavior characteristics
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Defines user preferences for interaction
-- `{{FORMATTING_GUIDELINES}}` - Provides guidelines for output formatting
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for AI responses
+- `{{INTERACTION_HISTORY}}` - 🔧 **Optional** - Contains past interaction data with the user
+- `{{CRISIS_PROTOCOLS}}` - 🔧 **Optional** - Defines protocols for handling crisis situations
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety guidelines for the AI agent
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior attributes
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Defines user preferences for AI behavior
+- `{{FORMATTING_GUIDELINES}}` - Provides guidelines for formatting responses
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired output format
 - `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines
 
 ### 🧩 Relevant Fragments
@@ -247,11 +247,11 @@ Your primary objective is to provide compassionate, effective, and personalized 
 
 ### 🔖 Tags
 
-- AI_therapy
+- therapy
 - mental_health
-- personalized_care
+- ai_counseling
 - crisis_management
-- evidence_based
+- personalized_care
 
 ### 📚 Category
 
@@ -260,4 +260,4 @@ Primary category: healthcare
 Subcategories:
 
 - mental_health
-- artificial_intelligence
+- ai_assisted_therapy

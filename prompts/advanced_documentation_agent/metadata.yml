@@ -1,11 +1,11 @@
 content_hash: 604ea79d6796e71361a317c27cdcfcf2
 description: >-
-  This prompt creates a hyper-advanced AI documentation specialist capable of
-  revolutionizing software documentation. It generates state-of-the-art
-  documentation including API docs, READMEs, Confluence pages, and Swagger
-  specifications, employing cutting-edge AI techniques for enhanced clarity,
-  usability, and developer experience.
-directory: documentation_specialist_agent
+  This prompt creates an AI agent specialized in producing cutting-edge software
+  documentation. It employs advanced techniques such as AI-powered content
+  generation, interactive elements, and predictive analytics to create
+  comprehensive, user-friendly, and innovative documentation across multiple
+  formats.
+directory: advanced_documentation_agent
 fragments:
   - category: prompt_engineering
     name: formatting_guidelines
@@ -17,38 +17,40 @@ fragments:
     name: behavior_attributes
     variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
 one_line_description: >-
-  Generates advanced, AI-powered software documentation across multiple formats
-  and platforms
-primary_category: content_creation
+  Generates revolutionary, next-generation software documentation using advanced
+  AI techniques
+primary_category: prompt_engineering
 subcategories:
   - technical_writing
   - software_documentation
 tags:
-  - API_documentation
-  - user_guides
+  - AI_documentation
+  - API_docs
   - technical_writing
-  - AI_assisted_documentation
-  - software_documentation
-title: Documentation Specialist Agent
+  - software_engineering
+  - innovation
+title: Advanced Documentation Agent
 variables:
   - name: '{{PROJECT_REQUIREMENTS}}'
     optional_for_user: false
-    role: Defines specific documentation needs and goals for the project
+    role: Defines the specific documentation needs and goals for the project
   - name: '{{EXISTING_DOCS}}'
     optional_for_user: false
-    role: Provides current documentation for analysis and improvement
+    role: Provides any existing documentation to be analyzed and improved upon
   - name: '{{CODEBASE}}'
     optional_for_user: false
-    role: Supplies the project's codebase for comprehensive analysis
+    role: >-
+      Contains the project's source code for analysis and documentation
+      generation
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Outlines safety considerations for documentation creation
+    role: Specifies any safety or ethical considerations to be followed
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Specifies desired AI behavior characteristics
+    role: Defines specific behavioral traits for the AI agent
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Defines user preferences for documentation style and format
+    role: Allows users to specify their preferences for AI interaction
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
     role: Provides specific formatting requirements for the documentation
@@ -57,4 +59,4 @@ variables:
     role: Specifies the desired format for the generated documentation
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Offers additional context or guidelines for documentation creation
+    role: Allows for additional instructions or context to be provided

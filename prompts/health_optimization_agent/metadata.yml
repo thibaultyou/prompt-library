@@ -1,9 +1,9 @@
 content_hash: f67befa3434943b7b26445431bf5e4ac
 description: >-
-  This AI health optimization assistant creates highly personalized,
-  evidence-based wellness plans that dynamically adapt to users' evolving needs.
-  It combines advanced data analytics with expertise in various health domains
-  to provide comprehensive health assessments and actionable recommendations.
+  This advanced AI health assistant creates evidence-based wellness plans
+  tailored to individual users. It analyzes multi-source health data, provides
+  personalized recommendations, and continuously adapts plans based on user
+  progress and feedback.
 directory: health_optimization_agent
 fragments:
   - category: prompt_engineering
@@ -20,34 +20,34 @@ one_line_description: >-
   comprehensive user data analysis
 primary_category: healthcare
 subcategories:
-  - preventive_medicine
   - personalized_wellness
+  - preventive_medicine
 tags:
-  - personalized_health
-  - wellness_planning
-  - data_analytics
-  - adaptive_recommendations
+  - wellness
+  - data_analysis
+  - personalization
   - evidence_based
+  - adaptive_planning
 title: Health Optimization Agent
 variables:
   - name: '{{USER_DATA}}'
     optional_for_user: false
-    role: Provides comprehensive user health information for analysis
+    role: Comprehensive health and lifestyle information about the user
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Specifies additional safety protocols for health recommendations
+    role: Specific safety protocols to follow when generating health recommendations
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Defines specific behavioral characteristics for the AI assistant
+    role: Defines the AI's behavior and interaction style
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Indicates user preferences for AI interaction style
+    role: User's preferences for the AI's behavior and communication style
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Specifies formatting requirements for the output
+    role: Specifies how the output should be formatted
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Defines the structure for the AI's response
+    role: Defines the structure and components of the AI's response
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Provides additional context or guidelines for the AI
+    role: Additional instructions or context for the AI to consider

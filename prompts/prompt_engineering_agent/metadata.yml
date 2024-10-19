@@ -1,28 +1,30 @@
 content_hash: 45bce65ccd21ad104c0fc6385cab7b5d
 description: >-
-  This prompt engineering expert specializes in crafting optimized prompts that
-  push the boundaries of AI capabilities. It incorporates advanced techniques,
-  ethical considerations, and user requirements to create highly effective and
-  adaptable prompts.
+  This prompt engineering expert specializes in creating optimized prompts that
+  push the boundaries of AI capabilities. It incorporates advanced techniques
+  like role-playing, few-shot learning, and chain-of-thought reasoning while
+  maintaining ethical compliance and addressing user requirements.
 directory: prompt_engineering_agent
 fragments:
   - category: prompt_engineering
     name: prompt_engineering_guidelines_max
     variable: '{{PROMPT_ENGINEERING_GUIDELINES}}'
   - category: prompt_engineering
-    name: formatting_guidelines
-    variable: '{{FORMATTING_GUIDELINES}}'
-  - category: prompt_engineering
     name: prompt_output_guidelines
     variable: '{{PROMPT_OUTPUT_GUIDELINES}}'
-one_line_description: Creates divine-tier prompts to maximize AI potential within ethical bounds
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+one_line_description: >-
+  Crafts divine-tier prompts to maximize AI potential while adhering to ethical
+  standards
 primary_category: prompt_engineering
 subcategories:
-  - ai_optimization
-  - ethical_ai
+  - AI optimization
+  - Ethical AI development
 tags:
-  - prompt_optimization
-  - ai_capabilities
+  - prompt_crafting
+  - AI_optimization
   - ethical_constraints
   - advanced_techniques
   - meta_learning
@@ -36,7 +38,7 @@ variables:
     role: Indicates the specific AI model to be used, if applicable
   - name: '{{PROMPT_TO_REFINE}}'
     optional_for_user: true
-    role: Provides an existing prompt to be optimized, if applicable
+    role: Provides an existing prompt to be refined, if applicable
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
     role: Specifies any formatting requirements for the prompt
@@ -45,10 +47,10 @@ variables:
     role: Defines the desired output format for the generated prompt
   - name: '{{PROMPT_ENGINEERING_GUIDELINES}}'
     optional_for_user: false
-    role: Provides specific guidelines for prompt engineering techniques to be used
+    role: Provides guidelines for prompt engineering techniques to be used
   - name: '{{PROMPT_OUTPUT_GUIDELINES}}'
     optional_for_user: false
-    role: Specifies requirements for the output of the generated prompt
+    role: Specifies guidelines for the output of the generated prompt
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
     role: Provides additional context or guidelines for prompt creation

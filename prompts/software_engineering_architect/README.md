@@ -1,29 +1,28 @@
-# Software Engineering Architect
+# Software Engineering Architect Agent
 
 ### ✏️ One-line Description
 
-**Generates comprehensive software specifications with futuristic technological insights**
+**Analyzes requirements and creates comprehensive software specification documents**
 
 ### 📄 Description
 
-This prompt creates an AI agent that acts as an elite software engineering architect, analyzing user requirements and producing detailed software specification documents. It incorporates cutting-edge AI, quantum computing, and emerging technologies to create visionary development plans.
+This prompt creates an elite software engineering architect agent that analyzes user requirements and produces detailed, visionary software specification documents. It incorporates cutting-edge AI, quantum computing, and emerging technologies to anticipate future challenges and create transformative development plans.
 
 ### 🔧 Variables
 
 - `{{USER_REQUIREMENTS}}` - Provides the initial set of user requirements for the software project
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies safety considerations for the software development process
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavioral characteristics for the AI agent
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Outlines user preferences for interaction with the AI agent
-- `{{FORMATTING_GUIDELINES}}` - Provides formatting rules for the output document
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies safety guidelines for the software development process
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI agent
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for interacting with the AI agent
+- `{{FORMATTING_GUIDELINES}}` - Provides guidelines for formatting the output document
 - `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the final output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Allows for additional context or guidelines to be provided
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the project
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 - [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
-- [Prompt Output Guidelines](/fragments/prompt_engineering/prompt_output_guidelines.md) - Could be used into `{{OUTPUT_FORMAT}}`
 - [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
@@ -260,7 +259,7 @@ To manage potential issues during the specification process:
 
 ### 🔖 Tags
 
-- ai_architecture
+- AI
 - quantum_computing
 - emerging_technologies
 - software_specification
@@ -273,4 +272,4 @@ Primary category: prompt_engineering
 Subcategories:
 
 - software_development
-- ai_system_design
+- system_architecture

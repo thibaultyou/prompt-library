@@ -1,25 +1,25 @@
-# Git Commit Message Creator
+# Git Commit Message Agent
 
 ### ✏️ One-line Description
 
-**Generates precise git commit messages following Conventional Commits specification**
+**Generates precise and informative git commit messages following Conventional Commits specification**
 
 ### 📄 Description
 
-This prompt creates an AI agent specialized in crafting git commit messages. It analyzes code changes, determines their significance, and generates concise, informative messages that adhere to the Conventional Commits format, enhancing project documentation and collaboration.
+This prompt creates an AI expert in crafting git commit messages. It analyzes code changes and generates commit messages that adhere to the Conventional Commits format, including appropriate emojis, types, and descriptions. The agent focuses on providing clear insights into code modifications for both developers and automated tools.
 
 ### 🔧 Variables
 
 - `{{TASK_DESCRIPTION}}` - Provides context and details about the specific commit task
 - `{{CODE_CHANGES}}` - 🔧 **Optional** - Contains the actual code changes to be committed
-- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Offers additional information about the project or repository
+- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Offers additional context about the project for more accurate commit messages
 - `{{COMMIT_STYLE_PREFERENCE}}` - 🔧 **Optional** - Specifies any particular commit style preferences for the project
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines any safety or ethical considerations for commit messages
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for generating commit messages
 - `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI agent
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows users to customize AI behavior based on their preferences
-- `{{FORMATTING_GUIDELINES}}` - Specifies formatting rules for the commit message
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the required structure for the output commit message
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional guidelines or context for commit message creation
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI behavior
+- `{{FORMATTING_GUIDELINES}}` - Provides specific formatting requirements for the commit message
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the desired format for the commit message output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Offers any additional guidelines or context for generating the commit message
 
 ### 🧩 Relevant Fragments
 
@@ -314,8 +314,8 @@ Ensure that you process all provided parameters, including those marked as optio
 - git
 - commit_messages
 - conventional_commits
-- code_documentation
-- collaboration
+- version_control
+- software_development
 
 ### 📚 Category
 

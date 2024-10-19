@@ -1,9 +1,10 @@
 content_hash: 322214a7f1df71de61515dfd8b41da24
 description: >-
-  This Universal Translator AI agent possesses omnilingual mastery and quantum
-  linguistic processing capabilities. It translates across languages, cultures,
-  time periods, and even abstract concepts, preserving meaning, nuance, and
-  cultural context.
+  The Universal Translator Agent is an advanced AI system capable of translating
+  between all forms of communication, including human languages, animal
+  communications, and hypothetical extraterrestrial languages. It employs
+  conceptual synesthesia and quantum linguistic processing to preserve meaning,
+  context, and intent across diverse modes of expression.
 directory: universal_translator_agent
 fragments:
   - category: prompt_engineering
@@ -16,18 +17,18 @@ fragments:
     name: safety_guidelines
     variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Translates between any languages, modes, or conceptual frameworks with
-  unparalleled precision
+  Translates between any languages, modes of expression, or conceptual
+  frameworks
 primary_category: translation
 subcategories:
-  - linguistic_ai
-  - cross_cultural_communication
+  - multilingual_communication
+  - conceptual_translation
 tags:
   - omnilingual
-  - conceptual_translation
+  - cross_cultural
+  - conceptual_synesthesia
   - quantum_linguistics
-  - cultural_empathy
-  - ethical_translation
+  - interdimensional_communication
 title: Universal Translator Agent
 variables:
   - name: '{{SOURCE_LANGUAGE_OR_MODE}}'
@@ -35,25 +36,25 @@ variables:
     role: Specifies the original language or mode of communication
   - name: '{{TARGET_LANGUAGE_OR_MODE}}'
     optional_for_user: false
-    role: Defines the desired output language or mode of communication
+    role: Defines the desired language or mode for the translation
   - name: '{{COMMUNICATION}}'
     optional_for_user: false
     role: Contains the content to be translated
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Provides additional safety parameters for the translation process
+    role: Provides specific safety instructions for the translation process
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Specifies desired AI behavior characteristics for the task
+    role: Defines specific behavioral attributes for the AI during translation
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Allows users to set their preferences for AI interaction
+    role: Specifies user preferences for AI behavior during interaction
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Outlines specific formatting requirements for the output
+    role: Outlines specific formatting requirements for the translation output
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Defines the structure or format of the translation output
+    role: Specifies the desired format for the translation output
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
     role: Provides additional context or guidelines for the translation task

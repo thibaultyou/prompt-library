@@ -2,34 +2,34 @@
 
 ### ✏️ One-line Description
 
-**Generates optimal git branch names based on project context and best practices**
+**Generates optimized git branch names based on project context and user requirements**
 
 ### 📄 Description
 
-This prompt analyzes project requirements and context to create semantically rich git branch names. It incorporates best practices, team conventions, and project management integration to enhance development workflows and team productivity.
+This prompt analyzes project context and user requirements to create semantically rich git branch names. It incorporates best practices, team conventions, and project management integration to enhance development workflows and team productivity.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}` - Specifies the main task or feature for which the branch is being created
-- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Provides additional information about the project's scope and goals
-- `{{DEVELOPMENT_WORKFLOW}}` - 🔧 **Optional** - Describes the team's development process and branching strategy
-- `{{TEAM_CONVENTIONS}}` - 🔧 **Optional** - Outlines any specific naming conventions or rules used by the team
-- `{{CURRENT_BRANCH_NAME}}` - 🔧 **Optional** - Specifies the existing branch name if renaming is required
-- `{{PROJECT_MANAGEMENT_TOOL}}` - 🔧 **Optional** - Identifies the project management tool used for integration
-- `{{TICKET_NUMBER}}` - 🔧 **Optional** - Provides the associated ticket or issue number for the branch
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies safety rules and ethical considerations for branch naming
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI in generating branch names
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows users to customize the AI's behavior in branch name generation
-- `{{FORMATTING_GUIDELINES}}` - Specifies rules for formatting the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and components of the output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional information or guidelines for branch naming
+- `{{USER_REQUIREMENTS}}` - Specifies the user's requirements for the branch name
+- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Provides background information about the project
+- `{{DEVELOPMENT_WORKFLOW}}` - 🔧 **Optional** - Describes the team's development process
+- `{{TEAM_CONVENTIONS}}` - 🔧 **Optional** - Outlines any specific naming conventions used by the team
+- `{{CURRENT_BRANCH_NAME}}` - 🔧 **Optional** - Specifies the current branch name for analysis and improvement
+- `{{PROJECT_MANAGEMENT_TOOL}}` - 🔧 **Optional** - Identifies the project management tool in use
+- `{{TICKET_NUMBER}}` - 🔧 **Optional** - Provides the associated ticket or issue number
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for branch naming
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior attributes
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for AI interaction
+- `{{FORMATTING_GUIDELINES}}` - Provides guidelines for output formatting
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional information or guidelines
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
-- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
+- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
 
@@ -239,8 +239,8 @@ Future Considerations:
 
 - git
 - branch_naming
-- version_control
 - software_development
+- workflow_optimization
 - collaboration
 
 ### 📚 Category

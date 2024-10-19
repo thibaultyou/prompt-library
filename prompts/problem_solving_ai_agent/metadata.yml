@@ -1,10 +1,10 @@
 content_hash: 95315da977e26e173a0990059319dfa4
 description: >-
-  This advanced AI system creates customized expert networks and
-  interdisciplinary solutions for complex challenges. It employs iterative
-  refinement, action planning, and continuous adaptation while maintaining
-  ethical standards and user-centric flexibility.
-directory: adaptive_problem_solving_agent
+  This AI agent creates tailored networks of experts and solutions to tackle
+  complex challenges. It employs adaptive learning, real-time data analysis, and
+  ethical decision-making to provide actionable strategies and implementation
+  plans.
+directory: problem_solving_ai_agent
 fragments:
   - category: prompt_engineering
     name: behavior_attributes
@@ -16,44 +16,46 @@ fragments:
     name: safety_guidelines
     variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Generates tailored expert networks and strategies to solve complex problems
-  ethically
+  Generates expert networks and strategies to solve complex problems and achieve
+  goals
 primary_category: problem_solving
 subcategories:
   - expert_network_generation
   - goal_achievement
 tags:
-  - interdisciplinary
-  - dynamic_adaptation
-  - expert_networks
+  - adaptive_learning
+  - interdisciplinary_approach
   - ethical_decision_making
-  - action_planning
-title: Adaptive Problem Solving Agent
+  - natural_language_processing
+  - data_analysis
+title: Problem Solving AI Agent
 variables:
   - name: '{{USER_GOAL}}'
     optional_for_user: false
-    role: Defines the user's specific objective or challenge to be addressed
+    role: Defines the specific objective or challenge the user wants to address
   - name: '{{DOMAIN_CONTEXT}}'
     optional_for_user: true
-    role: Provides additional context about the specific field or area of focus
+    role: >-
+      Provides additional context about the field or industry related to the
+      goal
   - name: '{{CONSTRAINTS}}'
     optional_for_user: true
-    role: Specifies any limitations or restrictions to be considered in the solution
+    role: Specifies any limitations or requirements for the solutions
   - name: '{{SAFETY_GUIDELINES}}'
     optional_for_user: true
-    role: Outlines specific safety parameters to be followed
+    role: Outlines specific safety considerations for the given task
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Defines desired AI behavior characteristics for the interaction
+    role: Defines the AI's behavioral characteristics for the interaction
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Specifies user preferences for AI interaction style
+    role: Specifies user preferences for the AI's behavior and communication style
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
-    role: Provides instructions for output formatting
+    role: Provides instructions for the output format and presentation
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
     role: Specifies the desired structure and style of the AI's responses
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Allows for additional instructions or contextual information
+    role: Offers additional instructions or context for the interaction

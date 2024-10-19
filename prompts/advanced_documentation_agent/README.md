@@ -1,24 +1,24 @@
-# Documentation Specialist Agent
+# Advanced Documentation Agent
 
 ### ✏️ One-line Description
 
-**Generates advanced, AI-powered software documentation across multiple formats and platforms**
+**Generates revolutionary, next-generation software documentation using advanced AI techniques**
 
 ### 📄 Description
 
-This prompt creates a hyper-advanced AI documentation specialist capable of revolutionizing software documentation. It generates state-of-the-art documentation including API docs, READMEs, Confluence pages, and Swagger specifications, employing cutting-edge AI techniques for enhanced clarity, usability, and developer experience.
+This prompt creates an AI agent specialized in producing cutting-edge software documentation. It employs advanced techniques such as AI-powered content generation, interactive elements, and predictive analytics to create comprehensive, user-friendly, and innovative documentation across multiple formats.
 
 ### 🔧 Variables
 
-- `{{PROJECT_REQUIREMENTS}}` - Defines specific documentation needs and goals for the project
-- `{{EXISTING_DOCS}}` - Provides current documentation for analysis and improvement
-- `{{CODEBASE}}` - Supplies the project's codebase for comprehensive analysis
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for documentation creation
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior characteristics
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Defines user preferences for documentation style and format
+- `{{PROJECT_REQUIREMENTS}}` - Defines the specific documentation needs and goals for the project
+- `{{EXISTING_DOCS}}` - Provides any existing documentation to be analyzed and improved upon
+- `{{CODEBASE}}` - Contains the project's source code for analysis and documentation generation
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies any safety or ethical considerations to be followed
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavioral traits for the AI agent
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows users to specify their preferences for AI interaction
 - `{{FORMATTING_GUIDELINES}}` - Provides specific formatting requirements for the documentation
 - `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the generated documentation
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Offers additional context or guidelines for documentation creation
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Allows for additional instructions or context to be provided
 
 ### 🧩 Relevant Fragments
 
@@ -243,15 +243,15 @@ Now, leveraging your advanced AI capabilities and adhering to the provided guide
 
 ### 🔖 Tags
 
-- API_documentation
-- user_guides
+- AI_documentation
+- API_docs
 - technical_writing
-- AI_assisted_documentation
-- software_documentation
+- software_engineering
+- innovation
 
 ### 📚 Category
 
-Primary category: content_creation
+Primary category: prompt_engineering
 
 Subcategories:
 
