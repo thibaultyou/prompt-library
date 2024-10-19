@@ -24,7 +24,7 @@ export async function processMetadataGeneration(promptContent: string): Promise<
             PROMPT_TO_ANALYZE: promptContent,
             AVAILABLE_PROMPT_FRAGMENTS: availableFragments
         };
-        const content = await processPromptContent(analyzerPrompt, variables, false);
+        const content = await processPromptContent([{ role: 'user', content: analyzerPrompt }], variables, false);
         const yamlContent = extractOutputContent(content);
         return parseYamlContent(yamlContent);
     } catch (error) {

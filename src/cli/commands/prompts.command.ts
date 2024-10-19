@@ -254,7 +254,7 @@ class PromptCommand extends BaseCommand {
                 return;
         }
 
-        await this.pressKeyToContinue();
+        // await this.pressKeyToContinue();
     }
 
     async assignValueToVariable(promptId: string, variable: Variable): Promise<void> {
@@ -448,8 +448,6 @@ class PromptCommand extends BaseCommand {
             );
 
             if (result) {
-                // console.log(result);
-
                 while (true) {
                     const nextAction = await this.showMenu<'continue' | 'back'>('What would you like to do next?', [
                         { name: chalk.green(chalk.bold('Continue conversation')), value: 'continue' }
@@ -459,7 +457,7 @@ class PromptCommand extends BaseCommand {
 
                     const userInput = await this.getMultilineInput(chalk.blue('You: '));
                     const response = await this.handleApiResult(
-                        await conversationManager.continueConversation(userInput, true),
+                        await conversationManager.continueConversation(userInput),
                         'Continued conversation'
                     );
 

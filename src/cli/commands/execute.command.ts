@@ -234,15 +234,21 @@ Note:
         }
 
         try {
-            const result = await processPromptContent(promptContent, userInputs, false, undefined, (event) => {
-                if (event.type === 'content_block_delta') {
-                    if ('text' in event.delta) {
-                        process.stdout.write(event.delta.text);
-                    } else if ('partial_json' in event.delta) {
-                        process.stdout.write(event.delta.partial_json);
+            const result = await processPromptContent(
+                [{ role: 'user', content: promptContent }],
+                userInputs,
+                !ciMode, // Use streaming if not in CI mode
+                async (inputs) => inputs, // Simple pass-through function for resolveInputs
+                (event) => {
+                    if (event.type === 'content_block_delta') {
+                        if ('text' in event.delta) {
+                            process.stdout.write(event.delta.text);
+                        } else if ('partial_json' in event.delta) {
+                            process.stdout.write(event.delta.partial_json);
+                        }
                     }
                 }
-            });
+            );
 
             if (typeof result === 'string') {
                 console.log(result);

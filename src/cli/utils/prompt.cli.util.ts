@@ -45,12 +45,12 @@ export async function resolveCliInputs(inputs: Record<string, string>): Promise<
 }
 
 export async function processCliPromptContent(
-    promptContent: string,
+    messages: { role: string; content: string }[],
     inputs: Record<string, string> = {},
     useStreaming: boolean = true
 ): Promise<string> {
-    return processPromptContent(promptContent, inputs, useStreaming, resolveCliInputs, (event) => {
-        if (event.type === 'content_block_delta') {
+    return processPromptContent(messages, inputs, useStreaming, resolveCliInputs, (event) => {
+        if (event.type === 'content_block_delta' && event.delta) {
             if ('text' in event.delta) {
                 process.stdout.write(event.delta.text);
             } else if ('partial_json' in event.delta) {

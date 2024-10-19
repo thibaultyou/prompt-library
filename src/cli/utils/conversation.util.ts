@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+// Updated ConversationManager class
 
 import { processCliPromptContent, resolveCliInputs } from './prompt.cli.util';
 import { getPromptFiles } from './prompt.util';
@@ -6,13 +6,18 @@ import { ApiResult } from '../../shared/types';
 import logger from '../../shared/utils/logger';
 import { processPromptContent, processPromptWithVariables } from '../../shared/utils/prompt_operations';
 
+interface ConversationMessage {
+    role: 'human' | 'assistant';
+    content: string;
+}
+
 export class ConversationManager {
-    private conversationContext: string;
+    private messages: ConversationMessage[];
     private promptId: string;
 
     constructor(promptId: string) {
         this.promptId = promptId;
-        this.conversationContext = '';
+        this.messages = [];
     }
 
     async initializeConversation(
@@ -29,18 +34,14 @@ export class ConversationManager {
             const { promptContent } = promptFilesResult.data;
             const resolvedInputs = isExecuteCommand ? userInputs : await resolveCliInputs(userInputs);
             const updatedPromptContent = await processPromptWithVariables(promptContent, resolvedInputs);
-            let result: string;
+            this.messages.push({ role: 'human', content: updatedPromptContent });
 
-            if (isExecuteCommand) {
-                result = await processPromptContent(updatedPromptContent, {}, false);
-            } else {
-                console.log(chalk.green('\nHuman:'), updatedPromptContent);
-                console.log(chalk.green('AI:'));
-                result = await processCliPromptContent(updatedPromptContent, {}, true);
-            }
+            const result = await (isExecuteCommand
+                ? processPromptContent(this.messages, {}, false)
+                : processCliPromptContent(this.messages, {}, true));
 
             if (typeof result === 'string') {
-                this.conversationContext = `Initial Prompt:\n${updatedPromptContent}\n\nAI: ${result}`;
+                this.messages.push({ role: 'assistant', content: result });
                 return { success: true, data: result };
             } else {
                 return { success: false, error: 'Unexpected result format' };
@@ -54,22 +55,16 @@ export class ConversationManager {
         }
     }
 
-    async continueConversation(userInput: string, useStreaming: boolean): Promise<ApiResult<string>> {
+    async continueConversation(userInput: string, useStreaming: boolean = true): Promise<ApiResult<string>> {
         try {
-            const continuationPrompt = `${this.conversationContext}\n\nHuman: ${userInput}\n\nAI:`;
-            let result: string;
+            this.messages.push({ role: 'human', content: userInput });
 
-            if (!useStreaming) {
-                result = await processPromptContent(continuationPrompt, {}, false);
-            } else {
-                console.log(chalk.green('\nHuman:'), userInput);
-                console.log(chalk.green('\nAI:'));
-                result = await processCliPromptContent(continuationPrompt, {}, true);
-                console.log();
-            }
+            const result = useStreaming
+                ? await processCliPromptContent(this.messages, {}, true)
+                : await processPromptContent(this.messages, {}, false);
 
             if (typeof result === 'string') {
-                this.conversationContext += `\nHuman: ${userInput}\nAI: ${result}`;
+                this.messages.push({ role: 'assistant', content: result });
                 return { success: true, data: result };
             } else {
                 return { success: false, error: 'Unexpected result format' };

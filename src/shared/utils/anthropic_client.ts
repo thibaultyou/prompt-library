@@ -5,11 +5,6 @@ import logger from './logger';
 import { config } from '../config';
 import { commonConfig } from '../config/common.config';
 
-/**
- * Initializes and returns an Anthropic client.
- * @throws {Error} If the ANTHROPIC_API_KEY is not set in the environment.
- * @returns {Anthropic} An initialized Anthropic client.
- */
 export function initializeAnthropicClient(): Anthropic {
     const apiKey = commonConfig.ANTHROPIC_API_KEY;
 
@@ -22,25 +17,19 @@ export function initializeAnthropicClient(): Anthropic {
     return new Anthropic({ apiKey });
 }
 
-/**
- * Sends a request to the Anthropic API in classic mode.
- * @param {Anthropic} client - The initialized Anthropic client.
- * @param {string} prompt - The prompt to send to the API.
- * @returns {Promise<Message>} The response from the Anthropic API.
- * @throws {Error} If there's an error sending the request to the API.
- */
-export async function sendAnthropicRequestClassic(client: Anthropic, prompt: string): Promise<Message> {
+export async function sendAnthropicRequestClassic(
+    client: Anthropic,
+    messages: { role: string; content: string }[]
+): Promise<Message> {
     try {
         logger.info('Sending classic request to Anthropic API');
         const message = await client.messages.create({
             model: commonConfig.ANTHROPIC_MODEL,
             max_tokens: commonConfig.ANTHROPIC_MAX_TOKENS,
-            messages: [
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ]
+            messages: messages.map((msg) => ({
+                role: msg.role === 'human' ? 'user' : 'assistant',
+                content: msg.content
+            }))
         });
         logger.info('Received classic response from Anthropic API');
         return message;
@@ -50,28 +39,19 @@ export async function sendAnthropicRequestClassic(client: Anthropic, prompt: str
     }
 }
 
-/**
- * Sends a request to the Anthropic API in streaming mode.
- * @param {Anthropic} client - The initialized Anthropic client.
- * @param {string} prompt - The prompt to send to the API.
- * @returns {AsyncGenerator<MessageStreamEvent>} An async generator of message stream events.
- * @throws {Error} If there's an error sending the request to the API.
- */
 export async function* sendAnthropicRequestStream(
     client: Anthropic,
-    prompt: string
+    messages: { role: string; content: string }[]
 ): AsyncGenerator<MessageStreamEvent> {
     try {
         logger.info('Sending streaming request to Anthropic API');
-        const stream = await client.messages.stream({
+        const stream = client.messages.stream({
             model: config.ANTHROPIC_MODEL,
             max_tokens: config.ANTHROPIC_MAX_TOKENS,
-            messages: [
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ]
+            messages: messages.map((msg) => ({
+                role: msg.role === 'human' ? 'user' : 'assistant',
+                content: msg.content
+            }))
         });
 
         for await (const event of stream) {
@@ -93,7 +73,7 @@ export async function validateAnthropicApiKey(): Promise<boolean> {
     try {
         const client = initializeAnthropicClient();
         // Attempt a simple request to validate the API key
-        await sendAnthropicRequestClassic(client, 'Test request');
+        await sendAnthropicRequestClassic(client, [{ role: 'user', content: 'Test request' }]);
         logger.info('Anthropic API key is valid');
         return true;
     } catch (error) {

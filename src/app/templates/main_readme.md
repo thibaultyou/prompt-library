@@ -159,7 +159,7 @@ prompt-library-cli execute --help
 
 Fragments are reusable prompt components:
 
-1. Create `.md` files in `fragments` directory under the appropriate [categories](/src/app/system_prompts/prompt_analysis_agent/prompt.md)).
+1. Create `.md` files in `fragments` directory under the appropriate [categories](/src/system_prompts/prompt_analysis_agent/prompt.md)).
 2. Reference in prompts: `{{FRAGMENT_NAME}}` (e.g., `{{AWESOME_GUIDELINES}}` for `awesome_guidelines.md`).
 3. Manage and use via CLI.
 

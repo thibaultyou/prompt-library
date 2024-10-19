@@ -71,7 +71,7 @@ export async function executePrompt(
         }
 
         const { promptContent } = promptFilesResult.data;
-        const result = await processPromptContent(promptContent, userInputs, useStreaming);
+        const result = await processPromptContent([{ role: 'user', content: promptContent }], userInputs, useStreaming);
         return { success: true, data: result };
     } catch (error) {
         return {

@@ -19,7 +19,7 @@ export const appConfig: AppConfig = {
     PROMPTS_DIR: 'prompts',
     FRAGMENTS_DIR: 'fragments',
     TEMPLATES_DIR: path.join('src', 'app', 'templates'),
-    ANALYZER_PROMPT_PATH: path.join('src', 'app', 'system_prompts', 'prompt_analysis_agent', 'prompt.md'),
+    ANALYZER_PROMPT_PATH: path.join('src', 'system_prompts', 'prompt_analysis_agent', 'prompt.md'),
     README_PATH: 'README.md',
     VIEW_FILE_NAME: 'README.md',
     VIEW_TEMPLATE_NAME: 'sub_readme.md',
