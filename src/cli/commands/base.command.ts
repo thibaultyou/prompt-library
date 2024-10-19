@@ -1,3 +1,7 @@
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+
 import { editor, input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Command } from 'commander';
@@ -91,12 +95,62 @@ export class BaseCommand extends Command {
         initialValue: string = '',
         validate?: (input: string) => boolean | string
     ): Promise<string> {
-        return editor({
-            message,
-            default: initialValue,
-            validate: validate || ((value: string): boolean | string => value.trim() !== '' || 'Value cannot be empty'),
-            waitForUseInput: true
-        });
+        let tempDir: string | null = null;
+        let tempFilePath: string | null = null;
+
+        try {
+            tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cli-input-'));
+            tempFilePath = path.join(tempDir, 'input.txt');
+            fs.writeFileSync(tempFilePath, initialValue);
+
+            console.log(chalk.cyan(message));
+
+            let input = '';
+            let isValid = false;
+            while (!isValid) {
+                try {
+                    const fileContent = fs.readFileSync(tempFilePath, 'utf8');
+                    input = await editor({
+                        message: 'Edit your input',
+                        default: fileContent,
+                        postfix: '.txt',
+                        waitForUseInput: true
+                    });
+
+                    fs.writeFileSync(tempFilePath, input);
+
+                    if (validate) {
+                        const validationResult = validate(input);
+                        if (typeof validationResult === 'string') {
+                            console.error(chalk.red(validationResult));
+                            console.log(chalk.yellow('Press Enter to continue editing...'));
+                            await new Promise((resolve) => process.stdin.once('data', resolve));
+                        } else {
+                            isValid = true;
+                        }
+                    } else {
+                        isValid = true;
+                    }
+                } catch (error) {
+                    console.error(chalk.red(`Error during editing: ${error}`));
+                    console.log(chalk.yellow('Press Enter to retry...'));
+                    await new Promise((resolve) => process.stdin.once('data', resolve));
+                }
+            }
+
+            return input;
+        } catch (error) {
+            console.error(chalk.red(`Error in getMultilineInput: ${error}`));
+            throw error;
+        } finally {
+            // Clean up
+            if (tempFilePath && fs.existsSync(tempFilePath)) {
+                fs.unlinkSync(tempFilePath);
+            }
+            if (tempDir && fs.existsSync(tempDir)) {
+                fs.rmdirSync(tempDir);
+            }
+        }
     }
 
     protected async pressKeyToContinue(): Promise<void> {
