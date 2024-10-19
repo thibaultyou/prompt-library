@@ -121,6 +121,7 @@ export class BaseCommand extends Command {
 
                     if (validate) {
                         const validationResult = validate(input);
+
                         if (typeof validationResult === 'string') {
                             console.error(chalk.red(validationResult));
                             console.log(chalk.yellow('Press Enter to continue editing...'));
@@ -137,7 +138,6 @@ export class BaseCommand extends Command {
                     await new Promise((resolve) => process.stdin.once('data', resolve));
                 }
             }
-
             return input;
         } catch (error) {
             console.error(chalk.red(`Error in getMultilineInput: ${error}`));
@@ -147,6 +147,7 @@ export class BaseCommand extends Command {
             if (tempFilePath && fs.existsSync(tempFilePath)) {
                 fs.unlinkSync(tempFilePath);
             }
+
             if (tempDir && fs.existsSync(tempDir)) {
                 fs.rmdirSync(tempDir);
             }
