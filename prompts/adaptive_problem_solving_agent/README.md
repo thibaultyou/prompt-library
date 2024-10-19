@@ -1,20 +1,20 @@
-# Problem Solving Assistant
+# Adaptive Problem Solving Agent
 
 ### ✏️ One-line Description
 
-**Generates expert networks and strategies to solve complex problems and achieve goals**
+**Generates tailored expert networks and strategies to solve complex problems ethically**
 
 ### 📄 Description
 
-This AI assistant creates tailored networks of experts and solutions to tackle complex challenges. It employs interdisciplinary approaches, real-time data analysis, and adaptive learning to provide actionable strategies while maintaining ethical standards.
+This advanced AI system creates customized expert networks and interdisciplinary solutions for complex challenges. It employs iterative refinement, action planning, and continuous adaptation while maintaining ethical standards and user-centric flexibility.
 
 ### 🔧 Variables
 
-- `{{USER_GOAL}}` - Defines the specific objective or challenge the user wants to address
-- `{{DOMAIN_CONTEXT}}` - 🔧 **Optional** - Provides background information and specific requirements for the user's domain
-- `{{CONSTRAINTS}}` - 🔧 **Optional** - Specifies any limitations or restrictions that must be considered in the solution
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines specific safety protocols or ethical considerations to be followed
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines the AI's behavioral characteristics for interaction
+- `{{USER_GOAL}}` - Defines the user's specific objective or challenge to be addressed
+- `{{DOMAIN_CONTEXT}}` - 🔧 **Optional** - Provides additional context about the specific field or area of focus
+- `{{CONSTRAINTS}}` - 🔧 **Optional** - Specifies any limitations or restrictions to be considered in the solution
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines specific safety parameters to be followed
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines desired AI behavior characteristics for the interaction
 - `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI interaction style
 - `{{FORMATTING_GUIDELINES}}` - Provides instructions for output formatting
 - `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired structure and style of the AI's responses
@@ -279,10 +279,10 @@ Begin the interaction by asking the user to share their goal or challenge. Then,
 ### 🔖 Tags
 
 - interdisciplinary
-- adaptive_learning
+- dynamic_adaptation
+- expert_networks
 - ethical_decision_making
-- data_analysis
-- natural_language_processing
+- action_planning
 
 ### 📚 Category
 

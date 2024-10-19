@@ -126,44 +126,44 @@ prompt-library-cli execute --help
 <details>
 <summary><strong>Coding</strong></summary>
 
-- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and actionable GitHub issues based on provided project information
-- [Git Commit Message Creator](prompts/git_commit_message_agent/README.md) - Generates optimized git commit messages following Conventional Commits specification
-- [Software Architect Code Reviewer](prompts/software_architect_code_reviewer/README.md) - Generates comprehensive pull requests with architectural analysis and optimization suggestions
-- [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimized git branch names based on project context and best practices
-- [Software Development Expert Agent](prompts/software_development_agent/README.md) - Provides expert assistance across the software development lifecycle
+- [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimal git branch names based on project context and best practices
+- [Git Commit Message Creator](prompts/git_commit_message_agent/README.md) - Generates precise git commit messages following Conventional Commits specification
+- [GitHub Issue Creator Agent](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and actionable GitHub issues based on provided context and parameters
+- [Software Development Agent](prompts/software_development_agent/README.md) - Provides expert assistance across all aspects of software development lifecycle
+- [Software Architect Code Reviewer](prompts/software_architect_reviewer/README.md) - Generates comprehensive pull requests with architectural insights and optimization proposals
 
 </details>
 <details>
 <summary><strong>Content Creation</strong></summary>
 
-- [Documentation Specialist Agent](prompts/documentation_specialist_agent/README.md) - Generates revolutionary software documentation using AI-powered techniques and industry expertise
+- [Documentation Specialist Agent](prompts/documentation_specialist_agent/README.md) - Generates advanced, AI-powered software documentation across multiple formats and platforms
 
 </details>
 <details>
 <summary><strong>Healthcare</strong></summary>
 
 - [Health Optimization Agent](prompts/health_optimization_agent/README.md) - Generates personalized, adaptive health optimization plans based on comprehensive user data analysis
-- [Psychological Support Therapy Agent](prompts/psychological_support_agent/README.md) - Provides personalized, AI-driven psychological support and therapy through digital platforms
+- [Psychological Support Therapy Assistant](prompts/psych_support_therapy_agent/README.md) - Provides personalized AI-driven psychological support and therapy through digital platforms
 
 </details>
 <details>
 <summary><strong>Problem Solving</strong></summary>
 
-- [Problem Solving Assistant](prompts/problem_solving_agent/README.md) - Generates expert networks and strategies to solve complex problems and achieve goals
+- [Adaptive Problem Solving Agent](prompts/adaptive_problem_solving_agent/README.md) - Generates tailored expert networks and strategies to solve complex problems ethically
 
 </details>
 <details>
 <summary><strong>Prompt Engineering</strong></summary>
 
-- [AI Assistant Concept Architect](prompts/ai_assistant_concept_architect/README.md) - Generates innovative and feasible AI assistant concepts based on user-provided topics
-- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Creates or refines optimized prompts to maximize AI potential within ethical boundaries
-- [Software Specification Architect](prompts/software_spec_architect_agent/README.md) - Analyzes user requirements and creates comprehensive software specification documents
+- [AI Assistant Concept Architect](prompts/ai_assistant_concept_architect/README.md) - Generates innovative and feasible AI assistant concepts based on given topics
+- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Creates divine-tier prompts to maximize AI potential within ethical bounds
+- [Software Engineering Architect](prompts/software_engineering_architect/README.md) - Generates comprehensive software specifications with futuristic technological insights
 
 </details>
 <details>
 <summary><strong>Translation</strong></summary>
 
-- [Universal Translator Agent](prompts/universal_translator_agent/README.md) - Translates between any languages, modes of expression, or conceptual frameworks
+- [Universal Translator Agent](prompts/universal_translator_agent/README.md) - Translates between any languages, modes, or conceptual frameworks with unparalleled precision
 
 </details>
 

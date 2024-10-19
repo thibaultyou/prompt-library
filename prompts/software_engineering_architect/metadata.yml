@@ -1,0 +1,57 @@
+Here's my analysis of the provided AI prompt: null
+content_hash: d6e9cd75269991f951b865bc311981ad
+description: >-
+  This prompt creates an AI agent that acts as an elite software engineering
+  architect, analyzing user requirements and producing detailed software
+  specification documents. It incorporates cutting-edge AI, quantum computing,
+  and emerging technologies to create visionary development plans.
+directory: software_engineering_architect
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: prompt_output_guidelines
+    variable: '{{OUTPUT_FORMAT}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Generates comprehensive software specifications with futuristic technological
+  insights
+primary_category: prompt_engineering
+subcategories:
+  - software_development
+  - ai_system_design
+tags:
+  - ai_architecture
+  - quantum_computing
+  - emerging_technologies
+  - software_specification
+  - visionary_planning
+title: Software Engineering Architect
+variables:
+  - name: '{{USER_REQUIREMENTS}}'
+    optional_for_user: false
+    role: Provides the initial set of user requirements for the software project
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specifies safety considerations for the software development process
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific behavioral characteristics for the AI agent
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Outlines user preferences for interaction with the AI agent
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Provides formatting rules for the output document
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Specifies the desired format for the final output
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Allows for additional context or guidelines to be provided

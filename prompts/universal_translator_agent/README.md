@@ -2,22 +2,22 @@
 
 ### ✏️ One-line Description
 
-**Translates between any languages, modes of expression, or conceptual frameworks**
+**Translates between any languages, modes, or conceptual frameworks with unparalleled precision**
 
 ### 📄 Description
 
-The Universal Translator Agent is an advanced AI system designed to facilitate seamless communication across all forms of language and expression. It employs quantum linguistic processing and cultural-temporal empathy to preserve meaning, nuance, and intent in translations.
+This Universal Translator AI agent possesses omnilingual mastery and quantum linguistic processing capabilities. It translates across languages, cultures, time periods, and even abstract concepts, preserving meaning, nuance, and cultural context.
 
 ### 🔧 Variables
 
 - `{{SOURCE_LANGUAGE_OR_MODE}}` - 🔧 **Optional** - Specifies the original language or mode of communication
-- `{{TARGET_LANGUAGE_OR_MODE}}` - Specifies the desired language or mode for translation
+- `{{TARGET_LANGUAGE_OR_MODE}}` - Defines the desired output language or mode of communication
 - `{{COMMUNICATION}}` - Contains the content to be translated
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Provides specific safety instructions for the translation process
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavioral attributes for the AI during translation
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI behavior during interaction
-- `{{FORMATTING_GUIDELINES}}` - Outlines specific formatting requirements for the translation output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the translation output
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Provides additional safety parameters for the translation process
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Specifies desired AI behavior characteristics for the task
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows users to set their preferences for AI interaction
+- `{{FORMATTING_GUIDELINES}}` - Outlines specific formatting requirements for the output
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure or format of the translation output
 - `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the translation task
 
 ### 🧩 Relevant Fragments
@@ -25,6 +25,7 @@ The Universal Translator Agent is an advanced AI system designed to facilitate s
 This prompt could potentially use the following fragments:
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 - [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
 
@@ -236,7 +237,7 @@ Proceed with the translation task, adhering to all guidelines, ethical considera
 ### 🔖 Tags
 
 - omnilingual
-- conceptual_synesthesia
+- conceptual_translation
 - quantum_linguistics
 - cultural_empathy
 - ethical_translation
@@ -248,4 +249,4 @@ Primary category: translation
 Subcategories:
 
 - linguistic_ai
-- cross_modal_communication
+- cross_cultural_communication

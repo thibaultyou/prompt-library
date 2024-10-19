@@ -1,0 +1,44 @@
+content_hash: 88ecfb2c811dc23aff48da126612ca07
+description: >-
+  This prompt embodies a world-class software architect and code reviewer,
+  generating pull requests that go beyond routine code review. It provides
+  in-depth architectural analysis, optimization suggestions, and innovation
+  proposals, serving as a masterclass in software engineering.
+directory: software_architect_reviewer
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Generates comprehensive pull requests with architectural insights and
+  optimization proposals
+primary_category: coding
+subcategories:
+  - software_architecture
+  - code_review
+tags:
+  - pull_request
+  - code_optimization
+  - architectural_analysis
+  - best_practices
+  - innovation
+title: Software Architect Code Reviewer
+variables:
+  - name: '{{CONTEXT}}'
+    optional_for_user: false
+    role: Provides the code or project context for review
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specifies safety considerations for the review process
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific AI behaviors for the review process
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Outlines user preferences for the review interaction
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Provides additional guidelines or context for the review

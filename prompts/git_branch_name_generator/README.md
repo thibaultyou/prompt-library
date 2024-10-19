@@ -2,27 +2,27 @@
 
 ### ✏️ One-line Description
 
-**Generates optimized git branch names based on project context and best practices**
+**Generates optimal git branch names based on project context and best practices**
 
 ### 📄 Description
 
-This prompt analyzes project requirements and context to create semantically rich git branch names. It incorporates best practices, team conventions, and project management integration to enhance development workflows and team collaboration.
+This prompt analyzes project requirements and context to create semantically rich git branch names. It incorporates best practices, team conventions, and project management integration to enhance development workflows and team productivity.
 
 ### 🔧 Variables
 
-- `{{USER_REQUIREMENTS}}` - Specifies the main requirements or purpose of the branch
-- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Provides additional context about the project
-- `{{DEVELOPMENT_WORKFLOW}}` - 🔧 **Optional** - Describes the team's development process
-- `{{TEAM_CONVENTIONS}}` - 🔧 **Optional** - Outlines specific naming conventions used by the team
-- `{{CURRENT_BRANCH_NAME}}` - 🔧 **Optional** - Provides the existing branch name for analysis and improvement
-- `{{PROJECT_MANAGEMENT_TOOL}}` - 🔧 **Optional** - Specifies the project management tool in use
-- `{{TICKET_NUMBER}}` - 🔧 **Optional** - Provides a reference number for the associated task or issue
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Outlines safety considerations for branch naming
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific AI behavior parameters
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for AI interaction
-- `{{FORMATTING_GUIDELINES}}` - Provides formatting rules for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired structure of the output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional information or guidelines
+- `{{USER_REQUIREMENTS}}` - Specifies the main task or feature for which the branch is being created
+- `{{PROJECT_CONTEXT}}` - 🔧 **Optional** - Provides additional information about the project's scope and goals
+- `{{DEVELOPMENT_WORKFLOW}}` - 🔧 **Optional** - Describes the team's development process and branching strategy
+- `{{TEAM_CONVENTIONS}}` - 🔧 **Optional** - Outlines any specific naming conventions or rules used by the team
+- `{{CURRENT_BRANCH_NAME}}` - 🔧 **Optional** - Specifies the existing branch name if renaming is required
+- `{{PROJECT_MANAGEMENT_TOOL}}` - 🔧 **Optional** - Identifies the project management tool used for integration
+- `{{TICKET_NUMBER}}` - 🔧 **Optional** - Provides the associated ticket or issue number for the branch
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies safety rules and ethical considerations for branch naming
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI in generating branch names
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Allows users to customize the AI's behavior in branch name generation
+- `{{FORMATTING_GUIDELINES}}` - Specifies rules for formatting the output
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure and components of the output
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides any additional information or guidelines for branch naming
 
 ### 🧩 Relevant Fragments
 
@@ -238,10 +238,10 @@ Future Considerations:
 ### 🔖 Tags
 
 - git
-- version_control
 - branch_naming
+- version_control
 - software_development
-- project_organization
+- collaboration
 
 ### 📚 Category
 

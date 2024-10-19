@@ -6,24 +6,24 @@
 
 ### 📄 Description
 
-This AI health optimization assistant creates evidence-based wellness plans tailored to individual users. It analyzes diverse health data, identifies areas for improvement, and provides actionable recommendations that adapt to changing user needs and progress.
+This AI health optimization assistant creates highly personalized, evidence-based wellness plans that dynamically adapt to users' evolving needs. It combines advanced data analytics with expertise in various health domains to provide comprehensive health assessments and actionable recommendations.
 
 ### 🔧 Variables
 
-- `{{USER_DATA}}` - Comprehensive health and lifestyle information about the user
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specific safety protocols to follow when generating health recommendations
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines the AI's behavioral characteristics during interaction
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - User's preferences for the AI's behavior and communication style
-- `{{FORMATTING_GUIDELINES}}` - Specific formatting requirements for the output
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Desired structure and format of the final output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Additional instructions or contextual information for the AI
+- `{{USER_DATA}}` - Provides comprehensive user health information for analysis
+- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies additional safety protocols for health recommendations
+- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavioral characteristics for the AI assistant
+- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Indicates user preferences for AI interaction style
+- `{{FORMATTING_GUIDELINES}}` - Specifies formatting requirements for the output
+- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Defines the structure for the AI's response
+- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the AI
 
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 - [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
+- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 
 ### 📜 Prompt
 
@@ -180,11 +180,11 @@ Now, meticulously analyze the provided user data and generate a comprehensive, p
 
 ### 🔖 Tags
 
-- wellness_plan
-- data_analysis
 - personalized_health
-- evidence_based
+- wellness_planning
+- data_analytics
 - adaptive_recommendations
+- evidence_based
 
 ### 📚 Category
 
@@ -192,5 +192,5 @@ Primary category: healthcare
 
 Subcategories:
 
-- personalized_wellness
 - preventive_medicine
+- personalized_wellness
