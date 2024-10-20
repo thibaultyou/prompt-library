@@ -1,12 +1,12 @@
 import { Anthropic } from '@anthropic-ai/sdk';
 import { Message, MessageStreamEvent } from '@anthropic-ai/sdk/resources';
 
+import { config, getConfigValue } from '../config';
 import logger from './logger';
-import { config } from '../config';
 import { commonConfig } from '../config/common.config';
 
 export function initializeAnthropicClient(): Anthropic {
-    const apiKey = commonConfig.ANTHROPIC_API_KEY;
+    const apiKey = getConfigValue('ANTHROPIC_API_KEY');
 
     if (!apiKey) {
         logger.error('ANTHROPIC_API_KEY is not set in the environment.');

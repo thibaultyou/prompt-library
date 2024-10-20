@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 
-import { runAsync, getAsync, allAsync } from './database.util';
+import { allAsync, getAsync, runAsync } from './database.util';
 import { readEnvVars } from './env.util';
 import { getPromptMetadata } from './metadata.util';
-import { Metadata, Prompt, ApiResult, Variable } from '../../shared/types';
+import { ApiResult, Metadata, Prompt, Variable } from '../../shared/types';
 import { processPromptContent } from '../../shared/utils/prompt_operations';
-import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string_formatter';
+import { formatSnakeCase, formatTitleCase } from '../../shared/utils/string_formatter';
 
 export async function createPrompt(metadata: Metadata, content: string): Promise<ApiResult<void>> {
     try {
@@ -126,7 +126,7 @@ export async function getPromptFiles(
 }
 
 export async function viewPromptDetails(details: Prompt & { variables: Variable[] }, isExecute = false): Promise<void> {
-    console.clear();
+    // console.clear();
     console.log(chalk.cyan('Prompt:'), details.title);
     console.log(`\n${details.description || ''}`);
     console.log(chalk.cyan('\nCategory:'), formatTitleCase(details.primary_category));

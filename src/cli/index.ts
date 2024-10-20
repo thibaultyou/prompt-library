@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-process.env.PROMPT_LIBRARY_ENV = 'cli';
-
 import { input } from '@inquirer/prompts';
 import { Command } from 'commander';
 import dotenv from 'dotenv';
 
+import { getConfigValue, setConfig } from '../shared/config';
 import configCommand from './commands/config.command';
 import envCommand from './commands/env.command';
 import executeCommand from './commands/execute.command';
@@ -15,17 +14,22 @@ import promptsCommand from './commands/prompts.command';
 import settingsCommand from './commands/settings.command';
 import syncCommand from './commands/sync.command';
 import { initDatabase } from './utils/database.util';
-import { getConfig, setConfig } from '../shared/config';
+
+process.env.CLI_ENV = 'cli';
 
 dotenv.config();
 
 async function ensureApiKey(): Promise<void> {
-    const config = getConfig();
+    let apiKey = getConfigValue('ANTHROPIC_API_KEY');
 
-    if (!config.ANTHROPIC_API_KEY) {
+    if (!apiKey) {
         console.log('ANTHROPIC_API_KEY is not set.');
-        const apiKey = await input({ message: 'Please enter your Anthropic API key:' });
+        apiKey = await input({ message: 'Please enter your Anthropic API key:' });
         setConfig('ANTHROPIC_API_KEY', apiKey);
+    }
+
+    if (!getConfigValue('ANTHROPIC_API_KEY')) {
+        throw new Error('Failed to set ANTHROPIC_API_KEY');
     }
 }
 

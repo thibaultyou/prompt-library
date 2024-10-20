@@ -3,7 +3,7 @@ import { Command } from 'commander';
 
 import { BaseCommand } from './base.command';
 import { getConfig } from '../../shared/config';
-import { hasPrompts, hasFragments } from '../utils/content.util';
+import { hasFragments, hasPrompts } from '../utils/content.util';
 
 type MenuAction = 'sync' | 'prompts' | 'fragments' | 'settings' | 'env' | 'back';
 
@@ -32,7 +32,7 @@ class MenuCommand extends BaseCommand {
                 { name: 'Settings', value: 'settings' }
             );
 
-            console.clear();
+            // console.clear();
 
             const action = await this.showMenu<MenuAction>(
                 `${chalk.reset(chalk.italic(chalk.cyan('Want to manage AI prompts with ease ?')))}

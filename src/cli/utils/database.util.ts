@@ -6,11 +6,11 @@ import yaml from 'js-yaml';
 import NodeCache from 'node-cache';
 import sqlite3, { RunResult } from 'sqlite3';
 
-import { handleError, AppError } from './error.util';
+import { AppError, handleError } from './error.util';
 import { createPrompt } from './prompt.util';
 import { commonConfig } from '../../shared/config/common.config';
 import { ApiResult, CategoryItem, Metadata, Prompt, Variable } from '../../shared/types';
-import { readDirectory, fileExists, readFileContent } from '../../shared/utils/file_operations';
+import { fileExists, readDirectory, readFileContent } from '../../shared/utils/file_operations';
 import logger from '../../shared/utils/logger';
 import { cliConfig } from '../config/cli.config';
 

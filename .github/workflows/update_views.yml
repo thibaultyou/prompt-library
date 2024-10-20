@@ -68,7 +68,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FORCE_REGENERATE: ${{ env.FORCE_REGENERATE }}
-          CLI_ENV: github_actions
+          CLI_ENV: ci
         run: npm run generate-metadata
 
       - name: Update views

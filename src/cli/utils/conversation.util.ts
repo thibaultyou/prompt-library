@@ -1,5 +1,3 @@
-// Updated ConversationManager class
-
 import { processCliPromptContent, resolveCliInputs } from './prompt.cli.util';
 import { getPromptFiles } from './prompt.util';
 import { ApiResult } from '../../shared/types';
