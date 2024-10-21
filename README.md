@@ -150,8 +150,8 @@ prompt-library-cli execute --help
 <summary><strong>Prompt Engineering</strong></summary>
 
 - [AI Assistant Architect](prompts/ai_assistant_architect/README.md) - Conceptualizes innovative and feasible AI assistant designs for various domains
-- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts to maximize AI potential while adhering to ethical standards
 - [Advanced Documentation Agent](prompts/advanced_documentation_agent/README.md) - Generates revolutionary, next-generation software documentation using advanced AI techniques
+- [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts to maximize AI potential while adhering to ethical standards
 - [Software Engineering Architect Agent](prompts/software_engineering_architect/README.md) - Analyzes requirements and creates comprehensive software specification documents
 
 </details>
@@ -203,7 +203,7 @@ prompt-library-cli execute --help
 
 Fragments are reusable prompt components:
 
-1. Create `.md` files in `fragments` directory under the appropriate [categories](/src/system_prompts/prompt_analysis_agent/prompt.md)).
+1. Create `.md` files in `fragments` directory under the appropriate [categories](/src/system_prompts/prompt_analysis_agent/README.md)).
 2. Reference in prompts: `{{FRAGMENT_NAME}}` (e.g., `{{AWESOME_GUIDELINES}}` for `awesome_guidelines.md`).
 3. Manage and use via CLI.
 
