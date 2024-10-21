@@ -1,6 +1,5 @@
 import { Anthropic } from '@anthropic-ai/sdk';
 import { Message, MessageStreamEvent } from '@anthropic-ai/sdk/resources';
-
 import { AppError, handleError } from '../../cli/utils/error.util';
 import { getConfigValue } from '../config';
 import { commonConfig } from '../config/common.config';

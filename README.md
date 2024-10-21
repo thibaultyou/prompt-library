@@ -149,9 +149,9 @@ prompt-library-cli execute --help
 <details>
 <summary><strong>Prompt Engineering</strong></summary>
 
-- [Advanced Documentation Agent](prompts/advanced_documentation_agent/README.md) - Generates revolutionary, next-generation software documentation using advanced AI techniques
 - [AI Assistant Architect](prompts/ai_assistant_architect/README.md) - Conceptualizes innovative and feasible AI assistant designs for various domains
 - [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) - Crafts divine-tier prompts to maximize AI potential while adhering to ethical standards
+- [Advanced Documentation Agent](prompts/advanced_documentation_agent/README.md) - Generates revolutionary, next-generation software documentation using advanced AI techniques
 - [Software Engineering Architect Agent](prompts/software_engineering_architect/README.md) - Analyzes requirements and creates comprehensive software specification documents
 
 </details>
