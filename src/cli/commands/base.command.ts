@@ -7,7 +7,8 @@ import { Command } from 'commander';
 import fs from 'fs-extra';
 
 import { ApiResult } from '../../shared/types';
-import { cliConfig } from '../config/cli.config';
+import { cliConfig } from '../cli.config';
+import { ENV_PREFIX, FRAGMENT_PREFIX } from '../cli.constants';
 import { handleApiResult } from '../utils/database.util';
 import { handleError } from '../utils/error.util';
 
@@ -75,10 +76,13 @@ export class BaseCommand extends Command {
         const tempFilePath = path.join(tempDir, 'input.txt');
 
         try {
-            await fs.writeFile(tempFilePath, initialValue);
+            const cleanedInitialValue =
+                initialValue.startsWith(FRAGMENT_PREFIX) || initialValue.startsWith(ENV_PREFIX) ? '' : initialValue;
+            await fs.writeFile(tempFilePath, cleanedInitialValue);
             const input = await editor({
                 message: 'Edit your input',
-                default: initialValue,
+                default: cleanedInitialValue,
+                waitForUseInput: false,
                 postfix: '.txt'
             });
             return input;

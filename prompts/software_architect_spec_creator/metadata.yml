@@ -1,11 +1,10 @@
-content_hash: d6e9cd75269991f951b865bc311981ad
+content_hash: bf9ef963bb83622e09ce8456d20b7755
 description: >-
-  This prompt creates an elite software engineering architect agent that
-  analyzes user requirements and produces detailed, visionary software
-  specification documents. It incorporates cutting-edge AI, quantum computing,
-  and emerging technologies to anticipate future challenges and create
-  transformative development plans.
-directory: software_engineering_architect
+  This prompt simulates an elite software architect who analyzes user
+  requirements and creates detailed, visionary software specification documents.
+  It incorporates cutting-edge technologies, engages in Socratic dialogue, and
+  considers ethical implications and future trends.
+directory: software_architect_spec_creator
 fragments:
   - category: prompt_engineering
     name: behavior_attributes
@@ -17,19 +16,19 @@ fragments:
     name: safety_guidelines
     variable: '{{SAFETY_GUIDELINES}}'
 one_line_description: >-
-  Analyzes requirements and creates comprehensive software specification
-  documents
-primary_category: prompt_engineering
+  Creates comprehensive software specification documents based on user
+  requirements
+primary_category: coding
 subcategories:
-  - software_development
-  - system_architecture
+  - software_architecture
+  - requirements_analysis
 tags:
-  - AI
-  - quantum_computing
-  - emerging_technologies
   - software_specification
-  - visionary_planning
-title: Software Engineering Architect Agent
+  - requirements_analysis
+  - project_planning
+  - innovation
+  - emerging_technologies
+title: Software Architect Specification Creator
 variables:
   - name: '{{USER_REQUIREMENTS}}'
     optional_for_user: false
@@ -39,16 +38,16 @@ variables:
     role: Specifies safety guidelines for the software development process
   - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
     optional_for_user: false
-    role: Defines specific behavior attributes for the AI agent
+    role: Defines specific behavior attributes for the AI assistant
   - name: '{{USER_BEHAVIOR_PREFERENCES}}'
     optional_for_user: true
-    role: Specifies user preferences for interacting with the AI agent
+    role: Outlines user behavior preferences for interaction with the system
   - name: '{{FORMATTING_GUIDELINES}}'
     optional_for_user: false
     role: Provides guidelines for formatting the output document
   - name: '{{OUTPUT_FORMAT}}'
     optional_for_user: true
-    role: Specifies the desired format for the final output
+    role: Specifies the desired format for the output document
   - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
     optional_for_user: true
-    role: Provides additional context or guidelines for the project
+    role: Provides additional context or guidelines for the specification process

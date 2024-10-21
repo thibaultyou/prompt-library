@@ -1,7 +1,7 @@
 import * as yaml from 'js-yaml';
 
 import { Metadata, Variable } from '../../shared/types';
-import logger from '../../shared/utils/logger';
+import logger from '../../shared/utils/logger.util';
 import { appConfig } from '../config/app.config';
 
 /**
@@ -12,6 +12,8 @@ import { appConfig } from '../config/app.config';
  */
 export function parseYamlContent(yamlContent: string): Metadata {
     try {
+        logger.debug('Preparing content for YAML parsing');
+        yamlContent = yamlContent.replace(/^\s*<[^>]+>\s*([\s\S]*?)\s*<\/[^>]+>\s*$/, '$1');
         logger.debug('Parsing YAML content');
         const parsedContent = yaml.load(yamlContent) as Metadata;
         logger.debug('YAML content parsed successfully');

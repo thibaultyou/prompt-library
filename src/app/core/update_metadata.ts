@@ -14,11 +14,11 @@ import {
     removeDirectory,
     renameFile,
     writeFileContent
-} from '../../shared/utils/file_operations';
-import logger from '../../shared/utils/logger';
+} from '../../shared/utils/file_system.util';
+import logger from '../../shared/utils/logger.util';
 import { appConfig } from '../config/app.config';
-import { processMetadataGeneration } from '../utils/analyzer_operations';
-import { dumpYamlContent, sanitizeYamlContent } from '../utils/yaml_operations';
+import { processMetadataGeneration } from '../utils/prompt_analyzer.util';
+import { dumpYamlContent, sanitizeYamlContent } from '../utils/yaml_operations.util';
 
 export async function generateMetadata(promptContent: string): Promise<Metadata> {
     logger.info('Starting metadata generation');

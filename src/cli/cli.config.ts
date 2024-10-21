@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { CONFIG_DIR } from '../../shared/config/config.constants';
+import { CONFIG_DIR } from '../shared/config/config.constants';
 
 export interface CliConfig {
     PROMPTS_DIR: string;

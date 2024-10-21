@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import logger from '../../shared/utils/logger';
+import logger from '../../shared/utils/logger.util';
 
 export class AppError extends Error {
     constructor(

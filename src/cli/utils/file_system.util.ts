@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 
 import { handleError } from './error.util';
-import { readDirectory } from '../../shared/utils/file_operations';
-import { cliConfig } from '../config/cli.config';
+import { readDirectory } from '../../shared/utils/file_system.util';
+import { cliConfig } from '../cli.config';
 
 export async function hasPrompts(): Promise<boolean> {
     try {

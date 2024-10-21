@@ -3,8 +3,8 @@ import { Command } from 'commander';
 
 import { BaseCommand } from './base.command';
 import { getConfig } from '../../shared/config';
-import { hasFragments, hasPrompts } from '../utils/content.util';
 import { handleError } from '../utils/error.util';
+import { hasFragments, hasPrompts } from '../utils/file_system.util';
 
 type MenuAction = 'sync' | 'prompts' | 'fragments' | 'settings' | 'env' | 'back';
 

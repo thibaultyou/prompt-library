@@ -2,8 +2,8 @@ import path from 'path';
 
 import { handleError } from './error.util';
 import { ApiResult, Fragment } from '../../shared/types';
-import { readDirectory, readFileContent } from '../../shared/utils/file_operations';
-import { cliConfig } from '../config/cli.config';
+import { readDirectory, readFileContent } from '../../shared/utils/file_system.util';
+import { cliConfig } from '../cli.config';
 
 export async function listFragments(): Promise<ApiResult<Fragment[]>> {
     try {

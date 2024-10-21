@@ -1,6 +1,6 @@
 import { Message } from '@anthropic-ai/sdk/resources';
 
-import { sendAnthropicRequestClassic, sendAnthropicRequestStream } from './anthropic_client';
+import { sendAnthropicRequestClassic, sendAnthropicRequestStream } from './anthropic_client.util';
 import { handleError } from '../../cli/utils/error.util';
 
 export function replaceVariables(content: string, variables: Record<string, string>): string {

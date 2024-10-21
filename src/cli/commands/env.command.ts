@@ -2,10 +2,11 @@ import chalk from 'chalk';
 
 import { BaseCommand } from './base.command';
 import { EnvVar, Fragment } from '../../shared/types';
-import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string_formatter';
+import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string_formatter.util';
+import { FRAGMENT_PREFIX } from '../cli.constants';
 import { createEnvVar, readEnvVars, updateEnvVar, deleteEnvVar } from '../utils/env.util';
-import { listFragments, viewFragmentContent } from '../utils/fragment.util';
-import { listPrompts, getPromptFiles } from '../utils/prompt.util';
+import { listFragments, viewFragmentContent } from '../utils/fragment_operations.util';
+import { listPrompts, getPromptFiles } from '../utils/prompt_crud.util';
 
 class EnvCommand extends BaseCommand {
     constructor() {
@@ -36,7 +37,10 @@ class EnvCommand extends BaseCommand {
         }
     }
 
-    private formatVariableChoices(allVariables: Array<{ name: string; role: string }>, envVars: EnvVar[]): Array<{ name: string; value: { name: string; role: string } }> {
+    private formatVariableChoices(
+        allVariables: Array<{ name: string; role: string }>,
+        envVars: EnvVar[]
+    ): Array<{ name: string; value: { name: string; role: string } }> {
         const maxNameLength = Math.max(...allVariables.map((v) => formatSnakeCase(v.name).length));
         return allVariables.map((variable) => {
             const formattedName = formatSnakeCase(variable.name);
@@ -137,7 +141,7 @@ class EnvCommand extends BaseCommand {
                 return;
             }
 
-            const fragmentRef = `Fragment: ${selectedFragment.category}/${selectedFragment.name}`;
+            const fragmentRef = `${FRAGMENT_PREFIX}${selectedFragment.category}/${selectedFragment.name}`;
             const envVars = await this.handleApiResult(await readEnvVars(), 'Fetched environment variables');
 
             if (!envVars) return;

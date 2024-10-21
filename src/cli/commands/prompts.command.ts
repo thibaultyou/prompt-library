@@ -2,12 +2,13 @@ import chalk from 'chalk';
 
 import { BaseCommand } from './base.command';
 import { CategoryItem, EnvVar, Fragment, Prompt, Variable } from '../../shared/types';
-import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string_formatter';
-import { ConversationManager } from '../utils/conversation.util';
+import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string_formatter.util';
+import { ENV_PREFIX, FRAGMENT_PREFIX } from '../cli.constants';
+import { ConversationManager } from '../utils/conversation_manager.util';
 import { fetchCategories, getPromptDetails, updatePromptVariable } from '../utils/database.util';
 import { readEnvVars } from '../utils/env.util';
-import { listFragments, viewFragmentContent } from '../utils/fragment.util';
-import { viewPromptDetails } from '../utils/prompt.util';
+import { listFragments, viewFragmentContent } from '../utils/fragment_operations.util';
+import { viewPromptDetails } from '../utils/prompt_display.util';
 
 type PromptMenuAction = 'all' | 'category' | 'id' | 'back';
 type SelectPromptMenuAction = Variable | 'execute' | 'unset_all' | 'back';
@@ -216,9 +217,9 @@ class PromptCommand extends BaseCommand {
 
     private getVariableNameColor(v: Variable): (text: string) => string {
         if (v.value) {
-            if (v.value.startsWith('Fragment: ')) return chalk.blue;
+            if (v.value.startsWith(FRAGMENT_PREFIX)) return chalk.blue;
 
-            if (v.value.startsWith('Env: ')) return chalk.magenta;
+            if (v.value.startsWith(ENV_PREFIX)) return chalk.magenta;
             return chalk.green;
         }
         return v.optional_for_user ? chalk.yellow : chalk.red;
@@ -297,7 +298,7 @@ class PromptCommand extends BaseCommand {
         if (!fragmentsResult) return;
 
         const selectedFragment = await this.showMenu<Fragment | 'back'>(
-            'Select a Fragment: ',
+            'Select a fragment: ',
             fragmentsResult.map((f) => ({
                 name: `${f.category}/${f.name}`,
                 value: f
@@ -309,7 +310,7 @@ class PromptCommand extends BaseCommand {
             return;
         }
 
-        const fragmentRef = `Fragment: ${selectedFragment.category}/${selectedFragment.name}`;
+        const fragmentRef = `${FRAGMENT_PREFIX}${selectedFragment.category}/${selectedFragment.name}`;
         const updateResult = await updatePromptVariable(promptId, variable.name, fragmentRef);
 
         if (!updateResult.success) {
@@ -361,7 +362,7 @@ class PromptCommand extends BaseCommand {
             return;
         }
 
-        const envVarRef = `Env: ${selectedEnvVar.name}`;
+        const envVarRef = `${ENV_PREFIX}${selectedEnvVar.name}`;
         const updateResult = await updatePromptVariable(promptId, variable.name, envVarRef);
 
         if (!updateResult.success) {

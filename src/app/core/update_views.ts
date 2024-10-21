@@ -4,11 +4,11 @@ import * as nunjucks from 'nunjucks';
 
 import { commonConfig } from '../../shared/config/common.config';
 import { CategoryItem, Metadata } from '../../shared/types';
-import { isDirectory, readDirectory, readFileContent, writeFileContent } from '../../shared/utils/file_operations';
-import logger from '../../shared/utils/logger';
-import { formatTitleCase } from '../../shared/utils/string_formatter';
+import { isDirectory, readDirectory, readFileContent, writeFileContent } from '../../shared/utils/file_system.util';
+import logger from '../../shared/utils/logger.util';
+import { formatTitleCase } from '../../shared/utils/string_formatter.util';
 import { appConfig } from '../config/app.config';
-import { parseYamlContent } from '../utils/yaml_operations';
+import { parseYamlContent } from '../utils/yaml_operations.util';
 
 async function processPromptDirectory(promptDir: string, categories: Record<string, CategoryItem[]>): Promise<void> {
     const promptPath = path.join(appConfig.PROMPTS_DIR, promptDir);

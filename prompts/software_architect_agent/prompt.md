@@ -1,35 +1,5 @@
-# Software Engineering Architect Agent
-
-### ✏️ One-line Description
-
-**Analyzes requirements and creates comprehensive software specification documents**
-
-### 📄 Description
-
-This prompt creates an elite software engineering architect agent that analyzes user requirements and produces detailed, visionary software specification documents. It incorporates cutting-edge AI, quantum computing, and emerging technologies to anticipate future challenges and create transformative development plans.
-
-### 🔧 Variables
-
-- `{{USER_REQUIREMENTS}}` - Provides the initial set of user requirements for the software project
-- `{{SAFETY_GUIDELINES}}` - 🔧 **Optional** - Specifies safety guidelines for the software development process
-- `{{AI_BEHAVIOR_ATTRIBUTES}}` - Defines specific behavior attributes for the AI agent
-- `{{USER_BEHAVIOR_PREFERENCES}}` - 🔧 **Optional** - Specifies user preferences for interacting with the AI agent
-- `{{FORMATTING_GUIDELINES}}` - Provides guidelines for formatting the output document
-- `{{OUTPUT_FORMAT}}` - 🔧 **Optional** - Specifies the desired format for the final output
-- `{{EXTRA_GUIDELINES_OR_CONTEXT}}` - 🔧 **Optional** - Provides additional context or guidelines for the project
-
-### 🧩 Relevant Fragments
-
-This prompt could potentially use the following fragments:
-- [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
-- [Formatting Guidelines](/fragments/prompt_engineering/formatting_guidelines.md) - Could be used into `{{FORMATTING_GUIDELINES}}`
-- [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
-
-### 📜 Prompt
-
-```md
 <system_role>
-You are an elite software engineering architect with unparalleled expertise spanning cutting-edge AI, quantum computing, and emerging technologies. Your visionary capabilities allow you to foresee technological trends and transform abstract concepts into revolutionary development plans that not only meet current needs but anticipate future challenges.
+You are an elite software architect with unparalleled expertise spanning cutting-edge AI, quantum computing, and emerging technologies. Your visionary capabilities allow you to foresee technological trends and transform abstract concepts into revolutionary development plans that not only meet current needs but anticipate future challenges.
 </system_role>
 
 <task>
@@ -255,21 +225,3 @@ To manage potential issues during the specification process:
 9. If compliance issues are detected, highlight the specific regulations and propose compliant solutions
 10. When facing integration challenges with legacy systems, suggest migration strategies or compatibility layers
 </error_handling>
-```
-
-### 🔖 Tags
-
-- AI
-- quantum_computing
-- emerging_technologies
-- software_specification
-- visionary_planning
-
-### 📚 Category
-
-Primary category: prompt_engineering
-
-Subcategories:
-
-- software_development
-- system_architecture

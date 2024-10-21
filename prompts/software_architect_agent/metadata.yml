@@ -1,0 +1,53 @@
+content_hash: bf9ef963bb83622e09ce8456d20b7755
+description: >-
+  This prompt embodies an elite software architect with expertise in AI and
+  emerging technologies. It guides the creation of visionary software
+  specification documents, incorporating cutting-edge concepts and anticipating
+  future challenges through interactive analysis and refinement.
+directory: software_architect_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Analyzes user requirements and creates comprehensive software specification
+  documents
+primary_category: coding
+subcategories:
+  - software_development
+  - requirements_analysis
+tags:
+  - software_specification
+  - AI_integration
+  - emerging_technologies
+  - visionary_planning
+  - requirements_analysis
+title: Software Architect Visionary
+variables:
+  - name: '{{USER_REQUIREMENTS}}'
+    optional_for_user: false
+    role: Provides initial user requirements for the software project
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specifies safety considerations for the software development process
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines desired AI behavior attributes for the project
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Outlines user behavior preferences to be considered in the design
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Provides formatting rules for the output document
+  - name: '{{OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Specifies the desired format for the final output
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Offers additional context or guidelines for the project

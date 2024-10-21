@@ -22,13 +22,12 @@ function getAnthropicClient(): Anthropic {
 
 export async function sendAnthropicRequestClassic(messages: { role: string; content: string }[]): Promise<Message> {
     const client = getAnthropicClient();
-
     try {
         return await client.messages.create({
             model: commonConfig.ANTHROPIC_MODEL,
             max_tokens: commonConfig.ANTHROPIC_MAX_TOKENS,
             messages: messages.map((msg) => ({
-                role: msg.role === 'human' ? 'user' : 'assistant',
+                role: msg.role === 'user' ? 'user' : 'assistant',
                 content: msg.content
             }))
         });
@@ -48,7 +47,7 @@ export async function* sendAnthropicRequestStream(
             model: commonConfig.ANTHROPIC_MODEL,
             max_tokens: commonConfig.ANTHROPIC_MAX_TOKENS,
             messages: messages.map((msg) => ({
-                role: msg.role === 'human' ? 'user' : 'assistant',
+                role: msg.role === 'user' ? 'user' : 'assistant',
                 content: msg.content
             }))
         });

@@ -2,8 +2,8 @@ import chalk from 'chalk';
 
 import { BaseCommand } from './base.command';
 import { Fragment } from '../../shared/types';
-import { formatTitleCase } from '../../shared/utils/string_formatter';
-import { listFragments, viewFragmentContent } from '../utils/fragment.util';
+import { formatTitleCase } from '../../shared/utils/string_formatter.util';
+import { listFragments, viewFragmentContent } from '../utils/fragment_operations.util';
 
 type FragmentMenuAction = 'all' | 'category' | 'back';
 

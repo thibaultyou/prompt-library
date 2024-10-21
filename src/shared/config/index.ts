@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { CommonConfig, commonConfig } from './common.config';
 import { CONFIG_DIR, CONFIG_FILE, isCliEnvironment } from './config.constants';
 import { AppConfig, appConfig } from '../../app/config/app.config';
-import { CliConfig, cliConfig } from '../../cli/config/cli.config';
+import { CliConfig, cliConfig } from '../../cli/cli.config';
 
 export type Config = CommonConfig & (CliConfig | AppConfig);
 

@@ -6,8 +6,8 @@ import simpleGit, { SimpleGit } from 'simple-git';
 
 import { BaseCommand } from './base.command';
 import { getConfig, setConfig } from '../../shared/config';
-import logger from '../../shared/utils/logger';
-import { cliConfig } from '../config/cli.config';
+import logger from '../../shared/utils/logger.util';
+import { cliConfig } from '../cli.config';
 import { syncPromptsWithDatabase, cleanupOrphanedData } from '../utils/database.util';
 
 class SyncCommand extends BaseCommand {

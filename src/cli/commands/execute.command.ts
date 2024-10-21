@@ -4,8 +4,9 @@ import yaml from 'js-yaml';
 
 import { BaseCommand } from './base.command';
 import { Metadata, Prompt, Variable } from '../../shared/types';
-import { processPromptContent } from '../../shared/utils/prompt_operations';
-import { getPromptFiles, viewPromptDetails } from '../utils/prompt.util';
+import { processPromptContent } from '../../shared/utils/prompt_processing.util';
+import { getPromptFiles } from '../utils/prompt_crud.util';
+import { viewPromptDetails } from '../utils/prompt_display.util';
 
 class ExecuteCommand extends BaseCommand {
     constructor() {

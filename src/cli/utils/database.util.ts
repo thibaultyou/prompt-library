@@ -6,12 +6,12 @@ import NodeCache from 'node-cache';
 import sqlite3, { RunResult } from 'sqlite3';
 
 import { AppError, handleError } from './error.util';
-import { createPrompt } from './prompt.util';
+import { createPrompt } from './prompt_crud.util';
 import { commonConfig } from '../../shared/config/common.config';
 import { ApiResult, CategoryItem, Metadata, Prompt, Variable } from '../../shared/types';
-import { fileExists, readDirectory, readFileContent } from '../../shared/utils/file_operations';
-import logger from '../../shared/utils/logger';
-import { cliConfig } from '../config/cli.config';
+import { fileExists, readDirectory, readFileContent } from '../../shared/utils/file_system.util';
+import logger from '../../shared/utils/logger.util';
+import { cliConfig } from '../cli.config';
 
 const db = new sqlite3.Database(cliConfig.DB_PATH);
 const cache = new NodeCache({ stdTTL: 600 });
