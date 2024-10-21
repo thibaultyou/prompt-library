@@ -1,6 +1,6 @@
 import * as yaml from 'js-yaml';
 
-import { Metadata } from '../../shared/types';
+import { Metadata, Variable } from '../../shared/types';
 import logger from '../../shared/utils/logger';
 import { appConfig } from '../config/app.config';
 
@@ -18,7 +18,7 @@ export function parseYamlContent(yamlContent: string): Metadata {
         return parsedContent;
     } catch (error) {
         logger.error('YAML parsing error:', error);
-        throw new Error(`Failed to parse YAML content: ${(error as Error).message}`);
+        throw new Error(`Failed to parse YAML content: ${error instanceof Error ? error.message : String(error)}`);
     }
 }
 
@@ -40,7 +40,7 @@ export function dumpYamlContent(data: Metadata): string {
         return yamlString;
     } catch (error) {
         logger.error('YAML dumping error:', error);
-        throw new Error(`Failed to dump Metadata to YAML: ${(error as Error).message}`);
+        throw new Error(`Failed to dump Metadata to YAML: ${error instanceof Error ? error.message : String(error)}`);
     }
 }
 
@@ -51,20 +51,55 @@ export function dumpYamlContent(data: Metadata): string {
  */
 export function isValidMetadata(obj: unknown): obj is Metadata {
     const metadata = obj as Partial<Metadata>;
+
+    if (typeof metadata !== 'object' || metadata === null) {
+        logger.error('Invalid Metadata: not an object');
+        return false;
+    }
+
+    const requiredStringFields: (keyof Metadata)[] = [
+        'title',
+        'primary_category',
+        'directory',
+        'one_line_description',
+        'description'
+    ];
+
+    for (const field of requiredStringFields) {
+        if (typeof metadata[field] !== 'string') {
+            logger.error(`Invalid Metadata: ${field} is not a string`);
+            return false;
+        }
+    }
+
+    const requiredArrayFields: (keyof Metadata)[] = ['subcategories', 'tags', 'variables'];
+
+    for (const field of requiredArrayFields) {
+        if (!Array.isArray(metadata[field])) {
+            logger.error(`Invalid Metadata: ${field} is not an array`);
+            return false;
+        }
+    }
+
+    if (!Array.isArray(metadata.variables) || !metadata.variables.every(isValidVariable)) {
+        logger.error('Invalid Metadata: variables is not an array or contains invalid variables');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Validates that an object conforms to the Variable interface.
+ * @param {unknown} obj - The object to validate.
+ * @returns {obj is Variable} True if the object is a valid Variable, false otherwise.
+ */
+function isValidVariable(obj: unknown): obj is Variable {
+    const variable = obj as Partial<Variable>;
     return (
-        typeof metadata === 'object' &&
-        metadata !== null &&
-        typeof metadata.title === 'string' &&
-        typeof metadata.primary_category === 'string' &&
-        Array.isArray(metadata.subcategories) &&
-        typeof metadata.directory === 'string' &&
-        Array.isArray(metadata.tags) &&
-        typeof metadata.one_line_description === 'string' &&
-        typeof metadata.description === 'string' &&
-        Array.isArray(metadata.variables) &&
-        metadata.variables.every(
-            (v) => typeof v === 'object' && v !== null && typeof v.name === 'string' && typeof v.role === 'string'
-        )
+        typeof variable === 'object' &&
+        variable !== null &&
+        typeof variable.name === 'string' &&
+        typeof variable.role === 'string'
     );
 }
 
@@ -91,6 +126,7 @@ export function parseAndValidateYamlContent(yamlContent: string): Metadata {
  */
 export function sanitizeYamlContent(content: string): string {
     try {
+        logger.debug('Sanitizing YAML content');
         const parsedContent = yaml.load(content);
         const sanitizedContent = yaml.dump(parsedContent, {
             indent: appConfig.YAML_INDENT,
@@ -98,9 +134,36 @@ export function sanitizeYamlContent(content: string): string {
             noRefs: true,
             sortKeys: true
         });
+        logger.debug('YAML content sanitized successfully');
         return sanitizedContent.trim() + '\n';
     } catch (error) {
         logger.error('YAML sanitization error:', error);
-        throw new Error(`Failed to sanitize YAML content: ${(error as Error).message}`);
+        throw new Error(`Failed to sanitize YAML content: ${error instanceof Error ? error.message : String(error)}`);
     }
 }
+
+/**
+ * Determines if a YAML content needs sanitization.
+ * @param {string} content - The YAML content to check.
+ * @returns {boolean} True if the content needs sanitization, false otherwise.
+ */
+export function needsSanitization(content: string): boolean {
+    try {
+        const originalParsed = yaml.load(content);
+        const sanitized = sanitizeYamlContent(content);
+        const sanitizedParsed = yaml.load(sanitized);
+        return JSON.stringify(originalParsed) !== JSON.stringify(sanitizedParsed);
+    } catch (error) {
+        logger.error('Error checking YAML sanitization:', error);
+        return true; // If we can't parse it, it probably needs sanitization
+    }
+}
+
+export default {
+    parseYamlContent,
+    dumpYamlContent,
+    isValidMetadata,
+    parseAndValidateYamlContent,
+    sanitizeYamlContent,
+    needsSanitization
+};

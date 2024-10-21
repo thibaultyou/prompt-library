@@ -20,24 +20,17 @@ class SyncCommand extends BaseCommand {
 
     async execute(options: { url?: string; force?: boolean }): Promise<void> {
         try {
-            const config = getConfig();
-            let repoUrl = options.url || config.REMOTE_REPOSITORY;
-
-            if (!repoUrl) {
-                repoUrl = await this.getInput('Enter the remote repository URL:');
-                setConfig('REMOTE_REPOSITORY', repoUrl);
-            }
-
+            const repoUrl = await this.getRepoUrl(options.url);
             const git: SimpleGit = simpleGit();
             const tempDir = path.join(cliConfig.TEMP_DIR, 'temp_repository');
-            logger.info('Cleaning up temporary directory...');
-            await fs.remove(tempDir);
+            await this.cleanupTempDir(tempDir);
+            await this.cloneRepository(git, repoUrl, tempDir);
 
-            logger.info('Fetching remote data...');
-            await git.clone(repoUrl, tempDir);
-
-            const changes = await this.diffDirectories(config.PROMPTS_DIR, path.join(tempDir, 'prompts'));
-            const fragmentChanges = await this.diffDirectories(config.FRAGMENTS_DIR, path.join(tempDir, 'fragments'));
+            const changes = await this.diffDirectories(getConfig().PROMPTS_DIR, path.join(tempDir, 'prompts'));
+            const fragmentChanges = await this.diffDirectories(
+                getConfig().FRAGMENTS_DIR,
+                path.join(tempDir, 'fragments')
+            );
 
             if (changes.length === 0 && fragmentChanges.length === 0) {
                 logger.info('No changes detected. Everything is up to date.');
@@ -45,44 +38,47 @@ class SyncCommand extends BaseCommand {
                 return;
             }
 
-            logger.info('Changes detected:');
             this.logChanges(changes, 'Prompts');
             this.logChanges(fragmentChanges, 'Fragments');
 
-            if (!options.force) {
-                const shouldProceed = await this.confirmAction('Do you want to proceed with the sync?');
-
-                if (!shouldProceed) {
-                    logger.info('Sync cancelled by user.');
-                    await fs.remove(tempDir);
-                    return;
-                }
+            if (!options.force && !(await this.confirmSync())) {
+                logger.info('Sync cancelled by user.');
+                await fs.remove(tempDir);
+                return;
             }
 
-            logger.info('Syncing prompts...');
-            await this.syncDirectories(config.PROMPTS_DIR, path.join(tempDir, 'prompts'), changes);
-
-            logger.info('Syncing fragments...');
-            await this.syncDirectories(config.FRAGMENTS_DIR, path.join(tempDir, 'fragments'), fragmentChanges);
-
-            logger.info('Updating database...');
-            await syncPromptsWithDatabase();
-
-            logger.info('Cleaning up orphaned data...');
-            await cleanupOrphanedData();
-
-            logger.info('Removing temporary files...');
-            await fs.remove(tempDir);
+            await this.performSync(tempDir, changes, fragmentChanges);
 
             logger.info('Sync completed successfully!');
         } catch (error) {
             this.handleError(error, 'sync');
+        } finally {
+            await this.pressKeyToContinue();
         }
-
-        await this.pressKeyToContinue();
     }
 
-    async diffDirectories(localDir: string, remoteDir: string): Promise<Array<{ type: string; path: string }>> {
+    private async getRepoUrl(optionUrl?: string): Promise<string> {
+        const config = getConfig();
+        let repoUrl = optionUrl || config.REMOTE_REPOSITORY;
+
+        if (!repoUrl) {
+            repoUrl = await this.getInput('Enter the remote repository URL:');
+            setConfig('REMOTE_REPOSITORY', repoUrl);
+        }
+        return repoUrl;
+    }
+
+    private async cleanupTempDir(tempDir: string): Promise<void> {
+        logger.info('Cleaning up temporary directory...');
+        await fs.remove(tempDir);
+    }
+
+    private async cloneRepository(git: SimpleGit, repoUrl: string, tempDir: string): Promise<void> {
+        logger.info('Fetching remote data...');
+        await git.clone(repoUrl, tempDir);
+    }
+
+    private async diffDirectories(localDir: string, remoteDir: string): Promise<Array<{ type: string; path: string }>> {
         const changes: Array<{ type: string; path: string }> = [];
 
         async function traverseDirectory(
@@ -129,7 +125,7 @@ class SyncCommand extends BaseCommand {
         return changes;
     }
 
-    logChanges(changes: Array<{ type: string; path: string }>, title: string): void {
+    private logChanges(changes: Array<{ type: string; path: string }>, title: string): void {
         if (changes.length > 0) {
             console.log(chalk.bold(`\n${title}:`));
             changes.forEach(({ type, path }) => {
@@ -148,7 +144,32 @@ class SyncCommand extends BaseCommand {
         }
     }
 
-    async syncDirectories(
+    private async confirmSync(): Promise<boolean> {
+        return this.confirmAction('Do you want to proceed with the sync?');
+    }
+
+    private async performSync(
+        tempDir: string,
+        changes: Array<{ type: string; path: string }>,
+        fragmentChanges: Array<{ type: string; path: string }>
+    ): Promise<void> {
+        logger.info('Syncing prompts...');
+        await this.syncDirectories(getConfig().PROMPTS_DIR, path.join(tempDir, 'prompts'), changes);
+
+        logger.info('Syncing fragments...');
+        await this.syncDirectories(getConfig().FRAGMENTS_DIR, path.join(tempDir, 'fragments'), fragmentChanges);
+
+        logger.info('Updating database...');
+        await syncPromptsWithDatabase();
+
+        logger.info('Cleaning up orphaned data...');
+        await cleanupOrphanedData();
+
+        logger.info('Removing temporary files...');
+        await fs.remove(tempDir);
+    }
+
+    private async syncDirectories(
         localDir: string,
         remoteDir: string,
         changes: Array<{ type: string; path: string }>

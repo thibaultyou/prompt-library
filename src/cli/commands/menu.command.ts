@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { BaseCommand } from './base.command';
 import { getConfig } from '../../shared/config';
 import { hasFragments, hasPrompts } from '../utils/content.util';
+import { handleError } from '../utils/error.util';
 
 type MenuAction = 'sync' | 'prompts' | 'fragments' | 'settings' | 'env' | 'back';
 
@@ -14,58 +15,54 @@ class MenuCommand extends BaseCommand {
 
     async execute(): Promise<void> {
         while (true) {
-            const config = getConfig();
-            const [promptsExist, fragmentsExist] = await Promise.all([hasPrompts(), hasFragments()]);
-            const choices: Array<{ name: string; value: MenuAction }> = [];
+            try {
+                const config = getConfig();
+                const [promptsExist, fragmentsExist] = await Promise.all([hasPrompts(), hasFragments()]);
+                const choices: Array<{ name: string; value: MenuAction }> = [];
 
-            if (!config.REMOTE_REPOSITORY || (!promptsExist && !fragmentsExist)) {
-                choices.push({
-                    name: chalk.green(chalk.bold('Sync with remote repository')),
-                    value: 'sync'
-                });
-            }
+                if (!config.REMOTE_REPOSITORY || (!promptsExist && !fragmentsExist)) {
+                    choices.push({
+                        name: chalk.green(chalk.bold('Sync with remote repository')),
+                        value: 'sync'
+                    });
+                }
 
-            choices.push(
-                { name: 'Browse and run prompts', value: 'prompts' },
-                { name: 'Manage prompt fragments', value: 'fragments' },
-                { name: 'Manage environment variables', value: 'env' },
-                { name: 'Settings', value: 'settings' }
-            );
+                choices.push(
+                    { name: 'Browse and run prompts', value: 'prompts' },
+                    { name: 'Manage prompt fragments', value: 'fragments' },
+                    { name: 'Manage environment variables', value: 'env' },
+                    { name: 'Settings', value: 'settings' }
+                );
 
-            // console.clear();
+                // console.clear();
 
-            const action = await this.showMenu<MenuAction>(
-                `${chalk.reset(chalk.italic(chalk.cyan('Want to manage AI prompts with ease ?')))}
+                const action = await this.showMenu<MenuAction>(
+                    `${chalk.reset(chalk.italic(chalk.cyan('Want to manage AI prompts with ease ?')))}
 ${chalk.bold(`${chalk.yellow('Welcome to the Prompt Library !')}
 Select an action:`)}`,
-                choices,
-                { goBackLabel: 'Exit' }
-            );
-            switch (action) {
-                case 'sync':
-                    await this.runCommand(this.program, 'sync');
-                    break;
-                case 'prompts':
-                    await this.runCommand(this.program, 'prompts');
-                    break;
-                case 'fragments':
-                    await this.runCommand(this.program, 'fragments');
-                    break;
-                case 'env':
-                    await this.runCommand(this.program, 'env');
-                    break;
-                case 'settings':
-                    await this.runCommand(this.program, 'settings');
-                    break;
-                case 'back':
+                    choices,
+                    { goBackLabel: 'Exit' }
+                );
+
+                if (action === 'back') {
                     console.log(chalk.yellow('Goodbye!'));
                     return;
+                }
+
+                await this.runCommand(this.program, action);
+            } catch (error) {
+                this.handleError(error, 'menu command');
+                await this.pressKeyToContinue();
             }
         }
     }
 }
 
 export async function showMainMenu(program: Command): Promise<void> {
-    const menuCommand = new MenuCommand(program);
-    await menuCommand.execute();
+    try {
+        const menuCommand = new MenuCommand(program);
+        await menuCommand.execute();
+    } catch (error) {
+        handleError(error, 'show main menu');
+    }
 }

@@ -10,6 +10,7 @@ import { listFragments, viewFragmentContent } from '../utils/fragment.util';
 import { viewPromptDetails } from '../utils/prompt.util';
 
 type PromptMenuAction = 'all' | 'category' | 'id' | 'back';
+type SelectPromptMenuAction = Variable | 'execute' | 'unset_all' | 'back';
 
 class PromptCommand extends BaseCommand {
     constructor() {
@@ -22,8 +23,7 @@ class PromptCommand extends BaseCommand {
 
     async execute(options: any): Promise<void> {
         try {
-            const categoriesResult = await fetchCategories();
-            const categories = await this.handleApiResult(categoriesResult, 'Fetched categories');
+            const categories = await this.handleApiResult(await fetchCategories(), 'Fetched categories');
 
             if (!categories) return;
 
@@ -37,7 +37,15 @@ class PromptCommand extends BaseCommand {
                 return;
             }
 
-            while (true) {
+            await this.showPromptMenu(categories);
+        } catch (error) {
+            this.handleError(error, 'prompt command');
+        }
+    }
+
+    private async showPromptMenu(categories: Record<string, CategoryItem[]>): Promise<void> {
+        while (true) {
+            try {
                 const action = await this.showMenu<PromptMenuAction>('Select an action:', [
                     { name: 'View prompts by category', value: 'category' },
                     { name: 'View all prompts', value: 'all' },
@@ -56,22 +64,15 @@ class PromptCommand extends BaseCommand {
                     case 'back':
                         return;
                 }
+            } catch (error) {
+                this.handleError(error, 'prompt menu');
+                await this.pressKeyToContinue();
             }
-        } catch (error) {
-            this.handleError(error, 'prompt command');
         }
     }
 
-    async listAllPromptsForCI(categories: Record<string, CategoryItem[]>, json: boolean): Promise<void> {
-        const allPrompts = Object.entries(categories)
-            .flatMap(([category, prompts]) =>
-                prompts.map((prompt) => ({
-                    id: prompt.id,
-                    title: prompt.title,
-                    category
-                }))
-            )
-            .sort((a, b) => a.title.localeCompare(b.title));
+    private async listAllPromptsForCI(categories: Record<string, CategoryItem[]>, json: boolean): Promise<void> {
+        const allPrompts = this.getAllPrompts(categories);
 
         if (json) {
             console.log(JSON.stringify(allPrompts, null, 2));
@@ -83,7 +84,7 @@ class PromptCommand extends BaseCommand {
         }
     }
 
-    async listAllCategoriesForCI(categories: Record<string, CategoryItem[]>, json: boolean): Promise<void> {
+    private async listAllCategoriesForCI(categories: Record<string, CategoryItem[]>, json: boolean): Promise<void> {
         const categoryList = Object.keys(categories).sort();
 
         if (json) {
@@ -96,8 +97,8 @@ class PromptCommand extends BaseCommand {
         }
     }
 
-    async listAllPrompts(categories: Record<string, CategoryItem[]>): Promise<void> {
-        const allPrompts = Object.entries(categories)
+    private getAllPrompts(categories: Record<string, CategoryItem[]>): Array<CategoryItem & { category: string }> {
+        return Object.entries(categories)
             .flatMap(([category, prompts]) =>
                 prompts.map((prompt) => ({
                     ...prompt,
@@ -105,10 +106,14 @@ class PromptCommand extends BaseCommand {
                 }))
             )
             .sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    private async listAllPrompts(categories: Record<string, CategoryItem[]>): Promise<void> {
+        const allPrompts = this.getAllPrompts(categories);
         await this.selectAndManagePrompt(allPrompts);
     }
 
-    async listPromptsByCategory(categories: Record<string, CategoryItem[]>): Promise<void> {
+    private async listPromptsByCategory(categories: Record<string, CategoryItem[]>): Promise<void> {
         while (true) {
             const sortedCategories = Object.keys(categories).sort((a, b) => a.localeCompare(b));
             const category = await this.showMenu<string | 'back'>(
@@ -129,14 +134,12 @@ class PromptCommand extends BaseCommand {
         }
     }
 
-    async listPromptsSortedById(categories: Record<string, CategoryItem[]>): Promise<void> {
-        const allPrompts = Object.entries(categories)
-            .flatMap(([category, prompts]) => prompts.map((prompt) => ({ ...prompt, category })))
-            .sort((a, b) => Number(a.id) - Number(b.id));
+    private async listPromptsSortedById(categories: Record<string, CategoryItem[]>): Promise<void> {
+        const allPrompts = this.getAllPrompts(categories).sort((a, b) => Number(a.id) - Number(b.id));
         await this.selectAndManagePrompt(allPrompts);
     }
 
-    async selectAndManagePrompt(prompts: (CategoryItem & { category: string })[]): Promise<void> {
+    private async selectAndManagePrompt(prompts: (CategoryItem & { category: string })[]): Promise<void> {
         while (true) {
             const selectedPrompt = await this.showMenu<CategoryItem | 'back'>(
                 'Select a prompt or action:',
@@ -152,32 +155,35 @@ class PromptCommand extends BaseCommand {
         }
     }
 
-    async managePrompt(prompt: CategoryItem): Promise<void> {
+    private async managePrompt(prompt: CategoryItem): Promise<void> {
         while (true) {
-            const details = await this.handleApiResult(await getPromptDetails(prompt.id), 'Fetched prompt details');
+            try {
+                const details = await this.handleApiResult(await getPromptDetails(prompt.id), 'Fetched prompt details');
 
-            if (!details) return;
+                if (!details) return;
 
-            await viewPromptDetails(details);
+                await viewPromptDetails(details);
 
-            const action = await this.selectPromptAction(details);
+                const action = await this.selectPromptAction(details);
 
-            if (action === 'back') return;
+                if (action === 'back') return;
 
-            if (action === 'execute') {
-                await this.executePromptWithAssignment(prompt.id);
-            } else if (action === 'unset_all') {
-                await this.unsetAllVariables(prompt.id);
-            } else {
-                await this.assignVariable(prompt.id, action);
+                if (action === 'execute') {
+                    await this.executePromptWithAssignment(prompt.id);
+                } else if (action === 'unset_all') {
+                    await this.unsetAllVariables(prompt.id);
+                } else {
+                    await this.assignVariable(prompt.id, action);
+                }
+            } catch (error) {
+                this.handleError(error, 'managing prompt');
+                await this.pressKeyToContinue();
             }
         }
     }
 
-    async selectPromptAction(
-        details: Prompt & { variables: Variable[] }
-    ): Promise<Variable | 'execute' | 'unset_all' | 'back'> {
-        const choices: Array<{ name: string; value: Variable | 'execute' | 'unset_all' | 'back' }> = [];
+    private async selectPromptAction(details: Prompt & { variables: Variable[] }): Promise<SelectPromptMenuAction> {
+        const choices: Array<{ name: string; value: SelectPromptMenuAction }> = [];
         const allRequiredSet = details.variables.every((v) => v.optional_for_user || v.value);
 
         if (allRequiredSet) {
@@ -186,78 +192,89 @@ class PromptCommand extends BaseCommand {
 
         const envVarsResult = await readEnvVars();
         const envVars = envVarsResult.success ? envVarsResult.data || [] : [];
-        choices.push(
-            ...details.variables.map((v) => {
-                const snakeCaseName = formatSnakeCase(v.name);
-                let nameColor;
-                let hint = '';
-
-                if (v.value) {
-                    if (v.value.startsWith('Fragment: ')) {
-                        nameColor = chalk.blue;
-                    } else if (v.value.startsWith('Env: ')) {
-                        nameColor = chalk.magenta;
-                    } else {
-                        nameColor = chalk.green;
-                    }
-                } else {
-                    nameColor = v.optional_for_user ? chalk.yellow : chalk.red;
-                    const matchingEnvVar = envVars.find((env) => env.name === v.name);
-
-                    if (matchingEnvVar) {
-                        hint = chalk.magenta(' (env available)');
-                    }
-                }
-                return {
-                    name: `${chalk.reset('Assign')} ${nameColor(snakeCaseName)}${chalk.reset(v.optional_for_user ? '' : '*')}${hint}`,
-                    value: v
-                };
-            })
-        );
+        choices.push(...this.formatVariableChoices(details.variables, envVars));
 
         choices.push({ name: chalk.red('Unset all variables'), value: 'unset_all' });
-        return this.showMenu<Variable | 'execute' | 'unset_all' | 'back'>(
+        return this.showMenu<SelectPromptMenuAction>(
             `Select an action for prompt "${chalk.cyan(details.title)}":`,
             choices,
-            {
-                clearConsole: false
-            }
+            { clearConsole: false }
         );
     }
 
-    async assignVariable(promptId: string, variable: Variable): Promise<void> {
+    private formatVariableChoices(variables: Variable[], envVars: EnvVar[]): Array<{ name: string; value: Variable }> {
+        return variables.map((v) => {
+            const snakeCaseName = formatSnakeCase(v.name);
+            const nameColor = this.getVariableNameColor(v);
+            const hint = this.getVariableHint(v, envVars);
+            return {
+                name: `${chalk.reset('Assign')} ${nameColor(snakeCaseName)}${chalk.reset(v.optional_for_user ? '' : '*')}${hint}`,
+                value: v
+            };
+        });
+    }
+
+    private getVariableNameColor(v: Variable): (text: string) => string {
+        if (v.value) {
+            if (v.value.startsWith('Fragment: ')) return chalk.blue;
+
+            if (v.value.startsWith('Env: ')) return chalk.magenta;
+            return chalk.green;
+        }
+        return v.optional_for_user ? chalk.yellow : chalk.red;
+    }
+
+    private getVariableHint(v: Variable, envVars: EnvVar[]): string {
+        if (!v.value) {
+            const matchingEnvVar = envVars.find((env) => env.name === v.name);
+
+            if (matchingEnvVar) {
+                return chalk.magenta(' (env available)');
+            }
+        }
+        return '';
+    }
+
+    private async assignVariable(promptId: string, variable: Variable): Promise<void> {
+        const envVarsResult = await readEnvVars();
+        const envVars = envVarsResult.success ? envVarsResult.data || [] : [];
+        const matchingEnvVar = envVars.find((env) => env.name === variable.name);
         const assignAction = await this.showMenu<'enter' | 'fragment' | 'env' | 'unset' | 'back'>(
             `Choose action for ${formatSnakeCase(variable.name)}:`,
             [
                 { name: 'Enter value', value: 'enter' },
                 { name: 'Use fragment', value: 'fragment' },
-                { name: 'Use environment variable', value: 'env' },
+                {
+                    name: matchingEnvVar
+                        ? chalk.green(chalk.bold('Use environment variable'))
+                        : 'Use environment variable',
+                    value: 'env'
+                },
                 { name: 'Unset', value: 'unset' }
             ]
         );
-        switch (assignAction) {
-            case 'enter': {
-                await this.assignValueToVariable(promptId, variable);
-                break;
-            }
-            case 'fragment':
-                await this.assignFragmentToVariable(promptId, variable);
-                break;
-            case 'env':
-                await this.assignEnvVarToVariable(promptId, variable);
-                break;
-            case 'unset': {
-                await this.unsetVariable(promptId, variable);
-                break;
-            }
-            case 'back':
-                return;
-        }
 
-        // await this.pressKeyToContinue();
+        try {
+            switch (assignAction) {
+                case 'enter':
+                    await this.assignValueToVariable(promptId, variable);
+                    break;
+                case 'fragment':
+                    await this.assignFragmentToVariable(promptId, variable);
+                    break;
+                case 'env':
+                    await this.assignEnvVarToVariable(promptId, variable);
+                    break;
+                case 'unset':
+                    await this.unsetVariable(promptId, variable);
+                    break;
+            }
+        } catch (error) {
+            this.handleError(error, `assigning variable ${variable.name}`);
+        }
     }
 
-    async assignValueToVariable(promptId: string, variable: Variable): Promise<void> {
+    private async assignValueToVariable(promptId: string, variable: Variable): Promise<void> {
         console.log(chalk.cyan(`Enter or edit value for ${formatSnakeCase(variable.name)}:`));
         console.log(
             chalk.yellow('(An editor will open with the current value. Edit, save, and close the file when done.)')
@@ -270,117 +287,101 @@ class PromptCommand extends BaseCommand {
         if (updateResult.success) {
             console.log(chalk.green(`Value set for ${formatSnakeCase(variable.name)}`));
         } else {
-            console.error(
-                chalk.red(`Failed to set value for ${formatSnakeCase(variable.name)}: ${updateResult.error}`)
-            );
+            throw new Error(`Failed to set value for ${formatSnakeCase(variable.name)}: ${updateResult.error}`);
         }
     }
 
-    async assignFragmentToVariable(promptId: string, variable: Variable): Promise<void> {
-        try {
-            const fragmentsResult = await this.handleApiResult(await listFragments(), 'Fetched fragments');
+    private async assignFragmentToVariable(promptId: string, variable: Variable): Promise<void> {
+        const fragmentsResult = await this.handleApiResult(await listFragments(), 'Fetched fragments');
 
-            if (!fragmentsResult) return;
+        if (!fragmentsResult) return;
 
-            const selectedFragment = await this.showMenu<Fragment | 'back'>(
-                'Select a Fragment: ',
-                fragmentsResult.map((f) => ({
-                    name: `${f.category}/${f.name}`,
-                    value: f
-                }))
-            );
+        const selectedFragment = await this.showMenu<Fragment | 'back'>(
+            'Select a Fragment: ',
+            fragmentsResult.map((f) => ({
+                name: `${f.category}/${f.name}`,
+                value: f
+            }))
+        );
 
-            if (selectedFragment === 'back') {
-                console.log(chalk.yellow('Fragment assignment cancelled.'));
-                return;
-            }
+        if (selectedFragment === 'back') {
+            console.log(chalk.yellow('Fragment assignment cancelled.'));
+            return;
+        }
 
-            const fragmentRef = `Fragment: ${selectedFragment.category}/${selectedFragment.name}`;
-            const updateResult = await updatePromptVariable(promptId, variable.name, fragmentRef);
+        const fragmentRef = `Fragment: ${selectedFragment.category}/${selectedFragment.name}`;
+        const updateResult = await updatePromptVariable(promptId, variable.name, fragmentRef);
 
-            if (!updateResult.success) {
-                console.error(chalk.red(`Failed to assign fragment: ${updateResult.error}`));
-                return;
-            }
+        if (!updateResult.success) {
+            throw new Error(`Failed to assign fragment: ${updateResult.error}`);
+        }
 
-            const contentResult = await this.handleApiResult(
-                await viewFragmentContent(selectedFragment.category, selectedFragment.name),
-                'Fetched fragment content'
-            );
+        const contentResult = await this.handleApiResult(
+            await viewFragmentContent(selectedFragment.category, selectedFragment.name),
+            'Fetched fragment content'
+        );
 
-            if (contentResult) {
-                console.log(chalk.green(`Fragment assigned to ${formatSnakeCase(variable.name)}`));
-                console.log(chalk.cyan('\nFragment content preview:'));
-                console.log(contentResult.substring(0, 200) + (contentResult.length > 200 ? '...' : ''));
-            } else {
-                console.error(chalk.red('Failed to fetch fragment content'));
-            }
-        } catch (error) {
-            console.error(chalk.red('Error assigning fragment:'), error);
+        if (contentResult) {
+            console.log(chalk.green(`Fragment assigned to ${formatSnakeCase(variable.name)}`));
+            console.log(chalk.cyan('\nFragment content preview:'));
+            console.log(contentResult.substring(0, 200) + (contentResult.length > 200 ? '...' : ''));
+        } else {
+            console.error(chalk.red('Failed to fetch fragment content'));
         }
     }
 
-    async assignEnvVarToVariable(promptId: string, variable: Variable): Promise<void> {
-        try {
-            const envVarsResult = await readEnvVars();
+    private async assignEnvVarToVariable(promptId: string, variable: Variable): Promise<void> {
+        const envVarsResult = await readEnvVars();
 
-            if (!envVarsResult.success) {
-                console.error(chalk.red('Failed to fetch environment variables'));
-                return;
-            }
+        if (!envVarsResult.success) {
+            throw new Error('Failed to fetch environment variables');
+        }
 
-            const envVars = envVarsResult.data || [];
-            const matchingEnvVars = envVars.filter(
-                (ev) =>
-                    ev.name.toLowerCase().includes(variable.name.toLowerCase()) ||
-                    variable.name.toLowerCase().includes(ev.name.toLowerCase())
-            );
-            const selectedEnvVar = await this.showMenu<EnvVar | 'back'>('Select an Environment Variable:', [
-                ...matchingEnvVars.map((v) => ({
-                    name: chalk.green(chalk.bold(`${formatSnakeCase(v.name)} (${v.scope}) - Suggested Match`)),
+        const envVars = envVarsResult.data || [];
+        const matchingEnvVars = envVars.filter(
+            (ev) =>
+                ev.name.toLowerCase().includes(variable.name.toLowerCase()) ||
+                variable.name.toLowerCase().includes(ev.name.toLowerCase())
+        );
+        const selectedEnvVar = await this.showMenu<EnvVar | 'back'>('Select an Environment Variable:', [
+            ...matchingEnvVars.map((v) => ({
+                name: chalk.green(chalk.bold(`${formatSnakeCase(v.name)} (${v.scope}) - Suggested Match`)),
+                value: v
+            })),
+            ...envVars
+                .filter((v) => !matchingEnvVars.includes(v))
+                .map((v) => ({
+                    name: `${formatSnakeCase(v.name)} (${v.scope})`,
                     value: v
-                })),
-                ...envVars
-                    .filter((v) => !matchingEnvVars.includes(v))
-                    .map((v) => ({
-                        name: `${formatSnakeCase(v.name)} (${v.scope})`,
-                        value: v
-                    }))
-            ]);
+                }))
+        ]);
 
-            if (selectedEnvVar === 'back') {
-                console.log(chalk.yellow('Environment variable assignment cancelled.'));
-                return;
-            }
-
-            const envVarRef = `Env: ${selectedEnvVar.name}`;
-            const updateResult = await updatePromptVariable(promptId, variable.name, envVarRef);
-
-            if (!updateResult.success) {
-                console.error(chalk.red(`Failed to assign environment variable: ${updateResult.error}`));
-                return;
-            }
-
-            console.log(chalk.green(`Environment variable assigned to ${formatSnakeCase(variable.name)}`));
-            console.log(chalk.cyan(`Current value: ${selectedEnvVar.value}`));
-        } catch (error) {
-            console.error(chalk.red('Error assigning environment variable:'), error);
+        if (selectedEnvVar === 'back') {
+            console.log(chalk.yellow('Environment variable assignment cancelled.'));
+            return;
         }
+
+        const envVarRef = `Env: ${selectedEnvVar.name}`;
+        const updateResult = await updatePromptVariable(promptId, variable.name, envVarRef);
+
+        if (!updateResult.success) {
+            throw new Error(`Failed to assign environment variable: ${updateResult.error}`);
+        }
+
+        console.log(chalk.green(`Environment variable assigned to ${formatSnakeCase(variable.name)}`));
+        console.log(chalk.cyan(`Current value: ${selectedEnvVar.value}`));
     }
 
-    async unsetVariable(promptId: string, variable: Variable): Promise<void> {
+    private async unsetVariable(promptId: string, variable: Variable): Promise<void> {
         const unsetResult = await updatePromptVariable(promptId, variable.name, '');
 
         if (unsetResult.success) {
             console.log(chalk.green(`Value unset for ${formatSnakeCase(variable.name)}`));
         } else {
-            console.error(
-                chalk.red(`Failed to unset value for ${formatSnakeCase(variable.name)}: ${unsetResult.error}`)
-            );
+            throw new Error(`Failed to unset value for ${formatSnakeCase(variable.name)}: ${unsetResult.error}`);
         }
     }
-
-    async unsetAllVariables(promptId: string): Promise<void> {
+    private async unsetAllVariables(promptId: string): Promise<void> {
         const details = await this.handleApiResult(await getPromptDetails(promptId), 'Fetched prompt details');
 
         if (!details) return;
@@ -397,12 +398,14 @@ class PromptCommand extends BaseCommand {
         let success = true;
 
         for (const variable of details.variables) {
-            const unsetResult = await updatePromptVariable(promptId, variable.name, '');
+            try {
+                const unsetResult = await updatePromptVariable(promptId, variable.name, '');
 
-            if (!unsetResult.success) {
-                console.error(
-                    chalk.red(`Failed to unset value for ${formatSnakeCase(variable.name)}: ${unsetResult.error}`)
-                );
+                if (!unsetResult.success) {
+                    throw new Error(unsetResult.error);
+                }
+            } catch (error) {
+                this.handleError(error, `unsetting variable ${formatSnakeCase(variable.name)}`);
                 success = false;
             }
         }
@@ -416,7 +419,7 @@ class PromptCommand extends BaseCommand {
         await this.pressKeyToContinue();
     }
 
-    async executePromptWithAssignment(promptId: string): Promise<void> {
+    private async executePromptWithAssignment(promptId: string): Promise<void> {
         try {
             const details = await this.handleApiResult(await getPromptDetails(promptId), 'Fetched prompt details');
 
@@ -448,26 +451,36 @@ class PromptCommand extends BaseCommand {
             );
 
             if (result) {
-                while (true) {
-                    const nextAction = await this.showMenu<'continue' | 'back'>('What would you like to do next?', [
-                        { name: chalk.green(chalk.bold('Continue conversation')), value: 'continue' }
-                    ]);
-
-                    if (nextAction === 'back') break;
-
-                    const userInput = await this.getMultilineInput(chalk.blue('You: '));
-                    const response = await this.handleApiResult(
-                        await conversationManager.continueConversation(userInput),
-                        'Continued conversation'
-                    );
-
-                    if (response) {
-                        // console.log(chalk.green('AI:'), response);
-                    }
-                }
+                await this.continueConversation(conversationManager);
             }
         } catch (error) {
             this.handleError(error, 'executing prompt');
+        }
+    }
+
+    private async continueConversation(conversationManager: ConversationManager): Promise<void> {
+        while (true) {
+            try {
+                const nextAction = await this.showMenu<'continue' | 'back'>('What would you like to do next?', [
+                    { name: chalk.green(chalk.bold('Continue conversation')), value: 'continue' }
+                ]);
+
+                if (nextAction === 'back') break;
+
+                const userInput = await this.getMultilineInput(chalk.blue('You: '));
+                const response = await this.handleApiResult(
+                    await conversationManager.continueConversation(userInput),
+                    'Continued conversation'
+                );
+
+                if (response) {
+                    // Note: The response is not logged here.
+                    // console.log(chalk.green('AI:'), response);
+                }
+            } catch (error) {
+                this.handleError(error, 'continuing conversation');
+                await this.pressKeyToContinue();
+            }
         }
     }
 }

@@ -6,12 +6,11 @@ export function formatTitleCase(category: string): string {
 }
 
 export function formatSnakeCase(variableName: string): string {
-    const cleanName = variableName.replace(/[{}]/g, '');
-    const lowercaseName = cleanName.toLowerCase();
-    const snakeCaseName = lowercaseName
+    return variableName
+        .replace(/[{}]/g, '')
+        .toLowerCase()
         .replace(/_/g, ' ')
         .replace(/\w\S*/g, (word) => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase())
         .replace(/ /g, '_')
         .toLowerCase();
-    return snakeCaseName;
 }

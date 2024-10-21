@@ -1,5 +1,6 @@
 import path from 'path';
 
+import { handleError } from './error.util';
 import { ApiResult, Fragment } from '../../shared/types';
 import { readDirectory, readFileContent } from '../../shared/utils/file_operations';
 import { cliConfig } from '../config/cli.config';
@@ -25,10 +26,8 @@ export async function listFragments(): Promise<ApiResult<Fragment[]>> {
         }
         return { success: true, data: fragments };
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred while listing fragments'
-        };
+        handleError(error, 'listing fragments');
+        return { success: false, error: 'Failed to list fragments' };
     }
 }
 
@@ -38,10 +37,7 @@ export async function viewFragmentContent(category: string, name: string): Promi
         const content = await readFileContent(filePath);
         return { success: true, data: content };
     } catch (error) {
-        console.error('Error in viewFragmentContent:', error);
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred while reading fragment content'
-        };
+        handleError(error, 'viewing fragment content');
+        return { success: false, error: 'Failed to view fragment content' };
     }
 }

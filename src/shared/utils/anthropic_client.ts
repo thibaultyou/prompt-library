@@ -1,29 +1,29 @@
 import { Anthropic } from '@anthropic-ai/sdk';
 import { Message, MessageStreamEvent } from '@anthropic-ai/sdk/resources';
-
-import { config, getConfigValue } from '../config';
-import logger from './logger';
+import { AppError, handleError } from '../../cli/utils/error.util';
+import { getConfigValue } from '../config';
 import { commonConfig } from '../config/common.config';
 
-export function initializeAnthropicClient(): Anthropic {
-    const apiKey = getConfigValue('ANTHROPIC_API_KEY');
+let anthropicClient: Anthropic | null = null;
 
-    if (!apiKey) {
-        logger.error('ANTHROPIC_API_KEY is not set in the environment.');
-        throw new Error('ANTHROPIC_API_KEY is not set in the environment.');
+function getAnthropicClient(): Anthropic {
+    if (!anthropicClient) {
+        const apiKey = getConfigValue('ANTHROPIC_API_KEY');
+
+        if (!apiKey) {
+            throw new AppError('CONFIG_ERROR', 'ANTHROPIC_API_KEY is not set in the environment.');
+        }
+
+        anthropicClient = new Anthropic({ apiKey });
     }
-
-    logger.info('Initializing Anthropic client');
-    return new Anthropic({ apiKey });
+    return anthropicClient;
 }
 
-export async function sendAnthropicRequestClassic(
-    client: Anthropic,
-    messages: { role: string; content: string }[]
-): Promise<Message> {
+export async function sendAnthropicRequestClassic(messages: { role: string; content: string }[]): Promise<Message> {
+    const client = getAnthropicClient();
+
     try {
-        logger.info('Sending classic request to Anthropic API');
-        const message = await client.messages.create({
+        return await client.messages.create({
             model: commonConfig.ANTHROPIC_MODEL,
             max_tokens: commonConfig.ANTHROPIC_MAX_TOKENS,
             messages: messages.map((msg) => ({
@@ -31,23 +31,21 @@ export async function sendAnthropicRequestClassic(
                 content: msg.content
             }))
         });
-        logger.info('Received classic response from Anthropic API');
-        return message;
     } catch (error) {
-        logger.error('Error sending classic request to Anthropic API:', error);
+        handleError(error, 'sending classic request to Anthropic API');
         throw error;
     }
 }
 
 export async function* sendAnthropicRequestStream(
-    client: Anthropic,
     messages: { role: string; content: string }[]
 ): AsyncGenerator<MessageStreamEvent> {
+    const client = getAnthropicClient();
+
     try {
-        logger.info('Sending streaming request to Anthropic API');
         const stream = client.messages.stream({
-            model: config.ANTHROPIC_MODEL,
-            max_tokens: config.ANTHROPIC_MAX_TOKENS,
+            model: commonConfig.ANTHROPIC_MODEL,
+            max_tokens: commonConfig.ANTHROPIC_MAX_TOKENS,
             messages: messages.map((msg) => ({
                 role: msg.role === 'human' ? 'user' : 'assistant',
                 content: msg.content
@@ -57,27 +55,18 @@ export async function* sendAnthropicRequestStream(
         for await (const event of stream) {
             yield event;
         }
-
-        logger.info('Finished streaming response from Anthropic API');
     } catch (error) {
-        logger.error('Error sending streaming request to Anthropic API:', error);
+        handleError(error, 'sending streaming request to Anthropic API');
         throw error;
     }
 }
 
-/**
- * Validates the Anthropic API key by attempting to initialize a client.
- * @returns {Promise<boolean>} True if the API key is valid, false otherwise.
- */
 export async function validateAnthropicApiKey(): Promise<boolean> {
     try {
-        const client = initializeAnthropicClient();
-        // Attempt a simple request to validate the API key
-        await sendAnthropicRequestClassic(client, [{ role: 'user', content: 'Test request' }]);
-        logger.info('Anthropic API key is valid');
+        await sendAnthropicRequestClassic([{ role: 'user', content: 'Test request' }]);
         return true;
     } catch (error) {
-        logger.error('Failed to validate Anthropic API key:', error);
+        handleError(error, 'validating Anthropic API key');
         return false;
     }
 }

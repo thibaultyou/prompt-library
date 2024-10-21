@@ -10,21 +10,30 @@ class FlushCommand extends BaseCommand {
     }
 
     async execute(): Promise<void> {
-        const confirm = await this.confirmAction(
-            'Are you sure you want to flush all data? This action cannot be undone.'
-        );
+        try {
+            const confirm = await this.confirmAction(
+                chalk.yellow('Are you sure you want to flush all data? This action cannot be undone.')
+            );
 
-        if (confirm) {
-            try {
-                await flushData();
-                console.log(chalk.green('Data flushed successfully. The CLI will now exit.'));
-                process.exit(0);
-            } catch (error) {
-                console.error(chalk.red('Error flushing data:'), error);
-                await this.pressKeyToContinue();
+            if (confirm) {
+                await this.performFlush();
+            } else {
+                console.log(chalk.yellow('Flush operation cancelled.'));
             }
-        } else {
-            console.log(chalk.yellow('Flush operation cancelled.'));
+        } catch (error) {
+            this.handleError(error, 'flush command');
+        } finally {
+            await this.pressKeyToContinue();
+        }
+    }
+
+    private async performFlush(): Promise<void> {
+        try {
+            await flushData();
+            console.log(chalk.green('Data flushed successfully. The CLI will now exit.'));
+            process.exit(0);
+        } catch (error) {
+            this.handleError(error, 'flushing data');
         }
     }
 }

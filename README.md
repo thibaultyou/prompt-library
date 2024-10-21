@@ -47,10 +47,10 @@ This project serves as a starting point for creating your own AI toolkit, demons
 ## ⚡ Quick Start
 
 1. Fork and clone the repository
-2. Set up Anthropic API key (GitHub Actions and CLI)
-3. Install dependencies: `npm install`
-4. Build and install CLI: `npm run build && npm install -g .`
-5. Initialize CLI: `prompt-library-cli`
+2. Install dependencies: `npm install`
+3. Build and install CLI: `npm run build && npm install -g .`
+4. Initialize CLI: `prompt-library-cli`
+5. Set up Anthropic API key
 
 Detailed setup instructions in [Getting Started](#-getting-started).
 

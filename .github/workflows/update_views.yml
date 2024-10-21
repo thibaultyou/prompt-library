@@ -1,4 +1,4 @@
-name: Update Views and Metadata
+name: Update Prompts and Views
 
 on:
   push:
@@ -64,12 +64,12 @@ jobs:
             echo "FORCE_REGENERATE=false" >> $GITHUB_ENV
           fi
 
-      - name: Generate metadata
+      - name: Update metadata files
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FORCE_REGENERATE: ${{ env.FORCE_REGENERATE }}
           CLI_ENV: ci
-        run: npm run generate-metadata
+        run: npm run update-metadata
 
       - name: Update views
         run: npm run update-views

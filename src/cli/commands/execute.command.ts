@@ -77,12 +77,12 @@ Note:
             .action(this.execute.bind(this));
     }
 
-    collect(value: string, previous: Record<string, string>): Record<string, string> {
+    private collect(value: string, previous: Record<string, string>): Record<string, string> {
         const [variable, file] = value.split('=');
         return { ...previous, [variable]: file };
     }
 
-    parseDynamicOptions(args: string[]): Record<string, string> {
+    private parseDynamicOptions(args: string[]): Record<string, string> {
         const options: Record<string, string> = {};
 
         for (let i = 0; i < args.length; i += 2) {
@@ -95,12 +95,12 @@ Note:
     }
 
     async execute(options: any, command: any): Promise<void> {
-        if (options.help) {
-            this.outputHelp();
-            return;
-        }
-
         try {
+            if (options.help) {
+                this.outputHelp();
+                return;
+            }
+
             const dynamicOptions = this.parseDynamicOptions(command.args);
 
             if (options.prompt) {
@@ -127,31 +127,35 @@ Note:
                 this.outputHelp();
             }
         } catch (error) {
-            console.error(chalk.red('Error handling prompt:'), error);
+            this.handleError(error, 'execute command');
         }
     }
 
-    async handleStoredPrompt(
+    private async handleStoredPrompt(
         promptId: string,
         ciMode: boolean,
         dynamicOptions: Record<string, string>,
         inspect: boolean,
         fileInputs: Record<string, string>
     ): Promise<void> {
-        const promptFiles = await this.handleApiResult(await getPromptFiles(promptId), 'Fetched prompt files');
+        try {
+            const promptFiles = await this.handleApiResult(await getPromptFiles(promptId), 'Fetched prompt files');
 
-        if (!promptFiles) return;
+            if (!promptFiles) return;
 
-        const { promptContent, metadata } = promptFiles;
+            const { promptContent, metadata } = promptFiles;
 
-        if (inspect) {
-            this.inspectPrompt(metadata);
-        } else {
-            await this.executePromptWithMetadata(promptContent, metadata, ciMode, dynamicOptions, fileInputs);
+            if (inspect) {
+                await this.inspectPrompt(metadata);
+            } else {
+                await this.executePromptWithMetadata(promptContent, metadata, ciMode, dynamicOptions, fileInputs);
+            }
+        } catch (error) {
+            this.handleError(error, 'handling stored prompt');
         }
     }
 
-    async handleFilePrompt(
+    private async handleFilePrompt(
         promptFile: string,
         metadataFile: string,
         ciMode: boolean,
@@ -160,85 +164,77 @@ Note:
         fileInputs: Record<string, string>
     ): Promise<void> {
         try {
-            console.log(chalk.blue(`Reading prompt file: ${promptFile}`));
             const promptContent = await fs.readFile(promptFile, 'utf-8');
-            console.log(chalk.blue(`Reading metadata file: ${metadataFile}`));
             const metadataContent = await fs.readFile(metadataFile, 'utf-8');
-            console.log(chalk.blue('Parsing metadata content'));
             const metadata = yaml.load(metadataContent) as Metadata;
-            console.log(chalk.green('Successfully read and parsed files'));
 
             if (inspect) {
-                this.inspectPrompt(metadata);
+                await this.inspectPrompt(metadata);
             } else {
                 await this.executePromptWithMetadata(promptContent, metadata, ciMode, dynamicOptions, fileInputs);
             }
         } catch (error) {
-            console.error(chalk.red('Error reading or parsing files:'));
-
-            if (error instanceof Error) {
-                console.error(chalk.red(`${error.name}: ${error.message}`));
-                console.error(chalk.red('Stack trace:'), error.stack);
-            } else {
-                console.error(chalk.red(String(error)));
-            }
+            this.handleError(error, 'handling file prompt');
         }
     }
 
-    async inspectPrompt(metadata: Metadata): Promise<void> {
-        await viewPromptDetails(
-            {
-                id: '',
-                title: metadata.title,
-                primary_category: metadata.primary_category,
-                description: metadata.description,
-                tags: metadata.tags,
-                variables: metadata.variables
-            } as Prompt & { variables: Variable[] },
-            true
-        );
+    private async inspectPrompt(metadata: Metadata): Promise<void> {
+        try {
+            await viewPromptDetails(
+                {
+                    id: '',
+                    title: metadata.title,
+                    primary_category: metadata.primary_category,
+                    description: metadata.description,
+                    tags: metadata.tags,
+                    variables: metadata.variables
+                } as Prompt & { variables: Variable[] },
+                true
+            );
+        } catch (error) {
+            this.handleError(error, 'inspecting prompt');
+        }
     }
 
-    async executePromptWithMetadata(
+    private async executePromptWithMetadata(
         promptContent: string,
         metadata: Metadata,
         ciMode: boolean,
         dynamicOptions: Record<string, string>,
         fileInputs: Record<string, string>
     ): Promise<void> {
-        const userInputs: Record<string, string> = {};
-
-        for (const variable of metadata.variables) {
-            const snakeCaseName = variable.name.replace(/[{}]/g, '').toLowerCase();
-            let value = dynamicOptions[snakeCaseName];
-
-            if (fileInputs[snakeCaseName]) {
-                try {
-                    value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
-                    console.log(chalk.green(`Loaded file content for ${snakeCaseName}`));
-                } catch (error) {
-                    console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
-                }
-            }
-
-            if (value) {
-                userInputs[variable.name] = value;
-            } else if (!variable.optional_for_user) {
-                if (ciMode) {
-                    console.error(chalk.red(`Error: Required variable ${snakeCaseName} is not set.`));
-                    process.exit(1);
-                } else {
-                    userInputs[variable.name] = await this.getInput(`Enter value for ${snakeCaseName}:`);
-                }
-            }
-        }
-
         try {
+            const userInputs: Record<string, string> = {};
+
+            for (const variable of metadata.variables) {
+                const snakeCaseName = variable.name.replace(/[{}]/g, '').toLowerCase();
+                let value = dynamicOptions[snakeCaseName];
+
+                if (fileInputs[snakeCaseName]) {
+                    try {
+                        value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
+                        console.log(chalk.green(`Loaded file content for ${snakeCaseName}`));
+                    } catch (error) {
+                        console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
+                    }
+                }
+
+                if (value) {
+                    userInputs[variable.name] = value;
+                } else if (!variable.optional_for_user) {
+                    if (ciMode) {
+                        throw new Error(`Required variable ${snakeCaseName} is not set.`);
+                    } else {
+                        userInputs[variable.name] = await this.getInput(`Enter value for ${snakeCaseName}:`);
+                    }
+                }
+            }
+
             const result = await processPromptContent(
                 [{ role: 'user', content: promptContent }],
                 userInputs,
-                !ciMode, // Use streaming if not in CI mode
-                async (inputs) => inputs, // Simple pass-through function for resolveInputs
+                !ciMode,
+                async (inputs) => inputs,
                 (event) => {
                     if (event.type === 'content_block_delta') {
                         if ('text' in event.delta) {
@@ -256,7 +252,7 @@ Note:
                 console.error(chalk.red('Unexpected result format from prompt processing'));
             }
         } catch (error) {
-            console.error(chalk.red('Error processing prompt:', error));
+            this.handleError(error, 'executing prompt with metadata');
         }
     }
 }

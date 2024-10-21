@@ -17,7 +17,7 @@ import {
 } from '../../shared/utils/file_operations';
 import logger from '../../shared/utils/logger';
 import { appConfig } from '../config/app.config';
-import { processMetadataGeneration } from '../utils/prompt_operations';
+import { processMetadataGeneration } from '../utils/analyzer_operations';
 import { dumpYamlContent, sanitizeYamlContent } from '../utils/yaml_operations';
 
 export async function generateMetadata(promptContent: string): Promise<Metadata> {
@@ -50,15 +50,15 @@ export async function shouldUpdateMetadata(promptFile: string, metadataFile: str
         const metadataContent = await readFileContent(metadataFile);
         const storedHashLine = metadataContent.split('\n').find((line) => line.trim().startsWith('content_hash:'));
 
-        if (storedHashLine) {
-            const storedHash = storedHashLine.split(':')[1].trim();
-
-            if (promptHash !== storedHash) {
-                logger.info(`Content hash mismatch for ${promptFile}. Update needed.`);
-                return [true, promptHash];
-            }
-        } else {
+        if (!storedHashLine) {
             logger.info(`No content hash found in ${metadataFile}. Update needed.`);
+            return [true, promptHash];
+        }
+
+        const storedHash = storedHashLine.split(':')[1].trim();
+
+        if (promptHash !== storedHash) {
+            logger.info(`Content hash mismatch for ${promptFile}. Update needed.`);
             return [true, promptHash];
         }
 
@@ -74,17 +74,11 @@ export async function updateMetadataHash(metadataFile: string, newHash: string):
     try {
         const content = await readFileContent(metadataFile);
         const lines = content.split('\n');
-        let hashUpdated = false;
+        const hashIndex = lines.findIndex((line) => line.trim().startsWith('content_hash:'));
 
-        for (let i = 0; i < lines.length; i++) {
-            if (lines[i].trim().startsWith('content_hash:')) {
-                lines[i] = `content_hash: ${newHash}`;
-                hashUpdated = true;
-                break;
-            }
-        }
-
-        if (!hashUpdated) {
+        if (hashIndex !== -1) {
+            lines[hashIndex] = `content_hash: ${newHash}`;
+        } else {
             lines.push(`content_hash: ${newHash}`);
         }
 
@@ -98,9 +92,15 @@ export async function updateMetadataHash(metadataFile: string, newHash: string):
 
 export async function updatePromptMetadata(): Promise<void> {
     logger.info('Starting update_prompt_metadata process');
-    await processMainPrompt(appConfig.PROMPTS_DIR);
-    await processPromptDirectories(appConfig.PROMPTS_DIR);
-    logger.info('update_prompt_metadata process completed');
+
+    try {
+        await processMainPrompt(appConfig.PROMPTS_DIR);
+        await processPromptDirectories(appConfig.PROMPTS_DIR);
+        logger.info('update_prompt_metadata process completed');
+    } catch (error) {
+        logger.error('Error in updatePromptMetadata:', error);
+        throw error;
+    }
 }
 
 async function processMainPrompt(promptsDir: string): Promise<void> {
@@ -108,17 +108,23 @@ async function processMainPrompt(promptsDir: string): Promise<void> {
 
     if (await fileExists(mainPromptFile)) {
         logger.info('Processing main prompt.md file');
-        const promptContent = await readFileContent(mainPromptFile);
-        const metadata = await generateMetadata(promptContent);
-        const newDirName = metadata.directory;
-        const newDirPath = path.join(promptsDir, newDirName);
-        await createDirectory(newDirPath);
-        const newPromptFile = path.join(newDirPath, commonConfig.PROMPT_FILE_NAME);
-        await renameFile(mainPromptFile, newPromptFile);
-        const metadataPath = path.join(newDirPath, commonConfig.METADATA_FILE_NAME);
-        await writeFileContent(metadataPath, sanitizeYamlContent(dumpYamlContent(metadata)));
-        const newHash = crypto.createHash('md5').update(promptContent).digest('hex');
-        await updateMetadataHash(metadataPath, newHash);
+
+        try {
+            const promptContent = await readFileContent(mainPromptFile);
+            const metadata = await generateMetadata(promptContent);
+            const newDirName = metadata.directory;
+            const newDirPath = path.join(promptsDir, newDirName);
+            await createDirectory(newDirPath);
+            const newPromptFile = path.join(newDirPath, commonConfig.PROMPT_FILE_NAME);
+            await renameFile(mainPromptFile, newPromptFile);
+            const metadataPath = path.join(newDirPath, commonConfig.METADATA_FILE_NAME);
+            await writeFileContent(metadataPath, sanitizeYamlContent(dumpYamlContent(metadata)));
+            const newHash = crypto.createHash('md5').update(promptContent).digest('hex');
+            await updateMetadataHash(metadataPath, newHash);
+        } catch (error) {
+            logger.error('Error processing main prompt:', error);
+            throw error;
+        }
     }
 }
 
@@ -150,13 +156,12 @@ async function processPromptFile(
     promptsDir: string,
     item: string
 ): Promise<void> {
-    const [shouldUpdate, newHash] = await shouldUpdateMetadata(promptFile, metadataFile);
+    try {
+        const [shouldUpdate, newHash] = await shouldUpdateMetadata(promptFile, metadataFile);
 
-    if (shouldUpdate) {
-        logger.info(`Updating metadata for ${item}`);
-        const promptContent = await readFileContent(promptFile);
-
-        try {
+        if (shouldUpdate) {
+            logger.info(`Updating metadata for ${item}`);
+            const promptContent = await readFileContent(promptFile);
             const metadata = await generateMetadata(promptContent);
 
             if (!metadata || Object.keys(metadata).length === 0) {
@@ -174,11 +179,12 @@ async function processPromptFile(
             const metadataPath = path.join(currentItemPath, commonConfig.METADATA_FILE_NAME);
             await writeFileContent(metadataPath, sanitizeYamlContent(dumpYamlContent(metadata)));
             await updateMetadataHash(metadataPath, newHash);
-        } catch (error) {
-            logger.error(`Error processing ${item}:`, error);
+        } else {
+            logger.info(`Metadata for ${item} is up to date`);
         }
-    } else {
-        logger.info(`Metadata for ${item} is up to date`);
+    } catch (error) {
+        logger.error(`Error processing ${item}:`, error);
+        throw error;
     }
 }
 
@@ -191,22 +197,27 @@ async function updatePromptDirectory(
     const newDirPath = path.join(promptsDir, newDirName);
     logger.info(`Renaming directory from ${oldDirName} to ${newDirName}`);
 
-    if (await fileExists(newDirPath)) {
-        logger.warn(`Directory ${newDirName} already exists. Updating contents.`);
-        const files = await readDirectory(currentItemPath);
-        await Promise.all(
-            files.map(async (file) => {
-                const src = path.join(currentItemPath, file);
-                const dst = path.join(newDirPath, file);
+    try {
+        if (await fileExists(newDirPath)) {
+            logger.warn(`Directory ${newDirName} already exists. Updating contents.`);
+            const files = await readDirectory(currentItemPath);
+            await Promise.all(
+                files.map(async (file) => {
+                    const src = path.join(currentItemPath, file);
+                    const dst = path.join(newDirPath, file);
 
-                if (await isFile(src)) {
-                    await copyFile(src, dst);
-                }
-            })
-        );
-        await removeDirectory(currentItemPath);
-    } else {
-        await renameFile(currentItemPath, newDirPath);
+                    if (await isFile(src)) {
+                        await copyFile(src, dst);
+                    }
+                })
+            );
+            await removeDirectory(currentItemPath);
+        } else {
+            await renameFile(currentItemPath, newDirPath);
+        }
+    } catch (error) {
+        logger.error(`Error updating prompt directory from ${oldDirName} to ${newDirName}:`, error);
+        throw error;
     }
 }
 

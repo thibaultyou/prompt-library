@@ -12,7 +12,6 @@
         "build": "tsc",
         "dev": "ts-node src/cli/index.ts",
         "format": "npm run lint:fix && npm run prettify",
-        "generate-metadata": "ts-node src/app/core/generate_metadata.ts",
         "lint": "eslint 'src/**/*.ts'",
         "lint:fix": "npm run lint -- --fix",
         "prettify": "prettier --write 'src/**/*.ts'",
@@ -22,6 +21,7 @@
         "toc": "doctoc README.md --github --notitle",
         "type-check": "tsc --noEmit",
         "update": "ncu -i",
+        "update-metadata": "ts-node src/app/core/update_metadata.ts",
         "update-views": "ts-node src/app/core/update_views.ts",
         "validate-yaml": "yamllint '**/*.yml'"
     },
