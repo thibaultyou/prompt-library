@@ -9,6 +9,9 @@ archive/
 # Ignore local database
 *.sqlite
 
+# Ignore macOS files
+.DS_Store
+
 # Ignore local temporary files
 z_diff_output.txt
 z_dir2prompt_output.txt

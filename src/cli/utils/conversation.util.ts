@@ -1,9 +1,7 @@
-// Updated ConversationManager class
-
+import { handleError } from './error.util';
 import { processCliPromptContent, resolveCliInputs } from './prompt.cli.util';
 import { getPromptFiles } from './prompt.util';
 import { ApiResult } from '../../shared/types';
-import logger from '../../shared/utils/logger';
 import { processPromptContent, processPromptWithVariables } from '../../shared/utils/prompt_operations';
 
 interface ConversationMessage {
@@ -47,11 +45,8 @@ export class ConversationManager {
                 return { success: false, error: 'Unexpected result format' };
             }
         } catch (error) {
-            logger.error('Error initializing conversation:', error);
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Unknown error occurred'
-            };
+            handleError(error, 'initializing conversation');
+            return { success: false, error: 'Failed to initialize conversation' };
         }
     }
 
@@ -70,11 +65,8 @@ export class ConversationManager {
                 return { success: false, error: 'Unexpected result format' };
             }
         } catch (error) {
-            logger.error('Error continuing conversation:', error);
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Unknown error occurred'
-            };
+            handleError(error, 'continuing conversation');
+            return { success: false, error: 'Failed to continue conversation' };
         }
     }
 }

@@ -1,11 +1,12 @@
 import chalk from 'chalk';
 
-import { runAsync, getAsync, allAsync } from './database.util';
+import { allAsync, getAsync, runAsync } from './database.util';
 import { readEnvVars } from './env.util';
+import { handleError } from './error.util';
 import { getPromptMetadata } from './metadata.util';
-import { Metadata, Prompt, ApiResult, Variable } from '../../shared/types';
+import { ApiResult, Metadata, Prompt, Variable } from '../../shared/types';
 import { processPromptContent } from '../../shared/utils/prompt_operations';
-import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string_formatter';
+import { formatSnakeCase, formatTitleCase } from '../../shared/utils/string_formatter';
 
 export async function createPrompt(metadata: Metadata, content: string): Promise<ApiResult<void>> {
     try {
@@ -51,10 +52,8 @@ export async function createPrompt(metadata: Metadata, content: string): Promise
         }
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred'
-        };
+        handleError(error, 'creating prompt');
+        return { success: false, error: 'Failed to create prompt' };
     }
 }
 
@@ -74,10 +73,8 @@ export async function executePrompt(
         const result = await processPromptContent([{ role: 'user', content: promptContent }], userInputs, useStreaming);
         return { success: true, data: result };
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred'
-        };
+        handleError(error, 'executing prompt');
+        return { success: false, error: 'Failed to execute prompt' };
     }
 }
 
@@ -86,10 +83,8 @@ export async function listPrompts(): Promise<ApiResult<Prompt[]>> {
         const prompts = await allAsync<Prompt>('SELECT id, title, primary_category FROM prompts');
         return { success: true, data: prompts.data ?? [] };
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred'
-        };
+        handleError(error, 'listing prompts');
+        return { success: false, error: 'Failed to list prompts' };
     }
 }
 
@@ -118,15 +113,13 @@ export async function getPromptFiles(
             }
         };
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred'
-        };
+        handleError(error, 'getting prompt files');
+        return { success: false, error: 'Failed to get prompt files' };
     }
 }
 
 export async function viewPromptDetails(details: Prompt & { variables: Variable[] }, isExecute = false): Promise<void> {
-    console.clear();
+    // console.clear();
     console.log(chalk.cyan('Prompt:'), details.title);
     console.log(`\n${details.description || ''}`);
     console.log(chalk.cyan('\nCategory:'), formatTitleCase(details.primary_category));
@@ -142,47 +135,54 @@ export async function viewPromptDetails(details: Prompt & { variables: Variable[
     console.log(chalk.cyan('\nTags:'), tags.length > 0 ? tags.join(', ') : 'No tags');
     console.log(chalk.cyan('\nOptions:'), '([*] Required  [ ] Optional)');
     const maxNameLength = Math.max(...details.variables.map((v) => formatSnakeCase(v.name).length));
-    const envVarsResult = await readEnvVars();
-    const envVars = envVarsResult.success ? envVarsResult.data || [] : [];
 
-    for (const variable of details.variables) {
-        const paddedName = formatSnakeCase(variable.name).padEnd(maxNameLength);
-        const requiredFlag = variable.optional_for_user ? '[ ]' : '[*]';
-        const matchingEnvVar = envVars.find((v) => v.name === variable.name);
-        let status;
+    try {
+        const envVarsResult = await readEnvVars();
+        const envVars = envVarsResult.success ? envVarsResult.data || [] : [];
 
-        if (variable.value) {
-            if (variable.value.startsWith('Fragment: ')) {
-                status = chalk.blue(variable.value);
-            } else if (variable.value.startsWith('Env: ')) {
-                const envVarName = variable.value.split('Env: ')[1];
-                const envVar = envVars.find((v: { name: string }) => v.name === envVarName);
-                const envValue = envVar ? envVar.value : 'Not found';
-                status = chalk.magenta(
-                    `Env: ${formatSnakeCase(envVarName)} (${envValue.substring(0, 30)}${envValue.length > 30 ? '...' : ''})`
-                );
+        for (const variable of details.variables) {
+            const paddedName = formatSnakeCase(variable.name).padEnd(maxNameLength);
+            const requiredFlag = variable.optional_for_user ? '[ ]' : '[*]';
+            const matchingEnvVar = envVars.find((v) => v.name === variable.name);
+            let status;
+
+            if (variable.value) {
+                if (variable.value.startsWith('Fragment: ')) {
+                    status = chalk.blue(variable.value);
+                } else if (variable.value.startsWith('Env: ')) {
+                    const envVarName = variable.value.split('Env: ')[1];
+                    const envVar = envVars.find((v: { name: string }) => v.name === envVarName);
+                    const envValue = envVar ? envVar.value : 'Not found';
+                    status = chalk.magenta(
+                        `Env: ${formatSnakeCase(envVarName)} (${envValue.substring(0, 30)}${envValue.length > 30 ? '...' : ''})`
+                    );
+                } else {
+                    status = chalk.green(
+                        `Set: ${variable.value.substring(0, 30)}${variable.value.length > 30 ? '...' : ''}`
+                    );
+                }
             } else {
-                status = chalk.green(
-                    `Set: ${variable.value.substring(0, 30)}${variable.value.length > 30 ? '...' : ''}`
-                );
+                status = variable.optional_for_user ? chalk.yellow('Not Set') : chalk.red('Not Set (Required)');
             }
-        } else {
-            status = variable.optional_for_user ? chalk.yellow('Not Set') : chalk.red('Not Set (Required)');
-        }
 
-        const hint =
-            !isExecute && matchingEnvVar && (!variable.value || (variable.value && !variable.value.startsWith('Env: ')))
-                ? chalk.magenta('(Env variable available)')
-                : '';
-        console.log(`  ${chalk.green(`--${paddedName}`)} ${requiredFlag} ${hint}`);
-        console.log(`    ${variable.role}`);
+            const hint =
+                !isExecute &&
+                matchingEnvVar &&
+                (!variable.value || (variable.value && !variable.value.startsWith('Env: ')))
+                    ? chalk.magenta('(Env variable available)')
+                    : '';
+            console.log(`  ${chalk.green(`--${paddedName}`)} ${requiredFlag} ${hint}`);
+            console.log(`    ${variable.role}`);
+
+            if (!isExecute) {
+                console.log(`      ${status}`);
+            }
+        }
 
         if (!isExecute) {
-            console.log(`      ${status}`);
+            console.log();
         }
-    }
-
-    if (!isExecute) {
-        console.log();
+    } catch (error) {
+        handleError(error, 'viewing prompt details');
     }
 }

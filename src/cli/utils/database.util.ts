@@ -1,16 +1,15 @@
 import path from 'path';
 
-import chalk from 'chalk';
 import fs from 'fs-extra';
 import yaml from 'js-yaml';
 import NodeCache from 'node-cache';
 import sqlite3, { RunResult } from 'sqlite3';
 
-import { handleError, AppError } from './error.util';
+import { AppError, handleError } from './error.util';
 import { createPrompt } from './prompt.util';
 import { commonConfig } from '../../shared/config/common.config';
 import { ApiResult, CategoryItem, Metadata, Prompt, Variable } from '../../shared/types';
-import { readDirectory, fileExists, readFileContent } from '../../shared/utils/file_operations';
+import { fileExists, readDirectory, readFileContent } from '../../shared/utils/file_operations';
 import logger from '../../shared/utils/logger';
 import { cliConfig } from '../config/cli.config';
 
@@ -58,7 +57,7 @@ export function allAsync<T = any>(sql: string, params: any[] = []): Promise<ApiR
 
 export async function handleApiResult<T>(result: ApiResult<T>, message: string): Promise<T | null> {
     if (result.success && result.data) {
-        console.log(chalk.green(message));
+        // console.log(chalk.green(message));
         return result.data;
     } else {
         handleError(result.error || 'Unknown error', `API call in ${message}`);
@@ -141,7 +140,7 @@ export async function initDatabase(): Promise<ApiResult<void>> {
         }
         return { success: true };
     } catch (error) {
-        handleError(error, 'initDatabase');
+        handleError(error, 'initializing database');
         return { success: false, error: 'Failed to initialize database' };
     }
 }
@@ -227,11 +226,8 @@ export async function updatePromptVariable(
         cache.flushAll();
         return { success: true };
     } catch (error) {
-        console.error('Error in updatePromptVariable:', error);
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred in updatePromptVariable'
-        };
+        handleError(error, 'updating prompt variable');
+        return { success: false, error: 'Failed to update prompt variable' };
     }
 }
 
@@ -261,7 +257,7 @@ export async function syncPromptsWithDatabase(): Promise<ApiResult<void>> {
                     await createPrompt(metadata, promptContent);
                     logger.info(`Successfully processed prompt: ${dir}`);
                 } catch (error) {
-                    logger.error(`Error processing prompt ${dir}:`, error);
+                    handleError(error, `processing prompt ${dir}`);
                 }
             } else {
                 logger.warn(`Skipping ${dir}: missing prompt or metadata file`);
@@ -273,7 +269,7 @@ export async function syncPromptsWithDatabase(): Promise<ApiResult<void>> {
         logger.info('Database sync completed');
         return { success: true };
     } catch (error) {
-        handleError(error, 'syncPromptsWithDatabase');
+        handleError(error, 'syncing prompts with database');
         return { success: false, error: 'Failed to sync prompts with database' };
     }
 }
@@ -338,7 +334,7 @@ export async function cleanupOrphanedData(): Promise<ApiResult<void>> {
         logger.info('Orphaned data cleaned up successfully');
         return { success: true };
     } catch (error) {
-        handleError(error, 'cleanupOrphanedData');
+        handleError(error, 'cleaning up orphaned data');
         return { success: false, error: 'Failed to clean up orphaned data' };
     }
 }
@@ -365,7 +361,7 @@ export async function flushData(): Promise<void> {
 
         logger.info('Data flush completed successfully');
     } catch (error) {
-        logger.error('Error during data flush:', error);
+        handleError(error, 'flushing data');
         throw new Error('Failed to flush data');
     }
 }

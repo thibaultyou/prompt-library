@@ -1,4 +1,5 @@
 import { runAsync, allAsync } from './database.util';
+import { handleError } from './error.util';
 import { EnvVar, ApiResult } from '../../shared/types';
 
 export async function createEnvVar(envVar: Omit<EnvVar, 'id'>): Promise<ApiResult<EnvVar>> {
@@ -14,10 +15,8 @@ export async function createEnvVar(envVar: Omit<EnvVar, 'id'>): Promise<ApiResul
             data: { ...envVar, id: result.data?.lastID ?? -1 }
         };
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred'
-        };
+        handleError(error, 'creating environment variable');
+        return { success: false, error: 'Failed to create environment variable' };
     }
 }
 
@@ -38,11 +37,8 @@ export async function readEnvVars(promptId?: number): Promise<ApiResult<EnvVar[]
         }
         return { success: true, data: result.data || [] };
     } catch (error) {
-        console.error('Error in readEnvVars:', error);
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred while reading environment variables'
-        };
+        handleError(error, 'reading environment variables');
+        return { success: false, error: 'Failed to read environment variables' };
     }
 }
 
@@ -51,18 +47,12 @@ export async function updateEnvVar(id: number, newValue: string): Promise<ApiRes
         const result = await runAsync('UPDATE env_vars SET value = ? WHERE id = ?', [newValue, id]);
 
         if (result.success && result.data && result.data.changes === 0) {
-            return {
-                success: false,
-                error: `No environment variable found with id ${id}`
-            };
+            return { success: false, error: `No environment variable found with id ${id}` };
         }
         return { success: true };
     } catch (error) {
-        console.error('Error in updateEnvVar:', error);
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred in updateEnvVar'
-        };
+        handleError(error, 'updating environment variable');
+        return { success: false, error: 'Failed to update environment variable' };
     }
 }
 
@@ -71,9 +61,7 @@ export async function deleteEnvVar(id: number): Promise<ApiResult<void>> {
         await runAsync('DELETE FROM env_vars WHERE id = ?', [id]);
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred'
-        };
+        handleError(error, 'deleting environment variable');
+        return { success: false, error: 'Failed to delete environment variable' };
     }
 }

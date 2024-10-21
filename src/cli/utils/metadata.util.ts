@@ -1,4 +1,5 @@
 import { getAsync, allAsync } from './database.util';
+import { handleError } from './error.util';
 import { ApiResult, Fragment, Metadata } from '../../shared/types';
 
 export async function getPromptMetadata(promptId: string): Promise<ApiResult<Metadata>> {
@@ -45,9 +46,7 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Met
         };
         return { success: true, data: metadata };
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred'
-        };
+        handleError(error, 'getting prompt metadata');
+        return { success: false, error: 'Failed to get prompt metadata' };
     }
 }

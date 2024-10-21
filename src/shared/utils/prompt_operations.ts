@@ -1,16 +1,13 @@
-import Anthropic from '@anthropic-ai/sdk';
 import { Message } from '@anthropic-ai/sdk/resources';
 
-import { initializeAnthropicClient, sendAnthropicRequestClassic, sendAnthropicRequestStream } from './anthropic_client';
-import logger from './logger';
+import { sendAnthropicRequestClassic, sendAnthropicRequestStream } from './anthropic_client';
+import { handleError } from '../../cli/utils/error.util';
 
 export function replaceVariables(content: string, variables: Record<string, string>): string {
-    let updatedContent = content;
-
-    for (const [key, value] of Object.entries(variables)) {
-        updatedContent = updatedContent.replace(new RegExp(`{{${key.replace(/{{|}}/g, '')}}}`, 'g'), value);
-    }
-    return updatedContent;
+    return Object.entries(variables).reduce((updatedContent, [key, value]) => {
+        const regex = new RegExp(`{{${key.replace(/{{|}}/g, '')}}}`, 'g');
+        return updatedContent.replace(regex, value);
+    }, content);
 }
 
 export function extractContentFromMessage(message: Message): string {
@@ -34,13 +31,11 @@ export async function processPromptWithVariables(
     userInputs: Record<string, string> = {},
     resolveInputs?: (inputs: Record<string, string>) => Promise<Record<string, string>>
 ): Promise<string> {
-    logger.info('Processing prompt content with variables');
-
     try {
         const updatedInputs = resolveInputs ? await resolveInputs(userInputs) : userInputs;
         return replaceVariables(promptContent, updatedInputs);
     } catch (error) {
-        logger.error('Error in processPromptWithVariables:', error);
+        handleError(error, 'processing prompt with variables');
         throw error;
     }
 }
@@ -52,21 +47,17 @@ export async function processPromptContent(
     resolveInputs: (inputs: Record<string, string>) => Promise<Record<string, string>> = async (i) => i,
     streamHandler?: (event: any) => void
 ): Promise<string> {
-    logger.info('Processing prompt content');
-    const client = initializeAnthropicClient();
-    logger.info('Anthropic client initialized');
-
     try {
         const updatedMessages = await processMessagesWithVariables(messages, inputs, resolveInputs);
 
         if (useStreaming && streamHandler) {
-            return await processStreamingResponse(client, updatedMessages, streamHandler);
+            return await processStreamingResponse(updatedMessages, streamHandler);
         } else {
-            const message = await sendAnthropicRequestClassic(client, updatedMessages);
+            const message = await sendAnthropicRequestClassic(updatedMessages);
             return extractContentFromMessage(message);
         }
     } catch (error) {
-        logger.error('Error in processPromptContent:', error);
+        handleError(error, 'processing prompt content');
         throw error;
     }
 }
@@ -84,13 +75,12 @@ async function processMessagesWithVariables(
 }
 
 async function processStreamingResponse(
-    client: Anthropic,
     messages: { role: string; content: string }[],
     streamHandler: (event: any) => void
 ): Promise<string> {
     let fullResponse = '';
 
-    for await (const event of sendAnthropicRequestStream(client, messages)) {
+    for await (const event of sendAnthropicRequestStream(messages)) {
         streamHandler(event);
 
         if (event.type === 'content_block_delta' && event.delta) {
