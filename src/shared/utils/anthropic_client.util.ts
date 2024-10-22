@@ -22,6 +22,7 @@ function getAnthropicClient(): Anthropic {
 
 export async function sendAnthropicRequestClassic(messages: { role: string; content: string }[]): Promise<Message> {
     const client = getAnthropicClient();
+
     try {
         return await client.messages.create({
             model: commonConfig.ANTHROPIC_MODEL,

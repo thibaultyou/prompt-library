@@ -1,16 +1,22 @@
 import { Message } from '@anthropic-ai/sdk/resources';
+import chalk from 'chalk';
 
 import { sendAnthropicRequestClassic, sendAnthropicRequestStream } from './anthropic_client.util';
 import { handleError } from '../../cli/utils/error.util';
 
-export function replaceVariables(content: string, variables: Record<string, string>): string {
-    return Object.entries(variables).reduce((updatedContent, [key, value]) => {
-        const regex = new RegExp(`{{${key.replace(/{{|}}/g, '')}}}`, 'g');
-        return updatedContent.replace(regex, value);
-    }, content);
+export function updatePromptWithVariables(content: string, variables: Record<string, string>): string {
+    try {
+        return Object.entries(variables).reduce((updatedContent, [key, value]) => {
+            const regex = new RegExp(`{{${key.replace(/{{|}}/g, '')}}}`, 'g');
+            return updatedContent.replace(regex, value);
+        }, content);
+    } catch (error) {
+        handleError(error, 'processing prompt with variables');
+        throw error;
+    }
 }
 
-export function extractContentFromMessage(message: Message): string {
+function extractContentFromMessage(message: Message): string {
     if (!message.content || message.content.length === 0) {
         return '';
     }
@@ -26,34 +32,22 @@ export function extractContentFromMessage(message: Message): string {
         .join('\n');
 }
 
-export async function processPromptWithVariables(
-    promptContent: string,
-    userInputs: Record<string, string> = {},
-    resolveInputs?: (inputs: Record<string, string>) => Promise<Record<string, string>>
-): Promise<string> {
-    try {
-        const updatedInputs = resolveInputs ? await resolveInputs(userInputs) : userInputs;
-        return replaceVariables(promptContent, updatedInputs);
-    } catch (error) {
-        handleError(error, 'processing prompt with variables');
-        throw error;
-    }
-}
-
 export async function processPromptContent(
     messages: { role: string; content: string }[],
-    inputs: Record<string, string> = {},
     useStreaming: boolean = false,
-    resolveInputs: (inputs: Record<string, string>) => Promise<Record<string, string>> = async (i) => i,
-    streamHandler?: (event: any) => void
+    logging: boolean = true
 ): Promise<string> {
     try {
-        const updatedMessages = await processMessagesWithVariables(messages, inputs, resolveInputs);
+        if (logging) {
+            console.log(chalk.blue(chalk.bold('\nYou:')));
+            console.log(messages[messages.length - 1]?.content);
+            console.log(chalk.green(chalk.bold('\nAI:')));
+        }
 
-        if (useStreaming && streamHandler) {
-            return await processStreamingResponse(updatedMessages, streamHandler);
+        if (useStreaming) {
+            return await processStreamingResponse(messages);
         } else {
-            const message = await sendAnthropicRequestClassic(updatedMessages);
+            const message = await sendAnthropicRequestClassic(messages);
             return extractContentFromMessage(message);
         }
     } catch (error) {
@@ -62,34 +56,24 @@ export async function processPromptContent(
     }
 }
 
-async function processMessagesWithVariables(
-    messages: { role: string; content: string }[],
-    inputs: Record<string, string>,
-    resolveInputs?: (inputs: Record<string, string>) => Promise<Record<string, string>>
-): Promise<{ role: string; content: string }[]> {
-    const updatedInputs = resolveInputs ? await resolveInputs(inputs) : inputs;
-    return messages.map((msg) => ({
-        ...msg,
-        content: replaceVariables(msg.content, updatedInputs)
-    }));
-}
-
-async function processStreamingResponse(
-    messages: { role: string; content: string }[],
-    streamHandler: (event: any) => void
-): Promise<string> {
+async function processStreamingResponse(messages: { role: string; content: string }[]): Promise<string> {
     let fullResponse = '';
 
-    for await (const event of sendAnthropicRequestStream(messages)) {
-        streamHandler(event);
-
-        if (event.type === 'content_block_delta' && event.delta) {
-            if ('text' in event.delta) {
-                fullResponse += event.delta.text;
-            } else if ('partial_json' in event.delta) {
-                fullResponse += event.delta.partial_json;
+    try {
+        for await (const event of sendAnthropicRequestStream(messages)) {
+            if (event.type === 'content_block_delta' && event.delta) {
+                if ('text' in event.delta) {
+                    fullResponse += event.delta.text;
+                    process.stdout.write(event.delta.text);
+                } else if ('partial_json' in event.delta) {
+                    fullResponse += event.delta.partial_json;
+                    process.stdout.write(event.delta.partial_json);
+                }
             }
         }
+    } catch (error) {
+        handleError(error, 'processing CLI prompt content');
+        throw error;
     }
     return fullResponse;
 }

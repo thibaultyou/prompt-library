@@ -1,9 +1,8 @@
 import { handleError } from './error.util';
-import { resolveCliInputs } from './input_processing.util';
-import { processCliPromptContent } from './input_resolution.util';
+import { resolveInputs } from './input_resolution.util';
 import { getPromptFiles } from './prompt_crud.util';
 import { ApiResult } from '../../shared/types';
-import { processPromptContent, processPromptWithVariables } from '../../shared/utils/prompt_processing.util';
+import { processPromptContent, updatePromptWithVariables } from '../../shared/utils/prompt_processing.util';
 
 interface ConversationMessage {
     role: 'user' | 'assistant';
@@ -31,13 +30,11 @@ export class ConversationManager {
             }
 
             const { promptContent } = promptFilesResult.data;
-            const resolvedInputs = isExecuteCommand ? userInputs : await resolveCliInputs(userInputs);
-            const updatedPromptContent = await processPromptWithVariables(promptContent, resolvedInputs);
+            const resolvedInputs = isExecuteCommand ? userInputs : await resolveInputs(userInputs);
+            const updatedPromptContent = updatePromptWithVariables(promptContent, resolvedInputs);
             this.messages.push({ role: 'user', content: updatedPromptContent });
 
-            const result = await (isExecuteCommand
-                ? processPromptContent(this.messages, {}, false)
-                : processCliPromptContent(this.messages, {}, true));
+            const result = await processPromptContent(this.messages, isExecuteCommand ? false : true);
 
             if (typeof result === 'string') {
                 this.messages.push({ role: 'assistant', content: result });
@@ -54,10 +51,7 @@ export class ConversationManager {
     async continueConversation(userInput: string, useStreaming: boolean = true): Promise<ApiResult<string>> {
         try {
             this.messages.push({ role: 'user', content: userInput });
-
-            const result = useStreaming
-                ? await processCliPromptContent(this.messages, {}, true)
-                : await processPromptContent(this.messages, {}, false);
+            const result = await processPromptContent(this.messages, useStreaming);
 
             if (typeof result === 'string') {
                 this.messages.push({ role: 'user', content: result });

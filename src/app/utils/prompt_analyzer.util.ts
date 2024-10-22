@@ -3,7 +3,7 @@ import { parseYamlContent } from './yaml_operations.util';
 import { Metadata } from '../../shared/types';
 import { readFileContent } from '../../shared/utils/file_system.util';
 import logger from '../../shared/utils/logger.util';
-import { processPromptContent } from '../../shared/utils/prompt_processing.util';
+import { processPromptContent, updatePromptWithVariables } from '../../shared/utils/prompt_processing.util';
 import { appConfig } from '../config/app.config';
 
 export async function loadAnalyzerPrompt(): Promise<string> {
@@ -30,7 +30,8 @@ export async function processMetadataGeneration(promptContent: string): Promise<
             PROMPT_TO_ANALYZE: promptContent,
             AVAILABLE_PROMPT_FRAGMENTS: availableFragments
         };
-        const content = await processPromptContent([{ role: 'user', content: analyzerPrompt }], variables, false);
+        const updatedPromptContent = updatePromptWithVariables(analyzerPrompt, variables);
+        const content = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false);
         const yamlContent = extractOutputContent(content);
         const parsedMetadata = parseYamlContent(yamlContent);
         const metadata: Metadata = {

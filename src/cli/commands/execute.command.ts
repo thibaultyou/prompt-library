@@ -4,7 +4,7 @@ import yaml from 'js-yaml';
 
 import { BaseCommand } from './base.command';
 import { Metadata, Prompt, Variable } from '../../shared/types';
-import { processPromptContent } from '../../shared/utils/prompt_processing.util';
+import { processPromptContent, updatePromptWithVariables } from '../../shared/utils/prompt_processing.util';
 import { getPromptFiles } from '../utils/prompt_crud.util';
 import { viewPromptDetails } from '../utils/prompt_display.util';
 
@@ -14,7 +14,6 @@ class ExecuteCommand extends BaseCommand {
         this.option('-p, --prompt <id>', 'Execute a stored prompt by ID')
             .option('-f, --prompt-file <file>', 'Path to the prompt file (usually prompt.md)')
             .option('-m, --metadata-file <file>', 'Path to the metadata file (usually metadata.yml)')
-            .option('-c, --ci', 'Run in CI mode (single response, no streaming)')
             .option('-i, --inspect', 'Inspect the prompt variables without executing')
             .option(
                 '-fi, --file-input <variable>=<file>',
@@ -71,7 +70,6 @@ Example Workflow:
 
 Note:
   - File paths are relative to the current working directory.
-  - In CI mode (-c or --ci), all required variables must be provided.
   - Use quotes for values containing spaces.
 `
             )
@@ -105,18 +103,11 @@ Note:
             const dynamicOptions = this.parseDynamicOptions(command.args);
 
             if (options.prompt) {
-                await this.handleStoredPrompt(
-                    options.prompt,
-                    options.ci,
-                    dynamicOptions,
-                    options.inspect,
-                    options.fileInput
-                );
+                await this.handleStoredPrompt(options.prompt, dynamicOptions, options.inspect, options.fileInput);
             } else if (options.promptFile && options.metadataFile) {
                 await this.handleFilePrompt(
                     options.promptFile,
                     options.metadataFile,
-                    options.ci,
                     dynamicOptions,
                     options.inspect,
                     options.fileInput
@@ -134,7 +125,6 @@ Note:
 
     private async handleStoredPrompt(
         promptId: string,
-        ciMode: boolean,
         dynamicOptions: Record<string, string>,
         inspect: boolean,
         fileInputs: Record<string, string>
@@ -149,7 +139,7 @@ Note:
             if (inspect) {
                 await this.inspectPrompt(metadata);
             } else {
-                await this.executePromptWithMetadata(promptContent, metadata, ciMode, dynamicOptions, fileInputs);
+                await this.executePromptWithMetadata(promptContent, metadata, dynamicOptions, fileInputs);
             }
         } catch (error) {
             this.handleError(error, 'handling stored prompt');
@@ -159,7 +149,6 @@ Note:
     private async handleFilePrompt(
         promptFile: string,
         metadataFile: string,
-        ciMode: boolean,
         dynamicOptions: Record<string, string>,
         inspect: boolean,
         fileInputs: Record<string, string>
@@ -172,7 +161,7 @@ Note:
             if (inspect) {
                 await this.inspectPrompt(metadata);
             } else {
-                await this.executePromptWithMetadata(promptContent, metadata, ciMode, dynamicOptions, fileInputs);
+                await this.executePromptWithMetadata(promptContent, metadata, dynamicOptions, fileInputs);
             }
         } catch (error) {
             this.handleError(error, 'handling file prompt');
@@ -200,7 +189,6 @@ Note:
     private async executePromptWithMetadata(
         promptContent: string,
         metadata: Metadata,
-        ciMode: boolean,
         dynamicOptions: Record<string, string>,
         fileInputs: Record<string, string>
     ): Promise<void> {
@@ -223,29 +211,12 @@ Note:
                 if (value) {
                     userInputs[variable.name] = value;
                 } else if (!variable.optional_for_user) {
-                    if (ciMode) {
-                        throw new Error(`Required variable ${snakeCaseName} is not set.`);
-                    } else {
-                        userInputs[variable.name] = await this.getInput(`Enter value for ${snakeCaseName}:`);
-                    }
+                    throw new Error(`Required variable ${snakeCaseName} is not set.`);
                 }
             }
 
-            const result = await processPromptContent(
-                [{ role: 'user', content: promptContent }],
-                userInputs,
-                !ciMode,
-                async (inputs) => inputs,
-                (event) => {
-                    if (event.type === 'content_block_delta') {
-                        if ('text' in event.delta) {
-                            process.stdout.write(event.delta.text);
-                        } else if ('partial_json' in event.delta) {
-                            process.stdout.write(event.delta.partial_json);
-                        }
-                    }
-                }
-            );
+            const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
+            const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
 
             if (typeof result === 'string') {
                 console.log(result);

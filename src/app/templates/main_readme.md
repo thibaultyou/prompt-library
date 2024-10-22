@@ -88,12 +88,11 @@ Key options:
 - `-p, --prompt <id>`: Execute a stored prompt by ID
 - `-i, --inspect`: Inspect the prompt variables without executing
 - `-fi, --file-input <variable>=<file>`: Specify a file to use as input for a variable
-- `-c, --ci`: Run in CI mode (non-interactive)
 
-In CI mode, the `execute` command acts as a dynamic CLI, allowing you to pass prompt variables as command-line arguments:
+The `execute` command acts as a dynamic CLI, allowing you to pass prompt variables as command-line arguments:
 
 ```sh
-prompt-library-cli execute -p <prompt_id> --<variable1> <value1> --<variable2> <value2> -c
+prompt-library-cli execute -p <prompt_id> --<variable1> <value1> --<variable2> <value2>
 ```
 
 For detailed usage, run:
@@ -166,7 +165,7 @@ Fragments are reusable prompt components:
 ## ⚙️ Metadata Customization
 
 1. Edit `src/system_prompts/prompt_analysis_agent/prompt.md`.
-2. Test with `npm run generate-metadata`.
+2. Test with `npm run update-metadata`.
 3. Commit and push to trigger GitHub Actions.
 
 > **Note**: Changes affect future metadata generations. Test thoroughly before committing.
