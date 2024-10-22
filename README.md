@@ -105,12 +105,11 @@ Key options:
 - `-p, --prompt <id>`: Execute a stored prompt by ID
 - `-i, --inspect`: Inspect the prompt variables without executing
 - `-fi, --file-input <variable>=<file>`: Specify a file to use as input for a variable
-- `-c, --ci`: Run in CI mode (non-interactive)
 
-In CI mode, the `execute` command acts as a dynamic CLI, allowing you to pass prompt variables as command-line arguments:
+The `execute` command acts as a dynamic CLI, allowing you to pass prompt variables as command-line arguments:
 
 ```sh
-prompt-library-cli execute -p <prompt_id> --<variable1> <value1> --<variable2> <value2> -c
+prompt-library-cli execute -p <prompt_id> --<variable1> <value1> --<variable2> <value2>
 ```
 
 For detailed usage, run:
@@ -126,13 +125,13 @@ prompt-library-cli execute --help
 <details>
 <summary><strong>Coding</strong></summary>
 
-- [Git Commit Message Agent](prompts/git_commit_message_agent/README.md) - Generates precise and informative git commit messages following Conventional Commits specification
 - [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimized git branch names based on project context and user requirements
+- [Git Commit Message Agent](prompts/git_commit_message_agent/README.md) - Generates precise and informative git commit messages following Conventional Commits specification
 - [GitHub Issue Creator](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and actionable GitHub issues based on provided project information
 - [Software Architect Visionary](prompts/software_architect_agent/README.md) - Analyzes user requirements and creates comprehensive software specification documents
 - [Software Architect Code Reviewer](prompts/software_architect_code_reviewer/README.md) - Generates comprehensive pull requests with architectural analysis and optimization suggestions
-- [Software Development Expert Agent](prompts/software_dev_expert_agent/README.md) - Provides expert, adaptive assistance across all aspects of the software development lifecycle.
 - [Software Architect Specification Creator](prompts/software_architect_spec_creator/README.md) - Creates comprehensive software specification documents based on user requirements
+- [Software Development Expert Agent](prompts/software_dev_expert_agent/README.md) - Provides expert, adaptive assistance across all aspects of the software development lifecycle.
 
 </details>
 <details>
@@ -144,8 +143,8 @@ prompt-library-cli execute --help
 <details>
 <summary><strong>Healthcare</strong></summary>
 
-- [Health Optimization Agent](prompts/health_optimization_agent/README.md) - Generates personalized, adaptive health optimization plans based on comprehensive user data analysis
 - [Psychological Support and Therapy Agent](prompts/psychological_support_agent/README.md) - Provides AI-driven psychological support and therapy through digital platforms
+- [Health Optimization Agent](prompts/health_optimization_agent/README.md) - Generates personalized, adaptive health optimization plans based on comprehensive user data analysis
 
 </details>
 <details>
@@ -216,7 +215,7 @@ Fragments are reusable prompt components:
 ## ⚙️ Metadata Customization
 
 1. Edit `src/system_prompts/prompt_analysis_agent/prompt.md`.
-2. Test with `npm run generate-metadata`.
+2. Test with `npm run update-metadata`.
 3. Commit and push to trigger GitHub Actions.
 
 > **Note**: Changes affect future metadata generations. Test thoroughly before committing.
