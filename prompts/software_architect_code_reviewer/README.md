@@ -19,7 +19,6 @@ This prompt simulates a world-class software architect and code reviewer, tasked
 ### 🧩 Relevant Fragments
 
 This prompt could potentially use the following fragments:
-- [Prompt Engineering Guidelines Max](/fragments/prompt_engineering/prompt_engineering_guidelines_max.md) - Could be used into `{{EXTRA_GUIDELINES_OR_CONTEXT}}`
 - [Safety Guidelines](/fragments/prompt_engineering/safety_guidelines.md) - Could be used into `{{SAFETY_GUIDELINES}}`
 - [Behavior Attributes](/fragments/prompt_engineering/behavior_attributes.md) - Could be used into `{{AI_BEHAVIOR_ATTRIBUTES}}`
 
