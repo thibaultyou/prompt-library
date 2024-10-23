@@ -4,16 +4,16 @@ import { Command } from 'commander';
 import dotenv from 'dotenv';
 
 import { getConfigValue, setConfig } from '../shared/config';
-import configCommand from './commands/config.command';
-import envCommand from './commands/env.command';
-import executeCommand from './commands/execute.command';
-import flushCommand from './commands/flush.command';
-import fragmentsCommand from './commands/fragments.command';
-import { showMainMenu } from './commands/menu.command';
-import promptsCommand from './commands/prompts.command';
-import settingsCommand from './commands/settings.command';
-import syncCommand from './commands/sync.command';
-import { initDatabase } from './utils/database.util';
+import configCommand from './commands/config-command';
+import envCommand from './commands/env-command';
+import executeCommand from './commands/execute-command';
+import flushCommand from './commands/flush-command';
+import fragmentsCommand from './commands/fragments-command';
+import { showMainMenu } from './commands/menu-command';
+import promptsCommand from './commands/prompts-command';
+import settingsCommand from './commands/settings-command';
+import syncCommand from './commands/sync-command';
+import { initDatabase } from './utils/database';
 
 process.env.CLI_ENV = 'cli';
 

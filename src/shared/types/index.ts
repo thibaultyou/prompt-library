@@ -6,15 +6,6 @@ export interface EnvVar {
     prompt_id?: number;
 }
 
-export interface Prompt {
-    id: string;
-    title: string;
-    primary_category: string;
-    description?: string;
-    tags?: string | string[];
-    variables: Variable[];
-}
-
 export interface CategoryItem {
     id: string;
     title: string;
@@ -37,12 +28,13 @@ export type ApiResult<T> = {
     error?: string;
 };
 
-export interface Metadata {
+export interface PromptMetadata {
+    id?: string;
     title: string;
     primary_category: string;
     subcategories: string[];
     directory: string;
-    tags: string[];
+    tags: string | string[];
     one_line_description: string;
     description: string;
     variables: Variable[];

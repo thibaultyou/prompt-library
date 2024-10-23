@@ -6,25 +6,8 @@ Welcome to the **Prompt Library**, a collection of categorized AI prompts for ea
 
 ## 📚 Table of Contents
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [🎯 Purpose & Features](#-purpose--features)
-- [⚡ Quick Start](#-quick-start)
-- [🛠️ How It Works](#-how-it-works)
-- [🖥️ CLI Usage](#-cli-usage)
-  - [Interactive Menu](#interactive-menu)
-  - [List Prompts and Categories](#list-prompts-and-categories)
-  - [Sync Personal Library](#sync-personal-library)
-  - [Execute Prompts](#execute-prompts)
-- [📂 Prompt Library Example](#-prompt-library-example)
-- [🚀 Getting Started](#-getting-started)
-- [🧩 Using Fragments](#-using-fragments)
-- [⚙️ Metadata Customization](#-metadata-customization)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<!-- START doctoc -->
+<!-- END doctoc -->
 
 ## 🎯 Purpose & Features
 
@@ -128,9 +111,9 @@ prompt-library-cli execute --help
 - [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) - Generates optimized git branch names based on project context and user requirements
 - [Git Commit Message Agent](prompts/git_commit_message_agent/README.md) - Generates precise and informative git commit messages following Conventional Commits specification
 - [GitHub Issue Creator](prompts/github_issue_creator_agent/README.md) - Creates comprehensive and actionable GitHub issues based on provided project information
-- [Software Architect Visionary](prompts/software_architect_agent/README.md) - Analyzes user requirements and creates comprehensive software specification documents
 - [Software Architect Code Reviewer](prompts/software_architect_code_reviewer/README.md) - Generates comprehensive pull requests with architectural analysis and optimization suggestions
 - [Software Architect Specification Creator](prompts/software_architect_spec_creator/README.md) - Creates comprehensive software specification documents based on user requirements
+- [Software Architect Visionary](prompts/software_architect_agent/README.md) - Analyzes user requirements and creates comprehensive software specification documents
 - [Software Development Expert Agent](prompts/software_dev_expert_agent/README.md) - Provides expert, adaptive assistance across all aspects of the software development lifecycle.
 
 </details>
@@ -143,8 +126,8 @@ prompt-library-cli execute --help
 <details>
 <summary><strong>Healthcare</strong></summary>
 
-- [Psychological Support and Therapy Agent](prompts/psychological_support_agent/README.md) - Provides AI-driven psychological support and therapy through digital platforms
 - [Health Optimization Agent](prompts/health_optimization_agent/README.md) - Generates personalized, adaptive health optimization plans based on comprehensive user data analysis
+- [Psychological Support and Therapy Agent](prompts/psychological_support_agent/README.md) - Provides AI-driven psychological support and therapy through digital platforms
 
 </details>
 <details>
