@@ -1,78 +1,86 @@
 import * as fs from 'fs';
 
-import { CommonConfig, commonConfig } from './common.config';
-import { CONFIG_DIR, CONFIG_FILE, isCliEnvironment } from './config.constants';
-import { AppConfig, appConfig } from '../../app/config/app.config';
-import { CliConfig, cliConfig } from '../../cli/cli.config';
+import { CommonConfig, commonConfig } from './common-config';
+import { CONFIG_DIR, CONFIG_FILE, isCliEnvironment } from './constants';
+import { appConfig, AppConfig } from '../../app/config/app-config';
+import { CliConfig, cliConfig } from '../../cli/config/cli-config';
 
 export type Config = CommonConfig & (CliConfig | AppConfig);
 
 let loadedConfig: Config | null = null;
+let lastCliEnv: string | undefined;
+
+export function clearConfigCache(): void {
+    loadedConfig = null;
+    lastCliEnv = undefined;
+}
 
 function loadConfig(): Config {
+    if (process.env.CLI_ENV !== lastCliEnv) {
+        loadedConfig = null;
+        lastCliEnv = process.env.CLI_ENV;
+    }
+
+    if (loadedConfig) {
+        return JSON.parse(JSON.stringify(loadedConfig));
+    }
+
     const environmentConfig = isCliEnvironment ? cliConfig : appConfig;
-    let config: Config = { ...commonConfig, ...environmentConfig };
+    let config = {
+        ...commonConfig,
+        ...environmentConfig
+    } as Config;
 
-    if (isCliEnvironment) {
-        if (!fs.existsSync(CONFIG_DIR)) {
-            fs.mkdirSync(CONFIG_DIR, { recursive: true });
-        }
-
-        if (fs.existsSync(CONFIG_FILE)) {
+    if (isCliEnvironment && fs.existsSync(CONFIG_FILE)) {
+        try {
             const fileConfig = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf-8'));
             config = { ...config, ...fileConfig };
+        } catch (error) {
+            console.error('Error loading config file:', error);
         }
     }
+
+    loadedConfig = JSON.parse(JSON.stringify(config));
     return config;
 }
 
+export function getConfig(): Readonly<Config> {
+    return loadConfig();
+}
+
 export function setConfig<K extends keyof Config>(key: K, value: Config[K]): void {
-    if (!isCliEnvironment) {
+    if (process.env.CLI_ENV !== 'cli') {
         throw new Error('setConfig is only available in CLI environment');
     }
 
-    if (!loadedConfig) {
-        loadedConfig = loadConfig();
+    if (!fs.existsSync(CONFIG_DIR)) {
+        fs.mkdirSync(CONFIG_DIR, { recursive: true });
     }
 
-    loadedConfig[key] = value;
+    const config = loadConfig();
+    const updatedConfig = { ...config, [key]: value };
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify(updatedConfig, null, 2));
 
-    // Update process.env to reflect the change
-    if (typeof value === 'string') {
-        process.env[key.toString()] = value;
+    loadedConfig = updatedConfig;
+
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        process.env[key] = String(value);
     }
-
-    // Write to file
-    fs.writeFileSync(CONFIG_FILE, JSON.stringify(loadedConfig, null, 2));
-
-    // Clear the cache by reassigning loadedConfig to null
-    loadedConfig = null as unknown as Config;
-}
-
-export function getConfig(): Readonly<Config> {
-    if (loadedConfig === null) {
-        loadedConfig = loadConfig();
-    }
-    return loadedConfig;
 }
 
 export function getConfigValue<K extends keyof Config>(key: K): Config[K] {
-    if (loadedConfig === null) {
-        loadedConfig = loadConfig();
-    }
+    const config = loadConfig();
 
-    if (isCliEnvironment) {
-        return loadedConfig[key];
-    } else {
-        const envValue = process.env[key.toString()];
-        return (envValue !== undefined ? envValue : loadedConfig[key]) as Config[K];
+    if (!isCliEnvironment && process.env[key] !== undefined) {
+        const envValue = process.env[key];
+        const currentValue = config[key];
+
+        if (typeof currentValue === 'number') {
+            return Number(envValue) as Config[K];
+        } else if (typeof currentValue === 'boolean') {
+            return (envValue?.toLowerCase() === 'true') as unknown as Config[K];
+        }
+        return envValue as Config[K];
     }
+    return config[key];
 }
-
-type ConfigValue = Config[keyof Config];
-
-export const config: Readonly<Config> = new Proxy({} as Config, {
-    get(_, prop: string): ConfigValue {
-        return getConfigValue(prop as keyof Config);
-    }
-});

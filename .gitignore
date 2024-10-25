@@ -5,9 +5,13 @@
 dist/
 node_modules/
 archive/
+coverage/
 
 # Ignore local database
 *.sqlite
+
+# Ignore aider files
+.aider*
 
 # Ignore macOS files
 .DS_Store
