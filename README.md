@@ -6,8 +6,25 @@ Welcome to the **Prompt Library**, a collection of categorized AI prompts for ea
 
 ## 📚 Table of Contents
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [🎯 Purpose & Features](#-purpose--features)
+- [⚡ Quick Start](#-quick-start)
+- [🛠️ How It Works](#-how-it-works)
+- [🖥️ CLI Usage](#-cli-usage)
+  - [Interactive Menu](#interactive-menu)
+  - [List Prompts and Categories](#list-prompts-and-categories)
+  - [Sync Personal Library](#sync-personal-library)
+  - [Execute Prompts](#execute-prompts)
+- [📂 Prompt Library Example](#-prompt-library-example)
+- [🚀 Getting Started](#-getting-started)
+- [🧩 Using Fragments](#-using-fragments)
+- [⚙️ Metadata Customization](#-metadata-customization)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## 🎯 Purpose & Features
 
