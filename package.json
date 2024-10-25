@@ -24,7 +24,8 @@
         "update": "ncu -i",
         "update-metadata": "ts-node src/app/controllers/update-metadata.ts",
         "update-views": "ts-node src/app/controllers/update-views.ts",
-        "validate-yaml": "yamllint '**/*.yml'"
+        "validate-yaml": "yamllint '**/*.yml'",
+        "postbuild": "chmod +x ./dist/cli/index.js"
     },
     "keywords": [
         "github-actions",
@@ -49,6 +50,7 @@
         "cli-spinner": "0.2.10",
         "commander": "12.1.0",
         "dotenv": "16.4.5",
+        "fp-ts": "2.16.9",
         "fs-extra": "11.2.0",
         "js-yaml": "4.1.0",
         "nunjucks": "3.2.4",

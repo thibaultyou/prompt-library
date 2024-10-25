@@ -12,8 +12,7 @@ Tags: tag1, tag2
 Options: ([*] Required  [ ] Optional)
   --var1 [*] 
     test role
-      Env: env_var_name (env-value)
-"
+      Env: env_var_name (env-value)"
 `;
 
 exports[`PromptsUtils viewPromptDetails should display fragment variable correctly 1`] = `
@@ -43,8 +42,7 @@ Options: ([*] Required  [ ] Optional)
       Not Set (Required)
   --var2 [ ] 
     test role 2
-      Not Set
-"
+      Not Set"
 `;
 
 exports[`PromptsUtils viewPromptDetails should display regular variable value correctly 1`] = `
@@ -74,6 +72,5 @@ Options: ([*] Required  [ ] Optional)
       Not Set (Required)
   --var2 [ ] 
     test role 2
-      Not Set
-"
+      Not Set"
 `;

@@ -1,9 +1,9 @@
 import { RunResult } from 'sqlite3';
 
-import { PromptMetadata, Variable } from '../../../shared/types';
+import { PromptMetadata, PromptVariable } from '../../../shared/types';
 import { ENV_PREFIX, FRAGMENT_PREFIX } from '../../constants';
 import { allAsync, getAsync, runAsync } from '../database';
-import { readEnvVars } from '../env-vars';
+import { readEnvVariables } from '../env-vars';
 import { createPrompt, listPrompts, getPromptFiles, getPromptMetadata, viewPromptDetails } from '../prompts';
 
 jest.mock('../database');
@@ -364,7 +364,7 @@ describe('PromptsUtils', () => {
         });
 
         it('should display prompt details correctly', async () => {
-            const mockReadEnvVars = readEnvVars as jest.MockedFunction<typeof readEnvVars>;
+            const mockReadEnvVars = readEnvVariables as jest.MockedFunction<typeof readEnvVariables>;
             mockReadEnvVars.mockResolvedValueOnce({
                 success: true,
                 data: [{ id: 1, name: 'var1', value: 'test-value', scope: 'global' }]
@@ -376,7 +376,7 @@ describe('PromptsUtils', () => {
         });
 
         it('should handle env vars fetch failure', async () => {
-            const mockReadEnvVars = readEnvVars as jest.MockedFunction<typeof readEnvVars>;
+            const mockReadEnvVars = readEnvVariables as jest.MockedFunction<typeof readEnvVariables>;
             mockReadEnvVars.mockResolvedValueOnce({ success: false, error: 'Failed to read env vars' });
 
             await viewPromptDetails(mockPrompt);
@@ -385,7 +385,7 @@ describe('PromptsUtils', () => {
         });
 
         it('should display fragment variable correctly', async () => {
-            const mockPromptWithFragment: PromptMetadata & { variables: Variable[] } = {
+            const mockPromptWithFragment: PromptMetadata & { variables: PromptVariable[] } = {
                 ...mockPrompt,
                 variables: [
                     {
@@ -402,7 +402,7 @@ describe('PromptsUtils', () => {
         });
 
         it('should display env variable correctly', async () => {
-            const mockPromptWithEnvVar: PromptMetadata & { variables: Variable[] } = {
+            const mockPromptWithEnvVar: PromptMetadata & { variables: PromptVariable[] } = {
                 ...mockPrompt,
                 variables: [
                     {
@@ -413,7 +413,7 @@ describe('PromptsUtils', () => {
                     }
                 ]
             };
-            const mockReadEnvVars = readEnvVars as jest.MockedFunction<typeof readEnvVars>;
+            const mockReadEnvVars = readEnvVariables as jest.MockedFunction<typeof readEnvVariables>;
             mockReadEnvVars.mockResolvedValueOnce({
                 success: true,
                 data: [{ id: 1, name: 'ENV_VAR_NAME', value: 'env-value', scope: 'global' }]
@@ -425,7 +425,7 @@ describe('PromptsUtils', () => {
         });
 
         it('should display regular variable value correctly', async () => {
-            const mockPromptWithValue: PromptMetadata & { variables: Variable[] } = {
+            const mockPromptWithValue: PromptMetadata & { variables: PromptVariable[] } = {
                 ...mockPrompt,
                 variables: [
                     {

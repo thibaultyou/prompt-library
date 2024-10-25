@@ -56,9 +56,9 @@ export async function processPromptContent(
 
     try {
         if (logging) {
-            console.log(chalk.blue(chalk.bold('\nYou:')));
+            console.log(chalk.blue(chalk.bold('You:')));
             console.log(messages[messages.length - 1]?.content);
-            console.log(chalk.green(chalk.bold('\nAI:')));
+            console.log(chalk.green(chalk.bold('AI:')));
         }
 
         if (useStreaming) {
@@ -92,6 +92,7 @@ async function processStreamingResponse(messages: { role: string; content: strin
                 }
             }
         }
+        console.log();
     } catch (error) {
         handleError(error, 'processing CLI prompt content');
         throw error;

@@ -1,4 +1,4 @@
-export interface EnvVar {
+export interface EnvVariable {
     id: number;
     name: string;
     value: string;
@@ -15,7 +15,7 @@ export interface CategoryItem {
     subcategories: string[];
 }
 
-export interface Variable {
+export interface PromptVariable {
     name: string;
     role: string;
     optional_for_user: boolean;
@@ -37,13 +37,13 @@ export interface PromptMetadata {
     tags: string | string[];
     one_line_description: string;
     description: string;
-    variables: Variable[];
+    variables: PromptVariable[];
     content_hash?: string;
-    fragments?: Fragment[];
+    fragments?: PromptFragment[];
 }
 
-export interface Fragment {
+export interface PromptFragment {
     name: string;
     category: string;
-    variable: string;
+    variable?: string;
 }

@@ -8,7 +8,7 @@ import sqlite3, { RunResult } from 'sqlite3';
 import { AppError, handleError } from './errors';
 import { createPrompt } from './prompts';
 import { commonConfig } from '../../shared/config/common-config';
-import { ApiResult, CategoryItem, PromptMetadata, Variable } from '../../shared/types';
+import { ApiResult, CategoryItem, PromptMetadata, PromptVariable } from '../../shared/types';
 import { fileExists, readDirectory, readFileContent } from '../../shared/utils/file-system';
 import logger from '../../shared/utils/logger';
 import { cliConfig } from '../config/cli-config';
@@ -123,7 +123,7 @@ export async function initDatabase(): Promise<ApiResult<void>> {
                 prompt_id INTEGER,
                 category TEXT NOT NULL,
                 name TEXT NOT NULL,
-                variable TEXT NOT NULL,
+                variable TEXT NOT NULL DEFAULT '',
                 FOREIGN KEY (prompt_id) REFERENCES prompts (id)
             )`,
             `CREATE TABLE IF NOT EXISTS env_vars (
@@ -184,9 +184,9 @@ export async function fetchCategories(): Promise<ApiResult<Record<string, Catego
 
 export async function getPromptDetails(
     promptId: string
-): Promise<ApiResult<PromptMetadata & { variables: Variable[] }>> {
+): Promise<ApiResult<PromptMetadata & { variables: PromptVariable[] }>> {
     const promptResult = await getAsync<PromptMetadata>('SELECT * FROM prompts WHERE id = ?', [promptId]);
-    const variablesResult = await allAsync<Variable>(
+    const variablesResult = await allAsync<PromptVariable>(
         'SELECT name, role, value, optional_for_user FROM variables WHERE prompt_id = ?',
         [promptId]
     );

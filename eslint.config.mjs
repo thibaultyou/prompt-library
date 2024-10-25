@@ -113,7 +113,7 @@ export default [
                     allowNamedFunctions: true
                 }
             ],
-            'func-style': ['error', 'declaration'],
+            'func-style': ['error', 'declaration', { allowArrowFunctions: true } ],
             'no-multi-spaces': 'error',
             'no-multiple-empty-lines': [
                 'error',

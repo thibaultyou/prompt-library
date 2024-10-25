@@ -1,8 +1,8 @@
 import { runAsync, allAsync } from './database';
 import { handleError } from './errors';
-import { EnvVar, ApiResult } from '../../shared/types';
+import { EnvVariable, ApiResult } from '../../shared/types';
 
-export async function createEnvVar(envVar: Omit<EnvVar, 'id'>): Promise<ApiResult<EnvVar>> {
+export async function createEnvVariable(envVar: Omit<EnvVariable, 'id'>): Promise<ApiResult<EnvVariable>> {
     try {
         const result = await runAsync('INSERT INTO env_vars (name, value, scope, prompt_id) VALUES (?, ?, ?, ?)', [
             envVar.name,
@@ -20,7 +20,7 @@ export async function createEnvVar(envVar: Omit<EnvVar, 'id'>): Promise<ApiResul
     }
 }
 
-export async function readEnvVars(promptId?: number): Promise<ApiResult<EnvVar[]>> {
+export async function readEnvVariables(promptId?: number): Promise<ApiResult<EnvVariable[]>> {
     try {
         let query = 'SELECT * FROM env_vars WHERE scope = "global"';
         const params: any[] = [];
@@ -30,7 +30,7 @@ export async function readEnvVars(promptId?: number): Promise<ApiResult<EnvVar[]
             params.push(promptId);
         }
 
-        const result = await allAsync<EnvVar>(query, params);
+        const result = await allAsync<EnvVariable>(query, params);
 
         if (!result.success) {
             return { success: false, error: result.error || 'Failed to fetch environment variables' };
@@ -42,7 +42,7 @@ export async function readEnvVars(promptId?: number): Promise<ApiResult<EnvVar[]
     }
 }
 
-export async function updateEnvVar(id: number, newValue: string): Promise<ApiResult<void>> {
+export async function updateEnvVariable(id: number, newValue: string): Promise<ApiResult<void>> {
     try {
         const result = await runAsync('UPDATE env_vars SET value = ? WHERE id = ?', [newValue, id]);
 
@@ -56,7 +56,7 @@ export async function updateEnvVar(id: number, newValue: string): Promise<ApiRes
     }
 }
 
-export async function deleteEnvVar(id: number): Promise<ApiResult<void>> {
+export async function deleteEnvVariable(id: number): Promise<ApiResult<void>> {
     try {
         await runAsync('DELETE FROM env_vars WHERE id = ?', [id]);
         return { success: true };

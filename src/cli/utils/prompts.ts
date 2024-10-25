@@ -2,10 +2,10 @@ import chalk from 'chalk';
 
 import { allAsync, getAsync, runAsync } from './database';
 import { handleError } from './errors';
-import { ApiResult, Fragment, PromptMetadata, Variable } from '../../shared/types';
+import { ApiResult, PromptFragment, PromptMetadata, PromptVariable } from '../../shared/types';
 import { formatSnakeCase, formatTitleCase } from '../../shared/utils/string-formatter';
 import { FRAGMENT_PREFIX, ENV_PREFIX } from '../constants';
-import { readEnvVars } from './env-vars';
+import { readEnvVariables } from './env-vars';
 
 export async function createPrompt(promptMetadata: PromptMetadata, content: string): Promise<ApiResult<void>> {
     try {
@@ -124,7 +124,7 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
             return { success: false, error: 'Failed to get subcategories' };
         }
 
-        const variablesResult = await allAsync<Variable>(
+        const variablesResult = await allAsync<PromptVariable>(
             'SELECT name, role, optional_for_user, value FROM variables WHERE prompt_id = ?',
             [promptId]
         );
@@ -133,7 +133,7 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
             return { success: false, error: 'Failed to get variables' };
         }
 
-        const fragmentsResult = await allAsync<Fragment>(
+        const fragmentsResult = await allAsync<PromptFragment>(
             'SELECT category, name, variable FROM fragments WHERE prompt_id = ?',
             [promptId]
         );
@@ -162,10 +162,7 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
     }
 }
 
-export async function viewPromptDetails(
-    details: PromptMetadata & { variables: Variable[] },
-    isExecute = false
-): Promise<void> {
+export async function viewPromptDetails(details: PromptMetadata, isExecute = false): Promise<void> {
     console.log(chalk.cyan('Prompt:'), details.title);
     console.log(`\n${details.description || ''}`);
     console.log(chalk.cyan('\nCategory:'), formatTitleCase(details.primary_category));
@@ -182,7 +179,7 @@ export async function viewPromptDetails(
     const maxNameLength = Math.max(...details.variables.map((v) => formatSnakeCase(v.name).length));
 
     try {
-        const envVarsResult = await readEnvVars();
+        const envVarsResult = await readEnvVariables();
         const envVars = envVarsResult.success ? envVarsResult.data || [] : [];
 
         for (const variable of details.variables) {
@@ -222,10 +219,6 @@ export async function viewPromptDetails(
             if (!isExecute) {
                 console.log(`      ${status}`);
             }
-        }
-
-        if (!isExecute) {
-            console.log();
         }
     } catch (error) {
         handleError(error, 'viewing prompt details');

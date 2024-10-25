@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 
-import { EnvVar } from '../../../shared/types';
+import { EnvVariable } from '../../../shared/types';
 import { FRAGMENT_PREFIX, ENV_PREFIX } from '../../constants';
-import { readEnvVars } from '../env-vars';
+import { readEnvVariables } from '../env-vars';
 import { viewFragmentContent } from '../fragments';
 import { resolveValue, resolveInputs } from '../input-resolver';
 
@@ -13,14 +13,14 @@ jest.mock('../errors', () => ({
 }));
 
 describe('InputResolverUtils', () => {
-    const mockReadEnvVars = readEnvVars as jest.MockedFunction<typeof readEnvVars>;
+    const mockReadEnvVars = readEnvVariables as jest.MockedFunction<typeof readEnvVariables>;
     const mockViewFragmentContent = viewFragmentContent as jest.MockedFunction<typeof viewFragmentContent>;
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     describe('resolveValue', () => {
-        const mockEnvVars: EnvVar[] = [
+        const mockEnvVars: EnvVariable[] = [
             { id: 1, name: 'TEST_VAR', value: 'test-value', scope: 'global' },
             { id: 2, name: 'NESTED_VAR', value: '$env:TEST_VAR', scope: 'global' }
         ];

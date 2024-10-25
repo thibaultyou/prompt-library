@@ -1,6 +1,6 @@
-import { EnvVar } from '../../../shared/types';
+import { EnvVariable } from '../../../shared/types';
 import { runAsync, allAsync } from '../database';
-import { createEnvVar, readEnvVars, updateEnvVar, deleteEnvVar } from '../env-vars';
+import { createEnvVariable, readEnvVariables, updateEnvVariable, deleteEnvVariable } from '../env-vars';
 
 jest.mock('../database', () => ({
     runAsync: jest.fn(),
@@ -14,9 +14,9 @@ describe('EnvVarsUtils', () => {
         jest.spyOn(console, 'error').mockImplementation(() => {});
     });
 
-    describe('createEnvVar', () => {
+    describe('createEnvVariable', () => {
         it('should successfully create an environment variable', async () => {
-            const mockEnvVar: Omit<EnvVar, 'id'> = {
+            const mockEnvVar: Omit<EnvVariable, 'id'> = {
                 name: 'TEST_VAR',
                 value: 'test-value',
                 scope: 'global',
@@ -27,7 +27,7 @@ describe('EnvVarsUtils', () => {
                 data: { lastID: 1 }
             });
 
-            const result = await createEnvVar(mockEnvVar);
+            const result = await createEnvVariable(mockEnvVar);
             expect(result).toEqual({
                 success: true,
                 data: { ...mockEnvVar, id: 1 }
@@ -39,7 +39,7 @@ describe('EnvVarsUtils', () => {
         });
 
         it('should handle database errors during creation', async () => {
-            const mockEnvVar: Omit<EnvVar, 'id'> = {
+            const mockEnvVar: Omit<EnvVariable, 'id'> = {
                 name: 'TEST_VAR',
                 value: 'test-value',
                 scope: 'global',
@@ -47,7 +47,7 @@ describe('EnvVarsUtils', () => {
             };
             (runAsync as jest.Mock).mockRejectedValue(new Error('Database error'));
 
-            const result = await createEnvVar(mockEnvVar);
+            const result = await createEnvVariable(mockEnvVar);
             expect(result).toEqual({
                 success: false,
                 error: 'Failed to create environment variable'
@@ -55,7 +55,7 @@ describe('EnvVarsUtils', () => {
         });
     });
 
-    describe('readEnvVars', () => {
+    describe('readEnvVariables', () => {
         it('should read all global environment variables', async () => {
             const mockEnvVars = [
                 { id: 1, name: 'TEST_VAR1', value: 'value1', scope: 'global', prompt_id: null },
@@ -66,7 +66,7 @@ describe('EnvVarsUtils', () => {
                 data: mockEnvVars
             });
 
-            const result = await readEnvVars();
+            const result = await readEnvVariables();
             expect(result).toEqual({
                 success: true,
                 data: mockEnvVars
@@ -82,7 +82,7 @@ describe('EnvVarsUtils', () => {
                 data: mockEnvVars
             });
 
-            const result = await readEnvVars(promptId);
+            const result = await readEnvVariables(promptId);
             expect(result).toEqual({
                 success: true,
                 data: mockEnvVars
@@ -96,7 +96,7 @@ describe('EnvVarsUtils', () => {
         it('should handle database errors during read', async () => {
             (allAsync as jest.Mock).mockRejectedValue(new Error('Database error'));
 
-            const result = await readEnvVars();
+            const result = await readEnvVariables();
             expect(result).toEqual({
                 success: false,
                 error: 'Failed to read environment variables'
@@ -110,7 +110,7 @@ describe('EnvVarsUtils', () => {
                 error: undefined
             });
 
-            const result = await readEnvVars();
+            const result = await readEnvVariables();
             expect(result).toEqual({
                 success: false,
                 error: 'Failed to fetch environment variables'
@@ -118,14 +118,14 @@ describe('EnvVarsUtils', () => {
         });
     });
 
-    describe('updateEnvVar', () => {
+    describe('updateEnvVariable', () => {
         it('should successfully update an environment variable', async () => {
             (runAsync as jest.Mock).mockResolvedValue({
                 success: true,
                 data: { changes: 1 }
             });
 
-            const result = await updateEnvVar(1, 'new-value');
+            const result = await updateEnvVariable(1, 'new-value');
             expect(result).toEqual({ success: true });
             expect(runAsync).toHaveBeenCalledWith('UPDATE env_vars SET value = ? WHERE id = ?', ['new-value', 1]);
         });
@@ -136,7 +136,7 @@ describe('EnvVarsUtils', () => {
                 data: { changes: 0 }
             });
 
-            const result = await updateEnvVar(999, 'new-value');
+            const result = await updateEnvVariable(999, 'new-value');
             expect(result).toEqual({
                 success: false,
                 error: 'No environment variable found with id 999'
@@ -146,7 +146,7 @@ describe('EnvVarsUtils', () => {
         it('should handle database errors during update', async () => {
             (runAsync as jest.Mock).mockRejectedValue(new Error('Database error'));
 
-            const result = await updateEnvVar(1, 'new-value');
+            const result = await updateEnvVariable(1, 'new-value');
             expect(result).toEqual({
                 success: false,
                 error: 'Failed to update environment variable'
@@ -154,13 +154,13 @@ describe('EnvVarsUtils', () => {
         });
     });
 
-    describe('deleteEnvVar', () => {
+    describe('deleteEnvVariable', () => {
         it('should successfully delete an environment variable', async () => {
             (runAsync as jest.Mock).mockResolvedValue({
                 success: true
             });
 
-            const result = await deleteEnvVar(1);
+            const result = await deleteEnvVariable(1);
             expect(result).toEqual({ success: true });
             expect(runAsync).toHaveBeenCalledWith('DELETE FROM env_vars WHERE id = ?', [1]);
         });
@@ -168,7 +168,7 @@ describe('EnvVarsUtils', () => {
         it('should handle database errors during deletion', async () => {
             (runAsync as jest.Mock).mockRejectedValue(new Error('Database error'));
 
-            const result = await deleteEnvVar(1);
+            const result = await deleteEnvVariable(1);
             expect(result).toEqual({
                 success: false,
                 error: 'Failed to delete environment variable'

@@ -1,237 +1,268 @@
 import chalk from 'chalk';
+import * as A from 'fp-ts/lib/Array';
+import * as Eq from 'fp-ts/lib/Eq';
+import { pipe } from 'fp-ts/lib/function';
+import * as O from 'fp-ts/lib/Option';
+import * as Ord from 'fp-ts/lib/Ord';
+import * as TE from 'fp-ts/lib/TaskEither';
 
-import { BaseCommand } from './base-command';
-import { EnvVar, Fragment } from '../../shared/types';
+import {
+    CommandError,
+    createCommand,
+    fromApiResult,
+    fromApiFunction,
+    traverseArray,
+    CommandResult,
+    createCommandLoop
+} from './base-command';
+import { EnvVariable, PromptFragment, PromptVariable } from '../../shared/types';
 import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string-formatter';
 import { FRAGMENT_PREFIX } from '../constants';
-import { createEnvVar, readEnvVars, updateEnvVar, deleteEnvVar } from '../utils/env-vars';
+import { createInteractivePrompts, MenuChoice } from './interactive';
+import { createEnvVariable, updateEnvVariable, deleteEnvVariable, readEnvVariables } from '../utils/env-vars';
 import { listFragments, viewFragmentContent } from '../utils/fragments';
 import { listPrompts, getPromptFiles } from '../utils/prompts';
 
-class EnvCommand extends BaseCommand {
-    constructor() {
-        super('env', 'Manage global environment variables');
-        this.action(this.execute.bind(this));
-    }
+// Types
+type EnvAction = 'enter' | 'fragment' | 'unset' | 'back';
 
-    async execute(): Promise<void> {
-        while (true) {
-            try {
-                const allVariables = await this.getAllUniqueVariables();
-                const envVars = await this.handleApiResult(await readEnvVars(), 'Fetched environment variables');
+interface EnvCommandResult extends CommandResult {
+    readonly action?: EnvAction;
+}
 
-                if (!envVars) return;
+// Instances
+const prompts = createInteractivePrompts();
+// Display formatting
+const getVariableStatus = (envVar: EnvVariable | undefined): string => {
+    if (!envVar) return chalk.yellow('Not Set');
 
-                const action = await this.showMenu<{ name: string; role: string } | 'back'>(
-                    'Select a variable to manage:',
-                    this.formatVariableChoices(allVariables, envVars)
-                );
-
-                if (action === 'back') return;
-
-                await this.manageEnvVar(action);
-            } catch (error) {
-                this.handleError(error, 'env command');
-                await this.pressKeyToContinue();
+    const trimmedValue = envVar.value.trim();
+    return trimmedValue.startsWith(FRAGMENT_PREFIX)
+        ? chalk.blue(trimmedValue)
+        : chalk.green(`Set: ${trimmedValue.substring(0, 20)}${trimmedValue.length > 20 ? '...' : ''}`);
+};
+const formatVariableChoices = (
+    allVariables: ReadonlyArray<PromptVariable>,
+    envVars: ReadonlyArray<EnvVariable>
+): ReadonlyArray<MenuChoice<PromptVariable>> => {
+    const maxNameLength = Math.max(...allVariables.map((v) => formatSnakeCase(v.name).length));
+    return allVariables.map((variable) => {
+        const formattedName = formatSnakeCase(variable.name);
+        const coloredName = formattedName;
+        const paddingLength = maxNameLength - formattedName.length;
+        const paddedSpaces = paddingLength > 0 ? ' '.repeat(paddingLength) : '';
+        const envVar = envVars.find((v) => formatSnakeCase(v.name) === formattedName);
+        const status = getVariableStatus(envVar);
+        return {
+            name: `${coloredName}${paddedSpaces} -> ${status}`,
+            value: variable
+        };
+    });
+};
+// Variable management
+const getAllUniqueVariables = (): TE.TaskEither<CommandError, ReadonlyArray<PromptVariable>> =>
+    pipe(
+        fromApiFunction(() => listPrompts()),
+        TE.chain((prompts) =>
+            traverseArray(prompts, (prompt) =>
+                prompt.id
+                    ? pipe(
+                          fromApiFunction(() => getPromptFiles(prompt.id!)),
+                          TE.map((details) => details.metadata.variables)
+                      )
+                    : TE.right([])
+            )
+        ),
+        TE.map((variables) =>
+            pipe(
+                variables.flat(),
+                A.uniq(Eq.fromEquals<PromptVariable>((a, b) => a.name === b.name)),
+                A.sort(Ord.fromCompare<PromptVariable>((a, b) => a.name.localeCompare(b.name) as -1 | 0 | 1))
+            )
+        )
+    );
+// Variable actions
+const enterValueForVariable = (
+    variable: PromptVariable,
+    envVar: O.Option<EnvVariable>
+): TE.TaskEither<CommandError, void> =>
+    pipe(
+        prompts.getMultilineInput(
+            `Value for ${formatSnakeCase(variable.name)}`,
+            pipe(
+                envVar,
+                O.fold(
+                    () => '',
+                    (ev) => ev.value
+                )
+            )
+        ),
+        TE.chain((value) => {
+            if (value.trim() === '') {
+                console.log(chalk.yellow('Input canceled. Returning to actions menu.'));
+                return TE.right(undefined);
             }
-        }
-    }
-
-    private formatVariableChoices(
-        allVariables: Array<{ name: string; role: string }>,
-        envVars: EnvVar[]
-    ): Array<{ name: string; value: { name: string; role: string } }> {
-        const maxNameLength = Math.max(...allVariables.map((v) => formatSnakeCase(v.name).length));
-        return allVariables.map((variable) => {
-            const formattedName = formatSnakeCase(variable.name);
-            const paddedName = formattedName.padEnd(maxNameLength);
-            const envVar = envVars.find((v) => formatSnakeCase(v.name) === formattedName);
-            const status = this.getVariableStatus(envVar);
-            return {
-                name: `${chalk.cyan(paddedName)}: ${status}`,
-                value: variable
-            };
-        });
-    }
-
-    private getVariableStatus(envVar: EnvVar | undefined): string {
-        if (!envVar) return chalk.yellow('Not Set');
-
-        if (envVar.value.startsWith('Fragment:')) return chalk.blue(envVar.value);
-        return chalk.green(`Set: ${envVar.value.substring(0, 20)}${envVar.value.length > 20 ? '...' : ''}`);
-    }
-
-    private async manageEnvVar(variable: { name: string; role: string }): Promise<void> {
-        const envVars = await this.handleApiResult(await readEnvVars(), 'Fetched environment variables');
-
-        if (!envVars) return;
-
-        const envVar = envVars.find((v) => v.name === variable.name);
-        const action = await this.showMenu<'enter' | 'fragment' | 'unset' | 'back'>(
-            `Choose action for ${formatSnakeCase(variable.name)}:`,
-            [
-                { name: 'Enter value', value: 'enter' },
-                { name: 'Use fragment', value: 'fragment' },
-                { name: 'Unset', value: 'unset' }
-            ]
-        );
-        switch (action) {
-            case 'enter':
-                await this.enterValueForVariable(variable, envVar);
-                break;
-            case 'fragment':
-                await this.assignFragmentToVariable(variable);
-                break;
-            case 'unset':
-                await this.unsetVariable(variable, envVar);
-                break;
-            case 'back':
-                return;
-        }
-
-        await this.pressKeyToContinue();
-    }
-
-    private async enterValueForVariable(
-        variable: { name: string; role: string },
-        envVar: EnvVar | undefined
-    ): Promise<void> {
-        try {
-            const currentValue = envVar?.value || '';
-            const value = await this.getMultilineInput(`Value for ${formatSnakeCase(variable.name)}`, currentValue);
-
-            if (envVar) {
-                const updateResult = await updateEnvVar(envVar.id, value);
-
-                if (updateResult.success) {
-                    console.log(chalk.green(`Updated value for ${formatSnakeCase(variable.name)}`));
-                } else {
-                    throw new Error(`Failed to update ${formatSnakeCase(variable.name)}: ${updateResult.error}`);
-                }
-            } else {
-                const createResult = await createEnvVar({ name: variable.name, value, scope: 'global' });
-
-                if (createResult.success) {
-                    console.log(chalk.green(`Created environment variable ${formatSnakeCase(variable.name)}`));
-                } else {
-                    throw new Error(`Failed to create ${formatSnakeCase(variable.name)}: ${createResult.error}`);
-                }
-            }
-        } catch (error) {
-            this.handleError(error, 'entering value for variable');
-        }
-    }
-
-    private async assignFragmentToVariable(variable: { name: string; role: string }): Promise<void> {
-        try {
-            const fragments = await this.handleApiResult(await listFragments(), 'Fetched fragments');
-
-            if (!fragments) return;
-
-            const selectedFragment = await this.showMenu<Fragment | 'back'>(
-                'Select a fragment: ',
-                fragments.map((f) => ({
+            return pipe(
+                envVar,
+                O.fold(
+                    () =>
+                        pipe(
+                            fromApiResult(
+                                createEnvVariable({
+                                    name: variable.name,
+                                    value,
+                                    scope: 'global'
+                                })
+                            ),
+                            TE.map(() => {
+                                console.log(
+                                    chalk.green(`Created environment variable ${formatSnakeCase(variable.name)}`)
+                                );
+                            })
+                        ),
+                    (ev) =>
+                        pipe(
+                            fromApiResult(updateEnvVariable(ev.id, value)),
+                            TE.map(() => {
+                                console.log(chalk.green(`Updated value for ${formatSnakeCase(variable.name)}`));
+                            })
+                        )
+                )
+            );
+        })
+    );
+const assignFragmentToVariable = (variable: PromptVariable): TE.TaskEither<CommandError, void> =>
+    pipe(
+        fromApiResult(listFragments()),
+        TE.chain((fragments) =>
+            prompts.showMenu<PromptFragment | 'back'>('Select a fragment:', [
+                ...fragments.map((f) => ({
                     name: `${formatTitleCase(f.category)} / ${chalk.blue(f.name)}`,
                     value: f
                 }))
-            );
-
-            if (selectedFragment === 'back') {
+            ])
+        ),
+        TE.chain((fragment) => {
+            if (fragment === 'back') {
                 console.log(chalk.yellow('Fragment assignment cancelled.'));
-                return;
+                return TE.right(undefined);
             }
 
-            const fragmentRef = `${FRAGMENT_PREFIX}${selectedFragment.category}/${selectedFragment.name}`;
-            const envVars = await this.handleApiResult(await readEnvVars(), 'Fetched environment variables');
-
-            if (!envVars) return;
-
-            const existingEnvVar = envVars.find((v) => v.name === variable.name);
-
-            if (existingEnvVar) {
-                const updateResult = await updateEnvVar(existingEnvVar.id, fragmentRef);
-
-                if (!updateResult.success) {
-                    throw new Error(`Failed to update ${formatSnakeCase(variable.name)}: ${updateResult.error}`);
-                }
-            } else {
-                const createResult = await createEnvVar({
-                    name: variable.name,
-                    value: fragmentRef,
-                    scope: 'global'
-                });
-
-                if (!createResult.success) {
-                    throw new Error(`Failed to create ${formatSnakeCase(variable.name)}: ${createResult.error}`);
-                }
-            }
-
-            console.log(chalk.green(`Fragment reference assigned to ${formatSnakeCase(variable.name)}`));
-
-            const fragmentContent = await this.handleApiResult(
-                await viewFragmentContent(selectedFragment.category, selectedFragment.name),
-                `Fetched content for fragment ${fragmentRef}`
+            const fragmentRef = `${FRAGMENT_PREFIX}${fragment.category}/${fragment.name}`;
+            return pipe(
+                fromApiResult(readEnvVariables()),
+                TE.chain((envVars) => {
+                    const existingEnvVar = envVars.find((v) => v.name === variable.name);
+                    return pipe(
+                        O.fromNullable(existingEnvVar),
+                        O.fold(
+                            () =>
+                                pipe(
+                                    fromApiResult(
+                                        createEnvVariable({
+                                            name: variable.name,
+                                            value: fragmentRef,
+                                            scope: 'global'
+                                        })
+                                    ),
+                                    TE.map(() => undefined)
+                                ),
+                            (ev) =>
+                                pipe(
+                                    fromApiResult(updateEnvVariable(ev.id, fragmentRef)),
+                                    TE.map(() => undefined)
+                                )
+                        )
+                    );
+                }),
+                TE.chain(() =>
+                    pipe(
+                        fromApiResult(viewFragmentContent(fragment.category, fragment.name)),
+                        TE.map((content) => {
+                            console.log(
+                                chalk.green(`Fragment reference assigned to ${formatSnakeCase(variable.name)}`)
+                            );
+                            console.log(chalk.cyan('Fragment content preview:'));
+                            console.log(content.substring(0, 200) + (content.length > 200 ? '...' : ''));
+                        })
+                    )
+                )
             );
-
-            if (fragmentContent) {
-                console.log(chalk.cyan('Fragment content preview:'));
-                console.log(fragmentContent.substring(0, 200) + (fragmentContent.length > 200 ? '...' : ''));
-            }
-        } catch (error) {
-            this.handleError(error, 'assigning fragment to variable');
-        }
-    }
-
-    private async unsetVariable(variable: { name: string; role: string }, envVar: EnvVar | undefined): Promise<void> {
-        try {
-            if (envVar) {
-                const deleteResult = await deleteEnvVar(envVar.id);
-
-                if (deleteResult.success) {
-                    console.log(chalk.green(`Unset ${formatSnakeCase(variable.name)}`));
-                } else {
-                    throw new Error(`Failed to unset ${formatSnakeCase(variable.name)}: ${deleteResult.error}`);
-                }
-            } else {
-                console.log(chalk.yellow(`${formatSnakeCase(variable.name)} is already empty`));
-            }
-        } catch (error) {
-            this.handleError(error, 'unsetting variable');
-        }
-    }
-
-    private async getAllUniqueVariables(): Promise<Array<{ name: string; role: string }>> {
-        try {
-            const prompts = await this.handleApiResult(await listPrompts(), 'Fetched prompts');
-
-            if (!prompts) return [];
-
-            const uniqueVariables = new Map<string, { name: string; role: string }>();
-
-            for (const prompt of prompts) {
-                if (!prompt.id) {
-                    return [];
-                }
-
-                const details = await this.handleApiResult(
-                    await getPromptFiles(prompt.id),
-                    `Fetched details for prompt ${prompt.id}`
-                );
-
-                if (details) {
-                    details.metadata.variables.forEach((v) => {
-                        if (!uniqueVariables.has(v.name)) {
-                            uniqueVariables.set(v.name, { name: v.name, role: v.role });
+        })
+    );
+const unsetVariable = (variable: PromptVariable, envVar: O.Option<EnvVariable>): TE.TaskEither<CommandError, void> =>
+    pipe(
+        envVar,
+        O.fold(
+            () => TE.right(console.log(chalk.yellow(`${formatSnakeCase(variable.name)} is already empty`))),
+            (ev) =>
+                pipe(
+                    fromApiResult(deleteEnvVariable(ev.id)),
+                    TE.map(() => {
+                        console.log(chalk.green(`Unset ${formatSnakeCase(variable.name)}`));
+                    })
+                )
+        )
+    );
+// Command execution
+const executeEnvCommand = (): TE.TaskEither<CommandError, EnvCommandResult> => {
+    const loop = (): TE.TaskEither<CommandError, EnvCommandResult> =>
+        pipe(
+            TE.Do,
+            TE.bind('variables', () => getAllUniqueVariables()),
+            TE.bind('envVars', () => fromApiFunction(() => readEnvVariables())),
+            TE.chain(({ variables, envVars }) =>
+                pipe(
+                    prompts.showMenu<PromptVariable | 'back'>(
+                        'Select a variable to manage:',
+                        formatVariableChoices(variables, envVars)
+                    ),
+                    TE.chain((selectedVariable): TE.TaskEither<CommandError, EnvCommandResult> => {
+                        if (selectedVariable === 'back') {
+                            console.log(chalk.yellow('Returning to main menu.'));
+                            return TE.right({ completed: true });
                         }
-                    });
-                }
-            }
-            return Array.from(uniqueVariables.values()).sort((a, b) => a.name.localeCompare(b.name));
-        } catch (error) {
-            this.handleError(error, 'getting all unique variables');
-            return [];
-        }
-    }
-}
+                        return pipe(
+                            prompts.showMenu<EnvAction>(
+                                `Choose action for ${formatSnakeCase(selectedVariable.name)}:`,
+                                [
+                                    { name: 'Enter value', value: 'enter' },
+                                    { name: 'Use fragment', value: 'fragment' },
+                                    { name: 'Unset', value: 'unset' }
+                                ]
+                            ),
+                            TE.chain((action) => {
+                                const envVar = O.fromNullable(envVars.find((v) => v.name === selectedVariable.name));
+                                switch (action) {
+                                    case 'enter':
+                                        return pipe(
+                                            enterValueForVariable(selectedVariable, envVar),
+                                            TE.map(() => ({ completed: false }))
+                                        );
+                                    case 'fragment':
+                                        return pipe(
+                                            assignFragmentToVariable(selectedVariable),
+                                            TE.map(() => ({ completed: false }))
+                                        );
+                                    case 'unset':
+                                        return pipe(
+                                            unsetVariable(selectedVariable, envVar),
+                                            TE.map(() => ({ completed: false }))
+                                        );
+                                    case 'back':
+                                        console.log(chalk.yellow('Returning to variables menu.'));
+                                        return TE.right({ completed: false });
+                                    default:
+                                        console.warn(chalk.red(`Unknown action: ${action}`));
+                                        return TE.right({ completed: false });
+                                }
+                            })
+                        );
+                    })
+                )
+            )
+        );
+    return createCommandLoop(loop);
+};
 
-export default new EnvCommand();
+export const envCommand = createCommand('env', 'Manage environment variables', executeEnvCommand);
