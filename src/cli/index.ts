@@ -13,6 +13,7 @@ import { getConfigValue, setConfig } from '../shared/config';
 import { CommandError } from './commands/base-command';
 import { configCommand } from './commands/config-command';
 import { envCommand } from './commands/env-command';
+import { executeCommand } from './commands/execute-command';
 import { flushCommand } from './commands/flush-command';
 import { fragmentsCommand } from './commands/fragments-command';
 import { showMainMenu } from './commands/menu-command';
@@ -87,6 +88,7 @@ const registerCommands = (program: Command): Command => {
     const commands = [
         configCommand,
         envCommand,
+        executeCommand,
         flushCommand,
         fragmentsCommand,
         promptsCommand,

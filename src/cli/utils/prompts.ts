@@ -77,8 +77,13 @@ export async function listPrompts(): Promise<ApiResult<PromptMetadata[]>> {
     }
 }
 
+interface GetPromptFilesOptions {
+    cleanVariables?: boolean;
+}
+
 export async function getPromptFiles(
-    promptId: string
+    promptId: string,
+    options: GetPromptFilesOptions = { cleanVariables: false }
 ): Promise<ApiResult<{ promptContent: string; metadata: PromptMetadata }>> {
     try {
         const promptContentResult = await getAsync<{ content: string }>('SELECT content FROM prompts WHERE id = ?', [
@@ -89,11 +94,12 @@ export async function getPromptFiles(
             return { success: false, error: 'Prompt not found' };
         }
 
-        const metadataResult = await getPromptMetadata(promptId);
+        const metadataResult = await getPromptMetadata(promptId, options);
 
         if (!metadataResult.success || !metadataResult.data) {
             return { success: false, error: 'Failed to get prompt metadata' };
         }
+
         return {
             success: true,
             data: {
@@ -107,7 +113,10 @@ export async function getPromptFiles(
     }
 }
 
-export async function getPromptMetadata(promptId: string): Promise<ApiResult<PromptMetadata>> {
+export async function getPromptMetadata(
+    promptId: string,
+    options: GetPromptFilesOptions = { cleanVariables: false }
+): Promise<ApiResult<PromptMetadata>> {
     try {
         const promptResult = await getAsync<PromptMetadata>('SELECT * FROM prompts WHERE id = ?', [promptId]);
 
@@ -124,10 +133,12 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
             return { success: false, error: 'Failed to get subcategories' };
         }
 
-        const variablesResult = await allAsync<PromptVariable>(
-            'SELECT name, role, optional_for_user, value FROM variables WHERE prompt_id = ?',
-            [promptId]
-        );
+        // Adjust the variables query based on whether we want to include values
+        const variablesQuery = options.cleanVariables
+            ? 'SELECT name, role, optional_for_user FROM variables WHERE prompt_id = ?'
+            : 'SELECT name, role, optional_for_user, value FROM variables WHERE prompt_id = ?';
+
+        const variablesResult = await allAsync<PromptVariable>(variablesQuery, [promptId]);
 
         if (!variablesResult.success || !variablesResult.data) {
             return { success: false, error: 'Failed to get variables' };
@@ -142,6 +153,11 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
             return { success: false, error: 'Failed to get fragments' };
         }
 
+        const variables = variablesResult.data.map((variable) => ({
+            ...variable,
+            value: options.cleanVariables ? '' : variable.value || ''
+        }));
+
         const promptMetadata: PromptMetadata = {
             id: promptResult.data.id,
             title: promptResult.data.title,
@@ -151,7 +167,7 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
             tags: promptResult.data.tags,
             one_line_description: promptResult.data.one_line_description,
             description: promptResult.data.description,
-            variables: variablesResult.data,
+            variables: variables,
             content_hash: promptResult.data.content_hash,
             fragments: fragmentsResult.data
         };

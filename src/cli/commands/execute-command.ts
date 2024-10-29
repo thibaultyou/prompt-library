@@ -1,243 +1,361 @@
-// import chalk from 'chalk';
-// import fs from 'fs-extra';
-// import yaml from 'js-yaml';
+import chalk from 'chalk';
+import { Command } from 'commander';
+import { pipe } from 'fp-ts/lib/function';
+import * as TE from 'fp-ts/lib/TaskEither';
+import * as O from 'fp-ts/lib/Option';
+import * as E from 'fp-ts/lib/Either';
+import * as A from 'fp-ts/lib/Array';
+import fs from 'fs-extra';
+import path from 'path';
+import yaml from 'js-yaml';
 
-// import { BaseCommand } from './base-command';
-// import { PromptMetadata, Variable } from '../../shared/types';
-// import { processPromptContent, updatePromptWithVariables } from '../../shared/utils/prompt-processing';
-// import { getPromptFiles, viewPromptDetails } from '../utils/prompts';
+import {
+    CommandContext,
+    CommandError,
+    CommandResult,
+    createCommand,
+    createCommandError,
+    fromApiResult,
+    taskEitherFromPromise
+} from './base-command';
+import { ConversationManager } from '../utils/conversation-manager';
+import { getPromptFiles, viewPromptDetails } from '../utils/prompts';
+import { resolveInputs } from '../utils/input-resolver';
+import { PromptMetadata, PromptVariable } from '../../shared/types';
+import { processPromptContent, updatePromptWithVariables } from '../../shared/utils/prompt-processing';
+import { formatSnakeCase } from '../../shared/utils/string-formatter';
 
-// class ExecuteCommand extends BaseCommand {
-//     constructor() {
-//         super('execute', 'Execute or inspect a prompt');
-//         this.option('-p, --prompt <id>', 'Execute a stored prompt by ID')
-//             .option('-f, --prompt-file <file>', 'Path to the prompt file (usually prompt.md)')
-//             .option('-m, --metadata-file <file>', 'Path to the metadata file (usually metadata.yml)')
-//             .option('-i, --inspect', 'Inspect the prompt variables without executing')
-//             .option(
-//                 '-fi, --file-input <variable>=<file>',
-//                 'Specify a file to use as input for a variable',
-//                 this.collect,
-//                 {}
-//             )
-//             .allowUnknownOption(true)
-//             .addHelpText(
-//                 'after',
-//                 `
-// Dynamic Options:
-//   This command allows setting prompt variables dynamically using additional options.
-//   Variables can be set either by value or by file content.
+interface ExecuteCommandResult extends CommandResult {
+    readonly action?: 'execute' | 'back';
+}
 
-// Setting variables by value:
-//   Use --variable_name "value" format for each variable.
+interface ExecuteOptions {
+    readonly prompt?: string;
+    readonly promptFile?: string;
+    readonly metadataFile?: string;
+    readonly inspect?: boolean;
+    readonly fileInput?: Record<string, string>;
+    readonly [key: string]: unknown;
+}
 
-//   Example:
-//   $ execute -f prompt.md -m metadata.yml --source_language english --target_language french
+interface PromptData {
+    readonly promptContent: string;
+    readonly metadata: PromptMetadata;
+}
 
-// Setting variables by file content:
-//   Use -fi or --file-input option with variable=filepath format.
+const executePromptWithMetadata = async (
+    promptContent: string,
+    metadata: PromptMetadata,
+    dynamicOptions: Record<string, string>,
+    fileInputs: Record<string, string>
+): Promise<string> => {
+    const userInputs: Record<string, string> = {};
 
-//   Example:
-//   $ execute -f prompt.md -m metadata.yml -fi communication=input.txt
+    // First, validate all required variables
+    const missingVariables: string[] = [];
 
-// Combining value and file inputs:
-//   You can mix both methods in a single command.
+    for (const variable of metadata.variables) {
+        const variableName = variable.name.replace(/[{}]/g, '');
+        const snakeCaseName = variableName.toLowerCase();
 
-//   Example:
-//   $ execute -f prompt.md -m metadata.yml --source_language english -fi communication=input.txt --target_language french
+        // Skip if variable has a default value
+        if (variable.value) {
+            userInputs[variable.name] = variable.value;
+            continue;
+        }
 
-// Common Variables:
-//   While variables are prompt-specific, some common ones include:
+        // Check if variable is required and not set
+        if (!variable.optional_for_user) {
+            const hasValue =
+                (dynamicOptions && snakeCaseName in dynamicOptions) || (fileInputs && snakeCaseName in fileInputs);
 
-//   --safety_guidelines <value>             Set safety rules or ethical considerations
-//   --output_format <value>                 Set the structure and components of the final output
-//   --extra_guidelines_or_context <value>   Set additional information or instructions
+            if (!hasValue) {
+                missingVariables.push(snakeCaseName);
+            }
+        }
+    }
 
-// Inspecting Variables:
-//   Use -i or --inspect to see all available variables for a specific prompt:
-//   $ execute -f prompt.md -m metadata.yml -i
+    // If any required variables are missing, throw an error
+    if (missingVariables.length > 0) {
+        throw new Error(`Missing required variables: ${missingVariables.join(', ')}`);
+    }
 
-// Example Workflow:
-//   1. Inspect the prompt:
-//     $ execute -f ./prompts/universal_translator/prompt.md -m ./prompts/universal_translator/metadata.yml -i
+    // Process all variables
+    for (const variable of metadata.variables) {
+        const variableName = variable.name.replace(/[{}]/g, '');
+        const snakeCaseName = variableName.toLowerCase();
 
-//   2. Execute the prompt with mixed inputs:
-//     $ execute -f ./prompts/universal_translator/prompt.md -m ./prompts/universal_translator/metadata.yml \\
-//     --source_language_or_mode english \\
-//     --target_language_or_mode french \\
-//     -fi communication=./input.txt
+        // Skip if already set from default value
+        if (variable.name in userInputs) {
+            continue;
+        }
 
-// Note:
-//   - File paths are relative to the current working directory.
-//   - Use quotes for values containing spaces.
-// `
-//             )
-//             .action(this.execute.bind(this));
-//     }
+        let value = dynamicOptions[snakeCaseName];
 
-//     private collect(value: string, previous: Record<string, string>): Record<string, string> {
-//         const [variable, file] = value.split('=');
-//         return { ...previous, [variable]: file };
-//     }
+        if (fileInputs[snakeCaseName]) {
+            try {
+                value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
+                // console.log(chalk.green(`Loaded file content for ${snakeCaseName}`));
+            } catch (error) {
+                console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
+                throw new Error(`Failed to read file for ${snakeCaseName}`);
+            }
+        }
 
-//     private parseDynamicOptions(args: string[]): Record<string, string> {
-//         const options: Record<string, string> = {};
+        if (value !== undefined) {
+            userInputs[variable.name] = value;
+        } else if (!variable.optional_for_user) {
+            // This should never happen due to previous validation, but keep as safety
+            throw new Error(`Required variable ${snakeCaseName} is not set`);
+        }
+    }
 
-//         for (let i = 0; i < args.length; i += 2) {
-//             if (args[i].startsWith('--')) {
-//                 const key = args[i].slice(2).replace(/-/g, '_');
-//                 options[key] = args[i + 1];
-//             }
-//         }
-//         return options;
-//     }
+    // Log the variables being used (helpful for debugging)
+    // console.log(chalk.cyan('\nUsing variables:'));
+    // Object.entries(userInputs).forEach(([key, value]) => {
+    //     console.log(`  ${formatSnakeCase(key)}: ${value.length > 50 ? value.substring(0, 50) + '...' : value}`);
+    // });
 
-//     async execute(options: any, command: any): Promise<void> {
-//         try {
-//             if (options.help) {
-//                 this.outputHelp();
-//                 return;
-//             }
+    const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
+    const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
 
-//             const dynamicOptions = this.parseDynamicOptions(command.args);
+    if (typeof result !== 'string') {
+        throw new Error('Unexpected result format from prompt processing');
+    }
 
-//             if (options.prompt) {
-//                 await this.handleStoredPrompt(options.prompt, dynamicOptions, options.inspect, options.fileInput);
-//             } else if (options.promptFile && options.metadataFile) {
-//                 await this.handleFilePrompt(
-//                     options.promptFile,
-//                     options.metadataFile,
-//                     dynamicOptions,
-//                     options.inspect,
-//                     options.fileInput
-//                 );
-//             } else {
-//                 console.error(
-//                     chalk.red('Error: You must provide either a prompt ID or both prompt file and metadata file paths.')
-//                 );
-//                 this.outputHelp();
-//             }
-//         } catch (error) {
-//             this.handleError(error, 'execute command');
-//         }
-//     }
+    console.log(result);
 
-//     private async handleStoredPrompt(
-//         promptId: string,
-//         dynamicOptions: Record<string, string>,
-//         inspect: boolean,
-//         fileInputs: Record<string, string>
-//     ): Promise<void> {
-//         try {
-//             const promptFiles = await this.handleApiResult(await getPromptFiles(promptId), 'Fetched prompt files');
+    return result;
+};
 
-//             if (!promptFiles) return;
+const inspectVariables = (metadata: PromptMetadata): void => {
+    console.log(chalk.cyan('\nRequired variables:'));
+    metadata.variables
+        .filter((v) => !v.optional_for_user && !v.value)
+        .forEach((v) => {
+            const name = v.name.replace(/[{}]/g, '').toLowerCase();
+            console.log(chalk.red(`  ${name}`));
+        });
 
-//             const { promptContent, metadata } = promptFiles;
+    console.log(chalk.cyan('\nOptional variables:'));
+    metadata.variables
+        .filter((v) => v.optional_for_user || v.value)
+        .forEach((v) => {
+            const name = v.name.replace(/[{}]/g, '').toLowerCase();
+            if (!v.value) {
+                //console.log(chalk.green(`  ${name} (default: ${v.value})`));
+                //} else {
+                console.log(chalk.yellow(`  ${name}`));
+            }
+        });
+};
 
-//             if (inspect) {
-//                 await this.inspectPrompt(metadata);
-//             } else {
-//                 await this.executePromptWithMetadata(promptContent, metadata, dynamicOptions, fileInputs);
-//             }
-//         } catch (error) {
-//             this.handleError(error, 'handling stored prompt');
-//         }
-//     }
+const inspectPrompt = async (metadata: PromptMetadata): Promise<void> => {
+    await viewPromptDetails(
+        {
+            id: '',
+            title: metadata.title,
+            primary_category: metadata.primary_category,
+            description: metadata.description,
+            tags: metadata.tags,
+            variables: metadata.variables
+        } as PromptMetadata,
+        true
+    );
+};
 
-//     private async handleFilePrompt(
-//         promptFile: string,
-//         metadataFile: string,
-//         dynamicOptions: Record<string, string>,
-//         inspect: boolean,
-//         fileInputs: Record<string, string>
-//     ): Promise<void> {
-//         try {
-//             const promptContent = await fs.readFile(promptFile, 'utf-8');
-//             const metadataContent = await fs.readFile(metadataFile, 'utf-8');
-//             const metadata = yaml.load(metadataContent) as PromptMetadata;
+const parseDynamicOptions = (options: ExecuteOptions): Record<string, string> => {
+    const excludedKeys = ['prompt', 'promptFile', 'metadataFile', 'inspect', 'fileInput'];
+    return Object.entries(options).reduce(
+        (acc, [key, value]) => {
+            if (!excludedKeys.includes(key) && typeof value === 'string') {
+                acc[key.replace(/-/g, '_')] = value;
+            }
+            return acc;
+        },
+        {} as Record<string, string>
+    );
+};
 
-//             if (inspect) {
-//                 await this.inspectPrompt(metadata);
-//             } else {
-//                 await this.executePromptWithMetadata(promptContent, metadata, dynamicOptions, fileInputs);
-//             }
-//         } catch (error) {
-//             this.handleError(error, 'handling file prompt');
-//         }
-//     }
+const executeExecuteCommand = (ctx: CommandContext): TE.TaskEither<CommandError, ExecuteCommandResult> => {
+    // Extract options from Commander's parsed object
+    const options: ExecuteOptions = {
+        prompt: ctx.options.prompt as string | undefined,
+        promptFile: ctx.options.promptFile as string | undefined,
+        metadataFile: ctx.options.metadataFile as string | undefined,
+        inspect: Boolean(ctx.options.inspect),
+        fileInput: (ctx.options.fileInput as Record<string, string>) || {},
+        ...Object.fromEntries(
+            Object.entries(ctx.options)
+                .filter(([key]) => !['prompt', 'promptFile', 'metadataFile', 'inspect', 'fileInput'].includes(key))
+                .map(([key, value]) => [key, String(value)])
+        )
+    };
 
-//     private async inspectPrompt(metadata: PromptMetadata): Promise<void> {
-//         try {
-//             await viewPromptDetails(
-//                 {
-//                     id: '',
-//                     title: metadata.title,
-//                     primary_category: metadata.primary_category,
-//                     description: metadata.description,
-//                     tags: metadata.tags,
-//                     variables: metadata.variables
-//                 } as PromptMetadata & { variables: Variable[] },
-//                 true
-//             );
-//         } catch (error) {
-//             this.handleError(error, 'inspecting prompt');
-//         }
-//     }
+    const dynamicOptions = parseDynamicOptions(options);
+    const fileInputs = options.fileInput || {};
 
-//     private async executePromptWithMetadata(
-//         promptContent: string,
-//         metadata: PromptMetadata,
-//         dynamicOptions: Record<string, string>,
-//         fileInputs: Record<string, string>
-//     ): Promise<void> {
-//         try {
-//             const userInputs: Record<string, string> = {};
+    // Modified validation to properly check for prompt ID
+    if (!options.prompt && (!options.promptFile || !options.metadataFile)) {
+        if (options.prompt === undefined && (!options.promptFile || !options.metadataFile)) {
+            return TE.left(
+                createCommandError(
+                    'INVALID_INPUT',
+                    'Must provide either prompt ID (-p) or both prompt file (-f) and metadata file (-m)'
+                )
+            );
+        }
+    }
 
-//             for (const variable of metadata.variables) {
-//                 if (!variable.optional_for_user && !variable.value) {
-//                     const snakeCaseName = variable.name.replace(/[{}]/g, '').toLowerCase();
-//                     const hasValue =
-//                         (dynamicOptions && snakeCaseName in dynamicOptions) ||
-//                         (fileInputs && snakeCaseName in fileInputs);
+    return pipe(
+        TE.Do,
+        TE.bind('promptData', () =>
+            options.prompt
+                ? fromApiResult(getPromptFiles(options.prompt, { cleanVariables: true }))
+                : pipe(
+                      TE.Do,
+                      TE.bind('promptContent', () =>
+                          taskEitherFromPromise(
+                              () => fs.readFile(options.promptFile!, 'utf-8'),
+                              (error) => createCommandError('FILE_READ_ERROR', `Failed to read prompt file: ${error}`)
+                          )
+                      ),
+                      TE.bind('metadata', () =>
+                          taskEitherFromPromise(
+                              async () => {
+                                  const content = await fs.readFile(options.metadataFile!, 'utf-8');
+                                  return yaml.load(content) as PromptMetadata;
+                              },
+                              (error) => createCommandError('FILE_READ_ERROR', `Failed to read metadata file: ${error}`)
+                          )
+                      ),
+                      TE.map(({ promptContent, metadata }) => ({ promptContent, metadata }))
+                  )
+        ),
+        TE.chain(({ promptData }) => {
+            // Always show variable requirements before execution
+            // if (!options.inspect) {
+            //     inspectVariables(promptData.metadata);
+            // }
 
-//                     if (!hasValue) {
-//                         throw new Error(`Required variable ${snakeCaseName} is not set`);
-//                     }
-//                 }
-//             }
+            return options.inspect
+                ? pipe(
+                      taskEitherFromPromise(
+                          () => inspectPrompt(promptData.metadata),
+                          (error) => createCommandError('INSPECT_ERROR', `Failed to inspect prompt: ${error}`)
+                      ),
+                      TE.map(() => ({ completed: true, action: 'execute' as const }))
+                  )
+                : pipe(
+                      taskEitherFromPromise(
+                          () =>
+                              executePromptWithMetadata(
+                                  promptData.promptContent,
+                                  promptData.metadata,
+                                  dynamicOptions,
+                                  fileInputs
+                              ),
+                          (error) => createCommandError('EXECUTION_ERROR', `Failed to execute prompt: ${error}`)
+                      ),
+                      TE.map(() => ({ completed: true, action: 'execute' as const }))
+                  );
+        })
+    );
+};
 
-//             for (const variable of metadata.variables) {
-//                 const snakeCaseName = variable.name.replace(/[{}]/g, '').toLowerCase();
-//                 let value = dynamicOptions[snakeCaseName];
+export const executeCommand = pipe(
+    createCommand('execute', 'Execute or inspect a prompt', executeExecuteCommand),
+    (command) =>
+        command
+            .option('-p, --prompt <id>', 'Execute a stored prompt by ID')
+            .option('-f, --prompt-file <file>', 'Path to the prompt file')
+            .option('-m, --metadata-file <file>', 'Path to the metadata file')
+            .option('-i, --inspect', 'Inspect the prompt variables without executing')
+            .option(
+                '-fi, --file-input <variable>=<file>',
+                'Specify a file to use as input for a variable',
+                (value, previous: Record<string, string>) => {
+                    const [variable, file] = value.split('=');
+                    if (!variable || !file) {
+                        throw new Error('File input must be in format: variable=filepath');
+                    }
+                    return { ...previous, [variable.trim()]: file.trim() };
+                },
+                {}
+            )
+            .allowUnknownOption(true)
+            .passThroughOptions(false)
+            .action(async (cmdOptions, cmd) => {
+                try {
+                    const options = {
+                        ...cmdOptions,
+                        ...Object.fromEntries(
+                            cmd.args
+                                .filter((arg: string) => arg.startsWith('--'))
+                                .map((arg: string) => [
+                                    arg.slice(2).replace(/-/g, '_'),
+                                    cmd.args[cmd.args.indexOf(arg) + 1]
+                                ])
+                        )
+                    };
 
-//                 if (fileInputs[snakeCaseName]) {
-//                     try {
-//                         value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
-//                         console.log(chalk.green(`Loaded file content for ${snakeCaseName}`));
-//                     } catch (error) {
-//                         console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
-//                         throw new Error(`Failed to read file for ${snakeCaseName}`);
-//                     }
-//                 }
+                    const result = await executeExecuteCommand({
+                        args: [],
+                        options
+                    })();
 
-//                 if (value) {
-//                     userInputs[variable.name] = value;
-//                 }
-//             }
+                    if (E.isLeft(result)) {
+                        throw new Error(result.left.message);
+                    }
+                } catch (error) {
+                    console.error(chalk.red('Error:'), error instanceof Error ? error.message : String(error));
+                    process.exit(1);
+                }
+            })
+            .addHelpText(
+                'after',
+                `
+Dynamic Options:
+  This command allows setting prompt variables dynamically using additional options.
+  Variables can be set either by value or by file content.
 
-//             const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
-//             const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
+Setting variables by value:
+  Use --variable_name "value" format for each variable.
 
-//             if (typeof result === 'string') {
-//                 console.log(result);
-//             } else {
-//                 console.error(chalk.red('Unexpected result format from prompt processing'));
-//             }
-//         } catch (error) {
-//             this.handleError(error, 'executing prompt with metadata');
-//         }
-//     }
-// }
+  Example:
+  $ execute -p 59 --source_language english --target_language french
+  $ execute -f prompt.md -m metadata.yml --source_language english --target_language french
 
-// export default new ExecuteCommand();
+Setting variables by file content:
+  Use -fi or --file-input option with variable=filepath format.
+
+  Example:
+  $ execute -p 59 -fi communication=input.txt
+  $ execute -f prompt.md -m metadata.yml -fi communication=input.txt
+
+Combining value and file inputs:
+  You can mix both methods in a single command.
+
+  Example:
+  $ execute -p 59 --source_language english -fi communication=input.txt
+  $ execute -f prompt.md -m metadata.yml --source_language english -fi communication=input.txt
+
+Common Variables:
+  While variables are prompt-specific, some common ones include:
+  --safety_guidelines <value>             Set safety rules or ethical considerations
+  --output_format <value>                 Set the structure and components of the final output
+  --extra_guidelines_or_context <value>   Set additional information or instructions
+
+Inspecting Variables:
+  Use -i or --inspect to see all available variables for a specific prompt:
+  $ execute -p 59 -i
+  $ execute -f prompt.md -m metadata.yml -i
+
+Note:
+  - File paths are relative to the current working directory
+  - Use quotes for values containing spaces
+  - When using prompt ID (-p), the ID must exist in the database
+  - When using files (-f, -m), both prompt and metadata files must exist
+`
+            )
+);

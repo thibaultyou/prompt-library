@@ -3,6 +3,7 @@ import { pipe } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/lib/TaskEither';
 
 import {
+    CommandContext,
     CommandError,
     CommandResult,
     createCommand,
@@ -369,7 +370,39 @@ const selectAndManagePrompt = (
         );
     return loop();
 };
-const executePromptsCommand = (): TE.TaskEither<CommandError, PromptCommandResult> => {
+const executePromptsCommand = (ctx: CommandContext): TE.TaskEither<CommandError, PromptCommandResult> => {
+    const options = ctx.options as { list?: boolean; categories?: boolean; json?: boolean };
+
+    if (options.list || options.categories) {
+        return pipe(
+            fromApiFunction(() => fetchCategories()),
+            TE.chain((categories) => {
+                if (options.list) {
+                    const allPrompts = getAllPrompts(categories);
+                    if (options.json) {
+                        console.log(JSON.stringify(allPrompts, null, 2));
+                    } else {
+                        console.log(chalk.bold('All prompts:'));
+                        allPrompts.forEach((prompt) => {
+                            console.log(`${chalk.green(prompt.id)} - ${chalk.cyan(prompt.category)} / ${prompt.title}`);
+                        });
+                    }
+                } else if (options.categories) {
+                    const categoryList = Object.keys(categories).sort();
+                    if (options.json) {
+                        console.log(JSON.stringify(categoryList, null, 2));
+                    } else {
+                        console.log(chalk.bold('All categories:'));
+                        categoryList.forEach((category) => {
+                            console.log(chalk.cyan(category));
+                        });
+                    }
+                }
+                return TE.right({ completed: true, action: 'all' as const });
+            })
+        );
+    }
+
     const loop = (): TE.TaskEither<CommandError, PromptCommandResult> =>
         pipe(
             fromApiFunction(() => fetchCategories()),
@@ -404,7 +437,68 @@ const executePromptsCommand = (): TE.TaskEither<CommandError, PromptCommandResul
                 )
             )
         );
+
     return createCommandLoop(loop);
 };
 
-export const promptsCommand = createCommand('prompts', 'List and manage prompts', executePromptsCommand);
+export const promptsCommand = pipe(
+    createCommand('prompts', 'List and manage prompts', executePromptsCommand),
+    (command) =>
+        command
+            .option('-l, --list', 'List all prompts with their IDs and categories')
+            .option('-c, --categories', 'List all prompt categories')
+            .option('-j, --json', 'Output in JSON format (for CI use)')
+            .addHelpText(
+                'after',
+                `
+Usage Examples:
+  List all prompts:
+    $ prompts --list
+
+  List all categories:
+    $ prompts --categories
+
+  List in JSON format (for CI/CD):
+    $ prompts --list --json
+    $ prompts --categories --json
+
+Interactive Mode:
+  Running without options enters interactive mode with the following features:
+
+  1. Browse by Category:
+     - View prompts organized by their primary categories
+     - Navigate through category hierarchies
+     - Select and manage individual prompts
+
+  2. View All Prompts:
+     - See a complete list of all available prompts
+     - Sort alphabetically by title
+     - Quick access to any prompt
+
+  3. Sort by ID:
+     - View prompts sorted by their unique identifiers
+     - Useful for systematic review or management
+
+  4. Prompt Management:
+     - View prompt details and metadata
+     - Manage prompt variables
+     - Execute prompts with custom inputs
+     - Assign environment variables or fragments
+     - Unset variables individually or all at once
+
+Variable Management:
+  When managing prompt variables, you can:
+  - Enter values directly
+  - Use predefined fragments
+  - Link to environment variables
+  - Unset existing values
+  - Execute the prompt when all required variables are set
+
+Note:
+  - Required variables are marked with an asterisk (*)
+  - Environment variables are shown in magenta when available
+  - Fragment references are shown in blue
+  - Set values are shown in green
+`
+            )
+);
