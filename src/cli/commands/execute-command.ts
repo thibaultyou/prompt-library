@@ -3,8 +3,9 @@ import fs from 'fs-extra';
 import yaml from 'js-yaml';
 
 import { BaseCommand } from './base-command';
-import { PromptMetadata, Variable } from '../../shared/types';
+import { PromptMetadata } from '../../shared/types';
 import { processPromptContent, updatePromptWithVariables } from '../../shared/utils/prompt-processing';
+import { formatSnakeCase } from '../../shared/utils/string-formatter';
 import { getPromptFiles, viewPromptDetails } from '../utils/prompts';
 
 class ExecuteCommand extends BaseCommand {
@@ -129,7 +130,10 @@ Note:
         fileInputs: Record<string, string>
     ): Promise<void> {
         try {
-            const promptFiles = await this.handleApiResult(await getPromptFiles(promptId), 'Fetched prompt files');
+            const promptFiles = await this.handleApiResult(
+                await getPromptFiles(promptId, { cleanVariables: true }),
+                'Fetched prompt files'
+            );
 
             if (!promptFiles) return;
 
@@ -177,7 +181,7 @@ Note:
                     description: metadata.description,
                     tags: metadata.tags,
                     variables: metadata.variables
-                } as PromptMetadata & { variables: Variable[] },
+                } as PromptMetadata,
                 true
             );
         } catch (error) {
@@ -190,53 +194,74 @@ Note:
         metadata: PromptMetadata,
         dynamicOptions: Record<string, string>,
         fileInputs: Record<string, string>
-    ): Promise<void> {
-        try {
-            const userInputs: Record<string, string> = {};
+    ): Promise<string> {
+        const userInputs: Record<string, string> = {};
+        const missingVariables: string[] = [];
 
-            for (const variable of metadata.variables) {
-                if (!variable.optional_for_user && !variable.value) {
-                    const snakeCaseName = variable.name.replace(/[{}]/g, '').toLowerCase();
-                    const hasValue =
-                        (dynamicOptions && snakeCaseName in dynamicOptions) ||
-                        (fileInputs && snakeCaseName in fileInputs);
+        for (const variable of metadata.variables) {
+            const variableName = variable.name.replace(/[{}]/g, '');
+            const snakeCaseName = variableName.toLowerCase();
 
-                    if (!hasValue) {
-                        throw new Error(`Required variable ${snakeCaseName} is not set`);
-                    }
-                }
+            if (variable.value) {
+                userInputs[variable.name] = variable.value;
+                continue;
             }
 
-            for (const variable of metadata.variables) {
-                const snakeCaseName = variable.name.replace(/[{}]/g, '').toLowerCase();
-                let value = dynamicOptions[snakeCaseName];
+            if (!variable.optional_for_user) {
+                const hasValue =
+                    (dynamicOptions && snakeCaseName in dynamicOptions) || (fileInputs && snakeCaseName in fileInputs);
 
-                if (fileInputs[snakeCaseName]) {
-                    try {
-                        value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
-                        console.log(chalk.green(`Loaded file content for ${snakeCaseName}`));
-                    } catch (error) {
-                        console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
-                        throw new Error(`Failed to read file for ${snakeCaseName}`);
-                    }
-                }
-
-                if (value) {
-                    userInputs[variable.name] = value;
+                if (!hasValue) {
+                    missingVariables.push(snakeCaseName);
                 }
             }
-
-            const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
-            const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
-
-            if (typeof result === 'string') {
-                console.log(result);
-            } else {
-                console.error(chalk.red('Unexpected result format from prompt processing'));
-            }
-        } catch (error) {
-            this.handleError(error, 'executing prompt with metadata');
         }
+
+        if (missingVariables.length > 0) {
+            throw new Error(`Missing required variables: ${missingVariables.join(', ')}`);
+        }
+
+        for (const variable of metadata.variables) {
+            const variableName = variable.name.replace(/[{}]/g, '');
+            const snakeCaseName = variableName.toLowerCase();
+
+            if (variable.name in userInputs) {
+                continue;
+            }
+
+            let value = dynamicOptions[snakeCaseName];
+
+            if (fileInputs[snakeCaseName]) {
+                try {
+                    value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
+                    // console.log(chalk.green(`Loaded file content for ${snakeCaseName}`));
+                } catch (error) {
+                    console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
+                    throw new Error(`Failed to read file for ${snakeCaseName}`);
+                }
+            }
+
+            if (value !== undefined) {
+                userInputs[variable.name] = value;
+            } else if (!variable.optional_for_user) {
+                throw new Error(`Required variable ${snakeCaseName} is not set`);
+            }
+        }
+
+        console.log(chalk.cyan('\nUsing variables:'));
+        Object.entries(userInputs).forEach(([key, value]) => {
+            console.log(`  ${formatSnakeCase(key)}: ${value.length > 50 ? value.substring(0, 50) + '...' : value}`);
+        });
+
+        const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
+        const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
+
+        if (typeof result !== 'string') {
+            throw new Error('Unexpected result format from prompt processing');
+        }
+
+        console.log(result);
+        return result;
     }
 }
 

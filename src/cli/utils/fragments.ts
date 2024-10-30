@@ -1,13 +1,13 @@
 import path from 'path';
 
 import { handleError } from './errors';
-import { ApiResult, Fragment } from '../../shared/types';
+import { ApiResult, PromptFragment } from '../../shared/types';
 import { readDirectory, readFileContent } from '../../shared/utils/file-system';
 import { cliConfig } from '../config/cli-config';
 
-export async function listFragments(): Promise<ApiResult<Fragment[]>> {
+export async function listFragments(): Promise<ApiResult<PromptFragment[]>> {
     try {
-        const fragments: Fragment[] = [];
+        const fragments: PromptFragment[] = [];
         const categories = await readDirectory(cliConfig.FRAGMENTS_DIR);
 
         for (const category of categories) {

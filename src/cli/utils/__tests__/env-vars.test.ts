@@ -1,4 +1,4 @@
-import { EnvVar } from '../../../shared/types';
+import { EnvVariable } from '../../../shared/types';
 import { runAsync, allAsync } from '../database';
 import { createEnvVar, readEnvVars, updateEnvVar, deleteEnvVar } from '../env-vars';
 
@@ -16,7 +16,7 @@ describe('EnvVarsUtils', () => {
 
     describe('createEnvVar', () => {
         it('should successfully create an environment variable', async () => {
-            const mockEnvVar: Omit<EnvVar, 'id'> = {
+            const mockEnvVar: Omit<EnvVariable, 'id'> = {
                 name: 'TEST_VAR',
                 value: 'test-value',
                 scope: 'global',
@@ -39,7 +39,7 @@ describe('EnvVarsUtils', () => {
         });
 
         it('should handle database errors during creation', async () => {
-            const mockEnvVar: Omit<EnvVar, 'id'> = {
+            const mockEnvVar: Omit<EnvVariable, 'id'> = {
                 name: 'TEST_VAR',
                 value: 'test-value',
                 scope: 'global',

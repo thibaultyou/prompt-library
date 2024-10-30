@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import { BaseCommand } from './base-command';
-import { Fragment } from '../../shared/types';
+import { PromptFragment } from '../../shared/types';
 import { formatTitleCase } from '../../shared/utils/string-formatter';
 import { listFragments, viewFragmentContent } from '../utils/fragments';
 
@@ -41,14 +41,14 @@ class FragmentsCommand extends BaseCommand {
         }
     }
 
-    private async viewAllFragments(fragments: Fragment[]): Promise<void> {
+    private async viewAllFragments(fragments: PromptFragment[]): Promise<void> {
         const sortedFragments = fragments.sort((a, b) =>
             `${a.category}/${a.name}`.localeCompare(`${b.category}/${b.name}`)
         );
         await this.viewFragmentMenu(sortedFragments);
     }
 
-    private async viewFragmentsByCategory(fragments: Fragment[]): Promise<void> {
+    private async viewFragmentsByCategory(fragments: PromptFragment[]): Promise<void> {
         const categories = [...new Set(fragments.map((f) => f.category))].sort();
         while (true) {
             const category = await this.showMenu<string | 'back'>(
@@ -65,12 +65,12 @@ class FragmentsCommand extends BaseCommand {
         }
     }
 
-    private async viewFragmentMenu(fragments: Fragment[]): Promise<void> {
+    private async viewFragmentMenu(fragments: PromptFragment[]): Promise<void> {
         while (true) {
-            const selectedFragment = await this.showMenu<Fragment | 'back'>(
+            const selectedFragment = await this.showMenu<PromptFragment | 'back'>(
                 'Select a fragment to view:',
                 fragments.map((f) => ({
-                    name: `${formatTitleCase(f.category)} / ${chalk.green(f.name)}`,
+                    name: `${formatTitleCase(f.category)} > ${chalk.green(f.name)}`,
                     value: f
                 }))
             );
@@ -83,7 +83,7 @@ class FragmentsCommand extends BaseCommand {
         }
     }
 
-    private async displayFragmentContent(fragment: Fragment): Promise<void> {
+    private async displayFragmentContent(fragment: PromptFragment): Promise<void> {
         try {
             const content = await this.handleApiResult(
                 await viewFragmentContent(fragment.category, fragment.name),

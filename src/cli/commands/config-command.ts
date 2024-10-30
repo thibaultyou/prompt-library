@@ -42,7 +42,7 @@ class ConfigCommand extends BaseCommand {
             console.log(chalk.yellow('The configuration is empty.'));
         } else {
             Object.entries(currentConfig).forEach(([key, value]) => {
-                console.log(chalk.green(`${key}:`), chalk.yellow(key === 'ANTHROPIC_API_KEY' ? '********' : value));
+                console.log(`${key} -->`, chalk.green(key === 'ANTHROPIC_API_KEY' ? '********' : value));
             });
         }
     }

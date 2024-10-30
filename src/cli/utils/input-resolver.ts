@@ -1,11 +1,11 @@
-import { EnvVar } from '../../shared/types';
+import { EnvVariable } from '../../shared/types';
 import logger from '../../shared/utils/logger';
 import { FRAGMENT_PREFIX, ENV_PREFIX } from '../constants';
 import { readEnvVars } from './env-vars';
 import { handleError } from './errors';
 import { viewFragmentContent } from './fragments';
 
-export async function resolveValue(value: string, envVars: EnvVar[]): Promise<string> {
+export async function resolveValue(value: string, envVars: EnvVariable[]): Promise<string> {
     if (value.startsWith(FRAGMENT_PREFIX)) {
         const [category, name] = value.split(FRAGMENT_PREFIX)[1].split('/');
         const fragmentResult = await viewFragmentContent(category, name);

@@ -34,11 +34,10 @@ class MenuCommand extends BaseCommand {
                     { name: 'Settings', value: 'settings' }
                 );
 
-                // console.clear();
+                console.clear();
 
                 const action = await this.showMenu<MenuAction>(
-                    `${chalk.reset(chalk.italic(chalk.cyan('Want to manage AI prompts with ease ?')))}
-${chalk.bold(`${chalk.yellow('Welcome to the Prompt Library !')}
+                    `${chalk.bold(`${chalk.cyan('Welcome to the Prompt Library !')}
 Select an action:`)}`,
                     choices,
                     { goBackLabel: 'Exit' }

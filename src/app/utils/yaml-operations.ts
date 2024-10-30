@@ -1,6 +1,6 @@
 import * as yaml from 'js-yaml';
 
-import { PromptMetadata, Variable } from '../../shared/types';
+import { PromptMetadata, PromptVariable } from '../../shared/types';
 import logger from '../../shared/utils/logger';
 import { appConfig } from '../config/app-config';
 
@@ -73,8 +73,8 @@ export function isValidMetadata(obj: unknown): obj is PromptMetadata {
     return true;
 }
 
-function isValidVariable(obj: unknown): obj is Variable {
-    const variable = obj as Partial<Variable>;
+function isValidVariable(obj: unknown): obj is PromptVariable {
+    const variable = obj as Partial<PromptVariable>;
     return (
         typeof variable === 'object' &&
         variable !== null &&

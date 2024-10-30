@@ -2,10 +2,14 @@ import chalk from 'chalk';
 
 import { allAsync, getAsync, runAsync } from './database';
 import { handleError } from './errors';
-import { ApiResult, Fragment, PromptMetadata, Variable } from '../../shared/types';
+import { ApiResult, PromptFragment, PromptMetadata, PromptVariable } from '../../shared/types';
 import { formatSnakeCase, formatTitleCase } from '../../shared/utils/string-formatter';
 import { FRAGMENT_PREFIX, ENV_PREFIX } from '../constants';
 import { readEnvVars } from './env-vars';
+
+interface GetPromptFilesOptions {
+    cleanVariables?: boolean;
+}
 
 export async function createPrompt(promptMetadata: PromptMetadata, content: string): Promise<ApiResult<void>> {
     try {
@@ -78,7 +82,8 @@ export async function listPrompts(): Promise<ApiResult<PromptMetadata[]>> {
 }
 
 export async function getPromptFiles(
-    promptId: string
+    promptId: string,
+    options: GetPromptFilesOptions = { cleanVariables: false }
 ): Promise<ApiResult<{ promptContent: string; metadata: PromptMetadata }>> {
     try {
         const promptContentResult = await getAsync<{ content: string }>('SELECT content FROM prompts WHERE id = ?', [
@@ -89,7 +94,7 @@ export async function getPromptFiles(
             return { success: false, error: 'Prompt not found' };
         }
 
-        const metadataResult = await getPromptMetadata(promptId);
+        const metadataResult = await getPromptMetadata(promptId, options);
 
         if (!metadataResult.success || !metadataResult.data) {
             return { success: false, error: 'Failed to get prompt metadata' };
@@ -107,7 +112,10 @@ export async function getPromptFiles(
     }
 }
 
-export async function getPromptMetadata(promptId: string): Promise<ApiResult<PromptMetadata>> {
+export async function getPromptMetadata(
+    promptId: string,
+    options: GetPromptFilesOptions = { cleanVariables: false }
+): Promise<ApiResult<PromptMetadata>> {
     try {
         const promptResult = await getAsync<PromptMetadata>('SELECT * FROM prompts WHERE id = ?', [promptId]);
 
@@ -124,16 +132,16 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
             return { success: false, error: 'Failed to get subcategories' };
         }
 
-        const variablesResult = await allAsync<Variable>(
-            'SELECT name, role, optional_for_user, value FROM variables WHERE prompt_id = ?',
-            [promptId]
-        );
+        const variablesQuery = options.cleanVariables
+            ? 'SELECT name, role, optional_for_user FROM variables WHERE prompt_id = ?'
+            : 'SELECT name, role, optional_for_user, value FROM variables WHERE prompt_id = ?';
+        const variablesResult = await allAsync<PromptVariable>(variablesQuery, [promptId]);
 
         if (!variablesResult.success || !variablesResult.data) {
             return { success: false, error: 'Failed to get variables' };
         }
 
-        const fragmentsResult = await allAsync<Fragment>(
+        const fragmentsResult = await allAsync<PromptFragment>(
             'SELECT category, name, variable FROM fragments WHERE prompt_id = ?',
             [promptId]
         );
@@ -142,6 +150,10 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
             return { success: false, error: 'Failed to get fragments' };
         }
 
+        const variables = variablesResult.data.map((variable) => ({
+            ...variable,
+            value: options.cleanVariables ? '' : variable.value || ''
+        }));
         const promptMetadata: PromptMetadata = {
             id: promptResult.data.id,
             title: promptResult.data.title,
@@ -151,7 +163,7 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
             tags: promptResult.data.tags,
             one_line_description: promptResult.data.one_line_description,
             description: promptResult.data.description,
-            variables: variablesResult.data,
+            variables: variables,
             content_hash: promptResult.data.content_hash,
             fragments: fragmentsResult.data
         };
@@ -162,10 +174,7 @@ export async function getPromptMetadata(promptId: string): Promise<ApiResult<Pro
     }
 }
 
-export async function viewPromptDetails(
-    details: PromptMetadata & { variables: Variable[] },
-    isExecute = false
-): Promise<void> {
+export async function viewPromptDetails(details: PromptMetadata, isExecute = false): Promise<void> {
     console.log(chalk.cyan('Prompt:'), details.title);
     console.log(`\n${details.description || ''}`);
     console.log(chalk.cyan('\nCategory:'), formatTitleCase(details.primary_category));
@@ -192,18 +201,20 @@ export async function viewPromptDetails(
             let status;
 
             if (variable.value) {
-                if (variable.value.startsWith(FRAGMENT_PREFIX)) {
-                    status = chalk.blue(variable.value);
-                } else if (variable.value.startsWith(ENV_PREFIX)) {
-                    const envVarName = variable.value.split(ENV_PREFIX)[1];
+                const trimmedValue = variable.value.trim();
+
+                if (trimmedValue.startsWith(FRAGMENT_PREFIX)) {
+                    status = chalk.blue(trimmedValue);
+                } else if (trimmedValue.startsWith(ENV_PREFIX)) {
+                    const envVarName = trimmedValue.split(ENV_PREFIX)[1];
                     const envVar = envVars.find((v: { name: string }) => v.name === envVarName);
-                    const envValue = envVar ? envVar.value : 'Not found';
+                    const envValue = envVar ? envVar.value.trim() : 'Not found';
                     status = chalk.magenta(
                         `${ENV_PREFIX}${formatSnakeCase(envVarName)} (${envValue.substring(0, 30)}${envValue.length > 30 ? '...' : ''})`
                     );
                 } else {
                     status = chalk.green(
-                        `Set: ${variable.value.substring(0, 30)}${variable.value.length > 30 ? '...' : ''}`
+                        `Set: ${trimmedValue.substring(0, 30)}${trimmedValue.length > 30 ? '...' : ''}`
                     );
                 }
             } else {
@@ -222,10 +233,6 @@ export async function viewPromptDetails(
             if (!isExecute) {
                 console.log(`      ${status}`);
             }
-        }
-
-        if (!isExecute) {
-            console.log();
         }
     } catch (error) {
         handleError(error, 'viewing prompt details');

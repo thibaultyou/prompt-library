@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import { BaseCommand } from './base-command';
-import { CategoryItem, EnvVar, Fragment, PromptMetadata, Variable } from '../../shared/types';
+import { CategoryItem, EnvVariable, PromptFragment, PromptMetadata, PromptVariable } from '../../shared/types';
 import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string-formatter';
 import { ENV_PREFIX, FRAGMENT_PREFIX } from '../constants';
 import { ConversationManager } from '../utils/conversation-manager';
@@ -11,7 +11,7 @@ import { listFragments, viewFragmentContent } from '../utils/fragments';
 import { viewPromptDetails } from '../utils/prompts';
 
 type PromptMenuAction = 'all' | 'category' | 'id' | 'back';
-type SelectPromptMenuAction = Variable | 'execute' | 'unset_all' | 'back';
+type SelectPromptMenuAction = PromptVariable | 'execute' | 'unset_all' | 'back';
 
 class PromptCommand extends BaseCommand {
     constructor() {
@@ -80,7 +80,7 @@ class PromptCommand extends BaseCommand {
         } else {
             console.log(chalk.bold('All prompts:'));
             allPrompts.forEach((prompt) => {
-                console.log(`${chalk.green(prompt.id)} - ${chalk.cyan(prompt.category)} / ${prompt.title}`);
+                console.log(`${chalk.green(prompt.id)} - ${chalk.cyan(prompt.category)} > ${prompt.title}`);
             });
         }
     }
@@ -145,7 +145,7 @@ class PromptCommand extends BaseCommand {
             const selectedPrompt = await this.showMenu<CategoryItem | 'back'>(
                 'Select a prompt or action:',
                 prompts.map((p) => ({
-                    name: `${formatTitleCase(p.category)} / ${chalk.green(p.title)} (ID: ${p.id})`,
+                    name: `${formatTitleCase(p.category)} > ${chalk.green(p.title)} (ID: ${p.id})`,
                     value: p
                 }))
             );
@@ -203,7 +203,10 @@ class PromptCommand extends BaseCommand {
         );
     }
 
-    private formatVariableChoices(variables: Variable[], envVars: EnvVar[]): Array<{ name: string; value: Variable }> {
+    private formatVariableChoices(
+        variables: PromptVariable[],
+        envVars: EnvVariable[]
+    ): Array<{ name: string; value: PromptVariable }> {
         return variables.map((v) => {
             const snakeCaseName = formatSnakeCase(v.name);
             const nameColor = this.getVariableNameColor(v);
@@ -215,7 +218,7 @@ class PromptCommand extends BaseCommand {
         });
     }
 
-    private getVariableNameColor(v: Variable): (text: string) => string {
+    private getVariableNameColor(v: PromptVariable): (text: string) => string {
         if (v.value) {
             if (v.value.startsWith(FRAGMENT_PREFIX)) return chalk.blue;
 
@@ -225,7 +228,7 @@ class PromptCommand extends BaseCommand {
         return v.optional_for_user ? chalk.yellow : chalk.red;
     }
 
-    private getVariableHint(v: Variable, envVars: EnvVar[]): string {
+    private getVariableHint(v: PromptVariable, envVars: EnvVariable[]): string {
         if (!v.value) {
             const matchingEnvVar = envVars.find((env) => env.name === v.name);
 
@@ -236,7 +239,7 @@ class PromptCommand extends BaseCommand {
         return '';
     }
 
-    private async assignVariable(promptId: string, variable: Variable): Promise<void> {
+    private async assignVariable(promptId: string, variable: PromptVariable): Promise<void> {
         const envVarsResult = await readEnvVars();
         const envVars = envVarsResult.success ? envVarsResult.data || [] : [];
         const matchingEnvVar = envVars.find((env) => env.name === variable.name);
@@ -275,7 +278,7 @@ class PromptCommand extends BaseCommand {
         }
     }
 
-    private async assignValueToVariable(promptId: string, variable: Variable): Promise<void> {
+    private async assignValueToVariable(promptId: string, variable: PromptVariable): Promise<void> {
         console.log(chalk.cyan(`Enter or edit value for ${formatSnakeCase(variable.name)}:`));
         console.log(
             chalk.yellow('(An editor will open with the current value. Edit, save, and close the file when done.)')
@@ -292,12 +295,12 @@ class PromptCommand extends BaseCommand {
         }
     }
 
-    private async assignFragmentToVariable(promptId: string, variable: Variable): Promise<void> {
+    private async assignFragmentToVariable(promptId: string, variable: PromptVariable): Promise<void> {
         const fragmentsResult = await this.handleApiResult(await listFragments(), 'Fetched fragments');
 
         if (!fragmentsResult) return;
 
-        const selectedFragment = await this.showMenu<Fragment | 'back'>(
+        const selectedFragment = await this.showMenu<PromptFragment | 'back'>(
             'Select a fragment: ',
             fragmentsResult.map((f) => ({
                 name: `${f.category}/${f.name}`,
@@ -331,7 +334,7 @@ class PromptCommand extends BaseCommand {
         }
     }
 
-    private async assignEnvVarToVariable(promptId: string, variable: Variable): Promise<void> {
+    private async assignEnvVarToVariable(promptId: string, variable: PromptVariable): Promise<void> {
         const envVarsResult = await readEnvVars();
 
         if (!envVarsResult.success) {
@@ -344,7 +347,7 @@ class PromptCommand extends BaseCommand {
                 ev.name.toLowerCase().includes(variable.name.toLowerCase()) ||
                 variable.name.toLowerCase().includes(ev.name.toLowerCase())
         );
-        const selectedEnvVar = await this.showMenu<EnvVar | 'back'>('Select an Environment Variable:', [
+        const selectedEnvVar = await this.showMenu<EnvVariable | 'back'>('Select an Environment Variable:', [
             ...matchingEnvVars.map((v) => ({
                 name: chalk.green(chalk.bold(`${formatSnakeCase(v.name)} (${v.scope}) - Suggested Match`)),
                 value: v
@@ -373,7 +376,7 @@ class PromptCommand extends BaseCommand {
         console.log(chalk.cyan(`Current value: ${selectedEnvVar.value}`));
     }
 
-    private async unsetVariable(promptId: string, variable: Variable): Promise<void> {
+    private async unsetVariable(promptId: string, variable: PromptVariable): Promise<void> {
         const unsetResult = await updatePromptVariable(promptId, variable.name, '');
 
         if (unsetResult.success) {
@@ -382,6 +385,7 @@ class PromptCommand extends BaseCommand {
             throw new Error(`Failed to unset value for ${formatSnakeCase(variable.name)}: ${unsetResult.error}`);
         }
     }
+
     private async unsetAllVariables(promptId: string): Promise<void> {
         const details = await this.handleApiResult(await getPromptDetails(promptId), 'Fetched prompt details');
 

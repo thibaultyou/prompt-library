@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import { BaseCommand } from './base-command';
-import { EnvVar, Fragment } from '../../shared/types';
+import { EnvVariable, PromptFragment } from '../../shared/types';
 import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string-formatter';
 import { FRAGMENT_PREFIX } from '../constants';
 import { createEnvVar, readEnvVars, updateEnvVar, deleteEnvVar } from '../utils/env-vars';
@@ -39,7 +39,7 @@ class EnvCommand extends BaseCommand {
 
     private formatVariableChoices(
         allVariables: Array<{ name: string; role: string }>,
-        envVars: EnvVar[]
+        envVars: EnvVariable[]
     ): Array<{ name: string; value: { name: string; role: string } }> {
         const maxNameLength = Math.max(...allVariables.map((v) => formatSnakeCase(v.name).length));
         return allVariables.map((variable) => {
@@ -48,17 +48,19 @@ class EnvCommand extends BaseCommand {
             const envVar = envVars.find((v) => formatSnakeCase(v.name) === formattedName);
             const status = this.getVariableStatus(envVar);
             return {
-                name: `${chalk.cyan(paddedName)}: ${status}`,
+                name: `${paddedName} --> ${status}`,
                 value: variable
             };
         });
     }
 
-    private getVariableStatus(envVar: EnvVar | undefined): string {
+    private getVariableStatus(envVar: EnvVariable | undefined): string {
         if (!envVar) return chalk.yellow('Not Set');
 
-        if (envVar.value.startsWith('Fragment:')) return chalk.blue(envVar.value);
-        return chalk.green(`Set: ${envVar.value.substring(0, 20)}${envVar.value.length > 20 ? '...' : ''}`);
+        const trimmedValue = envVar.value.trim();
+        return trimmedValue.startsWith(FRAGMENT_PREFIX)
+            ? chalk.blue(trimmedValue)
+            : chalk.green(`Set: ${trimmedValue.substring(0, 20)}${trimmedValue.length > 20 ? '...' : ''}`);
     }
 
     private async manageEnvVar(variable: { name: string; role: string }): Promise<void> {
@@ -94,7 +96,7 @@ class EnvCommand extends BaseCommand {
 
     private async enterValueForVariable(
         variable: { name: string; role: string },
-        envVar: EnvVar | undefined
+        envVar: EnvVariable | undefined
     ): Promise<void> {
         try {
             const currentValue = envVar?.value || '';
@@ -128,10 +130,10 @@ class EnvCommand extends BaseCommand {
 
             if (!fragments) return;
 
-            const selectedFragment = await this.showMenu<Fragment | 'back'>(
+            const selectedFragment = await this.showMenu<PromptFragment | 'back'>(
                 'Select a fragment: ',
                 fragments.map((f) => ({
-                    name: `${formatTitleCase(f.category)} / ${chalk.blue(f.name)}`,
+                    name: `${formatTitleCase(f.category)} > ${chalk.blue(f.name)}`,
                     value: f
                 }))
             );
@@ -182,7 +184,10 @@ class EnvCommand extends BaseCommand {
         }
     }
 
-    private async unsetVariable(variable: { name: string; role: string }, envVar: EnvVar | undefined): Promise<void> {
+    private async unsetVariable(
+        variable: { name: string; role: string },
+        envVar: EnvVariable | undefined
+    ): Promise<void> {
         try {
             if (envVar) {
                 const deleteResult = await deleteEnvVar(envVar.id);

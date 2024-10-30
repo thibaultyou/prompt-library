@@ -1,6 +1,6 @@
 import { RunResult } from 'sqlite3';
 
-import { PromptMetadata, Variable } from '../../../shared/types';
+import { PromptMetadata, PromptVariable } from '../../../shared/types';
 import { ENV_PREFIX, FRAGMENT_PREFIX } from '../../constants';
 import { allAsync, getAsync, runAsync } from '../database';
 import { readEnvVars } from '../env-vars';
@@ -385,7 +385,7 @@ describe('PromptsUtils', () => {
         });
 
         it('should display fragment variable correctly', async () => {
-            const mockPromptWithFragment: PromptMetadata & { variables: Variable[] } = {
+            const mockPromptWithFragment: PromptMetadata & { variables: PromptVariable[] } = {
                 ...mockPrompt,
                 variables: [
                     {
@@ -402,7 +402,7 @@ describe('PromptsUtils', () => {
         });
 
         it('should display env variable correctly', async () => {
-            const mockPromptWithEnvVar: PromptMetadata & { variables: Variable[] } = {
+            const mockPromptWithEnvVar: PromptMetadata & { variables: PromptVariable[] } = {
                 ...mockPrompt,
                 variables: [
                     {
@@ -425,7 +425,7 @@ describe('PromptsUtils', () => {
         });
 
         it('should display regular variable value correctly', async () => {
-            const mockPromptWithValue: PromptMetadata & { variables: Variable[] } = {
+            const mockPromptWithValue: PromptMetadata & { variables: PromptVariable[] } = {
                 ...mockPrompt,
                 variables: [
                     {

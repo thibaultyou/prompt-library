@@ -2,7 +2,7 @@ import path from 'path';
 
 import { jest } from '@jest/globals';
 
-import { Fragment } from '../../../shared/types';
+import { PromptFragment } from '../../../shared/types';
 import { readDirectory, readFileContent } from '../../../shared/utils/file-system';
 import { cliConfig } from '../../config/cli-config';
 import { listFragments, viewFragmentContent } from '../fragments';
@@ -26,7 +26,7 @@ describe('FragmentsUtils', () => {
                 .mockResolvedValueOnce(['fragment1.md', 'fragment2.md'])
                 .mockResolvedValueOnce(['fragment3.md']);
 
-            const expectedFragments: Fragment[] = [
+            const expectedFragments: PromptFragment[] = [
                 { category: 'category1', name: 'fragment1', variable: '' },
                 { category: 'category1', name: 'fragment2', variable: '' },
                 { category: 'category2', name: 'fragment3', variable: '' }
@@ -50,7 +50,7 @@ describe('FragmentsUtils', () => {
                 .mockResolvedValueOnce(['category1'])
                 .mockResolvedValueOnce(['fragment1.md', 'fragment2.txt', 'fragment3.md']);
 
-            const expectedFragments: Fragment[] = [
+            const expectedFragments: PromptFragment[] = [
                 { category: 'category1', name: 'fragment1', variable: '' },
                 { category: 'category1', name: 'fragment3', variable: '' }
             ];
