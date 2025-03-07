@@ -39,8 +39,9 @@ Key features include:
 - Modular prompt components (fragments)
 - CLI for prompt management and execution
 - GitHub Actions for automation
+- Support for multiple AI providers (Anthropic Claude and OpenAI)
 
-> **Note**: Currently, this tool works exclusively with Claude from Anthropic. Support for additional AI models may be added in future updates.
+> **Note**: This tool supports both Anthropic Claude and OpenAI models. You can configure which provider and model to use through environment variables or the CLI interface.
 
 This project serves as a starting point for creating your own AI toolkit, demonstrating one way to manage and utilize AI prompts and agent definitions in personal and professional contexts.
 
@@ -189,14 +190,29 @@ prompt-library-cli execute --help
    npm install
    ```
 
-5. **Build and Install CLI**:
+5. **Configure Environment Variables** (optional):
+   - Copy `.env.example` to `.env` and customize as needed.
+   - Environment handling has been improved:
+     - **Critical settings** (API keys, log level) - Always use environment variables if present
+     - **User preferences** (model selection, tokens) - UI settings take precedence once configured
+   
+   Minimum recommended `.env` file:
+   ```
+   # API Keys (Required for API access)
+   ANTHROPIC_API_KEY=your_api_key_here
+   OPENAI_API_KEY=your_api_key_here
+   ```
+   
+   See `.env.example` for all available environment variables.
+
+6. **Build and Install CLI**:
 
    ```sh
    npm run build
    npm install -g .
    ```
 
-6. **Initialize CLI**:
+7. **Initialize CLI**:
 
    ```sh
    prompt-library-cli

@@ -6,12 +6,14 @@ dist/
 node_modules/
 archive/
 coverage/
+.vscode/
 
 # Ignore local database
 *.sqlite
 
-# Ignore aider files
+# Ignore AI agent files
 .aider*
+CLAUDE.md
 
 # Ignore macOS files
 .DS_Store

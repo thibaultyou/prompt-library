@@ -1,23 +1,34 @@
-import { Message, RawMessageStreamEvent } from '@anthropic-ai/sdk/resources/messages.js';
 import { jest } from '@jest/globals';
 
-import { sendAnthropicRequestClassic, sendAnthropicRequestStream } from '../anthropic-client';
-import { updatePromptWithVariables, processPromptContent } from '../prompt-processing';
+import { getAIClient } from '../ai-client';
+import { processPromptContent, updatePromptWithVariables } from '../prompt-processing';
 
-jest.mock('../anthropic-client');
-const mockSendAnthropicRequestClassic = sendAnthropicRequestClassic as jest.MockedFunction<
-    typeof sendAnthropicRequestClassic
->;
-const mockSendAnthropicRequestStream = sendAnthropicRequestStream as jest.MockedFunction<
-    typeof sendAnthropicRequestStream
->;
+// Create full mocks for dependencies to avoid TypeScript errors
+jest.mock('../ai-client', () => ({
+    getAIClient: jest.fn()
+}));
+
+jest.mock('../../../cli/utils/errors', () => ({
+    handleError: jest.fn()
+}));
+
+jest.mock('chalk', () => ({
+    blue: jest.fn((text) => text),
+    green: jest.fn((text) => text),
+    bold: jest.fn((text) => text)
+}));
+
 describe('PromptProcessingUtils', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-
+        // Mock console logging
         jest.spyOn(console, 'log').mockImplementation(() => {});
-        jest.spyOn(console, 'error').mockImplementation(() => {});
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
         jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     describe('updatePromptWithVariables', () => {
@@ -38,6 +49,30 @@ describe('PromptProcessingUtils', () => {
             expect(result).toBe('John is John');
         });
 
+        it('should handle variables with special characters', () => {
+            const content = 'Hello {{specialName}}, welcome to {{specialPlace}}!';
+            const variables = {
+                specialName: 'John',
+                specialPlace: 'Paris'
+            };
+            const result = updatePromptWithVariables(content, variables);
+            expect(result).toBe('Hello John, welcome to Paris!');
+        });
+
+        it('should handle complex content with multiple variables', () => {
+            const content = `This is a {{type}} prompt with multiple {{variables}}.
+It can span {{lines}} and include {{special_chars}}.`;
+            const variables = {
+                type: 'test',
+                variables: 'placeholders',
+                lines: 'multiple lines',
+                special_chars: 'special characters like $, {}, [], etc.'
+            };
+            const result = updatePromptWithVariables(content, variables);
+            expect(result).toBe(`This is a test prompt with multiple placeholders.
+It can span multiple lines and include special characters like $, {}, [], etc..`);
+        });
+
         it('should handle empty variables object', () => {
             const content = 'Hello {{name}}!';
             const variables = {};
@@ -45,9 +80,20 @@ describe('PromptProcessingUtils', () => {
             expect(result).toBe('Hello {{name}}!');
         });
 
+        it('should handle content with no variables', () => {
+            const content = 'Hello world!';
+            const variables = { name: 'John' };
+            const result = updatePromptWithVariables(content, variables);
+            expect(result).toBe('Hello world!');
+        });
+
         it('should throw error for null or undefined content', () => {
             expect(() => {
                 updatePromptWithVariables(null as unknown as string, {});
+            }).toThrow('Content cannot be null or undefined');
+
+            expect(() => {
+                updatePromptWithVariables(undefined as unknown as string, {});
             }).toThrow('Content cannot be null or undefined');
         });
 
@@ -58,196 +104,111 @@ describe('PromptProcessingUtils', () => {
                 updatePromptWithVariables(content, variables);
             }).toThrow('Variable value for key "name" must be a string');
         });
+
+        it('should handle unresolved fragment references', () => {
+            const content = 'Here is a fragment: {{fragment_var}}';
+            const variables = {
+                fragment_var: '<Failed to load fragment: category/name>'
+            };
+            const result = updatePromptWithVariables(content, variables);
+            expect(result).toBe('Here is a fragment: <Failed to load fragment: category/name>');
+            // We're not testing the console.warn call as it's difficult to test in Jest
+        });
+
+        it('should handle unresolved env variables', () => {
+            const content = 'Here is an env var: {{env_var}}';
+            const variables = {
+                env_var: '<Env var not found: TEST_VAR>'
+            };
+            const result = updatePromptWithVariables(content, variables);
+            expect(result).toBe('Here is an env var: <Env var not found: TEST_VAR>');
+            // We're not testing the console.warn call as it's difficult to test in Jest
+        });
     });
 
     describe('processPromptContent', () => {
-        const mockMessages = [
-            { role: 'user', content: 'Hello' },
-            { role: 'assistant', content: 'Hi there!' }
-        ];
-        it('should process classic response correctly', async () => {
-            const mockMessage: Message = {
-                id: 'msg_123',
-                type: 'message',
-                role: 'assistant',
-                content: [{ type: 'text', text: 'Test response' }],
-                model: 'claude-2',
-                stop_reason: null,
-                stop_sequence: null,
-                usage: { input_tokens: 10, output_tokens: 20 }
-            };
-            mockSendAnthropicRequestClassic.mockResolvedValue(mockMessage);
-
-            const result = await processPromptContent(mockMessages, false, false);
-            expect(result).toBe('Test response');
-            expect(mockSendAnthropicRequestClassic).toHaveBeenCalledWith(mockMessages);
+        // Create a mock AI client
+        const mockClient: any = {
+            sendRequest: jest.fn(),
+            sendStreamingRequest: jest.fn(),
+            validateApiKey: jest.fn(),
+            listAvailableModels: jest.fn()
+        };
+        beforeEach(() => {
+            // Set up the mock implementation for getAIClient
+            (getAIClient as jest.Mock).mockReturnValue(mockClient);
         });
 
-        it('should process streaming response correctly', async () => {
-            const mockStream = [
-                { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: 'Hello' } as const },
-                { type: 'content_block_delta', index: 1, delta: { type: 'text_delta', text: ' world' } as const }
-            ];
-            mockSendAnthropicRequestStream.mockImplementation(async function* () {
-                for (const event of mockStream) {
-                    yield event as RawMessageStreamEvent;
-                }
-            });
-
-            const result = await processPromptContent(mockMessages, true, false);
-            expect(result).toBe('Hello world');
-            expect(mockSendAnthropicRequestStream).toHaveBeenCalledWith(mockMessages);
+        it('should throw an error if messages is not an array', async () => {
+            await expect(processPromptContent(null as any)).rejects.toThrow('Messages must be a non-empty array');
         });
 
-        it('should handle complex message content', async () => {
-            const mockMessage: Message = {
-                id: 'msg_123',
-                type: 'message',
-                role: 'assistant',
-                content: [
-                    { type: 'text', text: 'Text content' },
-                    {
-                        type: 'tool_use',
-                        id: 'tool_123',
-                        name: 'calculator',
-                        input: { expression: '2+2' }
-                    }
-                ],
-                model: 'claude-2',
-                stop_reason: null,
-                stop_sequence: null,
-                usage: { input_tokens: 10, output_tokens: 20 }
-            };
-            mockSendAnthropicRequestClassic.mockResolvedValue(mockMessage);
-
-            const result = await processPromptContent(mockMessages, false, false);
-            expect(result).toContain('Text content');
-            expect(result).toContain('[Tool Use: calculator]');
-            expect(result).toContain('Input: {"expression":"2+2"}');
+        it('should throw an error if messages array is empty', async () => {
+            await expect(processPromptContent([])).rejects.toThrow('Messages must be a non-empty array');
         });
 
-        it('should handle unknown block types in message content', async () => {
-            const mockMessage: Message = {
-                id: 'msg_456',
-                type: 'message',
-                role: 'assistant',
-                content: [{ type: 'text', text: 'Known text' }, { type: 'unknown_type', data: 'Some data' } as any],
-                model: 'claude-2',
-                stop_reason: null,
-                stop_sequence: null,
-                usage: { input_tokens: 15, output_tokens: 25 }
-            };
-            mockSendAnthropicRequestClassic.mockResolvedValue(mockMessage);
+        it('should process content with sendRequest when useStreaming is false', async () => {
+            const testMessages = [{ role: 'user', content: 'Hello' }];
+            mockClient.sendRequest.mockResolvedValue({ content: 'Hi there!' });
 
-            const result = await processPromptContent(mockMessages, false, false);
-            expect(result).toContain('Known text');
-            expect(result).toContain(JSON.stringify({ type: 'unknown_type', data: 'Some data' }));
+            const result = await processPromptContent(testMessages, false);
+            expect(result).toBe('Hi there!');
+            expect(mockClient.sendRequest).toHaveBeenCalledWith(testMessages);
+            expect(mockClient.sendStreamingRequest).not.toHaveBeenCalled();
         });
 
-        it('should handle invalid blocks in message content', async () => {
-            const mockMessage: Message = {
-                id: 'msg_789',
-                type: 'message',
-                role: 'assistant',
-                content: [{ type: 'text', text: 'Valid text' }, null as any, undefined as any],
-                model: 'claude-2',
-                stop_reason: null,
-                stop_sequence: null,
-                usage: { input_tokens: 20, output_tokens: 30 }
-            };
-            mockSendAnthropicRequestClassic.mockResolvedValue(mockMessage);
+        it('should handle empty response from sendRequest', async () => {
+            const testMessages = [{ role: 'user', content: 'Hello' }];
+            mockClient.sendRequest.mockResolvedValue({ content: '' });
 
-            const result = await processPromptContent(mockMessages, false, false);
-            expect(result).toBe('Valid text');
-        });
-
-        it('should handle errors in classic mode', async () => {
-            mockSendAnthropicRequestClassic.mockRejectedValue(new Error('API Error'));
-
-            await expect(processPromptContent(mockMessages, false, false)).rejects.toThrow('API Error');
-        });
-
-        it('should handle errors in streaming mode', async () => {
-            mockSendAnthropicRequestStream.mockImplementation(async function* () {
-                yield { type: 'placeholder' } as unknown as RawMessageStreamEvent;
-                throw new Error('Stream Error');
-            });
-
-            await expect(processPromptContent(mockMessages, true, false)).rejects.toThrow('Stream Error');
-        });
-
-        it('should throw error if messages array is empty', async () => {
-            await expect(processPromptContent([], false, false)).rejects.toThrow('Messages must be a non-empty array');
-        });
-
-        it('should log messages when logging is true', async () => {
-            const mockMessage: Message = {
-                id: 'msg_101',
-                type: 'message',
-                role: 'assistant',
-                content: [{ type: 'text', text: 'Logged response' }],
-                model: 'claude-2',
-                stop_reason: null,
-                stop_sequence: null,
-                usage: { input_tokens: 5, output_tokens: 15 }
-            };
-            mockSendAnthropicRequestClassic.mockResolvedValue(mockMessage);
-
-            const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-            await processPromptContent(mockMessages, false, true);
-
-            expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('You:'));
-            expect(consoleLogSpy).toHaveBeenCalledWith('Hi there!');
-            expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('AI:'));
-
-            consoleLogSpy.mockRestore();
-        });
-
-        it('should return empty string if message content is empty', async () => {
-            const mockMessage: Message = {
-                id: 'msg_202',
-                type: 'message',
-                role: 'assistant',
-                content: [],
-                model: 'claude-2',
-                stop_reason: null,
-                stop_sequence: null,
-                usage: { input_tokens: 0, output_tokens: 0 }
-            };
-            mockSendAnthropicRequestClassic.mockResolvedValue(mockMessage);
-
-            const result = await processPromptContent(mockMessages, false, false);
+            const result = await processPromptContent(testMessages, false);
             expect(result).toBe('');
         });
 
-        it('should process streaming response with partial_json correctly', async () => {
-            const mockStream = [
-                {
-                    type: 'content_block_delta',
-                    index: 0,
-                    delta: { type: 'partial_json', partial_json: '{"key":' } as const
-                },
-                {
-                    type: 'content_block_delta',
-                    index: 1,
-                    delta: { type: 'partial_json', partial_json: '"value"}' } as const
-                }
-            ];
-            mockSendAnthropicRequestStream.mockImplementation(async function* () {
-                for (const event of mockStream) {
-                    yield event as RawMessageStreamEvent;
-                }
+        it('should process content with streaming when useStreaming is true', async () => {
+            const testMessages = [{ role: 'user', content: 'Hello' }];
+            // Mock the generator function for streaming
+            mockClient.sendStreamingRequest.mockImplementation(async function* () {
+                yield { type: 'content', content: 'Hi ' };
+                yield { type: 'content', content: 'there!' };
+                yield { type: 'other', content: undefined };
             });
 
-            const processStdoutWriteSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-            const result = await processPromptContent(mockMessages, true, false);
-            expect(result).toBe('{"key":"value"}');
-            expect(mockSendAnthropicRequestStream).toHaveBeenCalledWith(mockMessages);
+            const result = await processPromptContent(testMessages, true);
+            expect(result).toBe('Hi there!');
+            expect(mockClient.sendStreamingRequest).toHaveBeenCalledWith(testMessages);
+            expect(process.stdout.write).toHaveBeenCalledTimes(2);
+            expect(process.stdout.write).toHaveBeenNthCalledWith(1, 'Hi ');
+            expect(process.stdout.write).toHaveBeenNthCalledWith(2, 'there!');
+        });
 
-            expect(processStdoutWriteSpy).toHaveBeenCalledWith('{"key":');
-            expect(processStdoutWriteSpy).toHaveBeenCalledWith('"value"}');
+        it('should handle errors in streaming', async () => {
+            const testMessages = [{ role: 'user', content: 'Hello' }];
+            const streamError = new Error('Streaming failed');
+            mockClient.sendStreamingRequest.mockImplementation(async function* () {
+                yield { type: 'error' };
+                throw streamError;
+            });
 
-            processStdoutWriteSpy.mockRestore();
+            await expect(processPromptContent(testMessages, true)).rejects.toThrow(streamError);
+        });
+
+        it('should handle errors in non-streaming request', async () => {
+            const testMessages = [{ role: 'user', content: 'Hello' }];
+            const requestError = new Error('Request failed');
+            mockClient.sendRequest.mockRejectedValue(requestError);
+
+            await expect(processPromptContent(testMessages, false)).rejects.toThrow(requestError);
+        });
+
+        it('should not log to console when logging is false', async () => {
+            const consoleSpy = jest.spyOn(console, 'log');
+            const testMessages = [{ role: 'user', content: 'Hello' }];
+            mockClient.sendRequest.mockResolvedValue({ content: 'Hi there!' });
+
+            await processPromptContent(testMessages, false, false);
+
+            expect(consoleSpy).not.toHaveBeenCalled();
         });
     });
 });

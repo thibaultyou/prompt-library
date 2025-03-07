@@ -14,7 +14,7 @@ export async function resolveValue(value: string, envVars: EnvVariable[]): Promi
             return fragmentResult.data;
         } else {
             logger.warn(`Failed to load fragment: ${category}/${name}`);
-            return value;
+            return `<Failed to load fragment: ${category}/${name}>`;
         }
     } else if (value.startsWith(ENV_PREFIX)) {
         const envVarName = value.split(ENV_PREFIX)[1];
@@ -29,7 +29,7 @@ export async function resolveValue(value: string, envVars: EnvVariable[]): Promi
             return envVarValue;
         } else {
             logger.warn(`Env var not found: ${envVarName}`);
-            return value;
+            return `<Env var not found: ${envVarName}>`;
         }
     }
     return value;
@@ -44,6 +44,12 @@ export async function resolveInputs(inputs: Record<string, string>): Promise<Rec
         for (const [key, value] of Object.entries(inputs)) {
             if (value.startsWith(FRAGMENT_PREFIX) || value.startsWith(ENV_PREFIX)) {
                 resolvedInputs[key] = await resolveValue(value, envVars);
+
+                // Handle double resolution for environment variables that reference fragments
+                if (resolvedInputs[key].startsWith(FRAGMENT_PREFIX)) {
+                    logger.info(`Resolving nested fragment in environment variable: ${key}`);
+                    resolvedInputs[key] = await resolveValue(resolvedInputs[key], envVars);
+                }
             } else {
                 resolvedInputs[key] = value;
             }

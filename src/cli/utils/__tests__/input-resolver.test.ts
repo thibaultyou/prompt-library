@@ -44,7 +44,7 @@ describe('InputResolverUtils', () => {
 
             const value = `${FRAGMENT_PREFIX}category/nonexistent`;
             const result = await resolveValue(value, mockEnvVars);
-            expect(result).toBe(value);
+            expect(result).toBe(`<Failed to load fragment: category/nonexistent>`);
         });
 
         it('should resolve environment variables', async () => {
@@ -60,7 +60,7 @@ describe('InputResolverUtils', () => {
         it('should handle non-existent environment variables', async () => {
             const value = `${ENV_PREFIX}NONEXISTENT`;
             const result = await resolveValue(value, mockEnvVars);
-            expect(result).toBe(value);
+            expect(result).toBe(`<Env var not found: NONEXISTENT>`);
         });
 
         it('should return plain values unchanged', async () => {
@@ -92,6 +92,68 @@ describe('InputResolverUtils', () => {
                 fragment: 'fragment-content',
                 env: 'test-value',
                 plain: 'plain-value'
+            });
+        });
+
+        it('should resolve nested fragment references in environment variables', async () => {
+            const inputs = {
+                env_with_fragment: `${ENV_PREFIX}FRAGMENT_VAR`
+            };
+            // Mock env var that contains fragment reference
+            mockReadEnvVars.mockResolvedValueOnce({
+                success: true,
+                data: [
+                    {
+                        id: 3,
+                        name: 'FRAGMENT_VAR',
+                        value: `${FRAGMENT_PREFIX}prompt_engineering/behavior_attributes`,
+                        scope: 'global'
+                    }
+                ]
+            });
+
+            // First resolveValue call returns the fragment reference from env var
+            // Second resolveValue call resolves the fragment reference to actual content
+            mockViewFragmentContent.mockResolvedValueOnce({
+                success: true,
+                data: '# Test Fragment Content'
+            });
+
+            const result = await resolveInputs(inputs);
+            expect(result).toEqual({
+                env_with_fragment: '# Test Fragment Content'
+            });
+
+            // Verify fragment was resolved with correct category/name
+            expect(mockViewFragmentContent).toHaveBeenCalledWith('prompt_engineering', 'behavior_attributes');
+        });
+
+        it('should handle failing fragment resolution in environment variables', async () => {
+            const inputs = {
+                env_with_missing_fragment: `${ENV_PREFIX}BAD_FRAGMENT_VAR`
+            };
+            // Mock env var that contains fragment reference
+            mockReadEnvVars.mockResolvedValueOnce({
+                success: true,
+                data: [
+                    {
+                        id: 4,
+                        name: 'BAD_FRAGMENT_VAR',
+                        value: `${FRAGMENT_PREFIX}nonexistent/fragment`,
+                        scope: 'global'
+                    }
+                ]
+            });
+
+            // Fragment resolution fails
+            mockViewFragmentContent.mockResolvedValueOnce({
+                success: false,
+                error: 'Fragment not found'
+            });
+
+            const result = await resolveInputs(inputs);
+            expect(result).toEqual({
+                env_with_missing_fragment: '<Failed to load fragment: nonexistent/fragment>'
             });
         });
 

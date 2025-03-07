@@ -80,6 +80,70 @@ describe('ConversationManagerUtils', () => {
             expect(processPromptContent).toHaveBeenCalled();
         });
 
+        it('should properly maintain conversation history across multiple turns', async () => {
+            // Set up initial conversation
+            const mockInitialPrompt = 'Initial system prompt';
+            (getPromptFiles as jest.Mock).mockResolvedValue({
+                success: true,
+                data: { promptContent: mockInitialPrompt }
+            });
+            (resolveInputs as jest.Mock).mockResolvedValue({});
+
+            // Prepare multiple user inputs and AI responses
+            const firstUserInput = 'First user message';
+            const secondUserInput = 'Second user message';
+            const thirdUserInput = 'Third user message';
+            const firstAIResponse = 'First AI response';
+            const secondAIResponse = 'Second AI response';
+            const thirdAIResponse = 'Third AI response';
+            const fourthAIResponse = 'Fourth AI response';
+            // Mock process content to return different responses for each call
+            (processPromptContent as jest.Mock)
+                .mockResolvedValueOnce(firstAIResponse) // For initialization
+                .mockResolvedValueOnce(secondAIResponse) // For first continuation
+                .mockResolvedValueOnce(thirdAIResponse) // For second continuation
+                .mockResolvedValueOnce(fourthAIResponse); // For third continuation
+
+            // Initialize conversation
+            await conversationManager.initializeConversation({});
+
+            // First continuation
+            await conversationManager.continueConversation(firstUserInput);
+
+            // Second continuation
+            await conversationManager.continueConversation(secondUserInput);
+
+            // Third continuation
+            await conversationManager.continueConversation(thirdUserInput);
+
+            // After three continuations, the messages array should contain the complete history
+            // Get the actual messages passed to the last call of processPromptContent
+            const lastCallArgs = (processPromptContent as jest.Mock).mock.calls[
+                (processPromptContent as jest.Mock).mock.calls.length - 1
+            ];
+            const messages = lastCallArgs[0];
+            // Verify the messages sequence (we can't use toHaveBeenLastCalledWith because of extra added message)
+            expect(messages.length).toBe(8); // 1 initial + 3 user messages + 4 AI responses
+            expect(messages[0].role).toBe('user');
+            expect(messages[1].role).toBe('assistant');
+            expect(messages[1].content).toBe(firstAIResponse);
+            expect(messages[2].role).toBe('user');
+            expect(messages[2].content).toBe(firstUserInput);
+            expect(messages[3].role).toBe('assistant');
+            expect(messages[3].content).toBe(secondAIResponse);
+            expect(messages[4].role).toBe('user');
+            expect(messages[4].content).toBe(secondUserInput);
+            expect(messages[5].role).toBe('assistant');
+            expect(messages[5].content).toBe(thirdAIResponse);
+            expect(messages[6].role).toBe('user');
+            expect(messages[6].content).toBe(thirdUserInput);
+            // There's an additional AI response that was added to the conversation at this point
+            expect(messages[7].role).toBe('assistant');
+
+            // Also verify useStreaming parameter
+            expect(lastCallArgs[1]).toBe(true);
+        });
+
         it('should handle errors during conversation continuation', async () => {
             const mockError = new Error('Test error');
             (processPromptContent as jest.Mock).mockRejectedValue(mockError);

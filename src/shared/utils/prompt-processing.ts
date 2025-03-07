@@ -1,7 +1,6 @@
-import { Message } from '@anthropic-ai/sdk/resources';
 import chalk from 'chalk';
 
-import { sendAnthropicRequestClassic, sendAnthropicRequestStream } from './anthropic-client';
+import { getAIClient, AIMessage, AIClient } from './ai-client';
 import { handleError } from '../../cli/utils/errors';
 
 export function updatePromptWithVariables(content: string, variables: Record<string, string>): string {
@@ -15,6 +14,15 @@ export function updatePromptWithVariables(content: string, variables: Record<str
                 throw new Error(`Variable value for key "${key}" must be a string`);
             }
 
+            // Handle values that still contain Fragment references
+            if (value.startsWith('<') && value.endsWith('>')) {
+                if (value.includes('Fragment:')) {
+                    console.warn(`Warning: Fragment reference not resolved for ${key}: ${value}`);
+                } else if (value.includes('Env var not found:')) {
+                    console.warn(`Warning: Environment variable not resolved for ${key}: ${value}`);
+                }
+            }
+
             const regex = new RegExp(`{{${key.replace(/[{}]/g, '')}}}`, 'g');
             return updatedContent.replace(regex, value);
         }, content);
@@ -24,29 +32,8 @@ export function updatePromptWithVariables(content: string, variables: Record<str
     }
 }
 
-function extractContentFromMessage(message: Message): string {
-    if (!message || !message.content || !Array.isArray(message.content) || message.content.length === 0) {
-        return '';
-    }
-    return message.content
-        .map((block) => {
-            if (!block || typeof block !== 'object') {
-                return '';
-            }
-
-            if (block.type === 'text') {
-                return block.text || '';
-            } else if (block.type === 'tool_use') {
-                return `[Tool Use: ${block.name}]\nInput: ${JSON.stringify(block.input)}`;
-            }
-            return JSON.stringify(block);
-        })
-        .filter(Boolean)
-        .join('\n');
-}
-
 export async function processPromptContent(
-    messages: { role: string; content: string }[],
+    messages: AIMessage[],
     useStreaming: boolean = false,
     logging: boolean = true
 ): Promise<string> {
@@ -58,14 +45,21 @@ export async function processPromptContent(
         if (logging) {
             console.log(chalk.blue(chalk.bold('You:')));
             console.log(messages[messages.length - 1]?.content);
+
             console.log(chalk.green(chalk.bold('AI:')));
         }
 
+        const client = await getAIClient();
+
         if (useStreaming) {
-            return await processStreamingResponse(messages);
+            return await processStreamingResponse(client, messages);
         } else {
-            const message = await sendAnthropicRequestClassic(messages);
-            return extractContentFromMessage(message);
+            const response = await client.sendRequest(messages);
+
+            if (response && response.content) {
+                return response.content;
+            }
+            return '';
         }
     } catch (error) {
         handleError(error, 'processing prompt content');
@@ -73,7 +67,7 @@ export async function processPromptContent(
     }
 }
 
-async function processStreamingResponse(messages: { role: string; content: string }[]): Promise<string> {
+async function processStreamingResponse(client: AIClient, messages: AIMessage[]): Promise<string> {
     if (!Array.isArray(messages)) {
         throw new Error('Messages must be an array');
     }
@@ -81,15 +75,10 @@ async function processStreamingResponse(messages: { role: string; content: strin
     let fullResponse = '';
 
     try {
-        for await (const event of sendAnthropicRequestStream(messages)) {
-            if (event?.type === 'content_block_delta' && event.delta) {
-                if ('text' in event.delta) {
-                    fullResponse += event.delta.text;
-                    process.stdout.write(event.delta.text);
-                } else if ('partial_json' in event.delta) {
-                    fullResponse += event.delta.partial_json;
-                    process.stdout.write(event.delta.partial_json);
-                }
+        for await (const event of client.sendStreamingRequest(messages)) {
+            if (event.type === 'content' && event.content) {
+                fullResponse += event.content;
+                process.stdout.write(event.content);
             }
         }
     } catch (error) {

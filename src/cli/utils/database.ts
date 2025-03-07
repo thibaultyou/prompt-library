@@ -58,7 +58,6 @@ export function allAsync<T = any>(sql: string, params: any[] = []): Promise<ApiR
 
 export async function handleApiResult<T>(result: ApiResult<T>, message: string): Promise<T | null> {
     if (result.success && result.data) {
-        // console.log(chalk.green(message));
         return result.data;
     } else {
         handleError(result.error || 'Unknown error', `API call in ${message}`);

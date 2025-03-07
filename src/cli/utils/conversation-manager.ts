@@ -54,7 +54,7 @@ export class ConversationManager {
             const result = await processPromptContent(this.messages, useStreaming);
 
             if (typeof result === 'string') {
-                this.messages.push({ role: 'user', content: result });
+                this.messages.push({ role: 'assistant', content: result });
                 return { success: true, data: result };
             } else {
                 return { success: false, error: 'Unexpected result format' };
