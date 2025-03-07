@@ -14,6 +14,7 @@ Welcome to the **Prompt Library**, a collection of categorized AI prompts for ea
 - [🛠️ How It Works](#-how-it-works)
 - [🖥️ CLI Usage](#-cli-usage)
   - [Interactive Menu](#interactive-menu)
+  - [Configure AI Model](#configure-ai-model)
   - [List Prompts and Categories](#list-prompts-and-categories)
   - [Sync Personal Library](#sync-personal-library)
   - [Execute Prompts](#execute-prompts)
@@ -39,9 +40,8 @@ Key features include:
 - Modular prompt components (fragments)
 - CLI for prompt management and execution
 - GitHub Actions for automation
-- Support for multiple AI providers (Anthropic Claude and OpenAI)
 
-> **Note**: This tool supports both Anthropic Claude and OpenAI models. You can configure which provider and model to use through environment variables or the CLI interface.
+> **Note**: This tool supports both Claude (Anthropic) and GPT (OpenAI) models. You can select your preferred provider using the CLI's model settings.
 
 This project serves as a starting point for creating your own AI toolkit, demonstrating one way to manage and utilize AI prompts and agent definitions in personal and professional contexts.
 
@@ -51,7 +51,7 @@ This project serves as a starting point for creating your own AI toolkit, demons
 2. Install dependencies: `npm install`
 3. Build and install CLI: `npm run build && npm install -g .`
 4. Initialize CLI: `prompt-library-cli`
-5. Set up Anthropic API key
+5. Set up your preferred AI provider and API key
 
 Detailed setup instructions in [Getting Started](#-getting-started).
 
@@ -77,6 +77,17 @@ For all CLI options, run:
 ```sh
 prompt-library-cli --help
 ```
+
+### Configure AI Model
+
+```sh
+prompt-library-cli model
+```
+
+This command allows you to:
+- Switch between Anthropic and OpenAI providers
+- Select specific models (e.g., Claude 3.5 Sonnet, GPT-4o, etc.)
+- Configure token limits
 
 ### List Prompts and Categories
 
@@ -178,9 +189,10 @@ prompt-library-cli execute --help
    git clone https://github.com/YOUR_USERNAME/REPO_NAME.git
    ```
 
-3. **Set Up Anthropic API Key**:
-   - Generate an API key at the [Anthropic Console](https://console.anthropic.com/).
-   - For GitHub Actions: Add as `ANTHROPIC_API_KEY` secret in repository settings.
+3. **Set Up API Keys**:
+   - For Anthropic: Generate an API key at the [Anthropic Console](https://console.anthropic.com/).
+   - For OpenAI: Generate an API key at the [OpenAI Platform](https://platform.openai.com/api-keys).
+   - For GitHub Actions: Add your chosen API key as `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` secret in repository settings.
    - For CLI: Enter when prompted or set as environment variable.
 
 4. **Install Dependencies**:
@@ -190,29 +202,14 @@ prompt-library-cli execute --help
    npm install
    ```
 
-5. **Configure Environment Variables** (optional):
-   - Copy `.env.example` to `.env` and customize as needed.
-   - Environment handling has been improved:
-     - **Critical settings** (API keys, log level) - Always use environment variables if present
-     - **User preferences** (model selection, tokens) - UI settings take precedence once configured
-   
-   Minimum recommended `.env` file:
-   ```
-   # API Keys (Required for API access)
-   ANTHROPIC_API_KEY=your_api_key_here
-   OPENAI_API_KEY=your_api_key_here
-   ```
-   
-   See `.env.example` for all available environment variables.
-
-6. **Build and Install CLI**:
+5. **Build and Install CLI**:
 
    ```sh
    npm run build
    npm install -g .
    ```
 
-7. **Initialize CLI**:
+6. **Initialize CLI**:
 
    ```sh
    prompt-library-cli
