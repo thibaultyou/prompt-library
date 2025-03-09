@@ -9,7 +9,6 @@ if (process.env.NODE_ENV !== 'production') {
 export type ModelProvider = 'anthropic' | 'openai';
 
 export interface CommonConfig {
-    // User preferences (UI-configurable settings)
     MODEL_PROVIDER: ModelProvider;
     ANTHROPIC_MODEL: string;
     ANTHROPIC_MAX_TOKENS: number;
@@ -18,7 +17,6 @@ export interface CommonConfig {
     PROMPT_FILE_NAME: string;
     METADATA_FILE_NAME: string;
 
-    // Critical settings (always use environment variables when available)
     ANTHROPIC_API_KEY: string | undefined;
     OPENAI_API_KEY: string | undefined;
     LOG_LEVEL: 'debug' | 'info' | 'warn' | 'error';
@@ -27,7 +25,6 @@ export interface CommonConfig {
 }
 
 export const commonConfig: CommonConfig = {
-    // User preferences - These provide default values that can be overridden by UI settings
     MODEL_PROVIDER: (process.env.MODEL_PROVIDER as ModelProvider) || 'anthropic',
     ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL || 'claude-3-5-sonnet-20241022',
     ANTHROPIC_MAX_TOKENS: process.env.ANTHROPIC_MAX_TOKENS ? parseInt(process.env.ANTHROPIC_MAX_TOKENS, 10) : 8000,
@@ -36,7 +33,6 @@ export const commonConfig: CommonConfig = {
     PROMPT_FILE_NAME: process.env.PROMPT_FILE_NAME || 'prompt.md',
     METADATA_FILE_NAME: process.env.METADATA_FILE_NAME || 'metadata.yml',
 
-    // Critical settings - These will always use environment variables when available
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     LOG_LEVEL: (process.env.LOG_LEVEL as Config['LOG_LEVEL']) || 'info',

@@ -2,7 +2,6 @@ import * as errors from '../../../cli/utils/errors';
 import * as config from '../../config';
 import { OpenAIClient } from '../openai-client';
 
-// Mock dependencies
 jest.mock('openai');
 jest.mock('../../config');
 jest.mock('../../../cli/utils/errors', () => {
@@ -22,7 +21,6 @@ describe('OpenAIClient', () => {
         jest.clearAllMocks();
         client = new OpenAIClient();
 
-        // Mock the error handling functions
         mockHandleError.mockImplementation(() => {});
     });
 
@@ -79,9 +77,7 @@ describe('OpenAIClient', () => {
                 return 'mock-value';
             });
 
-            // Set up mock create function
             const mockCreate = jest.fn().mockResolvedValue(mockResponse);
-            // Replace the client's internal OpenAI instance with our mock
             // @ts-expect-error - Working with private property
             client.client = {
                 chat: {
@@ -154,7 +150,6 @@ describe('OpenAIClient', () => {
         it('should return static model list if API key is not set', async () => {
             mockGetConfigValue.mockReturnValue('');
 
-            // Silence console logs
             jest.spyOn(console, 'log').mockImplementation(() => {});
 
             const result = await client.listAvailableModels();
@@ -167,12 +162,7 @@ describe('OpenAIClient', () => {
             mockGetConfigValue.mockReturnValue('valid-api-key');
 
             const mockApiResponse = {
-                data: [
-                    { id: 'gpt-4' },
-                    { id: 'gpt-3.5-turbo' },
-                    { id: 'text-davinci-003' }, // Should be filtered out
-                    { id: 'gpt-4o' }
-                ]
+                data: [{ id: 'gpt-4' }, { id: 'gpt-3.5-turbo' }, { id: 'text-davinci-003' }, { id: 'gpt-4o' }]
             };
             const mockList = jest.fn().mockResolvedValue(mockApiResponse);
             // @ts-expect-error - Working with private property
@@ -184,7 +174,6 @@ describe('OpenAIClient', () => {
 
             const result = await client.listAvailableModels();
             expect(mockList).toHaveBeenCalled();
-            // Should only include models with 'gpt' in the name
             expect(result.length).toBe(3);
             expect(result[0].id).toBe('gpt-4');
             expect(result[1].id).toBe('gpt-3.5-turbo');
@@ -203,7 +192,6 @@ describe('OpenAIClient', () => {
                 } as any
             } as any;
 
-            // Silence console logs
             jest.spyOn(console, 'log').mockImplementation(() => {});
 
             const result = await client.listAvailableModels();

@@ -19,9 +19,9 @@ export interface AIStreamEvent {
 
 export interface AIModelInfo {
     id: string;
-    name?: string; // Optional display name
-    description?: string; // Optional description
-    contextWindow?: number; // Optional context window size
+    name?: string;
+    description?: string;
+    contextWindow?: number;
 }
 
 export interface AIClient {
@@ -35,7 +35,6 @@ export async function getAIClient(): Promise<AIClient> {
     const provider = getConfigValue('MODEL_PROVIDER');
 
     if (provider === 'anthropic') {
-        // Use dynamic import to avoid circular dependencies
         const { AnthropicClient } = await import('./anthropic-client');
         return new AnthropicClient();
     } else if (provider === 'openai') {

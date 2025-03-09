@@ -66,7 +66,6 @@ describe('AnthropicClientUtils', () => {
                 // @ts-expect-error - accessing private property for testing
                 expect(client.client).toBeNull();
 
-                // Access the client through the getter
                 // @ts-expect-error - using private method for testing
                 const anthropicClient = client.getClient();
                 expect(anthropicClient).toBeInstanceOf(Anthropic);
@@ -246,24 +245,19 @@ describe('AnthropicClientUtils', () => {
             });
 
             it('should handle errors gracefully', async () => {
-                // Create a new mock implementation that simulates error handling without throwing
                 jest.spyOn(console, 'error').mockImplementation(() => {});
 
-                // Override the method with one that simulates error handling
                 const mockHandleError = jest.requireMock('../../../cli/utils/errors').handleError;
                 mockHandleError.mockImplementationOnce(() => {});
 
-                // Create a client and mock its implementation to just return empty array
                 const client = new AnthropicClient();
                 const origMethod = client.listAvailableModels;
-                // Replace the method with one that returns empty array, simulating error handling
                 client.listAvailableModels = jest.fn().mockResolvedValue([]);
 
                 try {
                     const result = await client.listAvailableModels();
                     expect(result).toEqual([]);
                 } finally {
-                    // Restore original method and mocks
                     client.listAvailableModels = origMethod;
                     jest.spyOn(console, 'error').mockRestore();
                 }

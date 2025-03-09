@@ -132,6 +132,19 @@ export async function initDatabase(): Promise<ApiResult<void>> {
                 scope TEXT NOT NULL,
                 prompt_id INTEGER,
                 FOREIGN KEY (prompt_id) REFERENCES prompts (id)
+            )`,
+            `CREATE TABLE IF NOT EXISTS prompt_executions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                prompt_id INTEGER,
+                execution_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (prompt_id) REFERENCES prompts (id)
+            )`,
+            `CREATE TABLE IF NOT EXISTS favorite_prompts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                prompt_id INTEGER,
+                added_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (prompt_id) REFERENCES prompts (id),
+                UNIQUE(prompt_id)
             )`
         ];
 
@@ -231,6 +244,74 @@ export async function updatePromptVariable(
     } catch (error) {
         handleError(error, 'updating prompt variable');
         return { success: false, error: 'Failed to update prompt variable' };
+    }
+}
+
+export async function getRecentExecutions(limit: number = 5): Promise<any[]> {
+    const query = `
+        SELECT pe.id, pe.prompt_id, pe.execution_time, p.title, p.primary_category 
+        FROM prompt_executions pe
+        JOIN prompts p ON pe.prompt_id = p.id
+        ORDER BY pe.execution_time DESC
+        LIMIT ?
+    `;
+
+    try {
+        const result = await allAsync(query, [limit]);
+
+        if (result.success && result.data && result.data.length > 0) {
+            return result.data;
+        }
+        return [];
+    } catch (error) {
+        handleError(error, 'fetching recent executions');
+        return [];
+    }
+}
+
+export async function recordPromptExecution(promptId: number | string): Promise<ApiResult<void>> {
+    try {
+        const result = await runAsync('INSERT INTO prompt_executions (prompt_id) VALUES (?)', [promptId]);
+        return { success: result.success };
+    } catch (error) {
+        handleError(error, 'recording prompt execution');
+        return { success: false, error: 'Failed to record prompt execution' };
+    }
+}
+
+export async function addPromptToFavorites(promptId: number | string): Promise<ApiResult<void>> {
+    try {
+        const result = await runAsync('INSERT OR IGNORE INTO favorite_prompts (prompt_id) VALUES (?)', [promptId]);
+        return { success: result.success };
+    } catch (error) {
+        handleError(error, 'adding prompt to favorites');
+        return { success: false, error: 'Failed to add prompt to favorites' };
+    }
+}
+
+export async function removePromptFromFavorites(promptId: number | string): Promise<ApiResult<void>> {
+    try {
+        const result = await runAsync('DELETE FROM favorite_prompts WHERE prompt_id = ?', [promptId]);
+        return { success: result.success };
+    } catch (error) {
+        handleError(error, 'removing prompt from favorites');
+        return { success: false, error: 'Failed to remove prompt from favorites' };
+    }
+}
+
+export async function getFavoritePrompts(): Promise<ApiResult<any[]>> {
+    const query = `
+        SELECT fp.id, fp.prompt_id, fp.added_time, p.title, p.primary_category, p.description
+        FROM favorite_prompts fp
+        JOIN prompts p ON fp.prompt_id = p.id
+        ORDER BY fp.added_time DESC
+    `;
+
+    try {
+        return await allAsync(query);
+    } catch (error) {
+        handleError(error, 'fetching favorite prompts');
+        return { success: false, error: 'Failed to fetch favorite prompts' };
     }
 }
 

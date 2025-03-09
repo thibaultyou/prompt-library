@@ -45,7 +45,6 @@ export async function resolveInputs(inputs: Record<string, string>): Promise<Rec
             if (value.startsWith(FRAGMENT_PREFIX) || value.startsWith(ENV_PREFIX)) {
                 resolvedInputs[key] = await resolveValue(value, envVars);
 
-                // Handle double resolution for environment variables that reference fragments
                 if (resolvedInputs[key].startsWith(FRAGMENT_PREFIX)) {
                     logger.info(`Resolving nested fragment in environment variable: ${key}`);
                     resolvedInputs[key] = await resolveValue(resolvedInputs[key], envVars);

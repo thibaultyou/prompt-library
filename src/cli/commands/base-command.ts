@@ -30,32 +30,40 @@ export class BaseCommand extends Command {
 
     protected async showMenu<T>(
         message: string,
-        choices: Array<{ name: string; value: T }>,
-        options: { includeGoBack?: boolean; goBackValue?: T; goBackLabel?: string; clearConsole?: boolean } = {}
+        choices: Array<{ name: string; value: T; type?: string; description?: string; disabled?: boolean | string }>,
+        options: {
+            includeGoBack?: boolean;
+            goBackValue?: T;
+            goBackLabel?: string;
+            clearConsole?: boolean;
+            pageSize?: number;
+        } = {}
     ): Promise<T> {
         const {
             includeGoBack = true,
             goBackValue = 'back' as T,
             goBackLabel = 'Go back',
-            clearConsole = true
+            clearConsole = true,
+            pageSize = cliConfig.MENU_PAGE_SIZE
         } = options;
 
         if (clearConsole) {
-            // console.clear();
+            console.clear();
         }
 
         const menuChoices = [...choices];
+        const processedChoices = menuChoices;
 
         if (includeGoBack) {
-            menuChoices.push({
+            processedChoices.push({
                 name: chalk.red(chalk.bold(goBackLabel)),
                 value: goBackValue
             });
         }
         return select<T>({
             message,
-            choices: menuChoices,
-            pageSize: cliConfig.MENU_PAGE_SIZE
+            choices: processedChoices as any,
+            pageSize: pageSize
         });
     }
 
@@ -111,8 +119,13 @@ export class BaseCommand extends Command {
         handleError(error, context);
     }
 
-    async runCommand(program: Command, commandName: string): Promise<void> {
+    async runCommand(program: Command, commandName: string, options: { clearConsole?: boolean } = {}): Promise<void> {
+        const { clearConsole = true } = options;
         const command = program.commands.find((cmd) => cmd.name() === commandName);
+
+        if (clearConsole) {
+            console.clear();
+        }
 
         if (command) {
             try {
@@ -125,7 +138,13 @@ export class BaseCommand extends Command {
         }
     }
 
-    async runSubCommand(command: BaseCommand): Promise<void> {
+    async runSubCommand(command: BaseCommand, options: { clearConsole?: boolean } = {}): Promise<void> {
+        const { clearConsole = true } = options;
+
+        if (clearConsole) {
+            console.clear();
+        }
+
         try {
             await command.parseAsync([], { from: 'user' });
         } catch (error) {

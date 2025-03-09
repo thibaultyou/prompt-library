@@ -2,7 +2,6 @@ import { AppError } from '../../../cli/utils/errors';
 import * as config from '../../config';
 import { getAIClient, adaptAnthropicStreamEvent, adaptAnthropicResponse } from '../ai-client';
 
-// Mock the imports that getAIClient uses
 jest.mock('../anthropic-client', () => ({
     AnthropicClient: jest.fn().mockImplementation(() => ({
         mockAnthropicClient: true
@@ -48,7 +47,6 @@ describe('AI Client', () => {
 
     describe('adaptAnthropicStreamEvent', () => {
         it('should adapt content_block_delta events with text', () => {
-            // Mock the proper structure according to Anthropic SDK
             const event = {
                 type: 'content_block_delta',
                 index: 0,
@@ -63,7 +61,6 @@ describe('AI Client', () => {
         });
 
         it('should return the event type for other events', () => {
-            // Mock the proper structure according to Anthropic SDK
             const event = {
                 type: 'message_start',
                 message: { id: 'msg_123', type: 'message' }
@@ -75,7 +72,6 @@ describe('AI Client', () => {
 
     describe('adaptAnthropicResponse', () => {
         it('should extract text content from an Anthropic message', () => {
-            // Mock the proper structure according to Anthropic SDK
             const response = {
                 id: 'msg_123',
                 type: 'message',
@@ -93,7 +89,6 @@ describe('AI Client', () => {
         });
 
         it('should return empty content for invalid response format', () => {
-            // Mock the proper structure according to Anthropic SDK
             const response = {
                 id: 'msg_123',
                 type: 'message',

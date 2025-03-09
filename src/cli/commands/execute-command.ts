@@ -11,7 +11,10 @@ import { getPromptFiles, viewPromptDetails } from '../utils/prompts';
 class ExecuteCommand extends BaseCommand {
     constructor() {
         super('execute', 'Execute or inspect a prompt');
-        this.option('-p, --prompt <id>', 'Execute a stored prompt by ID')
+        this.option(
+            '-p, --prompt <id_or_name>',
+            'Execute a stored prompt by ID or name (e.g., 74 or "git_commit_message_agent")'
+        )
             .option('-f, --prompt-file <file>', 'Path to the prompt file (usually prompt.md)')
             .option('-m, --metadata-file <file>', 'Path to the metadata file (usually metadata.yml)')
             .option('-i, --inspect', 'Inspect the prompt variables without executing')
@@ -195,6 +198,15 @@ Note:
         dynamicOptions: Record<string, string>,
         fileInputs: Record<string, string>
     ): Promise<string> {
+        if (metadata.id) {
+            try {
+                const { recordPromptExecution } = await import('../utils/database');
+                await recordPromptExecution(metadata.id);
+            } catch (error) {
+                console.error('Failed to record prompt execution:', error);
+            }
+        }
+
         const userInputs: Record<string, string> = {};
         const missingVariables: string[] = [];
 
@@ -234,7 +246,6 @@ Note:
             if (fileInputs[snakeCaseName]) {
                 try {
                     value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
-                    // console.log(chalk.green(`Loaded file content for ${snakeCaseName}`));
                 } catch (error) {
                     console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
                     throw new Error(`Failed to read file for ${snakeCaseName}`);

@@ -42,7 +42,9 @@ class ConfigCommand extends BaseCommand {
             console.log(chalk.yellow('The configuration is empty.'));
         } else {
             Object.entries(currentConfig).forEach(([key, value]) => {
-                console.log(`${key} -->`, chalk.green(key === 'ANTHROPIC_API_KEY' ? '********' : value));
+                const isSensitive =
+                    key.includes('API_KEY') || key.includes('SECRET') || key.includes('TOKEN') || /key/i.test(key);
+                console.log(`${key} -->`, chalk.green(isSensitive ? '********' : value));
             });
         }
     }

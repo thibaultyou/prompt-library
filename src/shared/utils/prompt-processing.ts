@@ -14,7 +14,6 @@ export function updatePromptWithVariables(content: string, variables: Record<str
                 throw new Error(`Variable value for key "${key}" must be a string`);
             }
 
-            // Handle values that still contain Fragment references
             if (value.startsWith('<') && value.endsWith('>')) {
                 if (value.includes('Fragment:')) {
                     console.warn(`Warning: Fragment reference not resolved for ${key}: ${value}`);
@@ -81,6 +80,8 @@ async function processStreamingResponse(client: AIClient, messages: AIMessage[])
                 process.stdout.write(event.content);
             }
         }
+
+        process.stdout.write('\n');
     } catch (error) {
         handleError(error, 'processing CLI prompt content');
         throw error;

@@ -10,7 +10,6 @@ describe('Config', () => {
     beforeEach(() => {
         process.env = { ...originalEnv };
         process.env.CLI_ENV = 'cli';
-        // Explicitly set NODE_ENV to test for our special test handling
         process.env.NODE_ENV = 'test';
 
         jest.resetModules();

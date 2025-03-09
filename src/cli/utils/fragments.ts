@@ -19,7 +19,7 @@ export async function listFragments(): Promise<ApiResult<PromptFragment[]>> {
                     fragments.push({
                         category,
                         name: file.replace('.md', ''),
-                        variable: '' // Note: We don't have this information from the file system
+                        variable: ''
                     });
                 }
             }

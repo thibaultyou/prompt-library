@@ -99,7 +99,6 @@ describe('InputResolverUtils', () => {
             const inputs = {
                 env_with_fragment: `${ENV_PREFIX}FRAGMENT_VAR`
             };
-            // Mock env var that contains fragment reference
             mockReadEnvVars.mockResolvedValueOnce({
                 success: true,
                 data: [
@@ -112,8 +111,6 @@ describe('InputResolverUtils', () => {
                 ]
             });
 
-            // First resolveValue call returns the fragment reference from env var
-            // Second resolveValue call resolves the fragment reference to actual content
             mockViewFragmentContent.mockResolvedValueOnce({
                 success: true,
                 data: '# Test Fragment Content'
@@ -124,7 +121,6 @@ describe('InputResolverUtils', () => {
                 env_with_fragment: '# Test Fragment Content'
             });
 
-            // Verify fragment was resolved with correct category/name
             expect(mockViewFragmentContent).toHaveBeenCalledWith('prompt_engineering', 'behavior_attributes');
         });
 
@@ -132,7 +128,6 @@ describe('InputResolverUtils', () => {
             const inputs = {
                 env_with_missing_fragment: `${ENV_PREFIX}BAD_FRAGMENT_VAR`
             };
-            // Mock env var that contains fragment reference
             mockReadEnvVars.mockResolvedValueOnce({
                 success: true,
                 data: [
@@ -145,7 +140,6 @@ describe('InputResolverUtils', () => {
                 ]
             });
 
-            // Fragment resolution fails
             mockViewFragmentContent.mockResolvedValueOnce({
                 success: false,
                 error: 'Fragment not found'

@@ -12,7 +12,40 @@
   </available_prompt_fragments>
 
   <top_level_categories>
-  ["analysis", "art_and_design", "business", "coding", "content_creation", "customer_service", "data_processing", "education", "entertainment", "finance", "gaming", "healthcare", "language", "legal", "marketing", "music", "personal_assistant", "problem_solving", "productivity", "prompt_engineering", "research", "science", "social_media", "translation", "writing"]
+  [
+    /* Original Categories (preserved) */
+    "analysis",         /* Data and information analysis */
+    "art_and_design",   /* Visual and aesthetic creation */
+    "business",         /* Business operations and strategy */
+    "coding",           /* Development, programming, and software engineering */
+    "content_creation", /* Documentation, writing, and creative content */
+    "customer_service", /* Support and client communication */
+    "data_processing",  /* Data analysis, visualization, transformation */
+    "education",        /* Teaching, learning, and knowledge sharing */
+    "entertainment",    /* Recreation, gaming, media consumption */
+    "finance",          /* Money management and financial planning */
+    "gaming",           /* Game design, playing, and strategies */
+    "healthcare",       /* Health, wellness, medicine, fitness */
+    "language",         /* Language learning, linguistics */
+    "legal",            /* Law, compliance, and legal documents */
+    "marketing",        /* Promotion, advertising, brand development */
+    "music",            /* Music creation, theory, and production */
+    "personal_assistant", /* Task management and daily support */
+    "problem_solving",  /* General problem analysis and solution frameworks */
+    "productivity",     /* Efficiency, workflow optimization */
+    "prompt_engineering", /* Creating and optimizing AI prompts */
+    "research",         /* Academic or professional research assistance */
+    "science",          /* Scientific inquiry and methodology */
+    "social_media",     /* Online platform content and strategy */
+    "translation",      /* Text, concept, or knowledge translation */
+    "writing",          /* Written content creation */
+    
+    /* Additional Helpful Categories */
+    "personal_growth",  /* Self-improvement, life coaching */
+    "communication",    /* Interpersonal skills, writing, messaging */
+    "creative",         /* Creative expression across mediums */
+    "specialized"       /* Domain-specific agents that don't fit elsewhere */
+  ]
   </top_level_categories>
 
   <extra_guidelines_or_context optional_for_user="true">
@@ -32,8 +65,15 @@ Follow these steps to analyze the prompt:
 3. Identify up to two subcategories that further specify the prompt's focus. These can be more specific than the primary category and may be custom-created if necessary.
   <thinking>Look for secondary themes or specific applications within the prompt. Ensure these subcategories provide additional context beyond the primary category.</thinking>
 
-4. Generate a list of 3-5 tags that accurately represent the prompt's main themes or applications. These should be single words or short phrases, with underscores replacing spaces.
-  <thinking>Consider key concepts, technologies, or methodologies mentioned in the prompt. Aim for a mix of general and specific tags to aid in searchability.</thinking>
+4. Generate a list of 4-6 searchable tags that accurately represent the prompt's key attributes:
+  - Include at least one tag for the prompt's domain/field (e.g., software_development, healthcare)
+  - Include at least one tag for the prompt's function/action (e.g., code_generation, analysis)
+  - Include specific technologies or methodologies if relevant (e.g., git, react, cognitive_therapy)
+  - Include skill level or scope if applicable (e.g., beginner, enterprise)
+  - Format all tags in snake_case (lowercase with underscores between words)
+  - Keep each tag concise (1-2 words is ideal)
+  - Avoid overly generic tags like "ai" or "helper" that don't differentiate prompts
+  <thinking>Create a balanced set of tags that would help users find this prompt when searching by different criteria - function, domain, technology, and application area. These should facilitate discovery both when browsing and searching.</thinking>
 
 5. Craft a concise, one-line description of the prompt that:
   - Captures the main purpose or function
@@ -48,13 +88,15 @@ Follow these steps to analyze the prompt:
   <thinking>Scan the prompt for placeholders or explicitly mentioned variables that users need to provide.</thinking>
 
 8. Generate a directory name for the prompt using this convention:
-  - Convert the prompt's main topic to lowercase
-  - Replace spaces with underscores
-  - Remove special characters
-  - Remove level-specific terms (e.g., "expert", "god", "elite", "advanced", etc.)
-  - When applicable, replace generic terms (e.g., "AI", "creator", "generator", etc.) with "agent" as the default term
-  - Keep it concise (max 30 characters)
-  <thinking>Create a clear, descriptive name that reflects the prompt's primary function.</thinking>
+  - Start with the primary function of the prompt (what it does)
+  - Convert to snake_case (lowercase with underscores)
+  - Format as: {function}_{domain}_agent (e.g., git_commit_message_agent, health_optimization_agent)
+  - Remove subjective quality terms (e.g., "expert", "god", "elite", "advanced", "ultimate", etc.)
+  - Remove generic verbs at the beginning (e.g., "create", "generate", "make")
+  - Prioritize descriptive nouns and specific capabilities
+  - Keep it concise (max 30 characters) and easy to remember
+  - Use "agent" as the default suffix for most prompts
+  <thinking>Create a clear, consistent, descriptive name that reflects the prompt's primary function and domain, making it easy to identify and remember.</thinking>
 
 9. Create a title for the prompt based on the directory name:
   - Remove underscores from the directory name

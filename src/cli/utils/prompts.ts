@@ -82,18 +82,35 @@ export async function listPrompts(): Promise<ApiResult<PromptMetadata[]>> {
 }
 
 export async function getPromptFiles(
-    promptId: string,
+    promptIdOrName: string,
     options: GetPromptFilesOptions = { cleanVariables: false }
 ): Promise<ApiResult<{ promptContent: string; metadata: PromptMetadata }>> {
     try {
-        const promptContentResult = await getAsync<{ content: string }>('SELECT content FROM prompts WHERE id = ?', [
-            promptId
-        ]);
+        let query = 'SELECT id, content FROM prompts WHERE id = ?';
+        let params: any[] = [promptIdOrName];
 
-        if (!promptContentResult.success || !promptContentResult.data) {
-            return { success: false, error: 'Prompt not found' };
+        if (isNaN(Number(promptIdOrName))) {
+            query = 'SELECT id, content FROM prompts WHERE directory LIKE ?';
+            params = [`%${promptIdOrName}%`];
         }
 
+        const promptResult = await getAsync<{ id: string; content: string }>(query, params);
+
+        if (!promptResult.success || !promptResult.data) {
+            query = 'SELECT id, content FROM prompts WHERE LOWER(title) LIKE ?';
+            params = [`%${promptIdOrName.toLowerCase()}%`];
+
+            const titleResult = await getAsync<{ id: string; content: string }>(query, params);
+
+            if (!titleResult.success || !titleResult.data) {
+                return { success: false, error: 'Prompt not found' };
+            }
+
+            promptResult.data = titleResult.data;
+        }
+
+        const promptId = promptResult.data.id;
+        const promptContent = promptResult.data.content;
         const metadataResult = await getPromptMetadata(promptId, options);
 
         if (!metadataResult.success || !metadataResult.data) {
@@ -102,7 +119,7 @@ export async function getPromptFiles(
         return {
             success: true,
             data: {
-                promptContent: promptContentResult.data.content,
+                promptContent: promptContent,
                 metadata: metadataResult.data
             }
         };
@@ -113,11 +130,34 @@ export async function getPromptFiles(
 }
 
 export async function getPromptMetadata(
-    promptId: string,
+    promptIdOrName: string,
     options: GetPromptFilesOptions = { cleanVariables: false }
 ): Promise<ApiResult<PromptMetadata>> {
     try {
-        const promptResult = await getAsync<PromptMetadata>('SELECT * FROM prompts WHERE id = ?', [promptId]);
+        let actualPromptId = promptIdOrName;
+
+        if (isNaN(Number(promptIdOrName))) {
+            const promptByDirectory = await getAsync<{ id: string }>('SELECT id FROM prompts WHERE directory LIKE ?', [
+                `%${promptIdOrName}%`
+            ]);
+
+            if (promptByDirectory.success && promptByDirectory.data) {
+                actualPromptId = promptByDirectory.data.id;
+            } else {
+                const promptByTitle = await getAsync<{ id: string }>(
+                    'SELECT id FROM prompts WHERE LOWER(title) LIKE ?',
+                    [`%${promptIdOrName.toLowerCase()}%`]
+                );
+
+                if (!promptByTitle.success || !promptByTitle.data) {
+                    return { success: false, error: 'Metadata not found' };
+                }
+
+                actualPromptId = promptByTitle.data.id;
+            }
+        }
+
+        const promptResult = await getAsync<PromptMetadata>('SELECT * FROM prompts WHERE id = ?', [actualPromptId]);
 
         if (!promptResult.success || !promptResult.data) {
             return { success: false, error: 'Metadata not found' };
@@ -125,7 +165,7 @@ export async function getPromptMetadata(
 
         const subcategoriesResult = await allAsync<{ name: string }>(
             'SELECT name FROM subcategories WHERE prompt_id = ?',
-            [promptId]
+            [actualPromptId]
         );
 
         if (!subcategoriesResult.success || !subcategoriesResult.data) {
@@ -135,7 +175,7 @@ export async function getPromptMetadata(
         const variablesQuery = options.cleanVariables
             ? 'SELECT name, role, optional_for_user FROM variables WHERE prompt_id = ?'
             : 'SELECT name, role, optional_for_user, value FROM variables WHERE prompt_id = ?';
-        const variablesResult = await allAsync<PromptVariable>(variablesQuery, [promptId]);
+        const variablesResult = await allAsync<PromptVariable>(variablesQuery, [actualPromptId]);
 
         if (!variablesResult.success || !variablesResult.data) {
             return { success: false, error: 'Failed to get variables' };
@@ -143,7 +183,7 @@ export async function getPromptMetadata(
 
         const fragmentsResult = await allAsync<PromptFragment>(
             'SELECT category, name, variable FROM fragments WHERE prompt_id = ?',
-            [promptId]
+            [actualPromptId]
         );
 
         if (!fragmentsResult.success || !fragmentsResult.data) {

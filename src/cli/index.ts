@@ -1,21 +1,16 @@
 #!/usr/bin/env node
-// IMPORTANT: This must be set BEFORE all imports to avoid resolution issues
-// Setting this in a separate file won't help - we need it before ANY imports to prevent circular dependencies
 process.env.CLI_ENV = 'cli';
 
+import { Separator } from '@inquirer/core';
 import { input } from '@inquirer/prompts';
 import select from '@inquirer/select';
 import chalk from 'chalk';
+import { Spinner } from 'cli-spinner';
 import { Command } from 'commander';
 import dotenv from 'dotenv';
 
-// Ensure environment variables are loaded
 dotenv.config();
 
-// Import using commonjs syntax to avoid circular reference issues in ts-node
-// We'll use dynamic require at runtime instead of static imports
-// for getConfigValue and setConfig to avoid circular dependency in dev mode
-// import { getConfigValue, setConfig } from '../shared/config';
 import configCommand from './commands/config-command';
 import envCommand from './commands/env-command';
 import executeCommand from './commands/execute-command';
@@ -29,21 +24,17 @@ import syncCommand from './commands/sync-command';
 import { initDatabase } from './utils/database';
 
 async function ensureApiKey(): Promise<void> {
-    // Load manually to avoid circular dependencies in ts-node
-    // Using dynamic imports instead of requires
     const fs = await import('fs');
     const path = await import('path');
     const os = await import('os');
-    // Load config directly for the bootstrap phase
     const CONFIG_DIR = path.join(os.homedir(), '.prompt-library-cli');
     const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
     let config: Record<string, any> = {
-        MODEL_PROVIDER: 'anthropic', // Default
+        MODEL_PROVIDER: 'anthropic',
         ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
         OPENAI_API_KEY: process.env.OPENAI_API_KEY
     };
 
-    // Try to load config from file
     if (fs.existsSync(CONFIG_FILE)) {
         try {
             config = {
@@ -55,9 +46,7 @@ async function ensureApiKey(): Promise<void> {
         }
     }
 
-    // Get values from loaded config
     const provider = config.MODEL_PROVIDER || 'anthropic';
-    // Make sure provider is one of the valid values
     const validProvider = provider === 'anthropic' || provider === 'openai' ? provider : 'anthropic';
     const keyName = validProvider === 'anthropic' ? 'ANTHROPIC_API_KEY' : 'OPENAI_API_KEY';
     let apiKey = config[keyName] || process.env[keyName];
@@ -66,18 +55,14 @@ async function ensureApiKey(): Promise<void> {
         console.log(`${keyName} is not set.`);
         apiKey = await input({ message: `Please enter your ${validProvider} API key:` });
 
-        // Update config
         config[keyName] = apiKey;
 
-        // Ensure directory exists
         if (!fs.existsSync(CONFIG_DIR)) {
             fs.mkdirSync(CONFIG_DIR, { recursive: true });
         }
 
-        // Save config
         fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
 
-        // Set in environment for current session
         process.env[keyName] = apiKey;
     }
 
@@ -87,20 +72,34 @@ async function ensureApiKey(): Promise<void> {
 }
 
 async function simplifiedMenu(program: Command): Promise<void> {
-    // This is a simplified menu for development mode to work around ts-node circular dependencies
-    console.log(chalk.bold(chalk.cyan('Welcome to the Prompt Library (DEV MODE)!')));
-
-    const choices = [
-        { name: 'Browse and run prompts', value: 'prompts' },
-        { name: 'Manage prompt fragments', value: 'fragments' },
-        { name: 'Configure AI model settings', value: 'model' },
-        { name: 'Manage environment variables', value: 'env' },
-        { name: 'Settings', value: 'settings' },
-        { name: 'Exit', value: 'exit' }
-    ];
+    console.clear();
 
     try {
-        // Use select for a better interactive experience
+        const configModule = await import('../shared/config');
+        const { getConfigValue } = configModule;
+        const modelProvider = getConfigValue('MODEL_PROVIDER') || 'unknown';
+        const modelName =
+            getConfigValue(modelProvider === 'anthropic' ? 'ANTHROPIC_MODEL' : 'OPENAI_MODEL') || 'unknown';
+        console.log(chalk.bold(chalk.cyan(`🧠 Prompt Library CLI (DEV MODE)`)));
+        console.log(`${chalk.gray('Using:')} ${chalk.cyan(modelProvider)} / ${chalk.cyan(modelName)}`);
+
+        const choices = [
+            new Separator(''),
+            new Separator(chalk.bold.cyan('📚 MAIN MENU')),
+            new Separator(''),
+            { name: chalk.bold('Browse and run prompts'), value: 'prompts' },
+            { name: 'Manage prompt fragments', value: 'fragments' },
+
+            new Separator(''),
+            new Separator(chalk.bold.cyan('⚙️ CONFIGURATION')),
+            new Separator(''),
+            { name: chalk.bold('Configure AI model settings'), value: 'model' },
+            { name: 'Manage environment variables', value: 'env' },
+            { name: 'Settings', value: 'settings' },
+
+            new Separator(''),
+            { name: chalk.red(chalk.bold('Exit')), value: 'exit' }
+        ];
         const selectedCommand = await select({
             message: 'Select an action:',
             choices: choices
@@ -111,7 +110,8 @@ async function simplifiedMenu(program: Command): Promise<void> {
             return;
         }
 
-        // Run the selected command
+        console.clear();
+
         const command = program.commands.find((cmd) => cmd.name() === selectedCommand);
 
         if (command) {
@@ -124,10 +124,9 @@ async function simplifiedMenu(program: Command): Promise<void> {
             console.log(chalk.red(`Command '${selectedCommand}' not found.`));
         }
 
-        // Return to menu after command execution
+        console.clear();
         await simplifiedMenu(program);
     } catch (error) {
-        // Handle user interruption (Ctrl+C)
         if (error && error.toString().includes('User force closed the prompt')) {
             console.log(chalk.yellow('\nExiting...'));
             return;
@@ -137,12 +136,65 @@ async function simplifiedMenu(program: Command): Promise<void> {
     }
 }
 
+function organizeCommandGroups(program: Command): void {
+    program.configureHelp({
+        sortSubcommands: false,
+        subcommandTerm: (cmd) => chalk.green(cmd.name())
+    });
+}
+
 async function main(): Promise<void> {
-    await initDatabase();
-    await ensureApiKey();
+    const spinner = new Spinner('Initializing Prompt Library... %s');
+    spinner.setSpinnerString('|/-\\');
+    spinner.start();
+
+    try {
+        await initDatabase();
+        await ensureApiKey();
+        spinner.stop(true);
+    } catch (error) {
+        spinner.stop(true);
+        console.error(chalk.red('Initialization failed:'), error);
+        process.exit(1);
+    }
 
     const program = new Command();
-    program.name('prompt-library-cli').description('CLI tool for managing and executing AI prompts').version('1.0.0');
+    program
+        .name('prompt-library-cli')
+        .description('Interactive CLI for managing and executing AI prompts')
+        .version('1.0.0')
+        .addHelpText('before', chalk.bold(chalk.cyan('\n🧠 Prompt Library CLI\n')))
+        .addHelpText(
+            'after',
+            `
+Examples:
+  $ prompt-library-cli                     Start interactive menu
+  $ prompt-library-cli execute -p 74       Execute prompt by ID
+  $ prompt-library-cli prompts --list      List all available prompts
+  $ prompt-library-cli model               Configure AI model settings
+        `
+        )
+        .option('-e, --execute <id_or_name>', 'Execute a prompt by ID or name')
+        .option('-l, --list', 'List all available prompts')
+        .option('-s, --search <keyword>', 'Search prompts by keyword')
+        .action(async (options) => {
+            if (options.execute) {
+                console.clear();
+                await executeCommand.parseAsync(['node', 'script.js', '-p', options.execute]);
+            } else if (options.list) {
+                console.clear();
+                await promptsCommand.parseAsync(['node', 'script.js', '--list']);
+            } else if (options.search) {
+                console.clear();
+                await promptsCommand.parseAsync(['node', 'script.js', '--search', options.search]);
+            } else if (process.argv.length <= 2) {
+                if (process.env.NODE_ENV === 'production') {
+                    await showMainMenu(program);
+                } else {
+                    await simplifiedMenu(program);
+                }
+            }
+        });
 
     const commands = [
         configCommand,
@@ -156,22 +208,12 @@ async function main(): Promise<void> {
         syncCommand
     ];
     commands.forEach((cmd) => program.addCommand(cmd));
+    organizeCommandGroups(program);
 
-    if (process.argv.length > 2) {
-        await program.parseAsync(process.argv);
-    } else {
-        if (process.env.NODE_ENV === 'production') {
-            // Use the regular menu in production mode
-            await showMainMenu(program);
-        } else {
-            // Use the simplified menu in development mode
-            await simplifiedMenu(program);
-        }
-    }
+    await program.parseAsync(process.argv);
 }
 
 main().catch((error) => {
-    // Handle user interruption (Ctrl+C) gracefully
     if (error && error.toString().includes('User force closed the prompt')) {
         console.log(chalk.yellow('\nExiting...'));
         process.exit(0);

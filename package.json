@@ -9,7 +9,7 @@
         "prompt-library-cli": "./dist/cli/index.js"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && chmod +x dist/cli/index.js",
         "dev": "ts-node src/cli/index.ts",
         "format": "npm run lint:fix && npm run prettify",
         "lint": "eslint 'src/**/*.ts'",

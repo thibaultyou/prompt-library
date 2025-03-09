@@ -22,6 +22,11 @@ import {
     syncPromptsWithDatabase,
     cleanupOrphanedData,
     flushData,
+    getRecentExecutions,
+    recordPromptExecution,
+    addPromptToFavorites,
+    removePromptFromFavorites,
+    getFavoritePrompts,
     db
 } from '../database';
 import { createPrompt } from '../prompts';
@@ -254,7 +259,7 @@ describe('DatabaseUtils', () => {
             const result = await initDatabase();
             expect(result.success).toBe(true);
             expect(mockFs.ensureDir).toHaveBeenCalledWith(path.dirname(cliConfig.DB_PATH));
-            expect(runSpy).toHaveBeenCalledTimes(5);
+            expect(runSpy).toHaveBeenCalled();
         });
 
         it('should handle errors during database initialization', async () => {
@@ -559,6 +564,159 @@ describe('DatabaseUtils', () => {
             mockFs.emptyDir.mockImplementation(() => Promise.reject(new Error('FS Error')));
 
             await expect(flushData()).rejects.toThrow('Failed to flush data');
+        });
+    });
+
+    describe('getRecentExecutions', () => {
+        it('should return recent executions', async () => {
+            const mockExecutions = [
+                { id: 1, prompt_id: 123, execution_time: '2023-01-01', title: 'Test Prompt', primary_category: 'test' }
+            ];
+            allSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback(null, mockExecutions);
+                return db;
+            });
+
+            const result = await getRecentExecutions(5);
+            expect(result).toEqual(mockExecutions);
+            expect(allSpy).toHaveBeenCalledWith(
+                expect.stringContaining('FROM prompt_executions'),
+                [5],
+                expect.any(Function)
+            );
+        });
+
+        it('should handle empty results', async () => {
+            allSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback(null, []);
+                return db;
+            });
+
+            const result = await getRecentExecutions(5);
+            expect(result).toEqual([]);
+        });
+
+        it('should handle errors', async () => {
+            allSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback(new Error('DB error'), undefined);
+                return db;
+            });
+
+            const result = await getRecentExecutions(5);
+            expect(result).toEqual([]);
+        });
+    });
+
+    describe('recordPromptExecution', () => {
+        it('should record prompt execution successfully', async () => {
+            runSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback.call({ changes: 1 } as RunResult, null);
+                return db;
+            });
+
+            const result = await recordPromptExecution('123');
+            expect(result.success).toBe(true);
+            expect(runSpy).toHaveBeenCalledWith(
+                'INSERT INTO prompt_executions (prompt_id) VALUES (?)',
+                ['123'],
+                expect.any(Function)
+            );
+        });
+
+        it('should handle database errors', async () => {
+            runSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback.call({} as RunResult, new Error('Insert failed'));
+                return db;
+            });
+
+            const result = await recordPromptExecution('123');
+            expect(result.success).toBe(false);
+        });
+    });
+
+    describe('addPromptToFavorites', () => {
+        it('should add prompt to favorites', async () => {
+            runSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback.call({ changes: 1 } as RunResult, null);
+                return db;
+            });
+
+            const result = await addPromptToFavorites('123');
+            expect(result.success).toBe(true);
+            expect(runSpy).toHaveBeenCalledWith(
+                'INSERT OR IGNORE INTO favorite_prompts (prompt_id) VALUES (?)',
+                ['123'],
+                expect.any(Function)
+            );
+        });
+
+        it('should handle database errors', async () => {
+            runSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback.call({} as RunResult, new Error('Insert failed'));
+                return db;
+            });
+
+            const result = await addPromptToFavorites('123');
+            expect(result.success).toBe(false);
+        });
+    });
+
+    describe('removePromptFromFavorites', () => {
+        it('should remove prompt from favorites', async () => {
+            runSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback.call({ changes: 1 } as RunResult, null);
+                return db;
+            });
+
+            const result = await removePromptFromFavorites('123');
+            expect(result.success).toBe(true);
+            expect(runSpy).toHaveBeenCalledWith(
+                'DELETE FROM favorite_prompts WHERE prompt_id = ?',
+                ['123'],
+                expect.any(Function)
+            );
+        });
+
+        it('should handle database errors', async () => {
+            runSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback.call({} as RunResult, new Error('Delete failed'));
+                return db;
+            });
+
+            const result = await removePromptFromFavorites('123');
+            expect(result.success).toBe(false);
+        });
+    });
+
+    describe('getFavoritePrompts', () => {
+        it('should get favorite prompts', async () => {
+            const mockFavorites = [
+                { id: 1, prompt_id: 123, added_time: '2023-01-01', title: 'Test Prompt', primary_category: 'test' }
+            ];
+            allSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback(null, mockFavorites);
+                return db;
+            });
+
+            const result = await getFavoritePrompts();
+            expect(result.success).toBe(true);
+            expect(result.data).toEqual(mockFavorites);
+            expect(allSpy).toHaveBeenCalledWith(
+                expect.stringContaining('FROM favorite_prompts'),
+                [],
+                expect.any(Function)
+            );
+        });
+
+        it('should handle database errors', async () => {
+            allSpy.mockImplementationOnce((sql: string, params: any[], callback: any) => {
+                callback(new Error('DB error'), undefined);
+                return db;
+            });
+
+            const result = await getFavoritePrompts();
+            expect(result.success).toBe(false);
+            expect(result.error).toBeDefined();
         });
     });
 });

@@ -3,7 +3,6 @@ import { jest } from '@jest/globals';
 import { getAIClient } from '../ai-client';
 import { processPromptContent, updatePromptWithVariables } from '../prompt-processing';
 
-// Create full mocks for dependencies to avoid TypeScript errors
 jest.mock('../ai-client', () => ({
     getAIClient: jest.fn()
 }));
@@ -21,7 +20,7 @@ jest.mock('chalk', () => ({
 describe('PromptProcessingUtils', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        // Mock console logging
+
         jest.spyOn(console, 'log').mockImplementation(() => {});
         jest.spyOn(console, 'warn').mockImplementation(() => {});
         jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
@@ -112,7 +111,6 @@ It can span multiple lines and include special characters like $, {}, [], etc..`
             };
             const result = updatePromptWithVariables(content, variables);
             expect(result).toBe('Here is a fragment: <Failed to load fragment: category/name>');
-            // We're not testing the console.warn call as it's difficult to test in Jest
         });
 
         it('should handle unresolved env variables', () => {
@@ -122,12 +120,10 @@ It can span multiple lines and include special characters like $, {}, [], etc..`
             };
             const result = updatePromptWithVariables(content, variables);
             expect(result).toBe('Here is an env var: <Env var not found: TEST_VAR>');
-            // We're not testing the console.warn call as it's difficult to test in Jest
         });
     });
 
     describe('processPromptContent', () => {
-        // Create a mock AI client
         const mockClient: any = {
             sendRequest: jest.fn(),
             sendStreamingRequest: jest.fn(),
@@ -135,7 +131,6 @@ It can span multiple lines and include special characters like $, {}, [], etc..`
             listAvailableModels: jest.fn()
         };
         beforeEach(() => {
-            // Set up the mock implementation for getAIClient
             (getAIClient as jest.Mock).mockReturnValue(mockClient);
         });
 
@@ -167,7 +162,6 @@ It can span multiple lines and include special characters like $, {}, [], etc..`
 
         it('should process content with streaming when useStreaming is true', async () => {
             const testMessages = [{ role: 'user', content: 'Hello' }];
-            // Mock the generator function for streaming
             mockClient.sendStreamingRequest.mockImplementation(async function* () {
                 yield { type: 'content', content: 'Hi ' };
                 yield { type: 'content', content: 'there!' };
@@ -177,9 +171,10 @@ It can span multiple lines and include special characters like $, {}, [], etc..`
             const result = await processPromptContent(testMessages, true);
             expect(result).toBe('Hi there!');
             expect(mockClient.sendStreamingRequest).toHaveBeenCalledWith(testMessages);
-            expect(process.stdout.write).toHaveBeenCalledTimes(2);
+            expect(process.stdout.write).toHaveBeenCalledTimes(3);
             expect(process.stdout.write).toHaveBeenNthCalledWith(1, 'Hi ');
             expect(process.stdout.write).toHaveBeenNthCalledWith(2, 'there!');
+            expect(process.stdout.write).toHaveBeenNthCalledWith(3, '\n');
         });
 
         it('should handle errors in streaming', async () => {

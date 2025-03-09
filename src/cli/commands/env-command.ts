@@ -58,9 +58,21 @@ class EnvCommand extends BaseCommand {
         if (!envVar) return chalk.yellow('Not Set');
 
         const trimmedValue = envVar.value.trim();
-        return trimmedValue.startsWith(FRAGMENT_PREFIX)
-            ? chalk.blue(trimmedValue)
-            : chalk.green(`Set: ${trimmedValue.substring(0, 20)}${trimmedValue.length > 20 ? '...' : ''}`);
+
+        if (trimmedValue.startsWith(FRAGMENT_PREFIX)) {
+            return chalk.blue(trimmedValue);
+        }
+
+        const isSensitive =
+            envVar.name.includes('API_KEY') ||
+            envVar.name.includes('SECRET') ||
+            envVar.name.includes('TOKEN') ||
+            /key/i.test(envVar.name);
+        return chalk.green(
+            isSensitive
+                ? 'Set: ********'
+                : `Set: ${trimmedValue.substring(0, 20)}${trimmedValue.length > 20 ? '...' : ''}`
+        );
     }
 
     private async manageEnvVar(variable: { name: string; role: string }): Promise<void> {

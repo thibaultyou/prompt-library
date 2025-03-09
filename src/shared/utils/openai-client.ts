@@ -121,8 +121,8 @@ export class OpenAIClient implements AIClient {
         return modelId
             .replace('gpt-', 'GPT ')
             .replace(/-/g, ' ')
-            .replace(/(\d+)\.(\d+)/, '$1.$2') // Preserve version numbers
-            .replace(/\d{8}/, '') // Remove date suffixes
+            .replace(/(\d+)\.(\d+)/, '$1.$2')
+            .replace(/\d{8}/, '')
             .trim();
     }
 
