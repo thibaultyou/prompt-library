@@ -22,7 +22,11 @@ export default [
     {
         ignores: ['**/.eslintrc.js', 'node_modules/*', 'dist/*']
     },
-    ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended').map((config) => ({
+    ...compat.extends(
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:prettier/recommended'
+    ).map((config) => ({
         ...config,
         files: ['**/*.ts']
     })),
@@ -32,7 +36,7 @@ export default [
             '@typescript-eslint': typescriptEslint,
             import: fixupPluginRules(_import),
             'simple-import-sort': simpleImportSort,
-            'unused-imports': unusedImports
+            'unused-imports': unusedImports,
         },
         languageOptions: {
             globals: {
@@ -44,6 +48,12 @@ export default [
             sourceType: 'module'
         },
         rules: {
+            'indent': 'off',
+            'arrow-body-style': 'off',
+            'prefer-arrow-callback': 'off',
+            'no-multi-spaces': 'off',
+            'no-multiple-empty-lines': 'off',
+            'prettier/prettier': 'error',
             '@typescript-eslint/interface-name-prefix': 'off',
             '@typescript-eslint/explicit-function-return-type': 'error',
             '@typescript-eslint/explicit-module-boundary-types': 'off',
@@ -93,11 +103,11 @@ export default [
                 {
                     blankLine: 'always',
                     prev: '*',
-                    next: ['if', 'try', 'for', 'class', 'function', 'export']
+                    next: ['if', 'try', 'for', 'class', 'function']
                 },
                 {
                     blankLine: 'always',
-                    prev: ['if', 'try', 'class', 'function', 'export'],
+                    prev: ['if', 'try', 'class', 'function'],
                     next: '*'
                 },
                 {

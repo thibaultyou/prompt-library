@@ -1,11 +1,8 @@
-# 🧠 Prompt Library
+# 🧠 Prompt Library CLI
 
 <div align="center">
 
   <p>
-    <a href="https://github.com/thibaultyou/prompt-library/releases">
-      <img src="https://img.shields.io/github/package-json/v/thibaultyou/prompt-library" alt="Version">
-    </a>
     <a href="https://github.com/thibaultyou/prompt-library/blob/main/LICENSE.md">
       <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
     </a>
@@ -16,9 +13,13 @@
 
 </div>
 
-> 🚧 **Project Under Development** - Evolving project, expect changes. Feedback welcome!
+> 🚧 **Work in Progress**  
+> This tool was recently refactored to use NestJS. Interactive menus are generally functional, but non-interactive commands need more testing and may be unstable. Comprehensive tests are still in progress. Use with caution and feel free to report any issues!
+---
 
-**Prompt Library** is your personal collection of AI agent prompts that transforms the way you interact with AI models. Store, organize, and execute sophisticated prompts through an intuitive CLI - supporting both Claude (Anthropic) and GPT (OpenAI) models.
+**Prompt Library CLI** is your personal, local-first toolkit for managing and executing sophisticated AI prompts. Store, organize, version control, and run prompts for **Claude (Anthropic)** and **GPT (OpenAI)** models directly from your terminal.
+
+Treat AI prompts as **reusable mini-applications** that transform AI models into specialized agents.
 
 ## 📚 Table of Contents
 
@@ -29,26 +30,21 @@
   - [Key Features](#key-features)
 - [⚡ Quick Start](#-quick-start)
 - [🛠️ How It Works](#-how-it-works)
+  - [Recommended Workflow (CLI-First)](#recommended-workflow-cli-first)
+  - [Alternative Workflow (Git-Based)](#alternative-workflow-git-based)
 - [🖥️ CLI Usage](#-cli-usage)
-  - [Command Overview](#command-overview)
-  - [Global Options](#global-options)
-  - [🔄 Switch AI Models](#-switch-ai-models)
-  - [🚀 Execute Prompts](#-execute-prompts)
-  - [🔎 Managing Prompts](#-managing-prompts)
-    - [Executing Prompts with Files](#executing-prompts-with-files)
-    - [Working with Fragments](#working-with-fragments)
-    - [Sync Options](#sync-options)
-    - [Environment Management](#environment-management)
+  - [Main Commands](#main-commands)
+  - [Common Tasks](#common-tasks)
 - [📂 Prompt Showcase](#-prompt-showcase)
   - [Your AI Agent Collection](#your-ai-agent-collection)
 - [🚀 Getting Started](#-getting-started)
-  - [Step 1: Set Up Your Repository](#step-1-set-up-your-repository)
-  - [Step 2: Configure API Access](#step-2-configure-api-access)
-  - [Step 3: Install and Run CLI](#step-3-install-and-run-cli)
-  - [Step 4: For GitHub Actions (Optional)](#step-4-for-github-actions-optional)
+  - [Step 1: Installation](#step-1-installation)
+  - [Step 2: Initial Setup](#step-2-initial-setup)
+  - [Step 3: Configure AI Provider & API Key](#step-3-configure-ai-provider--api-key)
+  - [Step 4: Start Using!](#step-4-start-using)
 - [🧩 Prompt Composition with Fragments](#-prompt-composition-with-fragments)
-  - [Creating Fragments](#creating-fragments)
-- [⚙️ Customizing Metadata Generation](#-customizing-metadata-generation)
+  - [Using Fragments](#using-fragments)
+- [⚙️ Metadata Generation](#-metadata-generation)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 
@@ -56,268 +52,328 @@
 
 ## 🎯 Purpose & Features
 
-Treat AI prompts as **reusable mini-applications** that transform AI models into specialized agents. This approach promotes:
+This CLI promotes a structured approach to prompt engineering:
 
-- **Modularity**: Compose complex prompts from reusable components
-- **Reusability**: Apply successful prompts across multiple projects
-- **Shareability**: Exchange proven prompts with your team
-
-In today's rapidly evolving AI landscape, maintaining a personal prompt library is becoming essential for individuals and organizations alike.
+-   **Modularity**: Build complex interactions using reusable prompt fragments.
+-   **Organization**: Categorize prompts with rich, automatically generated metadata.
+-   **Version Control**: Manage your prompt library using Git, locally or with a remote.
+-   **Reusability**: Apply successful prompts across different projects and contexts.
+-   **Execution**: Run prompts interactively or non-interactively with variable support.
+-   **Shareability**: Easily share your prompt library via Git.
 
 ### Key Features
 
-✅ **Organized Prompt Storage** - Categorized structure with rich metadata  
-✅ **Multi-Model Support** - Works with both Claude and GPT family models  
-✅ **Intelligent CLI** - Interactive prompt execution with variable support  
-✅ **Fragment System** - Build prompts from reusable components  
-✅ **Automatic Metadata** - GitHub Actions maintain documentation  
-✅ **Dev-Friendly** - TypeScript codebase with comprehensive testing
+✅ **Organized Local Storage** - Your prompts live in `~/.prompt-library` (or project dir in dev).
+✅ **Git Integration** - Optional syncing with your own remote repository.
+✅ **Multi-Model Support** - Configure and switch between Anthropic & OpenAI models.
+✅ **Intelligent CLI** - Interactive menus and powerful command-line options.
+✅ **Fragment System** - Compose prompts from reusable text snippets.
+✅ **Variable Management** - Define and manage global or prompt-specific variables.
+✅ **AI-Powered Metadata** - Automatically analyze prompts to generate descriptions, tags, etc. (optional).
 
 ## ⚡ Quick Start
 
 ```bash
-# Clone repository
+# 1. Fork the repository on GitHub first, then clone your fork
 git clone https://github.com/YOUR_USERNAME/prompt-library.git
 
-# Install dependencies
+# 2. Install dependencies
 cd prompt-library && npm install
 
-# Build and install CLI globally
-npm run build && npm install -g .
+# 3. Run in Development Mode (uses current directory for prompts)
+npm run dev
 
-# Launch interactive prompt menu
-prompt-library-cli
+# --- OR ---
+
+# 3. Build and Install Globally (uses ~/.prompt-library)
+npm run build
+npm install -g .
+prompt-library-cli menu # Start interactive menu
+
+# 4. Initial Setup (IMPORTANT!)
+# Run this after first launch to initialize your local library structure
+prompt-library-cli setup
 ```
 
 <details>
 <summary>📋 Complete setup guide</summary>
 <p>
 
-See detailed instructions in [Getting Started](#-getting-started).
+See detailed instructions in [Getting Started](#-getting-started). You'll need to configure your AI provider API key using `prompt-library-cli model`.
 </p>
 </details>
 
 ## 🛠️ How It Works
 
-1. **Create Prompts**: Write markdown prompt files in the `prompts` directory
-2. **Generate Metadata**: Commit to trigger automatic metadata generation
-3. **Organize Automatically**: README files update with categorized prompt listings
-4. **Execute via CLI**: Run prompts through the interactive CLI or command line
+The CLI primarily operates locally, managing prompts and fragments in your designated library directory (`~/.prompt-library/repository` by default).
+
+### Recommended Workflow (CLI-First)
+
+1.  **Create Prompts**: Use `prompt-library-cli prompt create` interactively. The CLI guides you through title, category, description, and content. AI analysis (optional, enabled by default) generates metadata (`metadata.yml`).
+2.  **Create Fragments**: Use `prompt-library-cli fragment create` to build reusable text snippets.
+3.  **Manage & Execute**: Use commands like `prompt list`, `prompt search`, `execute`, `env`, `model`, `config` to manage and run your library.
+4.  **Sync (Optional)**: Use `prompt-library-cli sync` to push your local library changes to your configured remote Git repository.
+
+### Alternative Workflow (Git-Based)
+
+1.  **Manually Create Files**: Create `prompt.md` and `metadata.yml` files directly within category subdirectories inside `~/.prompt-library/repository/prompts`.
+2.  **Sync Database**: Run `prompt-library-cli sync` (or the specific DB sync part if separated later) to update the local database with your filesystem changes.
+3.  **Execute via CLI**: Run prompts using `prompt-library-cli execute`.
+4.  **Git Push**: Manually commit and push changes using standard Git commands if you have a remote configured.
 
 <details>
-<summary>💡 Pro Tip: Working with GitHub Actions</summary>
+<summary>💡 Using GitHub Actions for Metadata (Optional)</summary>
 <p>
 
-Create and commit `prompt.md` files individually to allow GitHub Actions to generate corresponding `metadata.yml` files. Both files are required for CLI prompt usage.
+If you maintain your prompt library in a dedicated GitHub repository (using the `sync` command or manually), you can enable GitHub Actions for automatic metadata updates:
+
+1.  Fork this repository or use your own containing the library structure.
+2.  Add your AI provider API key (`ANTHROPIC_API_KEY` or `OPENAI_API_KEY`) to your GitHub repository secrets.
+3.  When you push commits containing new or modified `prompt.md` files, the included GitHub Action (`.github/workflows/update_views.yml`) can:
+    *   Analyze the prompt content using AI.
+    *   Generate or update the corresponding `metadata.yml` file.
+    *   Update the main `README.md` showcase section.
+    *   Commit these changes back to your repository.
+
+**Note:** The CLI workflow (`prompt create`, `prompt update`) handles metadata generation locally and does *not* require GitHub Actions. Actions are only needed if you prefer a Git-centric workflow for metadata.
 </p>
 </details>
 
 ## 🖥️ CLI Usage
 
-The CLI offers a complete prompt management and execution solution:
+The CLI provides comprehensive commands for managing your prompt library.
 
-### Command Overview
-
-| Command | Description | Example |
-|---------|-------------|---------|
-| `prompt-library-cli` | Interactive menu | `prompt-library-cli` |
-| `model` | Configure AI model settings | `prompt-library-cli model` |
-| `prompts` | List and manage prompts | `prompt-library-cli prompts --list` |
-| `execute` | Run a specific prompt | `prompt-library-cli execute -p 74` |
-| `fragments` | List and view fragments | `prompt-library-cli fragments` |
-| `config` | Manage CLI configuration | `prompt-library-cli config` |
-| `env` | Manage environment variables | `prompt-library-cli env` |
-| `sync` | Update your library | `prompt-library-cli sync` |
-| `settings` | Manage CLI settings | `prompt-library-cli settings` |
-| `flush` | Reset all data (preserves config) | `prompt-library-cli flush` |
-
-### Global Options
+### Main Commands
 
 ```bash
 Usage: prompt-library-cli [options] [command]
 
-Options:
-  -V, --version               Output the version number
-  -e, --execute <id_or_name>  Execute a prompt by ID or name
-  -l, --list                  List all available prompts
-  -s, --search <keyword>      Search prompts by keyword
-  -h, --help                  Display help for command
+Commands:
+  menu                   (Default) Start the main interactive menu.
+  execute [options]      Execute a specific prompt by ID or name, or via local files.
+  prompt [subcommand]    Manage and browse prompts (list, search, create, update, delete, etc.).
+  fragment [subcommand]  Manage reusable prompt fragments (list, create, update, delete, etc.).
+  env [subcommand]       Manage global and prompt-specific environment variables (list, create, update, delete, read).
+  model [options]        Configure AI model provider, model, and API key.
+  config [options]       Manage CLI configuration settings.
+  repository [options]   Manage the connection to your prompt library repository.
+  sync [options]         Synchronize your local library with a remote Git repository.
+  setup                  Initialize or configure the prompt library repository location.
+  flush                  ⚠️ Reset all application data (prompts, fragments, history). Preserves config.
+  generate-docs          Manually regenerate README files based on current prompts.
+  help [command]         Display help for command.
 ```
 
-### 🔄 Switch AI Models
+> **Tip**: Run `prompt-library-cli <command> --help` for detailed options on each command (e.g., `prompt-library-cli prompt --help`, `prompt-library-cli prompt create --help`).
+
+### Common Tasks
 
 ```bash
+# Start interactive menu (recommended for exploration)
+prompt-library-cli menu
+# or just:
+prompt-library-cli
+
+# Initial setup
+prompt-library-cli setup
+
+# Configure AI Model (API Key, Provider, Model)
 prompt-library-cli model
-```
 
-The streamlined model menu lets you:
-- 🤖 **Change AI provider**: Switch between Anthropic (Claude) or OpenAI (GPT)
-- 🧠 **Change model**: Select from available models for your provider
-- 🔋 **Change max tokens**: Adjust token limits for your responses
+# Execute a prompt interactively (will prompt for variables)
+prompt-library-cli execute -p <prompt_id_or_name>
 
-### 🚀 Execute Prompts
+# Execute non-interactively with variables
+prompt-library-cli execute -p <id> --variable_one "value1" --another_var "value2"
 
-```bash
-# List available prompts (to see IDs and names)
-prompt-library-cli prompts --list
+# Execute with file content as input for a variable
+prompt-library-cli execute -p <id> -fi input_data=./path/to/file.txt
 
-# Execute using prompt ID (most reliable)
-prompt-library-cli execute -p 80  # ID for Software Architect Visionary
+# List all prompts
+prompt-library-cli prompt list # or 'prompt ls'
 
-# Execute using prompt name (partial matches work too)
-prompt-library-cli execute -p "git_commit_message_agent"
-prompt-library-cli execute -p "commit message"
+# Search for prompts
+prompt-library-cli prompt search "data analysis"
 
-# With variables
-prompt-library-cli execute -p 74 --description "Add user authentication" --files "auth.ts,users.ts"
-# Or by name
-prompt-library-cli execute -p "commit" --description "Add user authentication" --files "auth.ts,users.ts"
+# Create a new prompt (interactive)
+prompt-library-cli prompt create
 
-# Use file inputs
-prompt-library-cli execute -p 81 -fi code=./my-code.ts
+# Update a prompt (interactive)
+prompt-library-cli prompt update
 
-# Preview mode
-prompt-library-cli execute -p "translator" -i
-```
+# Delete a prompt (interactive, will ask for confirmation)
+prompt-library-cli prompt delete
 
-> **Tip**: While both prompt IDs and names are supported, using IDs is more reliable. Directory names follow the pattern `{function}_{domain}_agent` and are matched using fuzzy search.
+# List all fragments
+prompt-library-cli fragment list
 
-### 🔎 Managing Prompts
+# Create a new fragment (interactive)
+prompt-library-cli fragment create
 
-```bash
-# List all prompts with their IDs and categories
-prompt-library-cli prompts --list
+# List environment variables
+prompt-library-cli env list
 
-# List all prompt categories
-prompt-library-cli prompts --categories
+# Set an environment variable (will create or update)
+prompt-library-cli env update --key-value MY_API_URL=https://example.com/api # or 'env set ...'
 
-# Search prompts by keyword (title, description, category)
-prompt-library-cli prompts --search "git"
+# Set an environment variable to reference a fragment
+prompt-library-cli env update --fragment COMMON_HEADER=templates/email_header
 
-# Show favorite prompts
-prompt-library-cli prompts --favorites
-
-# Show recently executed prompts
-prompt-library-cli prompts --recent
+# Sync local changes with your remote Git repository (if configured)
+prompt-library-cli sync
 ```
 
 <details>
 <summary>📚 Advanced CLI Usage</summary>
-<p>
-
-#### Executing Prompts with Files
 
 ```bash
-# Execute a prompt with file input
-prompt-library-cli execute -p "translator" -fi input=./document.txt
+# --- Prompts ---
+# List prompts sorted by ID
+prompt-library-cli prompt list --id
+# List only prompt categories
+prompt-library-cli prompt list --categories
+# View prompt details non-interactively
+prompt-library-cli prompt read --prompt <id>
+# Create prompt non-interactively from file
+prompt-library-cli prompt create --title "My Agent" --category "coding" --description "Does things" --file ./prompt.md --directory my_agent --no-analyze
+# Update prompt non-interactively with new content string
+prompt-library-cli prompt update --prompt <id> --content "New prompt text..." --no-analyze
+# Delete prompt non-interactively (force skip confirmation)
+prompt-library-cli prompt delete --prompt <id> --force
+# Refresh metadata for a specific prompt
+prompt-library-cli prompt refresh-metadata --prompt <id>
+# Refresh metadata for ALL prompts
+prompt-library-cli prompt refresh-metadata --all
+# List recent prompts (e.g., last 5)
+prompt-library-cli prompt recent --limit 5
+# List favorite prompts
+prompt-library-cli prompt favorites
 
+# --- Fragments ---
+# List fragments non-interactively
+prompt-library-cli fragment list # or 'fragment ls'
+# Create fragment non-interactively
+prompt-library-cli fragment create --category common --name header --content "# Header"
+# Update fragment non-interactively from file
+prompt-library-cli fragment update --category common --name header --file ./new_header.md
+# Delete fragment non-interactively (force skip confirmation)
+prompt-library-cli fragment delete --category common --name header --force
+
+# --- Environment Variables ---
+# Create/Update variable non-interactively (update is alias for set)
+prompt-library-cli env update --key-value MY_VAR=abc
+prompt-library-cli env update --fragment CONTEXT=common/project_details
+# Delete custom variable non-interactively
+prompt-library-cli env delete --name MY_VAR --force # Only deletes custom vars
+# Read variable details non-interactively
+prompt-library-cli env read --name MY_VAR
+# Read variable value non-interactively
+prompt-library-cli env read --name MY_VAR --value
+# Read variable sources non-interactively (show prompt IDs)
+prompt-library-cli env read --name MY_VAR --sources
+# Read variable sources non-interactively (show prompt titles)
+prompt-library-cli env read --name MY_VAR --sources --show-titles
+# Get list output as JSON
+prompt-library-cli env list --json
+
+# --- Execution ---
+# Inspect prompt variables without running
+prompt-library-cli execute -p <id> --inspect # or -i
+# Execute with JSON output (includes full response, timing, etc.)
+prompt-library-cli execute -p <id> --json
 # Execute with multiple file inputs
-prompt-library-cli execute -p "code_review" -fi code=./src/app.js -fi tests=./tests/app.test.js
+prompt-library-cli execute -p <id> -fi input1=./file1.txt -fi input2=./file2.log
 
-# Execute with both file inputs and regular variables
-prompt-library-cli execute -p "document_generator" -fi template=./template.md --title "Project Overview" --author "Team"
+# --- Configuration ---
+# View specific config key non-interactively
+prompt-library-cli config --key MODEL_PROVIDER
+# Set config key non-interactively
+prompt-library-cli config --key OPENAI_MODEL --value gpt-4o
+# Reset config to defaults non-interactively
+prompt-library-cli config --reset
+# View config as JSON
+prompt-library-cli config --json
+
+# --- Repository & Sync ---
+# View repository status details
+prompt-library-cli repository # (Select 'View Status' or 'Change Branch' interactively)
+# List pending local changes
+prompt-library-cli sync --list
+# Push pending local changes (requires commit message interactively or default non-interactively)
+prompt-library-cli sync --push
+# Push to a specific branch
+prompt-library-cli sync --push --branch feature/my-prompts
+# Reset (discard) all local changes non-interactively
+prompt-library-cli sync --reset --force
 ```
 
-#### Working with Fragments
-
-```bash
-# List all available fragments
-prompt-library-cli fragments
-
-# The interactive menu lets you browse and view fragment contents
-```
-
-#### Sync Options
-
-```bash
-# Fetch latest prompts from the default repository
-prompt-library-cli sync
-
-# Specify a custom repository URL
-prompt-library-cli sync -u https://github.com/your-username/your-repo.git
-
-# Force sync without confirmation
-prompt-library-cli sync --force
-```
-
-#### Environment Management
-
-```bash
-# Set environment variables for API keys
-prompt-library-cli env
-
-# The interactive menu guides you through setting API keys and other environment variables
-```
-
-> **Note**: For security, your API keys are stored securely and never logged or displayed in full.
-
-</p>
 </details>
 
 ## 📂 Prompt Showcase
 
 <div align="center">
-  
+
 ### Your AI Agent Collection
-*Create custom agents for any task with our pre-built prompt templates*
+
+*A starting point for building specialized AI agents.*
 
 </div>
 
-> **Note:** These prompts are fully customizable examples. Build your own collection based on your unique needs.
+> **Note:** These are example prompts included with the library. Create your own collection tailored to your needs using `prompt create`!
 <details>
 <summary><strong>🔹 Coding</strong></summary>
 
-| Prompt | Description |
-|--------|-------------|
-| [Git Branch Name Generator](prompts/git_branch_name_generator/README.md) | Generates optimized git branch names based on project context and user requirements |
-| [Git Commit Message Agent](prompts/git_commit_message_agent/README.md) | Generates precise and informative git commit messages following Conventional Commits specification |
-| [GitHub Issue Creator](prompts/github_issue_creator_agent/README.md) | Creates comprehensive and actionable GitHub issues based on provided project information |
-| [Software Architect Code Reviewer](prompts/software_architect_code_reviewer/README.md) | Generates comprehensive pull requests with architectural analysis and optimization suggestions |
-| [Software Architect Specification Creator](prompts/software_architect_spec_creator/README.md) | Creates comprehensive software specification documents based on user requirements |
-| [Software Architect Visionary](prompts/software_architect_agent/README.md) | Analyzes user requirements and creates comprehensive software specification documents |
-| [Software Development Expert Agent](prompts/software_dev_expert_agent/README.md) | Provides expert, adaptive assistance across all aspects of the software development lifecycle. |
+| Prompt                                     | Description                                    |
+| :----------------------------------------- | :--------------------------------------------- |
+| [Git Branch Name Generator](git_branch_name_generator/README.md) | Generates optimized git branch names based on project context and user requirements                       |
+| [Git Commit Message Agent](git_commit_message_agent/README.md) | Generates precise and informative git commit messages following Conventional Commits specification                       |
+| [GitHub Issue Creator](github_issue_creator_agent/README.md) | Creates comprehensive and actionable GitHub issues based on provided project information                       |
+| [Software Architect Code Reviewer](software_architect_code_reviewer/README.md) | Generates comprehensive pull requests with architectural analysis and optimization suggestions                       |
+| [Software Architect Specification Creator](software_architect_spec_creator/README.md) | Creates comprehensive software specification documents based on user requirements                       |
+| [Software Architect Visionary](software_architect_agent/README.md) | Analyzes user requirements and creates comprehensive software specification documents                       |
+| [Software Development Expert Agent](software_dev_expert_agent/README.md) | Provides expert, adaptive assistance across all aspects of the software development lifecycle.                       |
 
 </details>
 <details>
 <summary><strong>🔹 Content Creation</strong></summary>
 
-| Prompt | Description |
-|--------|-------------|
-| [Documentation Specialist Agent](prompts/documentation_specialist_agent/README.md) | Generates revolutionary software documentation using advanced AI techniques and industry best practices |
+| Prompt                                     | Description                                    |
+| :----------------------------------------- | :--------------------------------------------- |
+| [Documentation Specialist Agent](documentation_specialist_agent/README.md) | Generates revolutionary software documentation using advanced AI techniques and industry best practices                       |
 
 </details>
 <details>
 <summary><strong>🔹 Healthcare</strong></summary>
 
-| Prompt | Description |
-|--------|-------------|
-| [Health Optimization Agent](prompts/health_optimization_agent/README.md) | Generates personalized, adaptive health optimization plans based on comprehensive user data analysis |
-| [Psychological Support and Therapy Agent](prompts/psychological_support_agent/README.md) | Provides AI-driven psychological support and therapy through digital platforms |
+| Prompt                                     | Description                                    |
+| :----------------------------------------- | :--------------------------------------------- |
+| [Health Optimization Agent](health_optimization_agent/README.md) | Generates personalized, adaptive health optimization plans based on comprehensive user data analysis                       |
+| [Psychological Support and Therapy Agent](psychological_support_agent/README.md) | Provides AI-driven psychological support and therapy through digital platforms                       |
 
 </details>
 <details>
 <summary><strong>🔹 Problem Solving</strong></summary>
 
-| Prompt | Description |
-|--------|-------------|
-| [Problem Solving AI Agent](prompts/problem_solving_ai_agent/README.md) | Generates expert networks and strategies to solve complex problems and achieve goals |
+| Prompt                                     | Description                                    |
+| :----------------------------------------- | :--------------------------------------------- |
+| [Problem Solving AI Agent](problem_solving_ai_agent/README.md) | Generates expert networks and strategies to solve complex problems and achieve goals                       |
 
 </details>
 <details>
 <summary><strong>🔹 Prompt Engineering</strong></summary>
 
-| Prompt | Description |
-|--------|-------------|
-| [AI Assistant Architect](prompts/ai_assistant_architect/README.md) | Conceptualizes innovative and feasible AI assistant designs for various domains |
-| [Prompt Engineering God](prompts/prompt_engineering_agent/README.md) | Crafts divine-tier prompts to maximize AI potential while adhering to ethical standards |
+| Prompt                                     | Description                                    |
+| :----------------------------------------- | :--------------------------------------------- |
+| [AI Assistant Concept Architect](ai_assistant_architect/README.md) | Conceptualizes innovative, feasible AI assistants addressing real-world challenges                       |
+| [Prompt Engineering God](prompt_engineering_agent/README.md) | Crafts divine-tier prompts to maximize AI potential while adhering to ethical standards                       |
 
 </details>
 <details>
 <summary><strong>🔹 Translation</strong></summary>
 
-| Prompt | Description |
-|--------|-------------|
-| [Universal Translator Agent](prompts/universal_translator_agent/README.md) | Translates between any languages, modes of expression, or conceptual frameworks |
+| Prompt                                     | Description                                    |
+| :----------------------------------------- | :--------------------------------------------- |
+| [Universal Translator Agent](universal_translator_agent/README.md) | Translates between any languages, modes of expression, or conceptual frameworks                       |
 
 </details>
 
@@ -327,125 +383,95 @@ prompt-library-cli env
 
 ## 🚀 Getting Started
 
-### Step 1: Set Up Your Repository
+### Step 1: Installation
 
 ```bash
-# Fork and clone the repository
-git clone https://github.com/YOUR_USERNAME/prompt-library.git
+# Fork the repository on GitHub first (optional, for backup/sharing)
+# Clone the repository (or your fork)
+git clone https://github.com/thibaultyou/prompt-library.git
 cd prompt-library
 
 # Install dependencies
 npm install
-```
 
-### Step 2: Configure API Access
-
-Choose your preferred AI provider:
-
-<details>
-<summary>🔵 <strong>Anthropic Claude</strong></summary>
-<p>
-
-1. Get an API key from the [Anthropic Console](https://console.anthropic.com/)
-2. Set the environment variable: `export ANTHROPIC_API_KEY=your_key_here`
-</p>
-</details>
-
-<details>
-<summary>🟢 <strong>OpenAI GPT</strong></summary>
-<p>
-
-1. Get an API key from the [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Set the environment variable: `export OPENAI_API_KEY=your_key_here`
-</p>
-</details>
-
-### Step 3: Install and Run CLI
-
-```bash
-# Build TypeScript project
+# Build the project
 npm run build
 
-# Install CLI globally
+# Install the CLI globally
 npm install -g .
 
-# Launch interactive CLI
-prompt-library-cli
+# Verify installation
+prompt-library-cli --version
+```
 
-# Configure your AI model
+### Step 2: Initial Setup
+
+Run the setup command. This creates the necessary directories (usually in `~/.prompt-library`) where your prompts, fragments, database, and config will be stored locally.
+
+```bash
+prompt-library-cli setup
+```
+
+You'll be asked if you want to clone a remote repository, use an existing local folder, or create a default empty structure.
+
+### Step 3: Configure AI Provider & API Key
+
+Configure the AI model you want to use. The CLI will guide you through selecting a provider (Anthropic/OpenAI) and entering your API key.
+
+```bash
 prompt-library-cli model
 ```
 
-> **Note**: On first run, you'll need to configure which AI model to use. The CLI will guide you through selecting a provider (Anthropic/OpenAI), model, and token settings.
+<details>
+<summary>🔵/🟢 Where to get API Keys</summary>
+<p>
 
-### Step 4: For GitHub Actions (Optional)
+-   **Anthropic Claude**: Get an API key from the [Anthropic Console](https://console.anthropic.com/).
+-   **OpenAI GPT**: Get an API key from the [OpenAI Platform](https://platform.openai.com/api-keys).
 
-If you want automatic README generation, add your API key to repository secrets:
-- Go to your GitHub repository → Settings → Secrets → New repository secret
-- Add `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`
+The key will be stored securely in the CLI's configuration file (`~/.prompt-library/.config/config.json`).
+</p>
+</details>
+
+### Step 4: Start Using!
+
+You're ready to go!
+
+```bash
+# Start the interactive menu
+prompt-library-cli
+
+# Or use direct commands
+prompt-library-cli prompt list
+prompt-library-cli prompt create
+prompt-library-cli execute -p <some_prompt_id>
+```
 
 ## 🧩 Prompt Composition with Fragments
 
-Fragments are modular, reusable prompt components that help you build complex prompts efficiently:
+Fragments are reusable text snippets stored in the `fragments/` directory, organized by category (e.g., `fragments/common/disclaimer.md`).
 
-```markdown
-# Example prompt using fragments
-I need you to help me with {{TASK_TYPE}}.
+### Using Fragments
 
-{{BEHAVIOR_GUIDELINES}}
+1.  **Create**: Use `prompt-library-cli fragment create` or manually create `.md` files.
+2.  **Reference**: Include fragments in your `prompt.md` files using `{{VARIABLE_NAME}}` syntax. Set the corresponding variable's value to `Fragment: category/name` using `prompt-library-cli env update --fragment VARIABLE_NAME=category/name`.
+3.  **Manage**: Use `prompt-library-cli fragment` commands (`list`, `search`, `update`, `delete`).
 
-Context:
-{{USER_CONTEXT}}
+> **Examples**: Check the included `fragments/prompt_engineering/` directory for examples like behavior guidelines, formatting instructions, and safety rules.
 
-Now, please {{SPECIFIC_INSTRUCTION}}.
-```
+## ⚙️ Metadata Generation
 
-### Creating Fragments
+The CLI uses AI to help generate metadata (`metadata.yml`) when you create or update prompts using `prompt create` or `prompt update`.
 
-1. Add `.md` files to the `fragments/` directory (categorized by type)
-2. Reference them in your prompt files with `{{FRAGMENT_NAME}}`
-3. Browse and manage fragments with `prompt-library-cli fragments`
-
-<details>
-<summary>🔍 <strong>Fragment Examples</strong></summary>
-<p>
-
-Check the [prompt_engineering](/fragments/prompt_engineering/) directory for example fragments including:
-- Behavior attributes
-- Formatting guidelines 
-- Safety guidelines
-- Output templates
-
-</p>
-</details>
-
-## ⚙️ Customizing Metadata Generation
-
-The system automatically analyzes prompts and generates metadata. To customize this process:
-
-1. Modify the system prompt at `src/system_prompts/prompt_analysis_agent/prompt.md`
-2. Test your changes with `npm run update-metadata`
-3. Commit to trigger automatic updates
-
-<details>
-<summary>⚠️ <strong>Important Notes</strong></summary>
-<p>
-
-Changes to the metadata system affect all future prompt analyses. Test thoroughly before committing.
-</p>
-</details>
+-   **Automatic Analysis**: By default (`--analyze` flag is true), the CLI sends your prompt content to the configured AI model along with a system prompt (`system_prompts/prompt_analysis_agent/prompt.md`) to generate the title, description, tags, variables, etc.
+-   **Skip Analysis**: Use the `--no-analyze` flag during create/update to skip the AI analysis and provide metadata manually or rely on basic extraction.
+-   **Refresh**: Use `prompt-library-cli prompt refresh-metadata` (with `--prompt <id>` or `--all`) to re-analyze existing prompts.
+-   **Customization**: You can modify the system prompt used for analysis by editing `src/system_prompts/prompt_analysis_agent/prompt.md` (requires rebuilding the CLI if installed globally).
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how you can help:
-
-- **Add New Prompts**: Share your best prompt designs
-- **Improve Templates**: Enhance the prompt structure
-- **Fix Bugs**: Help improve the CLI functionality
-- **Add Features**: Extend the system's capabilities
-
-Please submit issues or pull requests through GitHub.
+Contributions are welcome! Please refer to the project's contribution guidelines (if available) or submit issues and pull requests via GitHub.
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE.md) - feel free to use, modify, and distribute as needed.
+This project is licensed under the [MIT License](LICENSE.md).

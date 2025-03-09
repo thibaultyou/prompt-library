@@ -1,49 +1,35 @@
-export interface EnvVariable {
-    id: number;
-    name: string;
-    value: string;
-    scope: 'global' | 'prompt';
-    prompt_id?: number;
-}
+/**
+ * Main index file for the 'shared/types' directory.
+ * This file organizes and re-exports all shared type definitions used across
+ * the application's different layers (Domain, Application, Infrastructure).
+ * Grouping types by their conceptual domain helps maintain clarity and follows
+ * Domain-Driven Design principles.
+ */
 
-export interface CategoryItem {
-    id: string;
-    title: string;
-    primary_category: string;
-    description: string;
-    path: string;
-    subcategories: string[];
-}
+// --- Core Domain Types ---
+// Represents the fundamental entities and value objects of the application.
+export * from './domain';
 
-export interface PromptVariable {
-    name: string;
-    role: string;
-    optional_for_user: boolean;
-    value?: string;
-}
+// --- Command & Operation Types ---
+// Defines the structure of CLI commands, their options, and actions.
+export * from './commands';
 
-export type ApiResult<T> = {
-    success: boolean;
-    data?: T;
-    error?: string;
-};
+// --- Service Interface Types ---
+// Defines interfaces for services, particularly command interfaces used for decoupling.
+export * from './services';
 
-export interface PromptMetadata {
-    id?: string;
-    title: string;
-    primary_category: string;
-    subcategories: string[];
-    directory: string;
-    tags: string | string[];
-    one_line_description: string;
-    description: string;
-    variables: PromptVariable[];
-    content_hash?: string;
-    fragments?: PromptFragment[];
-}
+// --- API Result Types ---
+// Standardized structure for returning results from operations (success/failure).
+export * from './api';
 
-export interface PromptFragment {
-    name: string;
-    category: string;
-    variable?: string;
-}
+// --- Error Types ---
+// Defines custom error structures used within the application.
+export * from './errors';
+
+// --- UI-Related Types ---
+// Defines types specific to the user interface components and interactions.
+export * from './ui';
+
+// --- Infrastructure Types ---
+// Defines types related to the underlying infrastructure, such as file systems and repositories.
+export * from './infrastructure';
