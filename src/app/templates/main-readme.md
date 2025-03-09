@@ -46,6 +46,21 @@ In today's rapidly evolving AI landscape, maintaining a personal prompt library 
 
 ## ⚡ Quick Start
 
+### Option 1: Global Installation (Recommended for Users)
+
+```bash
+# Install CLI globally from npm (coming soon)
+npm install -g prompt-library-cli
+
+# Run setup to create your prompt library
+prompt-library-cli setup
+
+# Launch interactive prompt menu
+prompt-library-cli
+```
+
+### Option 2: Development Installation
+
 ```bash
 # Clone repository
 git clone https://github.com/YOUR_USERNAME/prompt-library.git
@@ -56,8 +71,11 @@ cd prompt-library && npm install
 # Build and install CLI globally
 npm run build && npm install -g .
 
-# Launch interactive prompt menu
-prompt-library-cli
+# Run setup to create your prompt library
+prompt-library-cli setup
+
+# Or run directly from source in development mode
+npm run dev
 ```
 
 <details>
@@ -255,7 +273,35 @@ prompt-library-cli env
 
 ## 🚀 Getting Started
 
-### Step 1: Set Up Your Repository
+### Step 1: Installation and Setup
+
+Choose your preferred installation method:
+
+<details>
+<summary>🏆 <strong>Option 1: Standard Installation (Recommended)</strong></summary>
+<p>
+
+```bash
+# Install CLI globally from npm (coming soon)
+npm install -g prompt-library-cli
+
+# Run setup to create a dedicated prompt library repository
+prompt-library-cli setup
+
+# This will create a repository at ~/.prompt-library/repository
+```
+
+This approach keeps your prompts in a dedicated repository separate from the CLI code, making it easier to:
+- Update the CLI independently from your content
+- Back up your prompts to your own GitHub repository
+- Share your prompt collection with others
+
+</p>
+</details>
+
+<details>
+<summary>💻 <strong>Option 2: Developer Installation</strong></summary>
+<p>
 
 ```bash
 # Fork and clone the repository
@@ -264,7 +310,18 @@ cd prompt-library
 
 # Install dependencies
 npm install
+
+# Build and install globally
+npm run build && npm install -g .
+
+# Run the setup to create your prompt library
+prompt-library-cli setup
 ```
+
+This approach is ideal if you want to customize the CLI or contribute to development.
+
+</p>
+</details>
 
 ### Step 2: Configure API Access
 

@@ -278,3 +278,45 @@ export async function viewPromptDetails(details: PromptMetadata, isExecute = fal
         handleError(error, 'viewing prompt details');
     }
 }
+
+/**
+ * Select a prompt from a list
+ */
+export async function selectPrompt(): Promise<{ id: number; title: string; directory: string } | null> {
+    try {
+        const { select } = await import('@inquirer/prompts');
+        const allPrompts = await allAsync<{ id: number; title: string; directory: string; primary_category: string; one_line_description: string }>(
+            'SELECT id, title, directory, primary_category, one_line_description FROM prompts ORDER BY id'
+        );
+        
+        if (!allPrompts.success || !allPrompts.data || allPrompts.data.length === 0) {
+            console.log(chalk.yellow('No prompts found in the database.'));
+            return null;
+        }
+        
+        // Transform prompts to choices
+        const choices = allPrompts.data.map(prompt => ({
+            name: `${prompt.id.toString().padEnd(4)} | ${prompt.title.padEnd(30)} | ${prompt.primary_category}`,
+            value: prompt,
+            description: prompt.one_line_description
+        }));
+        
+        // Add a Go back option
+        choices.push({
+            name: chalk.red(chalk.bold('Go back')),
+            value: null as any,  // Type cast to avoid TypeScript error
+            description: 'Return to the previous menu'
+        });
+        
+        const selectedPrompt = await select({
+            message: 'Select a prompt:',
+            choices,
+            pageSize: 10
+        });
+        
+        return selectedPrompt;
+    } catch (error) {
+        handleError(error, 'selecting prompt');
+        return null;
+    }
+}

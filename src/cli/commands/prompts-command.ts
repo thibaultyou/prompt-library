@@ -7,6 +7,7 @@ import { ConversationManager } from '../utils/conversation-manager';
 import { getPromptDetails } from '../utils/database';
 import { readEnvVars } from '../utils/env-vars';
 import { listFragments } from '../utils/fragments';
+import { createCommand, editCommand } from './prompt-commands';
 import {
     getPromptCategories,
     getAllPrompts,
@@ -25,7 +26,7 @@ import {
 import { viewPromptDetails } from '../utils/prompts';
 
 type PromptMenuAction = 'all' | 'category' | 'id' | 'back';
-type SelectPromptMenuAction = PromptVariable | 'execute' | 'unset_all' | 'back';
+type SelectPromptMenuAction = PromptVariable | 'execute' | 'unset_all' | 'back' | 'separator';
 
 class PromptCommand extends BaseCommand {
     constructor() {
@@ -36,6 +37,8 @@ class PromptCommand extends BaseCommand {
             .option('-j, --json', 'Output in JSON format (for CI use)')
             .option('-f, --favorites', 'Show favorite prompts')
             .option('-r, --recent', 'Show recently executed prompts')
+            .addCommand(createCommand)
+            .addCommand(editCommand)
             .addHelpText('before', chalk.bold(chalk.cyan('\n📚 Prompt Library - Prompts Management\n')))
             .addHelpText(
                 'after',
@@ -46,6 +49,8 @@ Examples:
   $ prompt-library-cli prompts --categories    Show prompt categories
   $ prompt-library-cli prompts --favorites     Show favorite prompts
   $ prompt-library-cli prompts --recent        Show recently used prompts
+  $ prompt-library-cli prompts create          Create a new prompt
+  $ prompt-library-cli prompts edit 42         Edit prompt with ID 42
 
 Related Commands:
   execute    Run a specific prompt
@@ -266,9 +271,23 @@ Related Commands:
         while (true) {
             try {
                 const action = await this.showMenu<PromptMenuAction>('Select an action:', [
-                    { name: 'View prompts by category', value: 'category' },
-                    { name: 'View all prompts', value: 'all' },
-                    { name: 'View all prompts sorted by ID', value: 'id' }
+                    { 
+                        name: chalk.bold('Browse by category'), 
+                        value: 'category' 
+                    },
+                    { 
+                        name: chalk.bold('Browse all prompts'), 
+                        value: 'all' 
+                    },
+                    { 
+                        name: chalk.bold('Browse by ID'), 
+                        value: 'id' 
+                    },
+                    { 
+                        name: chalk.italic('To run a prompt, use the "Run a prompt" option from the main menu'), 
+                        value: 'back',
+                        disabled: true 
+                    }
                 ]);
                 switch (action) {
                     case 'all':
@@ -412,7 +431,7 @@ Related Commands:
 
                 const action = await this.selectPromptAction(details);
 
-                if (action === 'back') return;
+                if (action === 'back' || action === 'separator') return;
 
                 if (action === 'execute') {
                     await this.executePromptWithAssignment(prompt.id);
@@ -429,20 +448,41 @@ Related Commands:
     }
 
     private async selectPromptAction(details: PromptMetadata): Promise<SelectPromptMenuAction> {
-        const choices: Array<{ name: string; value: SelectPromptMenuAction }> = [];
+        const choices: Array<{ name: string; value: SelectPromptMenuAction, disabled?: boolean }> = [];
+        
+        // Check if all required variables are set
         const allRequiredSet = allRequiredVariablesSet(details);
-
+        
+        // Show execute option if all required vars are set
         if (allRequiredSet) {
-            choices.push({ name: chalk.green(chalk.bold('Execute prompt')), value: 'execute' });
+            choices.push({ 
+                name: chalk.green(chalk.bold('Execute prompt')), 
+                value: 'execute' as SelectPromptMenuAction
+            });
+            
+            choices.push({ 
+                name: chalk.cyan(chalk.bold('Configure variables:')), 
+                value: 'separator' as SelectPromptMenuAction,
+                disabled: true
+            });
+        } else {
+            choices.push({ 
+                name: chalk.yellow(chalk.bold('Configure required variables first:')), 
+                value: 'separator' as SelectPromptMenuAction,
+                disabled: true
+            });
         }
 
+        // Get environment variables
         const envVarsResult = await readEnvVars();
         const envVars = envVarsResult.success ? envVarsResult.data || [] : [];
         choices.push(...formatVariableChoices(details.variables, envVars));
 
+        // Add unset all option
         choices.push({ name: chalk.red('Unset all variables'), value: 'unset_all' });
+        
         return this.showMenu<SelectPromptMenuAction>(
-            `Select an action for prompt "${chalk.cyan(details.title)}":`,
+            `Prompt: "${chalk.cyan(details.title)}"`,
             choices,
             { clearConsole: false }
         );
@@ -619,7 +659,7 @@ Related Commands:
         await this.pressKeyToContinue();
     }
 
-    private async executePromptWithAssignment(promptId: string): Promise<void> {
+    private async executePromptWithAssignment(promptId: string, returnToDetails: boolean = false): Promise<void> {
         try {
             const details = await this.handleApiResult(await getPromptDetails(promptId), 'Fetched prompt details');
 
@@ -659,10 +699,51 @@ Related Commands:
             );
 
             if (result) {
-                await this.continueConversation(conversationManager);
+                if (returnToDetails) {
+                    // Use a simplified conversation manager that returns to prompt details
+                    await this.simplifiedConversation(conversationManager);
+                } else {
+                    // Use the standard conversation manager
+                    await this.continueConversation(conversationManager);
+                }
             }
         } catch (error) {
             this.handleError(error, 'executing prompt');
+        }
+    }
+    
+    /**
+     * A simplified conversation manager that returns to prompt details instead of showing browse options
+     */
+    private async simplifiedConversation(conversationManager: ConversationManager): Promise<void> {
+        while (true) {
+            try {
+                const nextAction = await this.showMenu<'continue' | 'back'>(
+                    'What would you like to do next?',
+                    [
+                        { 
+                            name: chalk.green(chalk.bold('Continue conversation')), 
+                            value: 'continue' 
+                        },
+                        { 
+                            name: chalk.yellow(chalk.bold('Return to prompt details')), 
+                            value: 'back' 
+                        }
+                    ],
+                    { clearConsole: false, includeGoBack: false }
+                );
+
+                if (nextAction === 'back') break;
+
+                const userInput = await this.getMultilineInput(chalk.blue('You: '));
+                await this.handleApiResult(
+                    await conversationManager.continueConversation(userInput),
+                    'Continued conversation'
+                );
+            } catch (error) {
+                this.handleError(error, 'continuing conversation');
+                await this.pressKeyToContinue();
+            }
         }
     }
 
@@ -686,6 +767,44 @@ Related Commands:
                 this.handleError(error, 'continuing conversation');
                 await this.pressKeyToContinue();
             }
+        }
+    }
+    
+    /**
+     * Public method to handle prompt execution with variable editing.
+     * This is called from execute-command.ts to ensure consistent UX.
+     */
+    async handlePromptExecution(promptId: string): Promise<void> {
+        try {
+            // Keep looping until user explicitly returns
+            while (true) {
+                // Load the prompt details
+                const details = await this.handleApiResult(await getPromptDetails(promptId), 'Fetched prompt details');
+                if (!details) return;
+    
+                // Display the prompt details
+                await viewPromptDetails(details);
+    
+                // Check if all required variables are set
+                const allRequiredSet = allRequiredVariablesSet(details);
+                
+                const action = await this.selectPromptAction(details);
+                
+                if (action === 'back' || action === 'separator') return;
+                
+                if (action === 'execute') {
+                    // Execute the prompt but don't return - we'll come back to the prompt details
+                    await this.executePromptWithAssignment(promptId, true);
+                    // Don't return here - continue the loop to show prompt details again
+                } else if (action === 'unset_all') {
+                    await this.unsetAllVariables(promptId);
+                } else if (typeof action !== 'string') {
+                    // Action is a variable
+                    await this.assignVariable(promptId, action);
+                }
+            }
+        } catch (error) {
+            this.handleError(error, 'handling prompt execution');
         }
     }
 }

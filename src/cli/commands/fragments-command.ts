@@ -5,7 +5,7 @@ import { PromptFragment } from '../../shared/types';
 import { formatTitleCase } from '../../shared/utils/string-formatter';
 import { listFragments, viewFragmentContent } from '../utils/fragments';
 
-type FragmentMenuAction = 'all' | 'category' | 'back';
+type FragmentMenuAction = 'all' | 'category' | 'create' | 'edit' | 'back';
 
 class FragmentsCommand extends BaseCommand {
     constructor() {
@@ -17,8 +17,23 @@ class FragmentsCommand extends BaseCommand {
         while (true) {
             try {
                 const action = await this.showMenu<FragmentMenuAction>('Select an action:', [
-                    { name: 'View fragments by category', value: 'category' },
-                    { name: 'View all fragments', value: 'all' }
+                    { 
+                        name: chalk.bold('Browse fragments by category'), 
+                        value: 'category' 
+                    },
+                    { 
+                        name: chalk.bold('View all fragments'), 
+                        value: 'all' 
+                    },
+                    // Future capabilities - commented out until implemented
+                    // { 
+                    //     name: chalk.bold('Create new fragment'), 
+                    //     value: 'create' 
+                    // },
+                    // { 
+                    //     name: chalk.bold('Edit existing fragment'), 
+                    //     value: 'edit' 
+                    // },
                 ]);
 
                 if (action === 'back') {

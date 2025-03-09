@@ -2,6 +2,7 @@ import chalk from 'chalk';
 
 import { getAIClient, AIMessage, AIClient } from './ai-client';
 import { handleError } from '../../cli/utils/errors';
+import { PromptVariable } from '../types';
 
 export function updatePromptWithVariables(content: string, variables: Record<string, string>): string {
     if (content === null || content === undefined) {
@@ -87,4 +88,27 @@ async function processStreamingResponse(client: AIClient, messages: AIMessage[])
         throw error;
     }
     return fullResponse;
+}
+
+// Function to extract variables from prompt content
+export function extractVariablesFromPrompt(content: string): PromptVariable[] {
+    // Regex to find all {{VARIABLE_NAME}} patterns
+    const variableRegex = /\{\{([A-Z0-9_]+)\}\}/g;
+    const variables: PromptVariable[] = [];
+    const found = new Set<string>();
+    
+    let match;
+    while ((match = variableRegex.exec(content)) !== null) {
+        const varName = match[1];
+        if (!found.has(varName)) {
+            found.add(varName);
+            variables.push({
+                name: `{{${varName}}}`,
+                role: `Value for ${varName.toLowerCase().replace(/_/g, ' ')}`,
+                optional_for_user: false
+            });
+        }
+    }
+    
+    return variables;
 }

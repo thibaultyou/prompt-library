@@ -12,10 +12,40 @@ import { ENV_PREFIX, FRAGMENT_PREFIX } from '../constants';
 import { handleApiResult } from '../utils/database';
 import { handleError } from '../utils/errors';
 
+// Define standard paths for the prompt library repository
+export const LIBRARY_HOME_DIR = path.join(os.homedir(), '.prompt-library');
+export const LIBRARY_REPO_DIR = path.join(LIBRARY_HOME_DIR, 'repository');
+export const LIBRARY_PROMPTS_DIR = path.join(LIBRARY_REPO_DIR, 'prompts');
+export const LIBRARY_FRAGMENTS_DIR = path.join(LIBRARY_REPO_DIR, 'fragments');
+
 export class BaseCommand extends Command {
     constructor(name: string, description: string) {
         super(name);
         this.description(description);
+    }
+    
+    /**
+     * Check if the prompt library repository is properly set up
+     */
+    protected async isLibraryRepositorySetup(): Promise<boolean> {
+        try {
+            // Check if the library home directory exists
+            const hasHomeDir = await fs.pathExists(LIBRARY_HOME_DIR);
+            if (!hasHomeDir) return false;
+            
+            // Check if it's a git repository
+            const hasGitDir = await fs.pathExists(path.join(LIBRARY_REPO_DIR, '.git'));
+            if (!hasGitDir) return false;
+            
+            // Check for basic structure (prompts and fragments directories)
+            const hasPromptsDir = await fs.pathExists(LIBRARY_PROMPTS_DIR);
+            const hasFragmentsDir = await fs.pathExists(LIBRARY_FRAGMENTS_DIR);
+            
+            return hasPromptsDir && hasFragmentsDir;
+        } catch (error) {
+            this.handleError(error, 'checking library repository setup');
+            return false;
+        }
     }
 
     action(fn: (...args: any[]) => Promise<void> | void): this {

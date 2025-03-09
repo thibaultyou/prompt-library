@@ -1,4 +1,4 @@
-import { select } from '@inquirer/prompts';
+import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Spinner } from 'cli-spinner';
 
@@ -89,4 +89,65 @@ export function truncateString(str: string, maxLength: number = 50): string {
 
     if (str.length <= maxLength) return str;
     return str.substring(0, maxLength - 3) + '...';
+}
+
+/**
+ * Create a spinner with the given message
+ */
+export function showSpinner(message: string): Spinner & { succeed: Function; fail: Function } {
+    const spinner = new Spinner(`${message} %s`);
+    spinner.setSpinnerString('|/-\\');
+    spinner.start();
+    
+    // Add convenience methods to match other spinner libraries
+    (spinner as any).succeed = function(text?: string) {
+        this.stop(true);
+        console.log(chalk.green('✓') + ' ' + (text || message));
+    };
+    
+    (spinner as any).fail = function(text?: string) {
+        this.stop(true);
+        console.log(chalk.red('✗') + ' ' + (text || message));
+    };
+    
+    return spinner as Spinner & { succeed: Function; fail: Function };
+}
+
+/**
+ * Get input from the user
+ */
+export async function getInput(message: string, defaultValue?: string): Promise<string> {
+    return input({
+        message,
+        default: defaultValue
+    });
+}
+
+/**
+ * Get multiline input from the user
+ */
+export async function getMultilineInput(initialValue?: string): Promise<string> {
+    console.log(chalk.yellow('Enter/paste your content. Press Ctrl+D (Unix) or Ctrl+Z (Windows) followed by Enter to finish:'));
+    
+    if (initialValue) {
+        console.log(chalk.dim('\nCurrent content:'));
+        console.log(initialValue);
+        console.log(chalk.cyan('\nNew content:'));
+    }
+    
+    return new Promise((resolve) => {
+        let content = '';
+        
+        process.stdin.setRawMode!(false);
+        process.stdin.resume();
+        process.stdin.on('data', (chunk) => {
+            content += chunk;
+        });
+        
+        process.stdin.on('end', () => {
+            process.stdin.setRawMode!(true);
+            process.stdin.resume();
+            resolve(content.trim());
+        });
+    });
 }

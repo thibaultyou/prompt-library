@@ -145,6 +145,13 @@ export async function initDatabase(): Promise<ApiResult<void>> {
                 added_time DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (prompt_id) REFERENCES prompts (id),
                 UNIQUE(prompt_id)
+            )`,
+            `CREATE TABLE IF NOT EXISTS pending_changes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                directory TEXT NOT NULL,
+                change_type TEXT NOT NULL,
+                title TEXT,
+                timestamp INTEGER NOT NULL
             )`
         ];
 
@@ -192,6 +199,27 @@ export async function fetchCategories(): Promise<ApiResult<Record<string, Catego
         });
         return { success: true, data: categorizedPrompts };
     });
+}
+
+// Function to get prompt by ID
+export async function getPromptById(id: number): Promise<PromptMetadata | null> {
+    const result = await getAsync<PromptMetadata>('SELECT * FROM prompts WHERE id = ?', [id]);
+    
+    if (!result.success || !result.data) {
+        return null;
+    }
+    
+    return result.data;
+}
+
+export async function listPromptDirectories(): Promise<string[]> {
+    const result = await allAsync<{directory: string}>('SELECT directory FROM prompts');
+    
+    if (!result.success || !result.data) {
+        return [];
+    }
+    
+    return result.data.map(item => item.directory);
 }
 
 export async function getPromptDetails(
@@ -318,7 +346,7 @@ export async function getFavoritePrompts(): Promise<ApiResult<any[]>> {
 export async function syncPromptsWithDatabase(): Promise<ApiResult<void>> {
     try {
         const promptDirs = await readDirectory(cliConfig.PROMPTS_DIR);
-        logger.info(`Found ${promptDirs.length} items in prompts directory:`, promptDirs);
+        logger.info(`Found ${promptDirs.length} items in prompts directory`);
 
         await runAsync('DELETE FROM prompts', []);
         await runAsync('DELETE FROM subcategories', []);
@@ -328,9 +356,6 @@ export async function syncPromptsWithDatabase(): Promise<ApiResult<void>> {
         for (const dir of promptDirs) {
             const promptPath = path.join(cliConfig.PROMPTS_DIR, dir, commonConfig.PROMPT_FILE_NAME);
             const metadataPath = path.join(cliConfig.PROMPTS_DIR, dir, commonConfig.METADATA_FILE_NAME);
-            logger.info(`Checking prompt: ${dir}`);
-            logger.info(`Prompt file exists: ${await fileExists(promptPath)}`);
-            logger.info(`Metadata file exists: ${await fileExists(metadataPath)}`);
 
             if ((await fileExists(promptPath)) && (await fileExists(metadataPath))) {
                 const promptContent = await readFileContent(promptPath);
@@ -355,6 +380,69 @@ export async function syncPromptsWithDatabase(): Promise<ApiResult<void>> {
     } catch (error) {
         handleError(error, 'syncing prompts with database');
         return { success: false, error: 'Failed to sync prompts with database' };
+    }
+}
+
+/**
+ * Sync a specific prompt with the database without affecting other prompts
+ * For use when creating or editing a single prompt
+ */
+export async function syncSpecificPromptWithDatabase(directoryName: string): Promise<ApiResult<void>> {
+    try {
+        const promptPath = path.join(cliConfig.PROMPTS_DIR, directoryName, commonConfig.PROMPT_FILE_NAME);
+        const metadataPath = path.join(cliConfig.PROMPTS_DIR, directoryName, commonConfig.METADATA_FILE_NAME);
+        
+        logger.info(`Syncing specific prompt: ${directoryName}`);
+        
+        if (!(await fileExists(promptPath)) || !(await fileExists(metadataPath))) {
+            return { 
+                success: false, 
+                error: `Missing prompt or metadata file for ${directoryName}` 
+            };
+        }
+        
+        // Delete existing prompt if it exists
+        const existingPrompt = await getAsync<{id: number}>(
+            'SELECT id FROM prompts WHERE directory = ?', 
+            [directoryName]
+        );
+        
+        if (existingPrompt.success && existingPrompt.data) {
+            const promptId = existingPrompt.data.id;
+            
+            // Delete related data
+            await runAsync('DELETE FROM subcategories WHERE prompt_id = ?', [promptId]);
+            await runAsync('DELETE FROM variables WHERE prompt_id = ?', [promptId]);
+            await runAsync('DELETE FROM fragments WHERE prompt_id = ?', [promptId]);
+            await runAsync('DELETE FROM prompts WHERE id = ?', [promptId]);
+            
+            logger.info(`Removed existing prompt data for ${directoryName}`);
+        }
+        
+        // Add the prompt
+        const promptContent = await readFileContent(promptPath);
+        const metadataContent = await readFileContent(metadataPath);
+        
+        try {
+            const metadata = yaml.load(metadataContent) as PromptMetadata;
+            await createPrompt(metadata, promptContent);
+            logger.info(`Successfully processed prompt: ${directoryName}`);
+            
+            cache.flushAll();
+            return { success: true };
+        } catch (error) {
+            handleError(error, `processing prompt ${directoryName}`);
+            return { 
+                success: false, 
+                error: `Failed to process prompt ${directoryName}: ${error}` 
+            };
+        }
+    } catch (error) {
+        handleError(error, `syncing specific prompt ${directoryName}`);
+        return { 
+            success: false, 
+            error: `Failed to sync prompt ${directoryName}: ${error}` 
+        };
     }
 }
 
@@ -432,6 +520,7 @@ export async function flushData(): Promise<void> {
         await runAsync('DELETE FROM variables');
         await runAsync('DELETE FROM fragments');
         await runAsync('DELETE FROM env_vars');
+        await runAsync('DELETE FROM pending_changes');
         logger.info('Database tables cleared');
 
         await fs.emptyDir(cliConfig.PROMPTS_DIR);
@@ -447,6 +536,70 @@ export async function flushData(): Promise<void> {
     } catch (error) {
         handleError(error, 'flushing data');
         throw new Error('Failed to flush data');
+    }
+}
+
+export interface PendingChange {
+    id?: number;
+    directory: string;
+    change_type: 'add' | 'modify' | 'delete';
+    title?: string;
+    timestamp: number;
+}
+
+export async function storePendingChange(change: Omit<PendingChange, 'id'>): Promise<ApiResult<void>> {
+    try {
+        const result = await runAsync(
+            'INSERT INTO pending_changes (directory, change_type, title, timestamp) VALUES (?, ?, ?, ?)',
+            [change.directory, change.change_type, change.title || '', change.timestamp]
+        );
+        
+        return { success: result.success };
+    } catch (error) {
+        handleError(error, 'storing pending change');
+        return { success: false, error: 'Failed to store pending change' };
+    }
+}
+
+export async function getPendingChangesFromDb(): Promise<PendingChange[]> {
+    try {
+        const result = await allAsync<PendingChange>(
+            'SELECT id, directory, change_type, title, timestamp FROM pending_changes ORDER BY timestamp DESC'
+        );
+        
+        if (result.success && result.data) {
+            return result.data;
+        }
+        return [];
+    } catch (error) {
+        handleError(error, 'retrieving pending changes');
+        return [];
+    }
+}
+
+export async function clearPendingChangesFromDb(): Promise<ApiResult<void>> {
+    try {
+        const result = await runAsync('DELETE FROM pending_changes');
+        return { success: result.success };
+    } catch (error) {
+        handleError(error, 'clearing pending changes');
+        return { success: false, error: 'Failed to clear pending changes' };
+    }
+}
+
+export async function hasPendingChangesInDb(): Promise<boolean> {
+    try {
+        const result = await getAsync<{ count: number }>(
+            'SELECT COUNT(*) as count FROM pending_changes'
+        );
+        
+        if (result.success && result.data) {
+            return result.data.count > 0;
+        }
+        return false;
+    } catch (error) {
+        handleError(error, 'checking pending changes');
+        return false;
     }
 }
 
