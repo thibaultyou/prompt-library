@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 process.env.CLI_ENV = 'cli';
 
-import { Separator } from '@inquirer/core';
-import { input } from '@inquirer/prompts';
-import select from '@inquirer/select';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+
+import { confirm, input } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Spinner } from 'cli-spinner';
 import { Command } from 'commander';
@@ -19,14 +21,13 @@ import fragmentsCommand from './commands/fragments-command';
 import { showMainMenu } from './commands/menu-command';
 import modelCommand from './commands/model-command';
 import promptsCommand from './commands/prompts-command';
-import settingsCommand from './commands/settings-command';
+import repositoryCommand from './commands/repository-command';
+import setupCommand from './commands/setup-command';
 import syncCommand from './commands/sync-command';
 import { initDatabase } from './utils/database';
+import { isLibraryRepositorySetup } from './utils/library-repository';
 
 async function ensureApiKey(): Promise<void> {
-    const fs = await import('fs');
-    const path = await import('path');
-    const os = await import('os');
     const CONFIG_DIR = path.join(os.homedir(), '.prompt-library-cli');
     const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
     let config: Record<string, any> = {
@@ -75,57 +76,8 @@ async function simplifiedMenu(program: Command): Promise<void> {
     console.clear();
 
     try {
-        const configModule = await import('../shared/config');
-        const { getConfigValue } = configModule;
-        const modelProvider = getConfigValue('MODEL_PROVIDER') || 'unknown';
-        const modelName =
-            getConfigValue(modelProvider === 'anthropic' ? 'ANTHROPIC_MODEL' : 'OPENAI_MODEL') || 'unknown';
-        console.log(chalk.bold(chalk.cyan(`🧠 Prompt Library CLI (DEV MODE)`)));
-        console.log(`${chalk.gray('Using:')} ${chalk.cyan(modelProvider)} / ${chalk.cyan(modelName)}`);
-
-        const choices = [
-            new Separator(''),
-            new Separator(chalk.bold.cyan('📚 MAIN MENU')),
-            new Separator(''),
-            { name: chalk.bold('Browse and run prompts'), value: 'prompts' },
-            { name: 'Manage prompt fragments', value: 'fragments' },
-
-            new Separator(''),
-            new Separator(chalk.bold.cyan('⚙️ CONFIGURATION')),
-            new Separator(''),
-            { name: chalk.bold('Configure AI model settings'), value: 'model' },
-            { name: 'Manage environment variables', value: 'env' },
-            { name: 'Settings', value: 'settings' },
-
-            new Separator(''),
-            { name: chalk.red(chalk.bold('Exit')), value: 'exit' }
-        ];
-        const selectedCommand = await select({
-            message: 'Select an action:',
-            choices: choices
-        });
-
-        if (selectedCommand === 'exit') {
-            console.log(chalk.yellow('Goodbye!'));
-            return;
-        }
-
-        console.clear();
-
-        const command = program.commands.find((cmd) => cmd.name() === selectedCommand);
-
-        if (command) {
-            try {
-                await command.parseAsync(['node', 'script.js', selectedCommand]);
-            } catch (error) {
-                console.error('Error executing command:', error);
-            }
-        } else {
-            console.log(chalk.red(`Command '${selectedCommand}' not found.`));
-        }
-
-        console.clear();
-        await simplifiedMenu(program);
+        await showMainMenu(program);
+        return;
     } catch (error) {
         if (error && error.toString().includes('User force closed the prompt')) {
             console.log(chalk.yellow('\nExiting...'));
@@ -169,6 +121,7 @@ async function main(): Promise<void> {
             `
 Examples:
   $ prompt-library-cli                     Start interactive menu
+  $ prompt-library-cli setup               Set up prompt library repository
   $ prompt-library-cli execute -p 74       Execute prompt by ID
   $ prompt-library-cli prompts --list      List all available prompts
   $ prompt-library-cli model               Configure AI model settings
@@ -178,16 +131,50 @@ Examples:
         .option('-l, --list', 'List all available prompts')
         .option('-s, --search <keyword>', 'Search prompts by keyword')
         .action(async (options) => {
+            const repoSetup = await isLibraryRepositorySetup();
+
             if (options.execute) {
                 console.clear();
                 await executeCommand.parseAsync(['node', 'script.js', '-p', options.execute]);
+                return;
             } else if (options.list) {
                 console.clear();
                 await promptsCommand.parseAsync(['node', 'script.js', '--list']);
+                return;
             } else if (options.search) {
                 console.clear();
                 await promptsCommand.parseAsync(['node', 'script.js', '--search', options.search]);
-            } else if (process.argv.length <= 2) {
+                return;
+            }
+
+            if (process.argv.length <= 2) {
+                if (!repoSetup) {
+                    console.clear();
+                    console.log(chalk.yellow('⚠️  Prompt Library repository not found'));
+                    console.log(chalk.cyan('Run setup to create a dedicated repository for your prompts:'));
+                    console.log(chalk.bold('\n  prompt-library-cli setup\n'));
+
+                    const shouldSetup = await confirm({
+                        message: 'Would you like to run setup now?',
+                        default: true
+                    });
+
+                    if (shouldSetup) {
+                        console.clear();
+                        await setupCommand.parseAsync(['node', 'script.js']);
+
+                        if (await isLibraryRepositorySetup()) {
+                            console.log(chalk.green('\n✅ Setup completed successfully!'));
+                            await new Promise((resolve) => setTimeout(resolve, 1000));
+                        } else {
+                            console.log(chalk.red('\n❌ Setup failed. Please try again or check the logs.'));
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+                }
+
                 if (process.env.NODE_ENV === 'production') {
                     await showMainMenu(program);
                 } else {
@@ -204,7 +191,8 @@ Examples:
         fragmentsCommand,
         modelCommand,
         promptsCommand,
-        settingsCommand,
+        repositoryCommand,
+        setupCommand,
         syncCommand
     ];
     commands.forEach((cmd) => program.addCommand(cmd));
@@ -213,12 +201,12 @@ Examples:
     await program.parseAsync(process.argv);
 }
 
-main().catch((error) => {
-    if (error && error.toString().includes('User force closed the prompt')) {
+main().catch((_error) => {
+    if (_error && _error.toString().includes('User force closed the prompt')) {
         console.log(chalk.yellow('\nExiting...'));
         process.exit(0);
     }
 
-    console.error('An error occurred:', error);
+    console.error('An error occurred:', _error);
     process.exit(1);
 });

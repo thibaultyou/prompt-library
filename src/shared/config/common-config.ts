@@ -22,6 +22,11 @@ export interface CommonConfig {
     LOG_LEVEL: 'debug' | 'info' | 'warn' | 'error';
     REMOTE_REPOSITORY: string;
     CLI_ENV: string;
+
+    DEFAULT_BRANCH: string;
+    UPSTREAM_REPOSITORY: string;
+    DOWNSTREAM_REPOSITORIES: string[];
+    USE_GIT: boolean;
 }
 
 export const commonConfig: CommonConfig = {
@@ -37,5 +42,10 @@ export const commonConfig: CommonConfig = {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     LOG_LEVEL: (process.env.LOG_LEVEL as Config['LOG_LEVEL']) || 'info',
     REMOTE_REPOSITORY: process.env.REMOTE_REPOSITORY || '',
-    CLI_ENV: process.env.CLI_ENV || 'cli'
+    CLI_ENV: process.env.CLI_ENV || 'cli',
+
+    DEFAULT_BRANCH: process.env.DEFAULT_BRANCH || 'main',
+    UPSTREAM_REPOSITORY: process.env.UPSTREAM_REPOSITORY || '',
+    DOWNSTREAM_REPOSITORIES: process.env.DOWNSTREAM_REPOSITORIES ? process.env.DOWNSTREAM_REPOSITORIES.split(',') : [],
+    USE_GIT: process.env.USE_GIT === 'false' ? false : true
 };

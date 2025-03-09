@@ -1,3 +1,4 @@
+import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
 
 import { allAsync, getAsync, runAsync } from './database';
@@ -215,18 +216,31 @@ export async function getPromptMetadata(
 }
 
 export async function viewPromptDetails(details: PromptMetadata, isExecute = false): Promise<void> {
-    console.log(chalk.cyan('Prompt:'), details.title);
+    if (!details) {
+        console.log(chalk.red('Error: No prompt details available'));
+        return;
+    }
+
+    console.log(chalk.cyan('Prompt:'), details.title || 'Untitled');
     console.log(`\n${details.description || ''}`);
     console.log(chalk.cyan('\nCategory:'), formatTitleCase(details.primary_category));
-    let tagsArray: string[];
+    let tagsArray: string[] = [];
 
-    if (typeof details.tags === 'string') {
+    if (!details.tags) {
+        tagsArray = [];
+    } else if (typeof details.tags === 'string') {
         tagsArray = details.tags.split(',');
     } else {
         tagsArray = details.tags;
     }
 
     console.log(chalk.cyan('\nTags:'), tagsArray.length > 0 ? tagsArray.join(', ') : 'No tags');
+
+    if (!details.variables || !Array.isArray(details.variables) || details.variables.length === 0) {
+        console.log(chalk.cyan('\nOptions:'), 'No variables defined');
+        return;
+    }
+
     console.log(chalk.cyan('\nOptions:'), '([*] Required  [ ] Optional)');
     const maxNameLength = Math.max(...details.variables.map((v) => formatSnakeCase(v.name).length));
 
@@ -276,5 +290,43 @@ export async function viewPromptDetails(details: PromptMetadata, isExecute = fal
         }
     } catch (error) {
         handleError(error, 'viewing prompt details');
+    }
+}
+
+export async function selectPrompt(): Promise<{ id: number; title: string; directory: string } | null> {
+    try {
+        const allPrompts = await allAsync<{
+            id: number;
+            title: string;
+            directory: string;
+            primary_category: string;
+            one_line_description: string;
+        }>('SELECT id, title, directory, primary_category, one_line_description FROM prompts ORDER BY id');
+
+        if (!allPrompts.success || !allPrompts.data || allPrompts.data.length === 0) {
+            console.log(chalk.yellow('No prompts found in the database.'));
+            return null;
+        }
+
+        const choices = allPrompts.data.map((prompt) => ({
+            name: `${prompt.id.toString().padEnd(4)} | ${prompt.title.padEnd(30)} | ${prompt.primary_category}`,
+            value: prompt,
+            description: prompt.one_line_description
+        }));
+        choices.push({
+            name: chalk.red(chalk.bold('Go back')),
+            value: null as any,
+            description: 'Return to the previous menu'
+        });
+
+        const selectedPrompt = await select({
+            message: 'Select a prompt:',
+            choices,
+            pageSize: 10
+        });
+        return selectedPrompt;
+    } catch (error) {
+        handleError(error, 'selecting prompt');
+        return null;
     }
 }

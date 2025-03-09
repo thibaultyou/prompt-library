@@ -136,15 +136,17 @@ describe('SyncUtils', () => {
             ];
             logChanges(changes, 'Test Changes');
 
-            expect(consoleOutput).toHaveLength(4);
+            expect(consoleOutput).toHaveLength(6);
             expect(consoleOutput[0]).toContain('bold:');
             expect(consoleOutput[0]).toContain('Test Changes');
-            expect(consoleOutput[1]).toContain('green:');
-            expect(consoleOutput[1]).toContain('file1.txt');
-            expect(consoleOutput[2]).toContain('yellow:');
-            expect(consoleOutput[2]).toContain('file2.txt');
-            expect(consoleOutput[3]).toContain('red:');
-            expect(consoleOutput[3]).toContain('file3.txt');
+            expect(consoleOutput[1]).toMatch(/^─+$/);
+            expect(consoleOutput[2]).toContain('green:');
+            expect(consoleOutput[2]).toContain('file1.txt');
+            expect(consoleOutput[3]).toContain('yellow:');
+            expect(consoleOutput[3]).toContain('file2.txt');
+            expect(consoleOutput[4]).toContain('red:');
+            expect(consoleOutput[4]).toContain('file3.txt');
+            expect(consoleOutput[5]).toMatch(/^─+$/);
         });
 
         it('should not log anything for empty changes', () => {

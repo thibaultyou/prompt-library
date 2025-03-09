@@ -11,11 +11,39 @@ import { cliConfig } from '../config/cli-config';
 import { ENV_PREFIX, FRAGMENT_PREFIX } from '../constants';
 import { handleApiResult } from '../utils/database';
 import { handleError } from '../utils/errors';
+import { formatMenuItem } from '../utils/ui-components';
+
+export const LIBRARY_HOME_DIR = path.join(os.homedir(), '.prompt-library');
+
+export const LIBRARY_REPO_DIR = path.join(LIBRARY_HOME_DIR, 'repository');
+
+export const LIBRARY_PROMPTS_DIR = path.join(LIBRARY_REPO_DIR, 'prompts');
+
+export const LIBRARY_FRAGMENTS_DIR = path.join(LIBRARY_REPO_DIR, 'fragments');
 
 export class BaseCommand extends Command {
     constructor(name: string, description: string) {
         super(name);
         this.description(description);
+    }
+
+    protected async isLibraryRepositorySetup(): Promise<boolean> {
+        try {
+            const hasHomeDir = await fs.pathExists(LIBRARY_HOME_DIR);
+
+            if (!hasHomeDir) return false;
+
+            const hasGitDir = await fs.pathExists(path.join(LIBRARY_REPO_DIR, '.git'));
+
+            if (!hasGitDir) return false;
+
+            const hasPromptsDir = await fs.pathExists(LIBRARY_PROMPTS_DIR);
+            const hasFragmentsDir = await fs.pathExists(LIBRARY_FRAGMENTS_DIR);
+            return hasPromptsDir && hasFragmentsDir;
+        } catch (error) {
+            this.handleError(error, 'checking library repository setup');
+            return false;
+        }
     }
 
     action(fn: (...args: any[]) => Promise<void> | void): this {
@@ -55,10 +83,7 @@ export class BaseCommand extends Command {
         const processedChoices = menuChoices;
 
         if (includeGoBack) {
-            processedChoices.push({
-                name: chalk.red(chalk.bold(goBackLabel)),
-                value: goBackValue
-            });
+            processedChoices.push(formatMenuItem(goBackLabel, goBackValue, 'danger'));
         }
         return select<T>({
             message,

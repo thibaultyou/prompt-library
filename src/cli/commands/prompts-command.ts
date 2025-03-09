@@ -1,10 +1,21 @@
 import chalk from 'chalk';
 
 import { BaseCommand } from './base-command';
+import { createCommand, editCommand, deleteCommand } from './prompt-commands';
 import { CategoryItem, EnvVariable, PromptFragment, PromptMetadata, PromptVariable } from '../../shared/types';
 import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string-formatter';
 import { ConversationManager } from '../utils/conversation-manager';
-import { getPromptDetails } from '../utils/database';
+import {
+    addPromptToFavorites,
+    cache,
+    getFavoritePrompts,
+    getPromptById,
+    getPromptDetails,
+    getRecentExecutions,
+    isPromptInFavorites,
+    recordPromptExecution,
+    removePromptFromFavorites
+} from '../utils/database';
 import { readEnvVars } from '../utils/env-vars';
 import { listFragments } from '../utils/fragments';
 import {
@@ -23,9 +34,29 @@ import {
     unsetAllVariables
 } from '../utils/prompt-utils';
 import { viewPromptDetails } from '../utils/prompts';
+import {
+    createCategoryHeader,
+    createSectionHeader,
+    formatMenuItem,
+    printSectionHeader,
+    showProgress,
+    successMessage,
+    warningMessage
+} from '../utils/ui-components';
 
-type PromptMenuAction = 'all' | 'category' | 'id' | 'back';
-type SelectPromptMenuAction = PromptVariable | 'execute' | 'unset_all' | 'back';
+type PromptMenuAction =
+    | 'all'
+    | 'category'
+    | 'id'
+    | 'search'
+    | 'recent'
+    | 'favorites'
+    | 'create'
+    | 'edit'
+    | 'delete'
+    | 'back'
+    | 'separator';
+type SelectPromptMenuAction = PromptVariable | 'execute' | 'unset_all' | 'add_to_favorites' | 'back' | 'separator';
 
 class PromptCommand extends BaseCommand {
     constructor() {
@@ -36,6 +67,9 @@ class PromptCommand extends BaseCommand {
             .option('-j, --json', 'Output in JSON format (for CI use)')
             .option('-f, --favorites', 'Show favorite prompts')
             .option('-r, --recent', 'Show recently executed prompts')
+            .addCommand(createCommand)
+            .addCommand(editCommand)
+            .addCommand(deleteCommand)
             .addHelpText('before', chalk.bold(chalk.cyan('\n📚 Prompt Library - Prompts Management\n')))
             .addHelpText(
                 'after',
@@ -46,6 +80,9 @@ Examples:
   $ prompt-library-cli prompts --categories    Show prompt categories
   $ prompt-library-cli prompts --favorites     Show favorite prompts
   $ prompt-library-cli prompts --recent        Show recently used prompts
+  $ prompt-library-cli prompts create          Create a new prompt
+  $ prompt-library-cli prompts edit 42         Edit prompt with ID 42
+  $ prompt-library-cli prompts delete 42       Delete prompt with ID 42
 
 Related Commands:
   execute    Run a specific prompt
@@ -55,34 +92,45 @@ Related Commands:
             .action(this.execute.bind(this));
     }
 
-    async execute(options: any): Promise<void> {
+    async execute(): Promise<void> {
         try {
-            const { showProgress } = await import('../utils/ui-components');
+            const hasList = process.argv.includes('--list');
+            const hasCategories = process.argv.includes('--categories');
+            const hasRecent = process.argv.includes('--recent');
+            const hasFavorites = process.argv.includes('--favorites');
+            const hasJson = process.argv.includes('--json');
+            const searchIndex = process.argv.indexOf('--search');
+            let searchTerm = null;
+
+            if (searchIndex !== -1 && searchIndex < process.argv.length - 1) {
+                searchTerm = process.argv[searchIndex + 1];
+            }
+
             const categoriesPromise = getPromptCategories();
             const categories = await showProgress('Loading prompts...', categoriesPromise);
 
-            if (options.recent) {
-                await this.showRecentPrompts(options.json);
+            if (hasRecent) {
+                await this.showRecentPrompts(hasJson);
                 return;
             }
 
-            if (options.favorites) {
-                await this.showFavoritePrompts(options.json);
+            if (hasFavorites) {
+                await this.showFavoritePrompts(hasJson);
                 return;
             }
 
-            if (options.search) {
-                await this.searchPrompts(categories, options.search, options.json);
+            if (searchTerm) {
+                await this.searchPrompts(categories, searchTerm, hasJson);
                 return;
             }
 
-            if (options.list) {
-                await this.listAllPromptsForCI(categories, options.json);
+            if (hasList) {
+                await this.listAllPromptsForCI(categories, hasJson);
                 return;
             }
 
-            if (options.categories) {
-                await this.listAllCategoriesForCI(categories, options.json);
+            if (hasCategories) {
+                await this.listAllCategoriesForCI(categories, hasJson);
                 return;
             }
 
@@ -94,8 +142,6 @@ Related Commands:
 
     private async showRecentPrompts(json: boolean = false): Promise<void> {
         try {
-            const { getRecentExecutions } = await import('../utils/database');
-            const { printSectionHeader } = await import('../utils/ui-components');
             const recentPrompts = await getRecentExecutions(10);
 
             if (json) {
@@ -106,42 +152,85 @@ Related Commands:
             if (!recentPrompts || recentPrompts.length === 0) {
                 console.log(chalk.yellow('\nNo recent prompt executions found.\n'));
                 console.log(chalk.italic('Try executing some prompts first.'));
+                await this.pressKeyToContinue();
                 return;
             }
 
-            printSectionHeader('Recent Prompt Executions');
+            let stayInRecentPrompts = true;
+            while (stayInRecentPrompts) {
+                console.clear();
+                printSectionHeader('Recent Prompt Executions');
 
-            console.log('─'.repeat(80));
-            console.log(
-                chalk.cyan('ID'.padEnd(6)) +
-                    chalk.cyan('Prompt'.padEnd(40)) +
-                    chalk.cyan('Category'.padEnd(20)) +
-                    chalk.cyan('Executed At')
-            );
-            console.log('─'.repeat(80));
-
-            recentPrompts.forEach((item: any) => {
-                const date = new Date(item.execution_time);
-                const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+                console.log('─'.repeat(80));
                 console.log(
-                    item.prompt_id.toString().padEnd(6) +
-                        (item.title || 'Unknown').substring(0, 37).padEnd(40) +
-                        (item.primary_category || 'Unknown').substring(0, 17).padEnd(20) +
-                        formattedDate
+                    chalk.cyan('ID'.padEnd(6)) +
+                        chalk.cyan('Prompt'.padEnd(40)) +
+                        chalk.cyan('Category'.padEnd(20)) +
+                        chalk.cyan('Executed At')
                 );
-            });
+                console.log('─'.repeat(80));
 
-            console.log('─'.repeat(80));
-            console.log(chalk.italic(`\nTo execute any prompt above: prompt-library-cli execute -p <id>\n`));
+                recentPrompts.forEach((item: any) => {
+                    const date = new Date(item.execution_time);
+                    const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+                    console.log(
+                        item.prompt_id.toString().padEnd(6) +
+                            (item.title || 'Unknown').substring(0, 37).padEnd(40) +
+                            (item.primary_category || 'Unknown').substring(0, 17).padEnd(20) +
+                            formattedDate
+                    );
+                });
+
+                console.log('─'.repeat(80));
+                console.log(chalk.italic(`\nFound ${recentPrompts.length} recently executed prompts.\n`));
+
+                const promptItems = recentPrompts.map((item) => ({
+                    id: item.prompt_id.toString(),
+                    title: item.title || 'Unknown',
+                    category: 'recent',
+                    primary_category: item.primary_category || 'Unknown',
+                    path: '',
+                    description: '',
+                    subcategories: []
+                }));
+                const action = await this.showMenu<'execute' | 'back'>(
+                    'What would you like to do next?',
+                    [formatMenuItem('Execute a prompt', 'execute', 'success')],
+                    { clearConsole: false }
+                );
+
+                if (action === 'execute') {
+                    const promptId = await this.selectPromptFromList(promptItems, 'Select a prompt to execute:');
+
+                    if (promptId) {
+                        const promptDetails = await getPromptById(parseInt(promptId));
+
+                        if (promptDetails) {
+                            const selectedPrompt = {
+                                id: promptId,
+                                title: promptDetails.title,
+                                category: promptDetails.primary_category,
+                                primary_category: promptDetails.primary_category,
+                                path: promptDetails.directory,
+                                description: promptDetails.description || '',
+                                subcategories: []
+                            };
+                            await this.managePrompt(selectedPrompt);
+                            continue;
+                        }
+                    }
+                } else {
+                    stayInRecentPrompts = false;
+                }
+            }
         } catch (error) {
             this.handleError(error, 'showing recent prompts');
+            await this.pressKeyToContinue();
         }
     }
 
     private async showFavoritePrompts(json: boolean = false): Promise<void> {
         try {
-            const { getFavoritePrompts } = await import('../utils/database');
-            const { printSectionHeader } = await import('../utils/ui-components');
             const result = await getFavoritePrompts();
 
             if (json) {
@@ -152,46 +241,132 @@ Related Commands:
             if (!result.success || !result.data || result.data.length === 0) {
                 console.log(chalk.yellow('\nNo favorite prompts found.\n'));
                 console.log(chalk.italic('Add prompts to your favorites first.'));
+                await this.pressKeyToContinue();
                 return;
             }
 
             const favorites = result.data;
-            printSectionHeader('Favorite Prompts');
+            let stayInFavorites = true;
+            while (stayInFavorites) {
+                console.clear();
+                printSectionHeader('Favorite Prompts');
 
-            console.log('─'.repeat(80));
-            console.log(
-                chalk.cyan('ID'.padEnd(6)) +
-                    chalk.cyan('Prompt'.padEnd(40)) +
-                    chalk.cyan('Category'.padEnd(20)) +
-                    chalk.cyan('Added At')
-            );
-            console.log('─'.repeat(80));
-
-            favorites.forEach((item: any) => {
-                const date = new Date(item.added_time);
-                const formattedDate = `${date.toLocaleDateString()}`;
+                console.log('─'.repeat(80));
                 console.log(
-                    item.prompt_id.toString().padEnd(6) +
-                        (item.title || 'Unknown').substring(0, 37).padEnd(40) +
-                        (item.primary_category || 'Unknown').substring(0, 17).padEnd(20) +
-                        formattedDate
+                    chalk.cyan('ID'.padEnd(6)) +
+                        chalk.cyan('Prompt'.padEnd(40)) +
+                        chalk.cyan('Category'.padEnd(20)) +
+                        chalk.cyan('Added At')
                 );
-            });
+                console.log('─'.repeat(80));
 
-            console.log('─'.repeat(80));
-            console.log(chalk.italic(`\nTo execute any prompt above: prompt-library-cli execute -p <id>\n`));
+                favorites.forEach((item: any) => {
+                    const date = new Date(item.added_time);
+                    const formattedDate = `${date.toLocaleDateString()}`;
+                    console.log(
+                        item.prompt_id.toString().padEnd(6) +
+                            (item.title || 'Unknown').substring(0, 37).padEnd(40) +
+                            (item.primary_category || 'Unknown').substring(0, 17).padEnd(20) +
+                            formattedDate
+                    );
+                });
+
+                console.log('─'.repeat(80));
+                console.log(chalk.italic(`\nFound ${favorites.length} favorite prompts.\n`));
+
+                const promptItems = favorites.map((item) => ({
+                    id: item.prompt_id.toString(),
+                    title: item.title || 'Unknown',
+                    category: 'favorite',
+                    primary_category: item.primary_category || 'Unknown',
+                    path: '',
+                    description: item.description || '',
+                    subcategories: []
+                }));
+                const action = await this.showMenu<'execute' | 'remove' | 'back'>(
+                    'What would you like to do next?',
+                    [
+                        formatMenuItem('Execute a prompt', 'execute', 'success'),
+                        formatMenuItem('Remove from favorites', 'remove', 'danger')
+                    ],
+                    { clearConsole: false }
+                );
+
+                if (action === 'execute') {
+                    const promptId = await this.selectPromptFromList(promptItems, 'Select a prompt to execute:');
+
+                    if (promptId) {
+                        const promptDetails = await getPromptById(parseInt(promptId));
+
+                        if (promptDetails) {
+                            const selectedPrompt = {
+                                id: promptId,
+                                title: promptDetails.title,
+                                category: promptDetails.primary_category,
+                                primary_category: promptDetails.primary_category,
+                                path: promptDetails.directory,
+                                description: promptDetails.description || '',
+                                subcategories: []
+                            };
+                            await this.managePrompt(selectedPrompt);
+                            continue;
+                        }
+                    }
+                } else if (action === 'remove') {
+                    const promptId = await this.selectPromptFromList(
+                        promptItems,
+                        'Select a prompt to remove from favorites:'
+                    );
+
+                    if (promptId) {
+                        const result = await removePromptFromFavorites(promptId);
+
+                        if (result.success) {
+                            console.log(successMessage('Prompt removed from favorites!'));
+
+                            const refreshResult = await getFavoritePrompts();
+
+                            if (refreshResult.success && refreshResult.data) {
+                                favorites.length = 0;
+                                favorites.push(...refreshResult.data);
+                            }
+
+                            await new Promise((resolve) => setTimeout(resolve, 1000));
+                            continue;
+                        }
+                    }
+                } else {
+                    stayInFavorites = false;
+                }
+            }
         } catch (error) {
             this.handleError(error, 'showing favorite prompts');
+            await this.pressKeyToContinue();
         }
     }
 
-    private async searchPrompts(
-        categories: Record<string, CategoryItem[]>,
-        keyword: string,
-        json: boolean
-    ): Promise<void> {
+    private async selectPromptFromList(prompts: CategoryItem[], message: string): Promise<string | null> {
         try {
-            const { printSectionHeader, warningMessage } = await import('../utils/ui-components');
+            const choices = prompts.map((prompt) => ({
+                name: `${prompt.id} - ${prompt.title} (${prompt.primary_category})`,
+                value: prompt.id
+            }));
+            const promptId = await this.showMenu<string | 'back'>(message, choices, {
+                clearConsole: false
+            });
+
+            if (promptId === 'back') {
+                return null;
+            }
+            return promptId;
+        } catch (error) {
+            this.handleError(error, 'selecting prompt from list');
+            return null;
+        }
+    }
+
+    async searchPrompts(categories: Record<string, CategoryItem[]>, keyword: string, json: boolean): Promise<void> {
+        try {
             const matchingPrompts = searchPrompts(categories, keyword);
 
             if (json) {
@@ -206,29 +381,65 @@ Related Commands:
                 return;
             }
 
-            printSectionHeader(`Search Results for "${keyword}"`);
+            let stayInSearchResults = true;
+            while (stayInSearchResults) {
+                console.clear();
 
-            const { headers, rows } = formatPromptsForDisplay(matchingPrompts);
-            console.log('─'.repeat(80));
-            console.log(headers);
-            console.log('─'.repeat(80));
-            rows.forEach((row) => console.log(row));
+                printSectionHeader(`Search Results for "${keyword}"`);
 
-            console.log('─'.repeat(80));
-            console.log(chalk.italic(`\nFound ${matchingPrompts.length} matching prompts. Execute any prompt with:`));
-            console.log(chalk.italic(`  prompt-library-cli execute -p <id>\n`));
+                const { headers, rows } = formatPromptsForDisplay(matchingPrompts);
+                console.log('─'.repeat(80));
+                console.log(headers);
+                console.log('─'.repeat(80));
+                rows.forEach((row) => console.log(row));
 
-            if (matchingPrompts.length > 0) {
-                const promptId = await this.promptToAddToFavorites(matchingPrompts);
+                console.log('─'.repeat(80));
+                console.log(
+                    chalk.italic(`\nFound ${matchingPrompts.length} matching prompts. Execute any prompt with:`)
+                );
+                console.log(chalk.italic(`  prompt-library-cli execute -p <id>\n`));
 
-                if (promptId) {
-                    const { addPromptToFavorites } = await import('../utils/database');
-                    const { successMessage } = await import('../utils/ui-components');
-                    const result = await addPromptToFavorites(promptId);
+                if (matchingPrompts.length > 0) {
+                    const action = await this.showMenu<'execute' | 'favorites' | 'back'>(
+                        'What would you like to do next?',
+                        [
+                            formatMenuItem('Execute a prompt', 'execute', 'success'),
+                            formatMenuItem('Add a prompt to favorites', 'favorites', 'primary')
+                        ],
+                        { clearConsole: false }
+                    );
 
-                    if (result.success) {
-                        console.log(successMessage('Prompt added to favorites!'));
+                    if (action === 'favorites') {
+                        const promptId = await this.selectPromptToAddToFavorites(matchingPrompts);
+
+                        if (promptId) {
+                            const result = await addPromptToFavorites(promptId);
+
+                            if (result.success) {
+                                console.log(successMessage('Prompt added to favorites!'));
+                                await new Promise((resolve) => setTimeout(resolve, 1000));
+                            }
+                        }
+                    } else if (action === 'execute') {
+                        const promptId = await this.selectPromptToExecute(matchingPrompts);
+
+                        if (promptId) {
+                            const selectedPrompt = matchingPrompts.find((p) => p.id === promptId);
+
+                            if (selectedPrompt) {
+                                await this.managePrompt(selectedPrompt);
+                                continue;
+                            } else {
+                                const { default: executeCommand } = await import('./execute-command');
+                                await executeCommand.parseAsync(['-p', promptId]);
+                                stayInSearchResults = false;
+                            }
+                        }
+                    } else {
+                        stayInSearchResults = false;
                     }
+                } else {
+                    stayInSearchResults = false;
                 }
             }
         } catch (error) {
@@ -236,14 +447,8 @@ Related Commands:
         }
     }
 
-    private async promptToAddToFavorites(matchingPrompts: CategoryItem[]): Promise<string | null> {
+    private async selectPromptToAddToFavorites(matchingPrompts: CategoryItem[]): Promise<string | null> {
         try {
-            const addToFavorites = await this.confirmAction('Would you like to add one of these prompts to favorites?');
-
-            if (!addToFavorites) {
-                return null;
-            }
-
             const choices = matchingPrompts.map((prompt) => ({
                 name: `${prompt.id} - ${prompt.title} (${prompt.primary_category})`,
                 value: prompt.id
@@ -262,14 +467,68 @@ Related Commands:
         }
     }
 
+    private async selectPromptToExecute(matchingPrompts: CategoryItem[]): Promise<string | null> {
+        try {
+            const choices = matchingPrompts.map((prompt) => ({
+                name: `${prompt.id} - ${prompt.title} (${prompt.primary_category})`,
+                value: prompt.id
+            }));
+            const promptId = await this.showMenu<string | 'back'>('Select a prompt to execute:', choices, {
+                clearConsole: false
+            });
+
+            if (promptId === 'back') {
+                return null;
+            }
+            return promptId;
+        } catch (error) {
+            this.handleError(error, 'selecting prompt to execute');
+            return null;
+        }
+    }
+
     private async showPromptMenu(categories: Record<string, CategoryItem[]>): Promise<void> {
         while (true) {
             try {
-                const action = await this.showMenu<PromptMenuAction>('Select an action:', [
-                    { name: 'View prompts by category', value: 'category' },
-                    { name: 'View all prompts', value: 'all' },
-                    { name: 'View all prompts sorted by ID', value: 'id' }
-                ]);
+                const choices = [];
+                choices.push(createSectionHeader<PromptMenuAction>('BROWSE & EXECUTE', '🔍', 'primary'));
+                choices.push(formatMenuItem('By Category', 'category', 'primary'));
+                choices.push(formatMenuItem('All Prompts', 'all', 'primary'));
+                choices.push(formatMenuItem('By ID', 'id', 'primary'));
+                choices.push(formatMenuItem('Search Prompts', 'search', 'primary'));
+                choices.push(formatMenuItem('Recent Prompts', 'recent', 'primary'));
+                choices.push(formatMenuItem('Favorite Prompts', 'favorites', 'primary'));
+
+                choices.push({
+                    name: '─'.repeat(50),
+                    value: 'separator',
+                    disabled: ' '
+                });
+
+                choices.push(createSectionHeader<PromptMenuAction>('MANAGE', '✏️', 'success'));
+                choices.push(formatMenuItem('Create New Prompt', 'create', 'success'));
+                choices.push(formatMenuItem('Edit Prompt', 'edit', 'warning'));
+                choices.push(formatMenuItem('Delete Prompt', 'delete', 'danger'));
+
+                choices.push({
+                    name: '─'.repeat(50),
+                    value: 'separator',
+                    disabled: ' '
+                });
+                choices.push({
+                    name: chalk.italic('To run a prompt, use the "Run a prompt" option from the main menu'),
+                    value: 'back',
+                    disabled: ' '
+                });
+
+                const action = await this.showMenu<PromptMenuAction>(
+                    'Select an action:',
+                    choices as Array<{
+                        name: string;
+                        value: PromptMenuAction;
+                        disabled?: boolean | string;
+                    }>
+                );
                 switch (action) {
                     case 'all':
                         await this.listAllPrompts(categories);
@@ -279,6 +538,30 @@ Related Commands:
                         break;
                     case 'id':
                         await this.listPromptsSortedById(categories);
+                        break;
+                    case 'search': {
+                        const keyword = await this.getInput('Enter search keyword:');
+
+                        if (keyword && keyword.trim()) {
+                            await this.searchPrompts(categories, keyword.trim(), false);
+                        }
+
+                        break;
+                    }
+                    case 'recent':
+                        await this.showRecentPrompts(false);
+                        break;
+                    case 'favorites':
+                        await this.showFavoritePrompts(false);
+                        break;
+                    case 'create':
+                        await createCommand.parseAsync([]);
+                        break;
+                    case 'edit':
+                        await editCommand.parseAsync([]);
+                        break;
+                    case 'delete':
+                        await deleteCommand.parseAsync([]);
                         break;
                     case 'back':
                         return;
@@ -364,7 +647,7 @@ Related Commands:
             const category = await this.showMenu<string | 'back'>(
                 'Select a category:',
                 sortedCategories.map((category) => ({
-                    name: formatTitleCase(category),
+                    name: chalk.cyan(chalk.bold(formatTitleCase(category))),
                     value: category
                 }))
             );
@@ -386,22 +669,49 @@ Related Commands:
 
     private async selectAndManagePrompt(prompts: (CategoryItem & { category: string })[]): Promise<void> {
         while (true) {
-            const selectedPrompt = await this.showMenu<CategoryItem | 'back'>(
-                'Select a prompt or action:',
-                prompts.map((p) => ({
-                    name: `${formatTitleCase(p.category)} > ${chalk.green(p.title)} (ID: ${p.id})`,
-                    value: p
-                })),
-                { clearConsole: true }
-            );
+            cache.flushAll();
+
+            const categories = await getPromptCategories();
+            const refreshedPrompts = getAllPrompts(categories);
+            const promptsByCategory: Record<string, (CategoryItem & { category: string })[]> = {};
+            refreshedPrompts.forEach((prompt) => {
+                if (!promptsByCategory[prompt.category]) {
+                    promptsByCategory[prompt.category] = [];
+                }
+
+                promptsByCategory[prompt.category].push(prompt);
+            });
+
+            const choices: Array<{ name: string; value: CategoryItem | 'back'; disabled?: boolean }> = [];
+            const sortedCategories = Object.keys(promptsByCategory).sort();
+
+            for (const category of sortedCategories) {
+                choices.push({
+                    name: createCategoryHeader(formatTitleCase(category)).name,
+                    value: 'back' as const,
+                    disabled: true
+                });
+
+                const sortedPrompts = promptsByCategory[category].sort((a, b) => a.title.localeCompare(b.title));
+                sortedPrompts.forEach((prompt) => {
+                    choices.push({
+                        name: `  ${chalk.green(prompt.title)} (ID: ${prompt.id})`,
+                        value: prompt
+                    });
+                });
+            }
+
+            const selectedPrompt = await this.showMenu<CategoryItem | 'back'>('Select a prompt:', choices, {
+                clearConsole: true
+            });
 
             if (selectedPrompt === 'back') return;
 
-            await this.managePrompt(selectedPrompt);
+            await this.managePrompt(selectedPrompt as CategoryItem);
         }
     }
 
-    private async managePrompt(prompt: CategoryItem): Promise<void> {
+    async managePrompt(prompt: CategoryItem): Promise<void> {
         while (true) {
             try {
                 const details = await this.handleApiResult(await getPromptDetails(prompt.id), 'Fetched prompt details');
@@ -412,12 +722,16 @@ Related Commands:
 
                 const action = await this.selectPromptAction(details);
 
-                if (action === 'back') return;
+                if (action === 'back' || action === 'separator') {
+                    return;
+                }
 
                 if (action === 'execute') {
                     await this.executePromptWithAssignment(prompt.id);
                 } else if (action === 'unset_all') {
                     await this.unsetAllVariables(prompt.id);
+                } else if (action === 'add_to_favorites') {
+                    await this.addCurrentPromptToFavorites(prompt.id);
                 } else {
                     await this.assignVariable(prompt.id, action);
                 }
@@ -429,23 +743,67 @@ Related Commands:
     }
 
     private async selectPromptAction(details: PromptMetadata): Promise<SelectPromptMenuAction> {
-        const choices: Array<{ name: string; value: SelectPromptMenuAction }> = [];
+        const choices: Array<{ name: string; value: SelectPromptMenuAction; disabled?: boolean }> = [];
         const allRequiredSet = allRequiredVariablesSet(details);
+        const promptId = details.id || '';
+        const isInFavorites = await isPromptInFavorites(promptId);
 
         if (allRequiredSet) {
-            choices.push({ name: chalk.green(chalk.bold('Execute prompt')), value: 'execute' });
+            choices.push({
+                name: formatMenuItem('Execute prompt', 'execute', 'success').name,
+                value: 'execute'
+            });
+
+            if (!isInFavorites) {
+                choices.push({
+                    name: formatMenuItem('Add to favorites', 'add_to_favorites', 'primary').name,
+                    value: 'add_to_favorites'
+                });
+            } else {
+                choices.push({
+                    name: chalk.gray('★ Already in favorites'),
+                    value: 'add_to_favorites',
+                    disabled: true
+                });
+            }
+
+            choices.push({
+                name: createSectionHeader('Configure variables:', '', 'primary').name,
+                value: 'separator',
+                disabled: true
+            });
+        } else {
+            choices.push({
+                name: createSectionHeader('Configure required variables first:', '', 'warning').name,
+                value: 'separator',
+                disabled: true
+            });
+
+            if (!isInFavorites) {
+                choices.push({
+                    name: formatMenuItem('Add to favorites', 'add_to_favorites', 'primary').name,
+                    value: 'add_to_favorites'
+                });
+            } else {
+                choices.push({
+                    name: chalk.gray('★ Already in favorites'),
+                    value: 'add_to_favorites',
+                    disabled: true
+                });
+            }
         }
 
         const envVarsResult = await readEnvVars();
         const envVars = envVarsResult.success ? envVarsResult.data || [] : [];
         choices.push(...formatVariableChoices(details.variables, envVars));
 
-        choices.push({ name: chalk.red('Unset all variables'), value: 'unset_all' });
-        return this.showMenu<SelectPromptMenuAction>(
-            `Select an action for prompt "${chalk.cyan(details.title)}":`,
-            choices,
-            { clearConsole: false }
-        );
+        choices.push({
+            name: formatMenuItem('Unset all variables', 'unset_all', 'danger').name,
+            value: 'unset_all'
+        });
+        return this.showMenu<SelectPromptMenuAction>(`Prompt: "${chalk.cyan(details.title)}"`, choices, {
+            clearConsole: false
+        });
     }
 
     private async assignVariable(promptId: string, variable: PromptVariable): Promise<void> {
@@ -619,7 +977,32 @@ Related Commands:
         await this.pressKeyToContinue();
     }
 
-    private async executePromptWithAssignment(promptId: string): Promise<void> {
+    private async addCurrentPromptToFavorites(promptId: string): Promise<void> {
+        try {
+            const alreadyInFavorites = await isPromptInFavorites(promptId);
+
+            if (alreadyInFavorites) {
+                console.log(chalk.yellow('This prompt is already in your favorites.'));
+                await this.pressKeyToContinue();
+                return;
+            }
+
+            const result = await addPromptToFavorites(promptId);
+
+            if (result.success) {
+                console.log(successMessage('Prompt added to favorites!'));
+                await this.pressKeyToContinue();
+            } else {
+                console.log(chalk.yellow('Failed to add prompt to favorites.'));
+                await this.pressKeyToContinue();
+            }
+        } catch (error) {
+            this.handleError(error, 'adding prompt to favorites');
+            await this.pressKeyToContinue();
+        }
+    }
+
+    private async executePromptWithAssignment(promptId: string, returnToDetails: boolean = false): Promise<void> {
         try {
             const details = await this.handleApiResult(await getPromptDetails(promptId), 'Fetched prompt details');
 
@@ -630,6 +1013,12 @@ Related Commands:
             if (!ready) {
                 console.log(chalk.yellow('Cannot execute: some required variables are not set.'));
                 return;
+            }
+
+            try {
+                await recordPromptExecution(promptId);
+            } catch (error) {
+                console.error('Failed to record prompt execution:', error);
             }
 
             const userInputs: Record<string, string> = {};
@@ -659,10 +1048,46 @@ Related Commands:
             );
 
             if (result) {
-                await this.continueConversation(conversationManager);
+                if (returnToDetails) {
+                    await this.simplifiedConversation(conversationManager);
+                } else {
+                    await this.continueConversation(conversationManager);
+                }
             }
         } catch (error) {
             this.handleError(error, 'executing prompt');
+        }
+    }
+
+    private async simplifiedConversation(conversationManager: ConversationManager): Promise<void> {
+        while (true) {
+            try {
+                const nextAction = await this.showMenu<'continue' | 'back'>(
+                    'What would you like to do next?',
+                    [
+                        {
+                            name: chalk.green(chalk.bold('Continue conversation')),
+                            value: 'continue'
+                        },
+                        {
+                            name: chalk.yellow(chalk.bold('Return to prompt details')),
+                            value: 'back'
+                        }
+                    ],
+                    { clearConsole: false, includeGoBack: false }
+                );
+
+                if (nextAction === 'back') break;
+
+                const userInput = await this.getMultilineInput(chalk.blue('You: '));
+                await this.handleApiResult(
+                    await conversationManager.continueConversation(userInput),
+                    'Continued conversation'
+                );
+            } catch (error) {
+                this.handleError(error, 'continuing conversation');
+                await this.pressKeyToContinue();
+            }
         }
     }
 
@@ -686,6 +1111,38 @@ Related Commands:
                 this.handleError(error, 'continuing conversation');
                 await this.pressKeyToContinue();
             }
+        }
+    }
+
+    async handlePromptExecution(promptId: string | number): Promise<void> {
+        try {
+            const promptIdStr = String(promptId);
+            while (true) {
+                const details = await this.handleApiResult(
+                    await getPromptDetails(promptIdStr),
+                    'Fetched prompt details'
+                );
+
+                if (!details) {
+                    return;
+                }
+
+                await viewPromptDetails(details);
+
+                const action = await this.selectPromptAction(details);
+
+                if (action === 'back' || action === 'separator') return;
+
+                if (action === 'execute') {
+                    await this.executePromptWithAssignment(promptIdStr, true);
+                } else if (action === 'unset_all') {
+                    await this.unsetAllVariables(promptIdStr);
+                } else if (typeof action !== 'string') {
+                    await this.assignVariable(promptIdStr, action);
+                }
+            }
+        } catch (error) {
+            this.handleError(error, 'handling prompt execution');
         }
     }
 }

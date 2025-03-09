@@ -2,6 +2,8 @@ import { Message as AnthropicMessage, MessageStreamEvent } from '@anthropic-ai/s
 
 import { AppError } from '../../cli/utils/errors';
 import { getConfigValue } from '../config';
+import { AnthropicClient } from './anthropic-client';
+import { OpenAIClient } from './openai-client';
 
 export interface AIMessage {
     role: string;
@@ -35,10 +37,8 @@ export async function getAIClient(): Promise<AIClient> {
     const provider = getConfigValue('MODEL_PROVIDER');
 
     if (provider === 'anthropic') {
-        const { AnthropicClient } = await import('./anthropic-client');
         return new AnthropicClient();
     } else if (provider === 'openai') {
-        const { OpenAIClient } = await import('./openai-client');
         return new OpenAIClient();
     }
 

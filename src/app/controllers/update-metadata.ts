@@ -91,13 +91,37 @@ export async function updateMetadataHash(metadataFile: string, newHash: string):
     }
 }
 
-export async function updatePromptMetadata(): Promise<void> {
+export async function updatePromptMetadata(singlePromptDir?: string): Promise<void> {
     logger.info('Starting update-metadata process');
 
     try {
-        await processMainPrompt(appConfig.PROMPTS_DIR);
-        await processPromptDirectories(appConfig.PROMPTS_DIR);
-        logger.info('update-metadata process completed');
+        if (singlePromptDir) {
+            logger.info(`Processing single prompt directory: ${singlePromptDir}`);
+            const promptDir = path.join(appConfig.PROMPTS_DIR, singlePromptDir);
+            const promptFile = path.join(promptDir, commonConfig.PROMPT_FILE_NAME);
+            const metadataFile = path.join(promptDir, commonConfig.METADATA_FILE_NAME);
+
+            if (await isDirectory(promptDir)) {
+                if (await fileExists(promptFile)) {
+                    await processPromptFile(
+                        promptFile,
+                        metadataFile,
+                        promptDir,
+                        appConfig.PROMPTS_DIR,
+                        singlePromptDir
+                    );
+                    logger.info(`Metadata update completed for ${singlePromptDir}`);
+                } else {
+                    logger.warn(`No ${commonConfig.PROMPT_FILE_NAME} file found in ${promptDir}`);
+                }
+            } else {
+                logger.warn(`Directory ${promptDir} does not exist`);
+            }
+        } else {
+            await processMainPrompt(appConfig.PROMPTS_DIR);
+            await processPromptDirectories(appConfig.PROMPTS_DIR);
+            logger.info('update-metadata process completed for all prompts');
+        }
     } catch (error) {
         logger.error('Error in updatePromptMetadata:', error);
         throw error;
@@ -223,8 +247,19 @@ async function updatePromptDirectory(
 }
 
 if (require.main === module) {
-    updatePromptMetadata().catch((error) => {
-        logger.error('Error in main execution:', error);
-        process.exit(1);
-    });
+    const singlePromptDir = process.argv[2];
+
+    if (singlePromptDir) {
+        logger.info(`Running update-metadata for single prompt: ${singlePromptDir}`);
+        updatePromptMetadata(singlePromptDir).catch((error) => {
+            logger.error('Error in main execution:', error);
+            process.exit(1);
+        });
+    } else {
+        logger.info('Running update-metadata for all prompts');
+        updatePromptMetadata().catch((error) => {
+            logger.error('Error in main execution:', error);
+            process.exit(1);
+        });
+    }
 }

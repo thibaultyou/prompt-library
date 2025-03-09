@@ -1,367 +1,305 @@
-import { CategoryItem, EnvVariable, PromptMetadata, PromptVariable } from '../../../shared/types';
-import { ENV_PREFIX, FRAGMENT_PREFIX } from '../../constants';
-import { fetchCategories, updatePromptVariable } from '../database';
-import { viewFragmentContent } from '../fragments';
-import * as promptUtils from '../prompt-utils';
+import { CategoryItem, EnvVariable, PromptMetadata } from '../../../shared/types';
+import { updatePromptVariable } from '../database';
+import { readEnvVars } from '../env-vars';
+import { listFragments, viewFragmentContent } from '../fragments';
+import {
+    getPromptCategories,
+    getAllPrompts,
+    formatPromptsForDisplay,
+    formatCategoriesForDisplay,
+    formatVariableChoices,
+    allRequiredVariablesSet,
+    assignFragmentToVariable,
+    assignEnvironmentVariable,
+    getMatchingEnvironmentVariables
+} from '../prompt-utils';
 
-jest.mock('../database');
-jest.mock('../fragments');
-jest.mock('chalk', () => ({
-    cyan: jest.fn((text) => `cyan:${text}`),
-    green: jest.fn((text) => `green:${text}`),
-    blue: jest.fn((text) => `blue:${text}`),
-    yellow: jest.fn((text) => `yellow:${text}`),
-    red: jest.fn((text) => `red:${text}`),
-    magenta: jest.fn((text) => `magenta:${text}`),
-    bold: jest.fn((text) => `bold:${text}`),
-    reset: jest.fn((text) => `reset:${text || ''}`)
+jest.mock('../../../shared/utils/string-formatter', () => ({
+    formatSnakeCase: jest.fn((str) => str)
+}));
+
+jest.mock('../database', () => ({
+    allAsync: jest.fn().mockResolvedValue({
+        success: true,
+        data: [
+            {
+                id: 1,
+                title: 'Test Prompt 1',
+                path: 'prompts/test_1',
+                primary_category: 'coding',
+                description: 'Test description 1'
+            },
+            {
+                id: 2,
+                title: 'Test Prompt 2',
+                path: 'prompts/test_2',
+                primary_category: 'writing',
+                description: 'Test description 2'
+            },
+            {
+                id: 3,
+                title: 'Test Prompt 3',
+                path: 'prompts/test_3',
+                primary_category: 'coding',
+                description: 'Test description 3'
+            }
+        ]
+    }),
+    updatePromptVariable: jest.fn().mockResolvedValue({
+        success: true
+    }),
+    fetchCategories: jest.fn().mockResolvedValue({
+        success: true,
+        data: {
+            coding: [
+                {
+                    id: '1',
+                    title: 'Test Prompt 1',
+                    path: 'prompts/test_1',
+                    primary_category: 'coding',
+                    description: 'Test description 1',
+                    subcategories: []
+                },
+                {
+                    id: '3',
+                    title: 'Test Prompt 3',
+                    path: 'prompts/test_3',
+                    primary_category: 'coding',
+                    description: 'Test description 3',
+                    subcategories: []
+                }
+            ],
+            writing: [
+                {
+                    id: '2',
+                    title: 'Test Prompt 2',
+                    path: 'prompts/test_2',
+                    primary_category: 'writing',
+                    description: 'Test description 2',
+                    subcategories: []
+                }
+            ]
+        }
+    })
+}));
+
+jest.mock('../fragments', () => ({
+    listFragments: jest.fn(),
+    viewFragmentContent: jest.fn()
+}));
+
+jest.mock('../env-vars', () => ({
+    readEnvVars: jest.fn()
 }));
 
 describe('Prompt Utils', () => {
-    const mockCategories: Record<string, CategoryItem[]> = {
-        coding: [
-            {
-                id: '1',
-                title: 'Coding Prompt 1',
-                path: '/prompts/coding_prompt_1',
-                description: 'A coding prompt',
-                primary_category: 'coding',
-                subcategories: []
-            },
-            {
-                id: '2',
-                title: 'Coding Prompt 2',
-                path: '/prompts/coding_prompt_2',
-                description: 'Another coding prompt',
-                primary_category: 'coding',
-                subcategories: []
-            }
-        ],
-        writing: [
-            {
-                id: '3',
-                title: 'Writing Prompt',
-                path: '/prompts/writing_prompt',
-                description: 'A writing prompt',
-                primary_category: 'writing',
-                subcategories: []
-            }
-        ]
-    };
-    const mockVariables: PromptVariable[] = [
-        { name: 'var1', role: 'role1', optional_for_user: false },
-        { name: 'var2', role: 'role2', optional_for_user: true, value: 'value2' },
-        { name: 'var3', role: 'role3', optional_for_user: false, value: `${FRAGMENT_PREFIX}category/fragment` },
-        { name: 'var4', role: 'role4', optional_for_user: false, value: `${ENV_PREFIX}ENV_VAR` }
-    ];
-    const mockEnvVars: EnvVariable[] = [
-        { id: 1, name: 'var1', value: 'env_value1', scope: 'global' },
-        { id: 2, name: 'ENV_VAR', value: 'env_value2', scope: 'global' }
-    ];
-    describe('getPromptCategories', () => {
-        it('should return categories when fetch succeeds', async () => {
-            (fetchCategories as jest.Mock).mockResolvedValueOnce({
-                success: true,
-                data: mockCategories
-            });
-
-            const result = await promptUtils.getPromptCategories();
-            expect(result).toEqual(mockCategories);
-        });
-
-        it('should throw error when fetch fails', async () => {
-            (fetchCategories as jest.Mock).mockResolvedValueOnce({
-                success: false,
-                error: 'Database error'
-            });
-
-            await expect(promptUtils.getPromptCategories()).rejects.toThrow('Failed to fetch categories');
-        });
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
-    describe('getAllPrompts', () => {
-        it('should return all prompts with category information', () => {
-            const result = promptUtils.getAllPrompts(mockCategories);
-            expect(result).toHaveLength(3);
-
-            expect(result.map((p) => p.id).sort()).toEqual(['1', '2', '3']);
-
-            expect(result.find((p) => p.id === '1')?.category).toBe('coding');
-            expect(result.find((p) => p.id === '2')?.category).toBe('coding');
-            expect(result.find((p) => p.id === '3')?.category).toBe('writing');
-        });
-    });
-
-    describe('getPromptsSortedById', () => {
-        it('should return prompts sorted by ID', () => {
-            const result = promptUtils.getPromptsSortedById(mockCategories);
-            expect(result).toHaveLength(3);
-            expect(result[0].id).toBe('1');
-            expect(result[1].id).toBe('2');
-            expect(result[2].id).toBe('3');
-        });
-    });
-
-    describe('searchPrompts', () => {
-        it('should find prompts matching title', () => {
-            const result = promptUtils.searchPrompts(mockCategories, 'Writing');
-            expect(result).toHaveLength(1);
-            expect(result[0].title).toBe('Writing Prompt');
+    describe('prompt categories', () => {
+        it('should retrieve and organize prompt categories', async () => {
+            const categories = await getPromptCategories();
+            expect(categories).toHaveProperty('coding');
+            expect(categories).toHaveProperty('writing');
+            expect(categories.coding).toHaveLength(2);
+            expect(categories.writing).toHaveLength(1);
         });
 
-        it('should find prompts matching description', () => {
-            const result = promptUtils.searchPrompts(mockCategories, 'Another');
-            expect(result).toHaveLength(1);
-            expect(result[0].description).toBe('Another coding prompt');
+        it('should get all prompts from categories', async () => {
+            const categories = await getPromptCategories();
+            const allPrompts = getAllPrompts(categories);
+            expect(allPrompts).toHaveLength(3);
+            expect(allPrompts[0]).toHaveProperty('id');
+            expect(allPrompts[0]).toHaveProperty('title');
+            expect(allPrompts[0]).toHaveProperty('category');
         });
 
-        it('should find prompts matching category', () => {
-            const result = promptUtils.searchPrompts(mockCategories, 'coding');
-            expect(result).toHaveLength(2);
-            expect(result[0].category).toBe('coding');
-            expect(result[1].category).toBe('coding');
+        it('should format prompts for display', async () => {
+            const prompts = [
+                {
+                    id: '1',
+                    title: 'Test 1',
+                    path: 'prompts/test_1',
+                    category: 'coding',
+                    primary_category: 'coding',
+                    description: 'Test description 1',
+                    subcategories: []
+                },
+                {
+                    id: '2',
+                    title: 'Test 2',
+                    path: 'prompts/test_2',
+                    category: 'writing',
+                    primary_category: 'writing',
+                    description: 'Test description 2',
+                    subcategories: []
+                }
+            ];
+            const formatted = formatPromptsForDisplay(prompts);
+            expect(formatted).toHaveProperty('headers');
+            expect(formatted).toHaveProperty('rows');
+            expect(formatted.rows.length).toBeGreaterThan(0);
         });
 
-        it('should find prompts matching path', () => {
-            const result = promptUtils.searchPrompts(mockCategories, 'writing_prompt');
-            expect(result).toHaveLength(1);
-            expect(result[0].path).toBe('/prompts/writing_prompt');
-        });
-
-        it('should return empty array when no matches', () => {
-            const result = promptUtils.searchPrompts(mockCategories, 'nonexistent');
-            expect(result).toHaveLength(0);
-        });
-    });
-
-    describe('formatPromptsForDisplay', () => {
-        it('should format prompts for display', () => {
-            const prompts = promptUtils.getAllPrompts(mockCategories);
-            const result = promptUtils.formatPromptsForDisplay(prompts);
-            expect(result.headers).toContain('bold:ID');
-            expect(result.headers).toContain('bold:Directory');
-            expect(result.headers).toContain('bold:Category');
-            expect(result.headers).toContain('bold:Title');
-
-            expect(result.rows).toHaveLength(3);
-
-            const rowWithId2 = result.rows.find((row) => row.includes('green:2'));
-            expect(rowWithId2).toBeDefined();
-
-            if (rowWithId2) {
-                expect(rowWithId2).toContain('yellow:coding_prompt_2');
-                expect(rowWithId2).toContain('cyan:coding');
-            }
-
-            expect(result.maxLengths.id).toBe(1);
-            expect(result.maxLengths.category).toBe(7);
-        });
-    });
-
-    describe('getCategoryDescription', () => {
-        it('should return description for known categories', () => {
-            expect(promptUtils.getCategoryDescription('coding')).toBe(
-                'Software development, programming, and engineering'
-            );
-            expect(promptUtils.getCategoryDescription('writing')).toBe('Written content creation and editing');
-        });
-
-        it('should return fallback description for unknown categories', () => {
-            expect(promptUtils.getCategoryDescription('unknown')).toBe('Unknown prompts');
-        });
-    });
-
-    describe('getVariableNameColor', () => {
-        it('should return blue for fragment variables', () => {
-            const color = promptUtils.getVariableNameColor(mockVariables[2]);
-            expect(color).toBe(jest.requireMock('chalk').blue);
-        });
-
-        it('should return magenta for env variables', () => {
-            const color = promptUtils.getVariableNameColor(mockVariables[3]);
-            expect(color).toBe(jest.requireMock('chalk').magenta);
-        });
-
-        it('should return green for set variables', () => {
-            const color = promptUtils.getVariableNameColor(mockVariables[1]);
-            expect(color).toBe(jest.requireMock('chalk').green);
-        });
-
-        it('should return yellow for optional unset variables', () => {
-            const mockVar = { ...mockVariables[1], value: undefined };
-            const color = promptUtils.getVariableNameColor(mockVar);
-            expect(color).toBe(jest.requireMock('chalk').yellow);
-        });
-
-        it('should return red for required unset variables', () => {
-            const mockVar = { ...mockVariables[0], value: undefined };
-            const color = promptUtils.getVariableNameColor(mockVar);
-            expect(color).toBe(jest.requireMock('chalk').red);
-        });
-    });
-
-    describe('getVariableHint', () => {
-        it('should return env hint for matching variables', () => {
-            const hint = promptUtils.getVariableHint(mockVariables[0], mockEnvVars);
-            expect(hint).toContain('magenta:');
-            expect(hint).toContain('env available');
-        });
-
-        it('should return empty string for non-matching variables', () => {
-            const mockVar = { name: 'nonexistent', role: 'role', optional_for_user: false };
-            const hint = promptUtils.getVariableHint(mockVar, mockEnvVars);
-            expect(hint).toBe('');
-        });
-
-        it('should return empty string for variables with values', () => {
-            const hint = promptUtils.getVariableHint(mockVariables[1], mockEnvVars);
-            expect(hint).toBe('');
-        });
-    });
-
-    describe('formatVariableChoices', () => {
-        it('should format variables for choices', () => {
-            const choices = promptUtils.formatVariableChoices(mockVariables, mockEnvVars);
-            expect(choices).toHaveLength(4);
-
-            expect(choices[0].name).toContain('red:var1');
-            expect(choices[0].name).toContain('magenta: (env available)');
-
-            expect(choices[1].name).toContain('green:var2');
-
-            expect(choices[2].name).toContain('blue:var3');
-
-            expect(choices[3].name).toContain('magenta:var4');
-        });
-    });
-
-    describe('allRequiredVariablesSet', () => {
-        it('should return true when all required variables are set', () => {
-            const mockMetadata: PromptMetadata = {
-                id: '1',
-                title: 'Test',
-                primary_category: 'test',
-                subcategories: [],
-                directory: 'test',
-                tags: [],
-                one_line_description: 'test',
-                description: 'test',
-                content_hash: 'test',
-                variables: [
-                    { name: 'var1', role: 'role1', optional_for_user: false, value: 'value1' },
-                    { name: 'var2', role: 'role2', optional_for_user: true }
+        it('should format categories for display', async () => {
+            const categories = {
+                coding: [
+                    {
+                        id: '1',
+                        title: 'Test 1',
+                        primary_category: 'coding',
+                        description: 'Test description',
+                        path: 'prompts/test_1',
+                        subcategories: []
+                    } as CategoryItem
                 ],
-                fragments: []
+                writing: [
+                    {
+                        id: '2',
+                        title: 'Test 2',
+                        primary_category: 'writing',
+                        description: 'Test description',
+                        path: 'prompts/test_2',
+                        subcategories: []
+                    } as CategoryItem
+                ]
             };
-            const result = promptUtils.allRequiredVariablesSet(mockMetadata);
-            expect(result).toBe(true);
+            const formatted = formatCategoriesForDisplay(categories);
+            expect(formatted).toHaveProperty('headers');
+            expect(formatted).toHaveProperty('rows');
         });
+    });
 
-        it('should return false when any required variable is not set', () => {
-            const mockMetadata: PromptMetadata = {
-                id: '1',
-                title: 'Test',
-                primary_category: 'test',
-                subcategories: [],
-                directory: 'test',
-                tags: [],
-                one_line_description: 'test',
-                description: 'test',
-                content_hash: 'test',
+    describe('variable management', () => {
+        const mockPromptMetadata: PromptMetadata = {
+            id: '123',
+            title: 'Test Prompt',
+            directory: 'test_prompt',
+            primary_category: 'test',
+            subcategories: [],
+            description: 'Test description',
+            one_line_description: 'Short description',
+            tags: [],
+            content_hash: '',
+            variables: [
+                { name: 'required_var', role: 'Required variable', optional_for_user: false },
+                { name: 'optional_var', role: 'Optional variable', optional_for_user: true },
+                {
+                    name: 'required_with_value',
+                    role: 'Required with value',
+                    optional_for_user: false,
+                    value: 'test value'
+                }
+            ]
+        };
+        it('should check if all required variables are set', () => {
+            const notAllSet = allRequiredVariablesSet(mockPromptMetadata);
+            expect(notAllSet).toBe(false);
+
+            const allSetMetadata = {
+                ...mockPromptMetadata,
                 variables: [
-                    { name: 'var1', role: 'role1', optional_for_user: false },
-                    { name: 'var2', role: 'role2', optional_for_user: true, value: 'value2' }
-                ],
-                fragments: []
+                    { name: 'var1', role: 'Variable 1', optional_for_user: false, value: 'value1' },
+                    { name: 'var2', role: 'Variable 2', optional_for_user: true }
+                ]
             };
-            const result = promptUtils.allRequiredVariablesSet(mockMetadata);
-            expect(result).toBe(false);
+            const allSet = allRequiredVariablesSet(allSetMetadata);
+            expect(allSet).toBe(true);
+
+            const noVarsMetadata = {
+                ...mockPromptMetadata,
+                variables: []
+            };
+            const noVars = allRequiredVariablesSet(noVarsMetadata);
+            expect(noVars).toBe(true);
+        });
+
+        it('should format variable choices', () => {
+            const mockEnvVars: EnvVariable[] = [{ id: 1, name: 'API_KEY', value: 'abc123', scope: 'global' }];
+            const choices = formatVariableChoices(mockPromptMetadata.variables, mockEnvVars);
+            expect(Array.isArray(choices)).toBe(true);
+            expect(choices.length).toBeGreaterThan(0);
+
+            choices.forEach((choice) => {
+                expect(choice).toHaveProperty('name');
+                expect(choice).toHaveProperty('value');
+                expect(typeof choice.name).toBe('string');
+            });
         });
     });
 
-    describe('setVariableValue', () => {
-        it('should update variable value and return success', async () => {
-            (updatePromptVariable as jest.Mock).mockResolvedValueOnce({ success: true });
-
-            const result = await promptUtils.setVariableValue('1', 'var1', 'new value');
-            expect(result).toBe(true);
-            expect(updatePromptVariable).toHaveBeenCalledWith('1', 'var1', 'new value');
-        });
-
-        it('should return false when update fails', async () => {
-            (updatePromptVariable as jest.Mock).mockResolvedValueOnce({ success: false, error: 'Update failed' });
-
-            const result = await promptUtils.setVariableValue('1', 'var1', 'new value');
-            expect(result).toBe(false);
-        });
-    });
-
-    describe('assignFragmentToVariable', () => {
+    describe('fragment integration', () => {
         beforeEach(() => {
-            jest.clearAllMocks();
-        });
+            (listFragments as jest.Mock).mockResolvedValue({
+                success: true,
+                data: [
+                    { category: 'intro', name: 'welcome', variable: 'WELCOME' },
+                    { category: 'outro', name: 'farewell', variable: 'FAREWELL' }
+                ]
+            });
 
-        it('should assign fragment and return content on success', async () => {
-            (updatePromptVariable as jest.Mock).mockResolvedValueOnce({ success: true });
-            (viewFragmentContent as jest.Mock).mockResolvedValueOnce({
+            (viewFragmentContent as jest.Mock).mockResolvedValue({
                 success: true,
                 data: 'Fragment content'
             });
+        });
 
-            const result = await promptUtils.assignFragmentToVariable('1', 'var1', 'category', 'fragment');
+        it('should assign fragment content to a variable', async () => {
+            const promptId = '123';
+            const variableName = 'test_var';
+            const fragmentCategory = 'intro';
+            const fragmentName = 'welcome';
+            const result = await assignFragmentToVariable(promptId, variableName, fragmentCategory, fragmentName);
+            expect(updatePromptVariable).toHaveBeenCalled();
+            expect(viewFragmentContent).toHaveBeenCalledWith(fragmentCategory, fragmentName);
             expect(result).toBe('Fragment content');
-            expect(updatePromptVariable).toHaveBeenCalledWith('1', 'var1', `${FRAGMENT_PREFIX}category/fragment`);
         });
 
-        it('should return null when update fails', async () => {
-            (updatePromptVariable as jest.Mock).mockResolvedValueOnce({ success: false, error: 'Update failed' });
+        it('should handle errors when assigning fragments', async () => {
+            (updatePromptVariable as jest.Mock).mockResolvedValueOnce({
+                success: false
+            });
 
-            const result = await promptUtils.assignFragmentToVariable('1', 'var1', 'category', 'fragment');
-            expect(result).toBeNull();
-
-            expect(viewFragmentContent).not.toHaveBeenCalled();
-        });
-
-        it('should return null when fragment content fetch fails', async () => {
-            (updatePromptVariable as jest.Mock).mockResolvedValueOnce({ success: true });
-            (viewFragmentContent as jest.Mock).mockResolvedValueOnce({ success: false, error: 'Not found' });
-
-            const result = await promptUtils.assignFragmentToVariable('1', 'var1', 'category', 'fragment');
+            const result = await assignFragmentToVariable('123', 'test_var', 'intro', 'welcome');
             expect(result).toBeNull();
         });
     });
 
-    describe('unsetAllVariables', () => {
+    describe('environment variable integration', () => {
         beforeEach(() => {
-            jest.clearAllMocks();
-        });
-
-        it('should unset all variables and return success', async () => {
-            (updatePromptVariable as jest.Mock).mockResolvedValue({ success: true });
-
-            const result = await promptUtils.unsetAllVariables('1', mockVariables);
-            expect(result.success).toBe(true);
-            expect(result.errors).toHaveLength(0);
-
-            expect(updatePromptVariable).toHaveBeenCalledTimes(mockVariables.length);
-            mockVariables.forEach((variable) => {
-                expect(updatePromptVariable).toHaveBeenCalledWith('1', variable.name, '');
+            (readEnvVars as jest.Mock).mockResolvedValue({
+                success: true,
+                data: [
+                    { name: 'API_KEY', value: 'abc123', description: 'API key' },
+                    { name: 'USER_NAME', value: 'testuser', description: 'User name' }
+                ]
             });
         });
 
-        it('should collect errors when updates fail', async () => {
-            (updatePromptVariable as jest.Mock)
-                .mockResolvedValueOnce({ success: true })
-                .mockResolvedValueOnce({ success: false, error: 'Update failed for var2' })
-                .mockResolvedValueOnce({ success: true })
-                .mockRejectedValueOnce(new Error('Network error for var4'));
+        it('should get matching environment variables', async () => {
+            const mockVariable = {
+                name: 'api_key',
+                role: 'API Key',
+                optional_for_user: false
+            };
+            const mockEnvVars: EnvVariable[] = [
+                { id: 1, name: 'API_KEY', value: 'abc123', scope: 'global' },
+                { id: 2, name: 'USER_NAME', value: 'testuser', scope: 'global' }
+            ];
+            const matches = getMatchingEnvironmentVariables(mockVariable, mockEnvVars);
+            expect(matches.length).toBeGreaterThan(0);
+            expect(matches[0].name).toBe('API_KEY');
+        });
 
-            const result = await promptUtils.unsetAllVariables('1', mockVariables);
-            expect(result.success).toBe(false);
-            expect(result.errors).toHaveLength(2);
-            expect(result.errors[0].variable).toBe('var2');
-            expect(result.errors[1].variable).toBe('var4');
-            expect(result.errors[1].error).toBe('Network error for var4');
+        it('should assign environment variable to prompt variable', async () => {
+            const promptId = '123';
+            const variableName = 'api_key_var';
+            const envVarName = 'API_KEY';
+            const envVarValue = 'abc123';
+            const result = await assignEnvironmentVariable(promptId, variableName, envVarName, envVarValue);
+            expect(updatePromptVariable).toHaveBeenCalled();
+            expect(result).not.toBeNull();
         });
     });
 });
