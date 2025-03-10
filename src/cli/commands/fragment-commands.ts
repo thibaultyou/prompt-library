@@ -173,6 +173,7 @@ const createCommand = new Command('create')
         if (nameIndex !== -1 && nameIndex < process.argv.length - 1 && !options.name) {
             options.name = process.argv[nameIndex + 1];
         }
+
         try {
             const fragmentData = await collectFragmentData(options);
             const fragmentContent = await collectFragmentContent(fragmentData);
@@ -211,6 +212,7 @@ const editCommand = new Command('edit')
         if (nameIndex !== -1 && nameIndex < process.argv.length - 1 && !options.name) {
             options.name = process.argv[nameIndex + 1];
         }
+
         try {
             let category = options.category;
             let name = options.name;
@@ -274,6 +276,7 @@ const deleteCommand = new Command('delete')
         if (forceFlag && !options.force) {
             options.force = true;
         }
+
         try {
             let category = options.category;
             let name = options.name;

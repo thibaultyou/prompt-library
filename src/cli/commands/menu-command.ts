@@ -3,10 +3,11 @@ import { Command } from 'commander';
 
 import { BaseCommand } from './base-command';
 import { getConfig, getConfigValue } from '../../shared/config';
-import { getRecentExecutions } from '../utils/database';
+import { getPromptById, getRecentExecutions } from '../utils/database';
 import { handleError } from '../utils/errors';
 import { hasFragments, hasPrompts } from '../utils/file-system';
 import { hasLibraryRepositoryChanges } from '../utils/library-repository';
+import { getPromptCategories } from '../utils/prompt-utils';
 import { createSectionHeader, formatMenuItem, printSectionHeader, warningMessage } from '../utils/ui-components';
 
 type MenuAction =
@@ -114,7 +115,7 @@ class MenuCommand extends BaseCommand {
                     choices.push({
                         name: createSectionHeader<MenuAction>('QUICK ACTIONS', '✨', 'success').name,
                         value: 'quick_actions_header',
-                        disabled: 'HEADER'
+                        disabled: ' '
                     });
 
                     if (recentPrompts.length > 0) {
@@ -138,14 +139,14 @@ class MenuCommand extends BaseCommand {
                     choices.push({
                         name: '─'.repeat(50),
                         value: 'spacer',
-                        disabled: true
+                        disabled: ' '
                     });
                 }
 
                 choices.push({
                     name: createSectionHeader<MenuAction>('MAIN MENU', '📚', 'info').name,
                     value: 'menu_header',
-                    disabled: 'HEADER'
+                    disabled: ' '
                 });
 
                 choices.push(
@@ -166,7 +167,7 @@ class MenuCommand extends BaseCommand {
                 choices.push({
                     name: createSectionHeader<MenuAction>('CONFIGURATION', '⚙️', 'info').name,
                     value: 'config_header',
-                    disabled: 'HEADER'
+                    disabled: ' '
                 });
 
                 choices.push(
@@ -187,7 +188,7 @@ class MenuCommand extends BaseCommand {
                 choices.push({
                     name: createSectionHeader<MenuAction>('REPOSITORY', '🔄', 'warning').name,
                     value: 'repo_header',
-                    disabled: 'HEADER'
+                    disabled: ' '
                 });
 
                 const syncChoices: MenuItem[] = [
@@ -231,27 +232,76 @@ class MenuCommand extends BaseCommand {
                     const lastPromptChoice = choices.find((c) => c.value === 'last_prompt');
 
                     if (lastPromptChoice && lastPromptChoice.description) {
-                        const executeCmd = this.program.commands.find((cmd) => cmd.name() === 'execute');
-
-                        if (executeCmd) {
-                            await executeCmd.parseAsync([
-                                'node',
-                                'script.js',
-                                'execute',
-                                '-p',
-                                lastPromptChoice.description
-                            ]);
+                        try {
+                            // Get the recent executions
+                            const recentExecutions = await getRecentExecutions(1);
+                            
+                            if (recentExecutions && recentExecutions.length > 0) {
+                                const mostRecentPromptId = recentExecutions[0].prompt_id;
+                                
+                                // Directly import the prompts command
+                                const { default: promptsCommand } = await import('./prompts-command');
+                                
+                                console.log(chalk.cyan(`Loading prompt details for ID: ${mostRecentPromptId}...`));
+                                
+                                // Get the actual prompt details
+                                const promptDetails = await getPromptById(parseInt(mostRecentPromptId.toString()));
+                                
+                                if (promptDetails) {
+                                    // Create a CategoryItem object that managePrompt expects
+                                    const selectedPrompt = {
+                                        id: mostRecentPromptId.toString(),
+                                        title: promptDetails.title,
+                                        category: promptDetails.primary_category,
+                                        primary_category: promptDetails.primary_category,
+                                        path: promptDetails.directory,
+                                        description: promptDetails.description || '',
+                                        subcategories: []
+                                    };
+                                    
+                                    // Use the managePrompt method to show the prompt details and execute
+                                    await promptsCommand.managePrompt(selectedPrompt);
+                                    
+                                    // Return to main menu
+                                    console.clear();
+                                    firstRun = true;
+                                    continue;
+                                } else {
+                                    console.log(chalk.yellow(`Could not find details for prompt ID: ${mostRecentPromptId}`));
+                                    await this.pressKeyToContinue();
+                                    console.clear();
+                                    firstRun = true;
+                                    continue;
+                                }
+                            } else {
+                                console.log(chalk.yellow("No recent prompt executions found."));
+                                await this.pressKeyToContinue();
+                                console.clear();
+                                firstRun = true;
+                                continue;
+                            }
+                        } catch (error) {
+                            this.handleError(error, 'executing last prompt');
+                            await this.pressKeyToContinue();
+                            console.clear();
+                            firstRun = true;
+                            continue;
                         }
                     }
                 } else if (action === 'search_prompts') {
                     const keyword = await this.getInput('Enter search keyword:');
 
                     if (keyword && keyword.trim()) {
-                        const promptsCmd = this.program.commands.find((cmd) => cmd.name() === 'prompts');
-
-                        if (promptsCmd) {
-                            await promptsCmd.parseAsync(['node', 'script.js', 'prompts', '--search', keyword.trim()]);
-                        }
+                        // Instead of using the command directly, we'll use the internal logic to have better control
+                        const { default: promptsCommand } = await import('./prompts-command');
+                        // Get the categories first
+                        const categories = await getPromptCategories();
+                        // Use the searchPrompts method directly
+                        await promptsCommand.searchPrompts(categories, keyword.trim(), false);
+                        // After the search is complete and user is done, return to main menu
+                        console.clear();
+                        firstRun = true;
+                        continue;
                     }
                 } else if (action === 'list_changes') {
                     const syncCmd = this.program.commands.find((cmd) => cmd.name() === 'sync');

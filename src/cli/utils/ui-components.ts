@@ -29,7 +29,7 @@ export function createCategoryHeader<T>(
     return {
         name: styleFn(`${emoji} ${category}`),
         value: 'header' as any,
-        disabled: true,
+        disabled: ' ',
         type: 'header'
     };
 }
@@ -44,7 +44,7 @@ export function createSectionHeader<T>(
     return {
         name: styleFn(headerText),
         value: 'header' as any,
-        disabled: 'HEADER',
+        disabled: ' ',
         type: 'header'
     };
 }
@@ -53,7 +53,7 @@ export function createSeparator<T>(length: number = 50, value: T = 'separator' a
     return {
         name: '─'.repeat(length),
         value,
-        disabled: true,
+        disabled: ' ',
         type: 'separator'
     };
 }
@@ -125,7 +125,7 @@ export async function selectWithHeaders<T>(config: MenuConfig<T>): Promise<T> {
             return {
                 ...choice,
                 name: formattedName,
-                disabled: ''
+                disabled: ' '
             };
         }
         return choice;

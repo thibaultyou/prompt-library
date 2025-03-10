@@ -117,17 +117,16 @@ Note:
             const hasPromptFile = process.argv.includes('-f') || process.argv.includes('--prompt-file');
             const hasMetadataFile = process.argv.includes('-m') || process.argv.includes('--metadata-file');
             const hasInspect = process.argv.includes('-i') || process.argv.includes('--inspect');
-            
             // Get values for options
             let promptValue = '';
             let promptFileValue = '';
             let metadataFileValue = '';
-            
             // Get prompt value
             const promptIndex = Math.max(
                 process.argv.indexOf('-p'),
                 process.argv.indexOf('--prompt')
             );
+
             if (promptIndex !== -1 && promptIndex < process.argv.length - 1) {
                 promptValue = process.argv[promptIndex + 1];
             }
@@ -137,6 +136,7 @@ Note:
                 process.argv.indexOf('-f'),
                 process.argv.indexOf('--prompt-file')
             );
+
             if (promptFileIndex !== -1 && promptFileIndex < process.argv.length - 1) {
                 promptFileValue = process.argv[promptFileIndex + 1];
             }
@@ -146,6 +146,7 @@ Note:
                 process.argv.indexOf('-m'),
                 process.argv.indexOf('--metadata-file')
             );
+
             if (metadataFileIndex !== -1 && metadataFileIndex < process.argv.length - 1) {
                 metadataFileValue = process.argv[metadataFileIndex + 1];
             }
@@ -157,10 +158,12 @@ Note:
                 if (fileInputIndex < process.argv.length - 1) {
                     const value = process.argv[fileInputIndex + 1];
                     const [variable, file] = value.split('=');
+
                     if (variable && file) {
                         fileInputs[variable] = file;
                     }
                 }
+
                 fileInputIndex = process.argv.indexOf('-fi', fileInputIndex + 2);
             }
             
@@ -169,17 +172,21 @@ Note:
                 if (fileInputIndex < process.argv.length - 1) {
                     const value = process.argv[fileInputIndex + 1];
                     const [variable, file] = value.split('=');
+
                     if (variable && file) {
                         fileInputs[variable] = file;
                     }
                 }
+
                 fileInputIndex = process.argv.indexOf('--file-input', fileInputIndex + 2);
             }
             
             // Parse dynamic options
             const dynamicOptions: Record<string, string> = {};
+
             for (let i = 0; i < process.argv.length; i++) {
                 const arg = process.argv[i];
+
                 if (arg.startsWith('--') && 
                     arg !== '--prompt' && 
                     arg !== '--prompt-file' && 
@@ -188,12 +195,12 @@ Note:
                     arg !== '--file-input') {
                     
                     const key = arg.slice(2).replace(/-/g, '_');
+
                     if (i < process.argv.length - 1 && !process.argv[i + 1].startsWith('-')) {
                         dynamicOptions[key] = process.argv[i + 1];
                     }
                 }
             }
-            
 
             if (hasPrompt && promptValue) {
                 await this.handleStoredPrompt(promptValue, dynamicOptions, hasInspect, fileInputs);
@@ -240,14 +247,14 @@ Note:
 
             const { promptContent, metadata } = promptFiles;
 
-            if (process.env.CLI_ENV === 'cli') {
-                // Don't use prompt command in CLI mode if we have dynamic options or file inputs
-                // This way it will continue and handle variables with our direct logic
-                if (Object.keys(dynamicOptions).length === 0 && Object.keys(fileInputs).length === 0 && !inspect) {
-                    const { default: promptsCommand } = await import('./prompts-command');
-                    await promptsCommand.handlePromptExecution(promptId);
-                    return;
-                }
+            // If we're in CLI mode with no dynamic options or file inputs
+            if (process.env.CLI_ENV === 'cli' && 
+                Object.keys(dynamicOptions).length === 0 && 
+                Object.keys(fileInputs).length === 0 && 
+                !inspect) {
+                const { default: promptsCommand } = await import('./prompts-command');
+                await promptsCommand.handlePromptExecution(promptId);
+                return;
             }
 
             if (inspect) {

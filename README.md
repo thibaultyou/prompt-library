@@ -294,6 +294,42 @@ prompt-library-cli env
 
 > **Note**: For security, your API keys are stored securely and never logged or displayed in full.
 
+#### Repository Management
+
+```bash
+# Show repository status (current branch, changes, remotes)
+prompt-library-cli repository --status
+
+# Set upstream repository URL
+prompt-library-cli repository --upstream https://github.com/your-username/your-repo.git
+
+# Add a downstream repository URL
+prompt-library-cli repository --downstream https://github.com/contributor/fork-repo.git
+
+# Set default branch name
+prompt-library-cli repository --branch main
+
+# List remote repositories
+prompt-library-cli repository --list-remotes
+
+# Enable or disable git integration
+prompt-library-cli repository --enable-git
+prompt-library-cli repository --disable-git
+```
+
+#### Setup Options
+
+```bash
+# Setup with a specific repository URL
+prompt-library-cli setup -r https://github.com/your-username/your-repo.git
+
+# Force setup (overwrites existing repository)
+prompt-library-cli setup --force
+
+# Use local development repository instead of cloning from remote
+prompt-library-cli setup --local
+```
+
 </p>
 </details>
 

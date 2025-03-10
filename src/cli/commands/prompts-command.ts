@@ -12,6 +12,7 @@ import {
     getPromptDetails,
     getRecentExecutions,
     isPromptInFavorites,
+    recordPromptExecution,
     removePromptFromFavorites
 } from '../utils/database';
 import { readEnvVars } from '../utils/env-vars';
@@ -98,10 +99,10 @@ Related Commands:
             const hasRecent = process.argv.includes('--recent');
             const hasFavorites = process.argv.includes('--favorites');
             const hasJson = process.argv.includes('--json');
-            
             // Find search term if present
-            let searchIndex = process.argv.indexOf('--search');
+            const searchIndex = process.argv.indexOf('--search');
             let searchTerm = null;
+
             if (searchIndex !== -1 && searchIndex < process.argv.length - 1) {
                 searchTerm = process.argv[searchIndex + 1];
             }
@@ -365,7 +366,7 @@ Related Commands:
         }
     }
 
-    private async searchPrompts(
+    async searchPrompts(
         categories: Record<string, CategoryItem[]>,
         keyword: string,
         json: boolean
@@ -506,7 +507,7 @@ Related Commands:
                 choices.push({
                     name: '─'.repeat(50),
                     value: 'separator',
-                    disabled: true
+                    disabled: ' '
                 });
 
                 choices.push(createSectionHeader<PromptMenuAction>('MANAGE', '✏️', 'success'));
@@ -517,12 +518,12 @@ Related Commands:
                 choices.push({
                     name: '─'.repeat(50),
                     value: 'separator',
-                    disabled: true
+                    disabled: ' '
                 });
                 choices.push({
                     name: chalk.italic('To run a prompt, use the "Run a prompt" option from the main menu'),
                     value: 'back',
-                    disabled: true
+                    disabled: ' '
                 });
 
                 const action = await this.showMenu<PromptMenuAction>(
@@ -711,7 +712,7 @@ Related Commands:
         }
     }
 
-    private async managePrompt(prompt: CategoryItem): Promise<void> {
+    async managePrompt(prompt: CategoryItem): Promise<void> {
         while (true) {
             try {
                 const details = await this.handleApiResult(await getPromptDetails(prompt.id), 'Fetched prompt details');
@@ -1014,6 +1015,14 @@ Related Commands:
                 console.log(chalk.yellow('Cannot execute: some required variables are not set.'));
                 return;
             }
+            
+            // Record the prompt execution in the database
+            try {
+                await recordPromptExecution(promptId);
+            } catch (error) {
+                console.error('Failed to record prompt execution:', error);
+                // Continue execution even if recording fails
+            }
 
             const userInputs: Record<string, string> = {};
 
@@ -1108,12 +1117,17 @@ Related Commands:
         }
     }
 
-    async handlePromptExecution(promptId: string): Promise<void> {
+    async handlePromptExecution(promptId: string | number): Promise<void> {
         try {
+            // Convert promptId to string if it's not already
+            const promptIdStr = String(promptId);
+            
             while (true) {
-                const details = await this.handleApiResult(await getPromptDetails(promptId), 'Fetched prompt details');
+                const details = await this.handleApiResult(await getPromptDetails(promptIdStr), 'Fetched prompt details');
 
-                if (!details) return;
+                if (!details) {
+                    return;
+                }
 
                 await viewPromptDetails(details);
 
@@ -1122,11 +1136,11 @@ Related Commands:
                 if (action === 'back' || action === 'separator') return;
 
                 if (action === 'execute') {
-                    await this.executePromptWithAssignment(promptId, true);
+                    await this.executePromptWithAssignment(promptIdStr, true);
                 } else if (action === 'unset_all') {
-                    await this.unsetAllVariables(promptId);
+                    await this.unsetAllVariables(promptIdStr);
                 } else if (typeof action !== 'string') {
-                    await this.assignVariable(promptId, action);
+                    await this.assignVariable(promptIdStr, action);
                 }
             }
         } catch (error) {

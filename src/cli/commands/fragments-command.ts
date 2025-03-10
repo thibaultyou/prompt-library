@@ -46,10 +46,10 @@ Examples:
         const hasList = process.argv.includes('--list');
         const hasCategories = process.argv.includes('--categories');
         const hasJson = process.argv.includes('--json');
-        
         // Find search term if present
-        let searchIndex = process.argv.indexOf('--search');
+        const searchIndex = process.argv.indexOf('--search');
         let searchTerm = null;
+
         if (searchIndex !== -1 && searchIndex < process.argv.length - 1) {
             searchTerm = process.argv[searchIndex + 1];
         }
@@ -81,7 +81,7 @@ Examples:
                 choices.push({
                     name: '─'.repeat(50),
                     value: 'separator',
-                    disabled: true
+                    disabled: ' '
                 });
 
                 choices.push(createSectionHeader<FragmentMenuAction>('MANAGE', '✏️', 'success'));
@@ -92,12 +92,12 @@ Examples:
                 choices.push({
                     name: '─'.repeat(50),
                     value: 'separator',
-                    disabled: true
+                    disabled: ' '
                 });
                 choices.push({
                     name: chalk.italic('To run a prompt, use the "Run a prompt" option from the main menu'),
                     value: 'back',
-                    disabled: true
+                    disabled: ' '
                 });
 
                 const action = await this.showMenu<FragmentMenuAction>(
@@ -269,7 +269,6 @@ Examples:
                 // Calculate max lengths for formatting
                 const maxCategoryLength = Math.max(...allFragments.map(f => f.category.length), 'CATEGORY'.length);
                 const maxNameLength = Math.max(...allFragments.map(f => f.name.length), 'NAME'.length);
-                
                 // Print header
                 console.log(
                     chalk.cyan('CATEGORY'.padEnd(maxCategoryLength + 4)) +
@@ -284,6 +283,7 @@ Examples:
                     if (!fragmentsByCategory[fragment.category]) {
                         fragmentsByCategory[fragment.category] = [];
                     }
+
                     fragmentsByCategory[fragment.category].push(fragment);
                 });
 
@@ -375,7 +375,6 @@ Examples:
                 // Calculate max lengths for formatting
                 const maxCategoryLength = Math.max(...matchingFragments.map(f => f.category.length), 'CATEGORY'.length);
                 const maxNameLength = Math.max(...matchingFragments.map(f => f.name.length), 'NAME'.length);
-                
                 // Print header
                 console.log(
                     chalk.cyan('CATEGORY'.padEnd(maxCategoryLength + 4)) +
