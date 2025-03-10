@@ -2,15 +2,112 @@ import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Spinner } from 'cli-spinner';
 
-interface SelectConfig<_T> {
+export interface MenuItem<T = string> {
+    name: string;
+    value: T;
+    description?: string;
+    disabled?: boolean | string;
+    type?: 'header' | 'separator' | 'item';
+}
+
+export interface MenuConfig<T> {
     message: string;
-    choices: any[];
+    choices: MenuItem<T>[];
     pageSize?: number;
     loop?: boolean;
     theme?: any;
 }
 
-export async function selectWithHeaders<T>(config: SelectConfig<T>): Promise<T> {
+export type MenuHeaderStyle = 'success' | 'info' | 'warning' | 'danger' | 'primary';
+
+export function createCategoryHeader<T>(
+    category: string,
+    emoji: string = '📁',
+    style: MenuHeaderStyle = 'primary'
+): MenuItem<T> {
+    const styleFn = getHeaderStyleFunction(style);
+    return {
+        name: styleFn(`${emoji} ${category}`),
+        value: 'header' as any,
+        disabled: true,
+        type: 'header'
+    };
+}
+
+export function createSectionHeader<T>(
+    title: string,
+    emoji: string = '',
+    style: MenuHeaderStyle = 'primary'
+): MenuItem<T> {
+    const styleFn = getHeaderStyleFunction(style);
+    const headerText = emoji ? `${emoji} ${title}` : title;
+    return {
+        name: styleFn(headerText),
+        value: 'header' as any,
+        disabled: 'HEADER',
+        type: 'header'
+    };
+}
+
+export function createSeparator<T>(length: number = 50, value: T = 'separator' as any): MenuItem<T> {
+    return {
+        name: '─'.repeat(length),
+        value,
+        disabled: true,
+        type: 'separator'
+    };
+}
+
+function getHeaderStyleFunction(style: MenuHeaderStyle): (text: string) => string {
+    switch (style) {
+        case 'success':
+            return (text: string) => chalk.bold(chalk.green(text));
+        case 'warning':
+            return (text: string) => chalk.bold(chalk.yellow(text));
+        case 'danger':
+            return (text: string) => chalk.bold(chalk.red(text));
+        case 'info':
+            return (text: string) => chalk.bold(chalk.blue(text));
+        case 'primary':
+        default:
+            return (text: string) => chalk.bold(chalk.cyan(text));
+    }
+}
+
+export function formatMenuItem<T>(
+    text: string,
+    value: T,
+    style: MenuHeaderStyle = 'primary',
+    disabled: boolean | string = false
+): MenuItem<T> {
+    let colorFn;
+    switch (style) {
+        case 'success':
+            colorFn = chalk.green;
+            break;
+        case 'warning':
+            colorFn = chalk.yellow;
+            break;
+        case 'danger':
+            colorFn = chalk.red;
+            break;
+        case 'info':
+            colorFn = chalk.blue;
+            break;
+        case 'primary':
+        default:
+            colorFn = chalk.cyan;
+            break;
+    }
+    return {
+        name: colorFn(text),
+        value,
+        disabled,
+        type: 'item'
+    };
+}
+
+export async function selectWithHeaders<T>(config: MenuConfig<T>): Promise<T> {
     const cleanChoices = config.choices.map((choice: any) => {
         if (choice.disabled === 'HEADER') {
             const headerName = choice.name;
@@ -91,31 +188,25 @@ export function truncateString(str: string, maxLength: number = 50): string {
     return str.substring(0, maxLength - 3) + '...';
 }
 
-/**
- * Create a spinner with the given message
- */
-export function showSpinner(message: string): Spinner & { succeed: Function; fail: Function } {
+export function showSpinner(
+    message: string
+): Spinner & { succeed: (text?: string) => void; fail: (text?: string) => void } {
     const spinner = new Spinner(`${message} %s`);
     spinner.setSpinnerString('|/-\\');
     spinner.start();
-    
-    // Add convenience methods to match other spinner libraries
-    (spinner as any).succeed = function(text?: string) {
+
+    (spinner as any).succeed = function (text?: string): void {
         this.stop(true);
         console.log(chalk.green('✓') + ' ' + (text || message));
     };
-    
-    (spinner as any).fail = function(text?: string) {
+
+    (spinner as any).fail = function (text?: string): void {
         this.stop(true);
         console.log(chalk.red('✗') + ' ' + (text || message));
     };
-    
-    return spinner as Spinner & { succeed: Function; fail: Function };
+    return spinner as Spinner & { succeed: (text?: string) => void; fail: (text?: string) => void };
 }
 
-/**
- * Get input from the user
- */
 export async function getInput(message: string, defaultValue?: string): Promise<string> {
     return input({
         message,
@@ -123,27 +214,24 @@ export async function getInput(message: string, defaultValue?: string): Promise<
     });
 }
 
-/**
- * Get multiline input from the user
- */
 export async function getMultilineInput(initialValue?: string): Promise<string> {
-    console.log(chalk.yellow('Enter/paste your content. Press Ctrl+D (Unix) or Ctrl+Z (Windows) followed by Enter to finish:'));
-    
+    console.log(
+        chalk.yellow('Enter/paste your content. Press Ctrl+D (Unix) or Ctrl+Z (Windows) followed by Enter to finish:')
+    );
+
     if (initialValue) {
         console.log(chalk.dim('\nCurrent content:'));
         console.log(initialValue);
         console.log(chalk.cyan('\nNew content:'));
     }
-    
     return new Promise((resolve) => {
         let content = '';
-        
         process.stdin.setRawMode!(false);
         process.stdin.resume();
         process.stdin.on('data', (chunk) => {
             content += chunk;
         });
-        
+
         process.stdin.on('end', () => {
             process.stdin.setRawMode!(true);
             process.stdin.resume();

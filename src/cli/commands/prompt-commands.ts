@@ -1,15 +1,28 @@
-import fs from 'fs-extra';
-import os from 'os';
 import path from 'path';
+
+import { select, confirm } from '@inquirer/prompts';
 import { Command } from 'commander';
-import { createBranchAndPushChanges } from '../utils/sync-utils';
-import { showSpinner, getInput, getMultilineInput } from '../utils/ui-components';
+import fs from 'fs-extra';
+
+import { updatePromptMetadata } from '../../app/controllers/update-metadata';
 import { analyzePrompt } from '../../app/utils/analyze-prompt';
 import { getConfig } from '../../shared/config';
-import { extractVariablesFromPrompt } from '../../shared/utils/prompt-processing';
+import { dumpYaml, generateContentHash, parseYaml } from '../../shared/utils/file-system';
 import logger from '../../shared/utils/logger';
+import { extractVariablesFromPrompt } from '../../shared/utils/prompt-processing';
+import {
+    getPromptById,
+    listPromptDirectories,
+    removePromptFromDatabase,
+    syncPromptsWithDatabase,
+    syncSpecificPromptWithDatabase
+} from '../utils/database';
+import { stagePromptChanges } from '../utils/library-repository';
+import { selectPrompt } from '../utils/prompts';
+import { editInEditor } from '../utils/prompts-simple';
+import { clearPendingChanges, createBranchAndPushChanges, trackPromptChange } from '../utils/sync-utils';
+import { showSpinner, getInput } from '../utils/ui-components';
 
-// Define simplified metadata type for the prompt
 interface SimplePromptMetadata {
     title: string;
     directory: string;
@@ -23,30 +36,23 @@ interface SimplePromptMetadata {
     fragments?: any[];
 }
 
-/**
- * Load an existing prompt for editing
- */
 async function loadPromptForEditing(promptIdentifier: string): Promise<SimplePromptMetadata | null> {
     try {
-        // Check if prompt exists by directory name or ID
-        const fs = await import('fs-extra');
-        const { listPromptDirectories } = await import('../utils/database');
-        
         const directories = await listPromptDirectories();
         let promptDir = '';
 
         if (!isNaN(Number(promptIdentifier))) {
-            // Find by ID from database
-            const database = await import('../utils/database');
-            const prompt = await database.getPromptById(parseInt(promptIdentifier, 10));
+            const prompt = await getPromptById(parseInt(promptIdentifier, 10));
+
             if (!prompt) {
                 logger.error(`Prompt with ID ${promptIdentifier} not found`);
                 return null;
             }
+
             promptDir = prompt.directory;
         } else {
-            // Find by directory name
             promptDir = promptIdentifier;
+
             if (!directories.includes(promptDir)) {
                 logger.error(`Prompt directory "${promptDir}" not found`);
                 return null;
@@ -54,15 +60,13 @@ async function loadPromptForEditing(promptIdentifier: string): Promise<SimplePro
         }
 
         const metadataPath = path.join(getConfig().PROMPTS_DIR, promptDir, 'metadata.yml');
-        if (!await fs.pathExists(metadataPath)) {
+
+        if (!(await fs.pathExists(metadataPath))) {
             logger.error(`Metadata file not found in directory "${promptDir}"`);
             return null;
         }
 
-        // Parse metadata
-        const fileSystem = await import('../../shared/utils/file-system');
-        const metadata = await fileSystem.parseYaml<SimplePromptMetadata>(metadataPath);
-        
+        const metadata = await parseYaml<SimplePromptMetadata>(metadataPath);
         logger.info(`Editing prompt: ${metadata.title}`);
         return { ...metadata, directory: promptDir };
     } catch (error) {
@@ -71,36 +75,34 @@ async function loadPromptForEditing(promptIdentifier: string): Promise<SimplePro
     }
 }
 
-/**
- * Collect initial metadata for a new prompt
- */
 async function collectInitialMetadata(options: any): Promise<SimplePromptMetadata> {
-    // Get title
     let title = options.title;
+
     if (!title) {
         title = await getInput('Enter prompt title:');
     }
-    
-    // Get directory name
+
     let directory = options.directory;
+
     if (!directory) {
         directory = await getInput('Enter directory name (snake_case):');
-        // Convert to snake_case if needed
-        directory = directory.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+        directory = directory
+            .toLowerCase()
+            .replace(/\s+/g, '_')
+            .replace(/[^a-z0-9_]/g, '');
     }
-    
-    // Get category
+
     let primaryCategory = options.category;
+
     if (!primaryCategory) {
         primaryCategory = await selectCategory();
     }
-    
-    // Get one-line description
+
     let oneLineDescription = options.description;
+
     if (!oneLineDescription) {
         oneLineDescription = await getInput('Enter one-line description:');
     }
-    
     return {
         title,
         directory,
@@ -114,126 +116,103 @@ async function collectInitialMetadata(options: any): Promise<SimplePromptMetadat
     };
 }
 
-/**
- * Select a category from available categories in the prompt_analysis_agent
- */
 async function selectCategory(): Promise<string> {
-    const { input, select } = await import('@inquirer/prompts');
-    
-    // Categories from prompt_analysis_agent/prompt.md
     const categories = [
         // Original core categories
-        'analysis',         // Data and information analysis
-        'art_and_design',   // Visual and aesthetic creation
-        'business',         // Business operations and strategy
-        'coding',           // Development, programming, and software engineering
+        'analysis', // Data and information analysis
+        'art_and_design', // Visual and aesthetic creation
+        'business', // Business operations and strategy
+        'coding', // Development, programming, and software engineering
         'content_creation', // Documentation, writing, and creative content
         'customer_service', // Support and client communication
-        'data_processing',  // Data analysis, visualization, transformation
-        'education',        // Teaching, learning, and knowledge sharing
-        'entertainment',    // Recreation, gaming, media consumption
-        'finance',          // Money management and financial planning
-        'gaming',           // Game design, playing, and strategies
-        'healthcare',       // Health, wellness, medicine, fitness
-        'language',         // Language learning, linguistics
-        'legal',            // Law, compliance, and legal documents
-        'marketing',        // Promotion, advertising, brand development
-        'music',            // Music creation, theory, and production
+        'data_processing', // Data analysis, visualization, transformation
+        'education', // Teaching, learning, and knowledge sharing
+        'entertainment', // Recreation, gaming, media consumption
+        'finance', // Money management and financial planning
+        'gaming', // Game design, playing, and strategies
+        'healthcare', // Health, wellness, medicine, fitness
+        'language', // Language learning, linguistics
+        'legal', // Law, compliance, and legal documents
+        'marketing', // Promotion, advertising, brand development
+        'music', // Music creation, theory, and production
         'personal_assistant', // Task management and daily support
-        'problem_solving',  // General problem analysis and solution frameworks
-        'productivity',     // Efficiency, workflow optimization
+        'problem_solving', // General problem analysis and solution frameworks
+        'productivity', // Efficiency, workflow optimization
         'prompt_engineering', // Creating and optimizing AI prompts
-        'research',         // Academic or professional research assistance
-        'science',          // Scientific inquiry and methodology
-        'social_media',     // Online platform content and strategy
-        'translation',      // Text, concept, or knowledge translation
-        'writing',          // Written content creation
-        
+        'research', // Academic or professional research assistance
+        'science', // Scientific inquiry and methodology
+        'social_media', // Online platform content and strategy
+        'translation', // Text, concept, or knowledge translation
+        'writing', // Written content creation
+
         // Additional categories
-        'personal_growth',  // Self-improvement, life coaching
-        'communication',    // Interpersonal skills, writing, messaging
-        'creative',         // Creative expression across mediums
-        'specialized'       // Domain-specific agents that don't fit elsewhere
+        'personal_growth', // Self-improvement, life coaching
+        'communication', // Interpersonal skills, writing, messaging
+        'creative', // Creative expression across mediums
+        'specialized' // Domain-specific agents that don't fit elsewhere
     ];
-    
-    const categoryChoices = categories.map(category => ({
-        name: category.padEnd(20) + '- ' + 
-              getCategoryDescription(category),
+    const categoryChoices = categories.map((category) => ({
+        name: category.padEnd(20) + '- ' + getCategoryDescription(category),
         value: category
     }));
-    
     return select({
         message: 'Select a primary category:',
         choices: categoryChoices
     });
 }
 
-/**
- * Get a description for a category
- */
 function getCategoryDescription(category: string): string {
     const descriptions: Record<string, string> = {
-        'analysis': 'Data and information analysis',
-        'art_and_design': 'Visual and aesthetic creation',
-        'business': 'Business operations and strategy',
-        'coding': 'Development, programming, and software engineering',
-        'content_creation': 'Documentation, writing, and creative content',
-        'customer_service': 'Support and client communication',
-        'data_processing': 'Data analysis, visualization, transformation',
-        'education': 'Teaching, learning, and knowledge sharing',
-        'entertainment': 'Recreation, gaming, media consumption',
-        'finance': 'Money management and financial planning',
-        'gaming': 'Game design, playing, and strategies',
-        'healthcare': 'Health, wellness, medicine, fitness',
-        'language': 'Language learning, linguistics',
-        'legal': 'Law, compliance, and legal documents',
-        'marketing': 'Promotion, advertising, brand development',
-        'music': 'Music creation, theory, and production',
-        'personal_assistant': 'Task management and daily support',
-        'problem_solving': 'General problem analysis and solution frameworks',
-        'productivity': 'Efficiency, workflow optimization',
-        'prompt_engineering': 'Creating and optimizing AI prompts',
-        'research': 'Academic or professional research assistance',
-        'science': 'Scientific inquiry and methodology',
-        'social_media': 'Online platform content and strategy',
-        'translation': 'Text, concept, or knowledge translation',
-        'writing': 'Written content creation',
-        'personal_growth': 'Self-improvement, life coaching',
-        'communication': 'Interpersonal skills, writing, messaging',
-        'creative': 'Creative expression across mediums',
-        'specialized': 'Domain-specific agents that don\'t fit elsewhere'
+        analysis: 'Data and information analysis',
+        art_and_design: 'Visual and aesthetic creation',
+        business: 'Business operations and strategy',
+        coding: 'Development, programming, and software engineering',
+        content_creation: 'Documentation, writing, and creative content',
+        customer_service: 'Support and client communication',
+        data_processing: 'Data analysis, visualization, transformation',
+        education: 'Teaching, learning, and knowledge sharing',
+        entertainment: 'Recreation, gaming, media consumption',
+        finance: 'Money management and financial planning',
+        gaming: 'Game design, playing, and strategies',
+        healthcare: 'Health, wellness, medicine, fitness',
+        language: 'Language learning, linguistics',
+        legal: 'Law, compliance, and legal documents',
+        marketing: 'Promotion, advertising, brand development',
+        music: 'Music creation, theory, and production',
+        personal_assistant: 'Task management and daily support',
+        problem_solving: 'General problem analysis and solution frameworks',
+        productivity: 'Efficiency, workflow optimization',
+        prompt_engineering: 'Creating and optimizing AI prompts',
+        research: 'Academic or professional research assistance',
+        science: 'Scientific inquiry and methodology',
+        social_media: 'Online platform content and strategy',
+        translation: 'Text, concept, or knowledge translation',
+        writing: 'Written content creation',
+        personal_growth: 'Self-improvement, life coaching',
+        communication: 'Interpersonal skills, writing, messaging',
+        creative: 'Creative expression across mediums',
+        specialized: "Domain-specific agents that don't fit elsewhere"
     };
-    
     return descriptions[category] || category;
 }
 
-/**
- * Collect prompt content
- */
 async function collectPromptContent(metadata: SimplePromptMetadata): Promise<string> {
     let content = '';
     const promptDir = path.join(getConfig().PROMPTS_DIR, metadata.directory);
     const promptPath = path.join(promptDir, 'prompt.md');
-    
-    // If editing, load existing content
+
     if (await fs.pathExists(promptPath)) {
         content = await fs.readFile(promptPath, 'utf8');
         logger.info('Current prompt content loaded. Opening in editor...');
-        
-        // Open the content in the default editor
-        const { editInEditor } = await import('../utils/prompts-simple');
+
         const newContent = await editInEditor(content, {
             message: 'Edit the prompt content (it will open in your default editor):',
             postfix: '.md'
         });
-        
-        // No temporary file to clean up with editInEditor
-        
         return newContent || content;
     } else {
         logger.info('Opening editor for new prompt content...');
-        
-        // For new content, use editor with a helpful template
+
         const templateContent = `# Your Prompt Title
 
 ## Instructions
@@ -244,100 +223,98 @@ You can use variables with {{VARIABLE_NAME}} syntax.
 ## Example Input/Output
 - Input: Sample input
 - Output: Sample output`;
-
-        // Open the content in the default editor
-        const { editInEditor } = await import('../utils/prompts-simple');
         const newContent = await editInEditor(templateContent, {
             message: 'Create your prompt content (it will open in your default editor):',
             postfix: '.md'
         });
-        
         return newContent || '';
     }
 }
 
-/**
- * Generate metadata using AI
- * This leverages the same prompt_analysis_agent used in CI with GitHub Actions
- */
-async function analyzeAndGenerateMetadata(metadata: SimplePromptMetadata, content: string): Promise<void> {
+async function analyzeAndGenerateMetadata(metadata: SimplePromptMetadata, content: string): Promise<boolean> {
+    const chalk = (await import('chalk')).default;
     const spinner = showSpinner('Analyzing prompt with the prompt_analysis_agent...');
-    
+
     try {
-        // Extract variables from prompt content as fallback
         const extractedVariables = extractVariablesFromPrompt(content);
-        
-        // Call analyze-prompt to generate metadata using the prompt_analysis_agent
-        // This uses the same agent as in the CI pipeline via update-metadata.ts
         const analyzedMetadata = await analyzePrompt(content);
+
         if (!analyzedMetadata) {
+            spinner.fail('AI analysis failed');
             logger.warn('AI analysis failed. Using manual metadata.');
-            spinner.stop(true);
-            return;
+
+            const shouldRetry = await confirm({
+                message: 'Would you like to retry the AI analysis?',
+                default: true
+            });
+
+            if (shouldRetry) {
+                return false;
+            }
+
+            console.log(chalk.yellow('Continuing with manual metadata...'));
+            return true;
         }
-        
-        // Merge analyzed metadata with user-provided data, prioritizing user input
+
         Object.assign(metadata, {
             ...analyzedMetadata,
-            // Preserve user-provided values if they exist
             title: metadata.title || analyzedMetadata.title,
             primary_category: metadata.primary_category || analyzedMetadata.primary_category,
             directory: metadata.directory || analyzedMetadata.directory,
             one_line_description: metadata.one_line_description || analyzedMetadata.one_line_description,
             variables: analyzedMetadata.variables || extractedVariables,
-            // Take these from AI analysis since they require more domain knowledge
             subcategories: analyzedMetadata.subcategories || metadata.subcategories,
             tags: analyzedMetadata.tags || metadata.tags,
             description: analyzedMetadata.description || metadata.description,
             fragments: analyzedMetadata.fragments || metadata.fragments
         });
-        
-        // Run metadata update for this specific prompt using the controller
-        // This is more efficient than running update-metadata on all prompts
-        const { updatePromptMetadata } = await import('../../app/controllers/update-metadata');
-        
-        // We don't await this since it's just for content_hash generation,
-        // and we'll be updating the database right after this anyway
-        updatePromptMetadata(metadata.directory).catch(err => {
+
+        updatePromptMetadata(metadata.directory).catch((err) => {
             logger.warn(`Failed to update metadata hash for ${metadata.directory}:`, err);
         });
-        
+
         spinner.succeed('Prompt analyzed successfully');
         logger.info('Generated metadata using the same agent used in CI workflows');
+        return true;
     } catch (error) {
         spinner.fail('Failed to analyze prompt');
         logger.error('Error during prompt analysis:', error);
+
+        console.log(chalk.red('\nError details:'));
+        console.log(chalk.red(error instanceof Error ? error.message : String(error)));
+
+        const shouldRetry = await confirm({
+            message: 'Would you like to retry the AI analysis?',
+            default: true
+        });
+
+        if (shouldRetry) {
+            return false;
+        }
+
+        console.log(chalk.yellow('\nContinuing with manual metadata...'));
+        return true;
     }
 }
 
-/**
- * Save prompt files to disk
- */
 async function savePromptFiles(metadata: SimplePromptMetadata, content: string): Promise<void> {
     try {
         const promptDir = path.join(getConfig().PROMPTS_DIR, metadata.directory);
         const promptPath = path.join(promptDir, 'prompt.md');
         const metadataPath = path.join(promptDir, 'metadata.yml');
         const readmePath = path.join(promptDir, 'README.md');
-        
-        // Ensure directory exists
         await fs.ensureDir(promptDir);
-        
-        // Write prompt.md
+
         await fs.writeFile(promptPath, content);
-        
-        // Generate content hash
-        const fileSystem = await import('../../shared/utils/file-system');
-        metadata.content_hash = await fileSystem.generateContentHash(content);
-        
-        // Write metadata.yml
-        await fs.writeFile(metadataPath, fileSystem.dumpYaml(metadata));
-        
-        // Create basic README.md if it doesn't exist
-        if (!await fs.pathExists(readmePath)) {
+
+        metadata.content_hash = await generateContentHash(content);
+
+        await fs.writeFile(metadataPath, dumpYaml(metadata));
+
+        if (!(await fs.pathExists(readmePath))) {
             await fs.writeFile(readmePath, `# ${metadata.title}\n\n${metadata.one_line_description}\n`);
         }
-        
+
         logger.info('Prompt files saved successfully');
     } catch (error) {
         logger.error('Failed to save prompt files:', error);
@@ -345,23 +322,16 @@ async function savePromptFiles(metadata: SimplePromptMetadata, content: string):
     }
 }
 
-/**
- * Update database with new prompt data
- */
 async function updateDatabase(directoryName?: string): Promise<void> {
     const spinner = showSpinner('Updating database...');
+
     try {
-        // Import syncPromptsWithDatabase dynamically
-        const database = await import('../utils/database');
-        
         if (directoryName) {
-            // Only sync the specific prompt that was edited
-            await database.syncSpecificPromptWithDatabase(directoryName);
+            await syncSpecificPromptWithDatabase(directoryName);
             spinner.stop(true);
             logger.info(`Database updated successfully for ${directoryName}`);
         } else {
-            // Sync all prompts (legacy behavior)
-            await database.syncPromptsWithDatabase();
+            await syncPromptsWithDatabase();
             spinner.stop(true);
             logger.info('Database updated successfully');
         }
@@ -372,28 +342,20 @@ async function updateDatabase(directoryName?: string): Promise<void> {
     }
 }
 
-/**
- * Offer to sync changes to remote repository
- */
 async function offerRemoteSync(): Promise<void> {
-    const { confirm } = await import('@inquirer/prompts');
-    
     const doSync = await confirm({
         message: 'Would you like to sync this prompt to the remote repository now?',
         default: false
     });
-    
+
     if (doSync) {
         try {
             const spinner = showSpinner('Syncing to remote repository...');
             const branchName = `prompt/${Date.now()}`;
-            
             await createBranchAndPushChanges(branchName);
-            
-            // Clear pending changes after successful sync
-            const { clearPendingChanges } = await import('../utils/sync-utils');
+
             await clearPendingChanges();
-            
+
             spinner.succeed('Changes pushed to remote repository');
             logger.info(`Created branch: ${branchName}`);
             logger.info('Please create a pull request on the repository to merge your changes.');
@@ -401,13 +363,10 @@ async function offerRemoteSync(): Promise<void> {
             logger.error('Failed to sync to remote repository:', error);
         }
     } else {
-        logger.info(
-            'Changes will be tracked and you can sync them later using "prompt-library-cli sync --push"'
-        );
+        logger.info('Changes will be tracked and you can sync them later using "prompt-library-cli sync --push"');
     }
 }
 
-// Create command
 const createCommand = new Command('create')
     .description('Create a new prompt')
     .option('-d, --directory <name>', 'Directory name for the new prompt (snake_case)')
@@ -417,46 +376,37 @@ const createCommand = new Command('create')
     .option('--no-analyze', 'Skip AI analysis of prompt to generate metadata (uses prompt_analysis_agent)')
     .action(async (options) => {
         try {
-            // Create new prompt
             const promptData = await collectInitialMetadata(options);
-
-            // Get prompt content from user
             const promptContent = await collectPromptContent(promptData);
+
             if (!promptContent || promptContent.trim() === '') {
                 logger.error('Prompt content cannot be empty');
                 return;
             }
 
-            // Generate metadata using AI if enabled
             if (options.analyze !== false) {
-                await analyzeAndGenerateMetadata(promptData, promptContent);
+                let analysisComplete = false;
+                while (!analysisComplete) {
+                    analysisComplete = await analyzeAndGenerateMetadata(promptData, promptContent);
+                }
             }
 
-            // Write files to disk
             await savePromptFiles(promptData, promptContent);
 
-            // Update database with just this prompt
             await updateDatabase(promptData.directory);
 
-            // Track the change for syncing later and add to git if enabled
-            const { trackPromptChange } = await import('../utils/sync-utils');
             await trackPromptChange(promptData.directory, 'add', promptData.title);
-            
-            // Stage files in git when using dedicated repository
-            const { stagePromptChanges } = await import('../utils/library-repository');
+
             await stagePromptChanges(promptData.directory);
 
             logger.info(`Prompt "${promptData.title}" successfully created`);
             logger.info(`Located at: ${path.join(getConfig().PROMPTS_DIR, promptData.directory)}`);
 
-            // Offer to sync to remote if user wants
             await offerRemoteSync();
         } catch (error) {
             logger.error('Failed to create prompt:', error);
         }
     });
-
-// Edit command
 const editCommand = new Command('edit')
     .description('Edit an existing prompt')
     .option('-p, --prompt <promptId>', 'ID or directory name of the prompt to edit')
@@ -464,61 +414,108 @@ const editCommand = new Command('edit')
     .option('--no-analyze', 'Skip AI analysis of prompt to generate metadata (uses prompt_analysis_agent)')
     .action(async (promptId, options) => {
         try {
-            // Get promptId from argument or option
             const promptIdentifier = promptId || options.prompt;
             let promptToEdit = promptIdentifier;
-            
+
             if (!promptIdentifier) {
-                // If no promptId provided, list prompts and ask user to select one
-                const { selectPrompt } = await import('../utils/prompts');
                 const selectedPrompt = await selectPrompt();
+
                 if (!selectedPrompt) {
                     logger.error('No prompt selected. Exiting.');
                     return;
                 }
+
                 promptToEdit = selectedPrompt.id.toString();
             }
-            
-            // Edit existing prompt
+
             const promptData = await loadPromptForEditing(promptToEdit);
+
             if (!promptData) {
                 return;
             }
 
-            // Get prompt content from user
             const promptContent = await collectPromptContent(promptData);
+
             if (!promptContent || promptContent.trim() === '') {
                 logger.error('Prompt content cannot be empty');
                 return;
             }
 
-            // Generate metadata using AI if enabled
             if (options.analyze !== false) {
-                await analyzeAndGenerateMetadata(promptData, promptContent);
+                let analysisComplete = false;
+                while (!analysisComplete) {
+                    analysisComplete = await analyzeAndGenerateMetadata(promptData, promptContent);
+                }
             }
 
-            // Write files to disk
             await savePromptFiles(promptData, promptContent);
 
-            // Update database with just this prompt
             await updateDatabase(promptData.directory);
 
-            // Track the change for syncing later
-            const { trackPromptChange } = await import('../utils/sync-utils');
             await trackPromptChange(promptData.directory, 'modify', promptData.title);
-            
-            // Stage files in git when using dedicated repository
-            const { stagePromptChanges } = await import('../utils/library-repository');
+
             await stagePromptChanges(promptData.directory);
 
             logger.info(`Prompt "${promptData.title}" successfully updated`);
             logger.info(`Located at: ${path.join(getConfig().PROMPTS_DIR, promptData.directory)}`);
 
-            // Offer to sync to remote if user wants
             await offerRemoteSync();
         } catch (error) {
             logger.error('Failed to edit prompt:', error);
         }
     });
+const deleteCommand = new Command('delete')
+    .description('Delete an existing prompt')
+    .option('-p, --prompt <promptId>', 'ID or directory name of the prompt to delete')
+    .argument('[promptId]', 'ID or directory name of the prompt to delete')
+    .option('-f, --force', 'Skip confirmation prompt')
+    .action(async (promptId, options) => {
+        try {
+            const promptIdentifier = promptId || options.prompt;
+            let promptToDelete = promptIdentifier;
 
-export { createCommand, editCommand };
+            if (!promptIdentifier) {
+                const selectedPrompt = await selectPrompt();
+
+                if (!selectedPrompt) {
+                    logger.error('No prompt selected. Exiting.');
+                    return;
+                }
+
+                promptToDelete = selectedPrompt.id.toString();
+            }
+
+            const promptData = await loadPromptForEditing(promptToDelete);
+
+            if (!promptData) {
+                return;
+            }
+
+            if (!options.force) {
+                const shouldDelete = await confirm({
+                    message: `Are you sure you want to delete the prompt "${promptData.title}"? This cannot be undone.`,
+                    default: false
+                });
+
+                if (!shouldDelete) {
+                    logger.info('Deletion cancelled.');
+                    return;
+                }
+            }
+
+            const promptDir = path.join(getConfig().PROMPTS_DIR, promptData.directory);
+            await fs.remove(promptDir);
+
+            await trackPromptChange(promptData.directory, 'delete', promptData.title);
+            await stagePromptChanges(promptData.directory);
+            await removePromptFromDatabase(promptData.directory);
+
+            logger.info(`Prompt "${promptData.title}" successfully deleted`);
+
+            await offerRemoteSync();
+        } catch (error) {
+            logger.error('Failed to delete prompt:', error);
+        }
+    });
+
+export { createCommand, deleteCommand, editCommand };

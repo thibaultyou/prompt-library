@@ -1,5 +1,6 @@
-import * as fs from 'fs/promises';
 import crypto from 'crypto';
+import * as fs from 'fs/promises';
+
 import * as yaml from 'js-yaml';
 
 import { handleError } from '../../cli/utils/errors';
@@ -95,16 +96,10 @@ export async function isFile(path: string): Promise<boolean> {
     }
 }
 
-/**
- * Generate MD5 hash for a string content
- */
 export async function generateContentHash(content: string): Promise<string> {
     return crypto.createHash('md5').update(content).digest('hex');
 }
 
-/**
- * Parse YAML content to an object
- */
 export async function parseYaml<T = any>(filePath: string): Promise<T> {
     try {
         const content = await readFileContent(filePath);
@@ -115,9 +110,6 @@ export async function parseYaml<T = any>(filePath: string): Promise<T> {
     }
 }
 
-/**
- * Dump object to YAML string
- */
 export function dumpYaml(data: any): string {
     try {
         return yaml.dump(data, {

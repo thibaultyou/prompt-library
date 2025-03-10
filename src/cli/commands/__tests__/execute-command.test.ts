@@ -8,7 +8,11 @@ jest.mock('../../utils/prompts', () => ({
 }));
 
 jest.mock('../../utils/database', () => ({
-    handleApiResult: jest.fn((result) => (result.success ? result.data : null))
+    handleApiResult: jest.fn((result) => (result.success ? result.data : null)),
+    getPromptDetails: jest.fn().mockResolvedValue({
+        success: true,
+        data: { id: 123, title: 'Test Prompt' }
+    })
 }));
 
 jest.mock('fs-extra', () => ({
@@ -76,7 +80,7 @@ describe('ExecuteCommand', () => {
     it('should execute a prompt by ID successfully', async () => {
         await parseCommand(executeCommand, ['-p', '123']);
 
-        expect(getPromptFiles).toHaveBeenCalledWith('123', { cleanVariables: true });
+        expect(getPromptFiles).toHaveBeenCalledWith('123', { cleanVariables: false });
         expect(consoleCapture.getOutput().join(' ')).toContain('Using variables:');
         expect(consoleCapture.getOutput().join(' ')).toContain('Processed prompt result');
     });
@@ -84,7 +88,7 @@ describe('ExecuteCommand', () => {
     it('should execute a prompt by name successfully', async () => {
         await parseCommand(executeCommand, ['-p', 'git_commit']);
 
-        expect(getPromptFiles).toHaveBeenCalledWith('git_commit', { cleanVariables: true });
+        expect(getPromptFiles).toHaveBeenCalledWith('git_commit', { cleanVariables: false });
         expect(consoleCapture.getOutput().join(' ')).toContain('Using variables:');
         expect(consoleCapture.getOutput().join(' ')).toContain('Processed prompt result');
     });
@@ -92,7 +96,7 @@ describe('ExecuteCommand', () => {
     it('should inspect a prompt without executing', async () => {
         await parseCommand(executeCommand, ['-p', '123', '-i']);
 
-        expect(getPromptFiles).toHaveBeenCalledWith('123', { cleanVariables: true });
+        expect(getPromptFiles).toHaveBeenCalledWith('123', { cleanVariables: false });
         expect(viewPromptDetails).toHaveBeenCalled();
 
         expect(consoleCapture.getOutput()).not.toContain('Processed prompt result');
@@ -178,7 +182,7 @@ describe('ExecuteCommand', () => {
         try {
             await command.handleStoredPrompt('999', {}, false, {});
 
-            expect(mockGetPromptFiles).toHaveBeenCalledWith('999', expect.any(Object));
+            expect(mockGetPromptFiles).toHaveBeenCalledWith('999', { cleanVariables: false });
 
             expect(command.handleApiResult).toHaveBeenCalledWith(
                 expect.objectContaining({ success: false }),

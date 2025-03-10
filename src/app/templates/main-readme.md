@@ -113,11 +113,13 @@ The CLI offers a complete prompt management and execution solution:
 | `model` | Configure AI model settings | `prompt-library-cli model` |
 | `prompts` | List and manage prompts | `prompt-library-cli prompts --list` |
 | `execute` | Run a specific prompt | `prompt-library-cli execute -p 74` |
-| `fragments` | List and view fragments | `prompt-library-cli fragments` |
+| `fragments` | Manage prompt fragments | `prompt-library-cli fragments --list` |
 | `config` | Manage CLI configuration | `prompt-library-cli config` |
 | `env` | Manage environment variables | `prompt-library-cli env` |
-| `sync` | Update your library | `prompt-library-cli sync` |
+| `sync` | Sync with prompt repository | `prompt-library-cli sync --push` |
+| `repository` | Manage prompt repository | `prompt-library-cli repository` |
 | `settings` | Manage CLI settings | `prompt-library-cli settings` |
+| `setup` | Set up prompt library | `prompt-library-cli setup` |
 | `flush` | Reset all data (preserves config) | `prompt-library-cli flush` |
 
 ### Global Options
@@ -165,8 +167,11 @@ prompt-library-cli execute -p "commit" --description "Add user authentication" -
 # Use file inputs
 prompt-library-cli execute -p 81 -fi code=./my-code.ts
 
-# Preview mode
+# Preview/inspect mode (don't execute, just view variables)
 prompt-library-cli execute -p "translator" -i
+
+# Specify metadata and prompt files directly
+prompt-library-cli execute -f ./my-prompt.md -m ./my-metadata.yml
 ```
 
 > **Tip**: While both prompt IDs and names are supported, using IDs is more reliable. Directory names follow the pattern `{function}_{domain}_agent` and are matched using fuzzy search.
@@ -188,6 +193,18 @@ prompt-library-cli prompts --favorites
 
 # Show recently executed prompts
 prompt-library-cli prompts --recent
+
+# Output in JSON format (for scripting/CI)
+prompt-library-cli prompts --list --json
+
+# Create a new prompt
+prompt-library-cli prompts create
+
+# Edit an existing prompt
+prompt-library-cli prompts edit
+
+# Delete a prompt
+prompt-library-cli prompts delete
 ```
 
 <details>
@@ -210,10 +227,35 @@ prompt-library-cli execute -p "document_generator" -fi template=./template.md --
 #### Working with Fragments
 
 ```bash
-# List all available fragments
+# Open interactive fragments menu
 prompt-library-cli fragments
 
-# The interactive menu lets you browse and view fragment contents
+# List all available fragments
+prompt-library-cli fragments --list
+
+# List all fragment categories
+prompt-library-cli fragments --categories
+
+# Search fragments by keyword (name or category)
+prompt-library-cli fragments --search "formatting"
+
+# Output in JSON format (for CI/scripting)
+prompt-library-cli fragments --list --json
+
+# Create a new fragment
+prompt-library-cli fragments create -c prompt_engineering -n my_fragment
+
+# Edit an existing fragment
+prompt-library-cli fragments edit -c prompt_engineering -n existing_fragment  
+
+# Delete a fragment
+prompt-library-cli fragments delete -c prompt_engineering -n obsolete_fragment
+
+# Force delete without confirmation
+prompt-library-cli fragments delete -c prompt_engineering -n obsolete_fragment -f
+
+# Use with scripts (pipe output to another program)
+prompt-library-cli fragments --list --json | jq
 ```
 
 #### Sync Options
@@ -227,6 +269,18 @@ prompt-library-cli sync -u https://github.com/your-username/your-repo.git
 
 # Force sync without confirmation
 prompt-library-cli sync --force
+
+# List pending changes that need to be synced
+prompt-library-cli sync --list
+
+# Push local changes to remote repository
+prompt-library-cli sync --push
+
+# Reset/discard local changes
+prompt-library-cli sync --reset
+
+# Push to specific branch name
+prompt-library-cli sync --push --branch my-feature-branch
 ```
 
 #### Environment Management

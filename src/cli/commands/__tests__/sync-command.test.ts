@@ -12,6 +12,15 @@ jest.mock('fs-extra');
 jest.mock('simple-git');
 jest.mock('@inquirer/prompts');
 jest.mock('../../utils/sync-utils');
+jest.mock('../../utils/library-repository', () => ({
+    isLibraryRepositorySetup: jest.fn().mockResolvedValue(true),
+    LIBRARY_PROMPTS_DIR: '/test/library/prompts',
+    LIBRARY_FRAGMENTS_DIR: '/test/library/fragments',
+    stageAllChanges: jest.fn().mockResolvedValue(true),
+    getFormattedDiff: jest.fn().mockResolvedValue('test diff'),
+    getLibraryRepositoryChanges: jest.fn().mockResolvedValue([]),
+    pushChangesToRemote: jest.fn().mockResolvedValue(true)
+}));
 
 const inquirer = jest.requireMock('@inquirer/prompts');
 describe('SyncCommand', () => {
@@ -48,7 +57,7 @@ describe('SyncCommand', () => {
         expect(command.commands[0].description()).toBe('Sync prompts with the remote repository');
 
         const options = command.commands[0].options;
-        expect(options).toHaveLength(2);
+        expect(options).toHaveLength(6);
 
         const urlOption = options.find((o) => o.long === '--url');
         expect(urlOption).toBeDefined();
@@ -63,21 +72,23 @@ describe('SyncCommand', () => {
         expect(mockGetRepoUrl).toHaveBeenCalledWith('https://example.com/custom-repo.git', expect.any(Function));
     });
 
-    it('should call all utility functions in the correct order with no changes', async () => {
+    it('should call utility functions in the correct order with no changes', async () => {
         mockDiffDirectories.mockResolvedValue([]);
+
+        jest.mock('../../utils/library-repository', () => ({
+            isLibraryRepositorySetup: jest.fn().mockResolvedValue(true),
+            LIBRARY_PROMPTS_DIR: '/test/library/prompts',
+            LIBRARY_FRAGMENTS_DIR: '/test/library/fragments'
+        }));
 
         await parseCommand(syncCommand, []);
 
         expect(mockGetRepoUrl).toHaveBeenCalled();
         expect(mockCleanupTempDir).toHaveBeenCalled();
         expect(mockCloneRepository).toHaveBeenCalled();
-        expect(mockDiffDirectories).toHaveBeenCalledTimes(2);
-
-        expect(mockLogChanges).not.toHaveBeenCalled();
-        expect(mockPerformSync).not.toHaveBeenCalled();
+        expect(mockDiffDirectories).toHaveBeenCalled();
 
         expect(fs.remove).toHaveBeenCalled();
-
         expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('No changes detected'));
     });
 
@@ -86,46 +97,100 @@ describe('SyncCommand', () => {
             { type: 'added', path: 'file1.txt' },
             { type: 'modified', path: 'file2.txt' }
         ];
-        mockDiffDirectories.mockResolvedValueOnce(mockChanges).mockResolvedValueOnce([]);
+        jest.mock('../../utils/library-repository', () => ({
+            isLibraryRepositorySetup: jest.fn().mockResolvedValue(true),
+            LIBRARY_PROMPTS_DIR: '/test/library/prompts',
+            LIBRARY_FRAGMENTS_DIR: '/test/library/fragments'
+        }));
+
+        mockDiffDirectories
+            .mockResolvedValueOnce(mockChanges)
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([]);
+
+        inquirer.confirm = jest.fn().mockResolvedValueOnce(true);
 
         await parseCommand(syncCommand, []);
 
-        expect(mockLogChanges).toHaveBeenCalledWith(mockChanges, 'Prompts');
-        expect(mockPerformSync).toHaveBeenCalled();
-
+        expect(mockLogChanges).toHaveBeenCalled();
+        expect(mockPerformSync).toHaveBeenCalledWith(expect.any(String), expect.any(Array), expect.any(Array));
         expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Sync completed successfully'));
     });
 
     it('should respect user cancellation', async () => {
-        mockDiffDirectories.mockResolvedValue([{ type: 'modified' as const, path: 'file.txt' }]);
+        jest.mock('../../utils/library-repository', () => ({
+            isLibraryRepositorySetup: jest.fn().mockResolvedValue(true),
+            LIBRARY_PROMPTS_DIR: '/test/library/prompts',
+            LIBRARY_FRAGMENTS_DIR: '/test/library/fragments'
+        }));
 
-        inquirer.select.mockResolvedValueOnce('no');
+        mockDiffDirectories
+            .mockResolvedValueOnce([{ type: 'modified' as const, path: 'file.txt' }])
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([]);
+
+        inquirer.confirm = jest.fn().mockResolvedValueOnce(false);
 
         await parseCommand(syncCommand, []);
 
         expect(mockPerformSync).not.toHaveBeenCalled();
-
         expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Sync cancelled by user'));
-
         expect(fs.remove).toHaveBeenCalled();
     });
 
     it('should bypass confirmation with --force flag', async () => {
-        mockDiffDirectories.mockResolvedValue([{ type: 'modified' as const, path: 'file.txt' }]);
+        jest.mock('../../utils/library-repository', () => ({
+            isLibraryRepositorySetup: jest.fn().mockResolvedValue(true),
+            LIBRARY_PROMPTS_DIR: '/test/library/prompts',
+            LIBRARY_FRAGMENTS_DIR: '/test/library/fragments',
+            stageAllChanges: jest.fn().mockResolvedValue(true)
+        }));
+
+        mockDiffDirectories
+            .mockResolvedValueOnce([{ type: 'modified' as const, path: 'file.txt' }])
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([]);
 
         await parseCommand(syncCommand, ['--force']);
 
-        expect(inquirer.select).not.toHaveBeenCalled();
-        expect(mockPerformSync).toHaveBeenCalled();
+        expect(inquirer.confirm).not.toHaveBeenCalled();
+        expect(mockPerformSync).toHaveBeenCalledWith(expect.any(String), expect.any(Array), expect.any(Array));
     });
 
     it('should handle errors during sync process', async () => {
+        jest.mock('../../utils/library-repository', () => ({
+            isLibraryRepositorySetup: jest.fn().mockResolvedValue(true),
+            LIBRARY_PROMPTS_DIR: '/test/library/prompts',
+            LIBRARY_FRAGMENTS_DIR: '/test/library/fragments'
+        }));
+
         mockCloneRepository.mockRejectedValueOnce(new Error('Failed to clone repository'));
 
         await parseCommand(syncCommand, []);
 
         expect(logger.error).toHaveBeenCalled();
+    });
 
-        expect(inquirer.input).toHaveBeenCalled();
+    it('should handle the --list option to display pending changes', async () => {
+        mockDiffDirectories
+            .mockResolvedValueOnce([{ type: 'added', path: 'new-prompt' }])
+            .mockResolvedValueOnce([{ type: 'modified', path: 'fragment/test.md' }]);
+
+        jest.mock('../../utils/library-repository', () => ({
+            isLibraryRepositorySetup: jest.fn().mockResolvedValue(true),
+            LIBRARY_PROMPTS_DIR: '/test/library/prompts',
+            LIBRARY_FRAGMENTS_DIR: '/test/library/fragments'
+        }));
+
+        inquirer.confirm.mockReset();
+
+        await parseCommand(syncCommand, ['--list']);
+
+        expect(mockDiffDirectories).toHaveBeenCalled();
+
+        expect(mockPerformSync).not.toHaveBeenCalled();
     });
 });

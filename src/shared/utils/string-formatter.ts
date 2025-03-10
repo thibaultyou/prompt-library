@@ -15,9 +15,6 @@ export function formatSnakeCase(variableName: string): string {
         .replace(/_$/g, '');
 }
 
-/**
- * Format a timestamp as a relative time string (e.g. "2 minutes ago")
- */
 export function formatRelativeTime(date: Date): string {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -25,9 +22,11 @@ export function formatRelativeTime(date: Date): string {
     const diffMin = Math.round(diffSec / 60);
     const diffHour = Math.round(diffMin / 60);
     const diffDay = Math.round(diffHour / 24);
-    
+
     if (diffSec < 60) return `${diffSec} seconds ago`;
+
     if (diffMin < 60) return `${diffMin} minutes ago`;
+
     if (diffHour < 24) return `${diffHour} hours ago`;
     return `${diffDay} days ago`;
 }

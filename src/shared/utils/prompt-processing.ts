@@ -90,16 +90,14 @@ async function processStreamingResponse(client: AIClient, messages: AIMessage[])
     return fullResponse;
 }
 
-// Function to extract variables from prompt content
 export function extractVariablesFromPrompt(content: string): PromptVariable[] {
-    // Regex to find all {{VARIABLE_NAME}} patterns
     const variableRegex = /\{\{([A-Z0-9_]+)\}\}/g;
     const variables: PromptVariable[] = [];
     const found = new Set<string>();
-    
     let match;
     while ((match = variableRegex.exec(content)) !== null) {
         const varName = match[1];
+
         if (!found.has(varName)) {
             found.add(varName);
             variables.push({
@@ -109,6 +107,5 @@ export function extractVariablesFromPrompt(content: string): PromptVariable[] {
             });
         }
     }
-    
     return variables;
 }

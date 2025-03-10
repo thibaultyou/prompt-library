@@ -1,7 +1,3 @@
-/**
- * Improved test suite for prompts utility
- * This combines the best of both approaches between prompts.test.ts and prompts-simple.test.ts
- */
 import { RunResult } from 'sqlite3';
 
 import { PromptMetadata } from '../../../shared/types';

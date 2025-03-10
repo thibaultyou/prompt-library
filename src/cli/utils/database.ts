@@ -201,25 +201,22 @@ export async function fetchCategories(): Promise<ApiResult<Record<string, Catego
     });
 }
 
-// Function to get prompt by ID
 export async function getPromptById(id: number): Promise<PromptMetadata | null> {
     const result = await getAsync<PromptMetadata>('SELECT * FROM prompts WHERE id = ?', [id]);
-    
+
     if (!result.success || !result.data) {
         return null;
     }
-    
     return result.data;
 }
 
 export async function listPromptDirectories(): Promise<string[]> {
-    const result = await allAsync<{directory: string}>('SELECT directory FROM prompts');
-    
+    const result = await allAsync<{ directory: string }>('SELECT directory FROM prompts');
+
     if (!result.success || !result.data) {
         return [];
     }
-    
-    return result.data.map(item => item.directory);
+    return result.data.map((item) => item.directory);
 }
 
 export async function getPromptDetails(
@@ -343,6 +340,23 @@ export async function getFavoritePrompts(): Promise<ApiResult<any[]>> {
     }
 }
 
+async function isPromptInFavorites(promptId: number | string): Promise<boolean> {
+    try {
+        const result = await getAsync<{ count: number }>(
+            'SELECT COUNT(*) as count FROM favorite_prompts WHERE prompt_id = ?',
+            [promptId]
+        );
+
+        if (result.success && result.data) {
+            return result.data.count > 0;
+        }
+        return false;
+    } catch (error) {
+        handleError(error, 'checking if prompt is in favorites');
+        return false;
+    }
+}
+
 export async function syncPromptsWithDatabase(): Promise<ApiResult<void>> {
     try {
         const promptDirs = await readDirectory(cliConfig.PROMPTS_DIR);
@@ -383,65 +397,55 @@ export async function syncPromptsWithDatabase(): Promise<ApiResult<void>> {
     }
 }
 
-/**
- * Sync a specific prompt with the database without affecting other prompts
- * For use when creating or editing a single prompt
- */
 export async function syncSpecificPromptWithDatabase(directoryName: string): Promise<ApiResult<void>> {
     try {
         const promptPath = path.join(cliConfig.PROMPTS_DIR, directoryName, commonConfig.PROMPT_FILE_NAME);
         const metadataPath = path.join(cliConfig.PROMPTS_DIR, directoryName, commonConfig.METADATA_FILE_NAME);
-        
         logger.info(`Syncing specific prompt: ${directoryName}`);
-        
+
         if (!(await fileExists(promptPath)) || !(await fileExists(metadataPath))) {
-            return { 
-                success: false, 
-                error: `Missing prompt or metadata file for ${directoryName}` 
+            return {
+                success: false,
+                error: `Missing prompt or metadata file for ${directoryName}`
             };
         }
-        
-        // Delete existing prompt if it exists
-        const existingPrompt = await getAsync<{id: number}>(
-            'SELECT id FROM prompts WHERE directory = ?', 
-            [directoryName]
-        );
-        
+
+        const existingPrompt = await getAsync<{ id: number }>('SELECT id FROM prompts WHERE directory = ?', [
+            directoryName
+        ]);
+
         if (existingPrompt.success && existingPrompt.data) {
             const promptId = existingPrompt.data.id;
-            
-            // Delete related data
             await runAsync('DELETE FROM subcategories WHERE prompt_id = ?', [promptId]);
             await runAsync('DELETE FROM variables WHERE prompt_id = ?', [promptId]);
             await runAsync('DELETE FROM fragments WHERE prompt_id = ?', [promptId]);
             await runAsync('DELETE FROM prompts WHERE id = ?', [promptId]);
-            
+
             logger.info(`Removed existing prompt data for ${directoryName}`);
         }
-        
-        // Add the prompt
+
         const promptContent = await readFileContent(promptPath);
         const metadataContent = await readFileContent(metadataPath);
-        
+
         try {
             const metadata = yaml.load(metadataContent) as PromptMetadata;
             await createPrompt(metadata, promptContent);
             logger.info(`Successfully processed prompt: ${directoryName}`);
-            
+
             cache.flushAll();
             return { success: true };
         } catch (error) {
             handleError(error, `processing prompt ${directoryName}`);
-            return { 
-                success: false, 
-                error: `Failed to process prompt ${directoryName}: ${error}` 
+            return {
+                success: false,
+                error: `Failed to process prompt ${directoryName}: ${error}`
             };
         }
     } catch (error) {
         handleError(error, `syncing specific prompt ${directoryName}`);
-        return { 
-            success: false, 
-            error: `Failed to sync prompt ${directoryName}: ${error}` 
+        return {
+            success: false,
+            error: `Failed to sync prompt ${directoryName}: ${error}`
         };
     }
 }
@@ -553,7 +557,6 @@ export async function storePendingChange(change: Omit<PendingChange, 'id'>): Pro
             'INSERT INTO pending_changes (directory, change_type, title, timestamp) VALUES (?, ?, ?, ?)',
             [change.directory, change.change_type, change.title || '', change.timestamp]
         );
-        
         return { success: result.success };
     } catch (error) {
         handleError(error, 'storing pending change');
@@ -566,7 +569,7 @@ export async function getPendingChangesFromDb(): Promise<PendingChange[]> {
         const result = await allAsync<PendingChange>(
             'SELECT id, directory, change_type, title, timestamp FROM pending_changes ORDER BY timestamp DESC'
         );
-        
+
         if (result.success && result.data) {
             return result.data;
         }
@@ -589,10 +592,8 @@ export async function clearPendingChangesFromDb(): Promise<ApiResult<void>> {
 
 export async function hasPendingChangesInDb(): Promise<boolean> {
     try {
-        const result = await getAsync<{ count: number }>(
-            'SELECT COUNT(*) as count FROM pending_changes'
-        );
-        
+        const result = await getAsync<{ count: number }>('SELECT COUNT(*) as count FROM pending_changes');
+
         if (result.success && result.data) {
             return result.data.count > 0;
         }
@@ -603,4 +604,44 @@ export async function hasPendingChangesInDb(): Promise<boolean> {
     }
 }
 
-export { db };
+export async function removePromptFromDatabase(directory: string): Promise<boolean> {
+    try {
+        const promptResult = await getAsync<{ id: number }>('SELECT id FROM prompts WHERE directory = ?', [directory]);
+
+        if (!promptResult.success || !promptResult.data) {
+            logger.warn(`Prompt with directory '${directory}' not found in database`);
+            return false;
+        }
+
+        const promptId = promptResult.data.id;
+        await runAsync('BEGIN TRANSACTION');
+
+        try {
+            await runAsync('DELETE FROM subcategories WHERE prompt_id = ?', [promptId]);
+            await runAsync('DELETE FROM variables WHERE prompt_id = ?', [promptId]);
+            await runAsync('DELETE FROM fragments WHERE prompt_id = ?', [promptId]);
+
+            const tableCheckResult = await getAsync<{ name: string }>(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='conversation_history'"
+            );
+
+            if (tableCheckResult.success && tableCheckResult.data) {
+                await runAsync('DELETE FROM conversation_history WHERE prompt_id = ?', [promptId]);
+            }
+
+            await runAsync('DELETE FROM prompts WHERE id = ?', [promptId]);
+
+            await runAsync('COMMIT');
+            logger.debug(`Successfully removed prompt '${directory}' (ID: ${promptId}) from database`);
+            return true;
+        } catch (transactionError) {
+            await runAsync('ROLLBACK');
+            throw transactionError;
+        }
+    } catch (error) {
+        handleError(error, `removing prompt '${directory}' from database`);
+        return false;
+    }
+}
+
+export { db, isPromptInFavorites };

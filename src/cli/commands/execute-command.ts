@@ -6,8 +6,16 @@ import { BaseCommand } from './base-command';
 import { PromptMetadata } from '../../shared/types';
 import { processPromptContent, updatePromptWithVariables } from '../../shared/utils/prompt-processing';
 import { formatSnakeCase } from '../../shared/utils/string-formatter';
+import {
+    allAsync,
+    getFavoritePrompts,
+    getPromptDetails,
+    getRecentExecutions,
+    recordPromptExecution
+} from '../utils/database';
+import { getAllPrompts, getPromptCategories } from '../utils/prompt-utils';
 import { getPromptFiles, viewPromptDetails } from '../utils/prompts';
-import { allAsync } from '../utils/database';
+import { createSectionHeader, formatMenuItem } from '../utils/ui-components';
 
 class ExecuteCommand extends BaseCommand {
     constructor() {
@@ -103,24 +111,102 @@ Note:
                 this.outputHelp();
                 return;
             }
+            
+            // Check for command-line arguments directly
+            const hasPrompt = process.argv.includes('-p') || process.argv.includes('--prompt');
+            const hasPromptFile = process.argv.includes('-f') || process.argv.includes('--prompt-file');
+            const hasMetadataFile = process.argv.includes('-m') || process.argv.includes('--metadata-file');
+            const hasInspect = process.argv.includes('-i') || process.argv.includes('--inspect');
+            
+            // Get values for options
+            let promptValue = '';
+            let promptFileValue = '';
+            let metadataFileValue = '';
+            
+            // Get prompt value
+            const promptIndex = Math.max(
+                process.argv.indexOf('-p'),
+                process.argv.indexOf('--prompt')
+            );
+            if (promptIndex !== -1 && promptIndex < process.argv.length - 1) {
+                promptValue = process.argv[promptIndex + 1];
+            }
+            
+            // Get prompt file value
+            const promptFileIndex = Math.max(
+                process.argv.indexOf('-f'),
+                process.argv.indexOf('--prompt-file')
+            );
+            if (promptFileIndex !== -1 && promptFileIndex < process.argv.length - 1) {
+                promptFileValue = process.argv[promptFileIndex + 1];
+            }
+            
+            // Get metadata file value
+            const metadataFileIndex = Math.max(
+                process.argv.indexOf('-m'),
+                process.argv.indexOf('--metadata-file')
+            );
+            if (metadataFileIndex !== -1 && metadataFileIndex < process.argv.length - 1) {
+                metadataFileValue = process.argv[metadataFileIndex + 1];
+            }
+            
+            // Collect file inputs
+            const fileInputs: Record<string, string> = {};
+            let fileInputIndex = process.argv.indexOf('-fi');
+            while (fileInputIndex !== -1) {
+                if (fileInputIndex < process.argv.length - 1) {
+                    const value = process.argv[fileInputIndex + 1];
+                    const [variable, file] = value.split('=');
+                    if (variable && file) {
+                        fileInputs[variable] = file;
+                    }
+                }
+                fileInputIndex = process.argv.indexOf('-fi', fileInputIndex + 2);
+            }
+            
+            fileInputIndex = process.argv.indexOf('--file-input');
+            while (fileInputIndex !== -1) {
+                if (fileInputIndex < process.argv.length - 1) {
+                    const value = process.argv[fileInputIndex + 1];
+                    const [variable, file] = value.split('=');
+                    if (variable && file) {
+                        fileInputs[variable] = file;
+                    }
+                }
+                fileInputIndex = process.argv.indexOf('--file-input', fileInputIndex + 2);
+            }
+            
+            // Parse dynamic options
+            const dynamicOptions: Record<string, string> = {};
+            for (let i = 0; i < process.argv.length; i++) {
+                const arg = process.argv[i];
+                if (arg.startsWith('--') && 
+                    arg !== '--prompt' && 
+                    arg !== '--prompt-file' && 
+                    arg !== '--metadata-file' && 
+                    arg !== '--inspect' && 
+                    arg !== '--file-input') {
+                    
+                    const key = arg.slice(2).replace(/-/g, '_');
+                    if (i < process.argv.length - 1 && !process.argv[i + 1].startsWith('-')) {
+                        dynamicOptions[key] = process.argv[i + 1];
+                    }
+                }
+            }
+            
 
-            const dynamicOptions = command ? this.parseDynamicOptions(command.args) : {};
-
-            if (options.prompt) {
-                // Direct execution with a specific prompt ID/name
-                await this.handleStoredPrompt(options.prompt, dynamicOptions, options.inspect, options.fileInput);
-            } else if (options.promptFile && options.metadataFile) {
-                // Direct execution with specific files
+            if (hasPrompt && promptValue) {
+                await this.handleStoredPrompt(promptValue, dynamicOptions, hasInspect, fileInputs);
+            } else if (hasPromptFile && promptFileValue && hasMetadataFile && metadataFileValue) {
                 await this.handleFilePrompt(
-                    options.promptFile,
-                    options.metadataFile,
+                    promptFileValue,
+                    metadataFileValue,
                     dynamicOptions,
-                    options.inspect,
-                    options.fileInput
+                    hasInspect,
+                    fileInputs
                 );
             } else if (process.env.CLI_ENV === 'cli') {
-                // Interactive browse and run workflow when called from the menu
-                await this.browseAndRunWorkflow(options.inspect, options.fileInput);
+                await this.browseAndRunWorkflow(hasInspect, fileInputs);
             } else {
                 console.error(
                     chalk.red('Error: You must provide either a prompt ID or both prompt file and metadata file paths.')
@@ -139,16 +225,12 @@ Note:
         fileInputs: Record<string, string>
     ): Promise<void> {
         try {
-            // Import necessary functions
-            const { getPromptDetails } = await import('../utils/database');
-            
-            // Get prompt details including variables
             const promptDetailsResult = await getPromptDetails(promptId);
+
             if (!promptDetailsResult.success || !promptDetailsResult.data) {
                 throw new Error(`Failed to get prompt details for ID: ${promptId}`);
             }
-            
-            // Get the prompt files with content
+
             const promptFiles = await this.handleApiResult(
                 await getPromptFiles(promptId, { cleanVariables: false }),
                 'Fetched prompt files'
@@ -157,16 +239,17 @@ Note:
             if (!promptFiles) return;
 
             const { promptContent, metadata } = promptFiles;
-            
-            // Display prompt details with options to edit variables or execute
+
             if (process.env.CLI_ENV === 'cli') {
-                // Import the interactive variable editing functionality from prompts-command 
-                const { default: promptsCommand } = await import('./prompts-command');
-                await promptsCommand.handlePromptExecution(promptId);
-                return;
+                // Don't use prompt command in CLI mode if we have dynamic options or file inputs
+                // This way it will continue and handle variables with our direct logic
+                if (Object.keys(dynamicOptions).length === 0 && Object.keys(fileInputs).length === 0 && !inspect) {
+                    const { default: promptsCommand } = await import('./prompts-command');
+                    await promptsCommand.handlePromptExecution(promptId);
+                    return;
+                }
             }
 
-            // For direct CLI execution (non-interactive)
             if (inspect) {
                 await this.inspectPrompt(metadata);
             } else {
@@ -199,50 +282,40 @@ Note:
         }
     }
 
-    /**
-     * Enhanced browse and run workflow that combines browsing and execution
-     * @param inspect Whether to inspect variables without executing
-     * @param fileInputs File inputs for variables
-     */
     private async browseAndRunWorkflow(
-        inspect: boolean = false, 
+        inspect: boolean = false,
         fileInputs: Record<string, string> = {}
     ): Promise<void> {
-        // Use a loop to keep the browsing session active until user explicitly exits
         while (true) {
             try {
-                // First, offer different ways to browse prompts
-                const browseAction = await this.showMenu<'category' | 'all' | 'recent' | 'favorites' | 'search' | 'back'>(
-                    'How would you like to browse prompts?',
-                    [
-                        { 
-                            name: chalk.bold('Browse by category'), 
-                            value: 'category' 
-                        },
-                        { 
-                            name: chalk.bold('View all prompts'), 
-                            value: 'all' 
-                        },
-                        { 
-                            name: chalk.bold('View recently used prompts'), 
-                            value: 'recent' 
-                        },
-                        { 
-                            name: chalk.bold('View favorite prompts'), 
-                            value: 'favorites' 
-                        },
-                        { 
-                            name: chalk.bold('Search for a prompt'), 
-                            value: 'search' 
-                        }
-                    ]
+                const choices = [];
+                choices.push(
+                    createSectionHeader<'category' | 'all' | 'recent' | 'favorites' | 'search' | 'back'>(
+                        'BROWSE & EXECUTE',
+                        '🔍',
+                        'primary'
+                    )
+                );
+                choices.push(formatMenuItem('By Category', 'category', 'primary'));
+                choices.push(formatMenuItem('All Prompts', 'all', 'primary'));
+                choices.push(formatMenuItem('Recent Prompts', 'recent', 'primary'));
+                choices.push(formatMenuItem('Favorite Prompts', 'favorites', 'primary'));
+                choices.push(formatMenuItem('Search Prompts', 'search', 'primary'));
+
+                const browseAction = await this.showMenu<
+                    'category' | 'all' | 'recent' | 'favorites' | 'search' | 'back'
+                >(
+                    'Select a browsing option:',
+                    choices.map((item) => ({
+                        name: item.name,
+                        value: item.value as any,
+                        disabled: item.disabled
+                    }))
                 );
 
                 if (browseAction === 'back') return;
 
-                // Get prompt ID based on browse action
                 let promptId: string | null = null;
-                
                 switch (browseAction) {
                     case 'category':
                         promptId = await this.browseByCategory();
@@ -261,69 +334,61 @@ Note:
                         break;
                 }
 
-                if (!promptId) continue; // Go back to browse menu if no prompt was selected
+                if (!promptId) continue;
 
                 try {
-                    // Execute the selected prompt
                     await this.handleStoredPrompt(promptId, {}, inspect, fileInputs);
-                    
-                    // No need for an extra menu - continue directly to browse options
-                    // This avoids an extra menu step and streamlines the workflow
                 } catch (execError) {
                     this.handleError(execError, 'executing prompt');
-                    // Continue browsing even if execution failed
                     await this.pressKeyToContinue();
                 }
             } catch (error) {
                 this.handleError(error, 'browse and run workflow');
                 await this.pressKeyToContinue();
-                return; // Exit on serious errors
+                return;
             }
         }
     }
 
-    /**
-     * Browse prompts by category
-     */
     private async browseByCategory(): Promise<string | null> {
         try {
-            // Import necessary functions
-            const { getPromptCategories } = await import('../utils/prompt-utils');
             const categories = await getPromptCategories();
-            
+
             if (!categories || Object.keys(categories).length === 0) {
                 console.log(chalk.yellow('No prompt categories found.'));
                 return null;
             }
-            
-            // Select a category
+
             const sortedCategories = Object.keys(categories).sort();
             const category = await this.showMenu<string | 'back'>(
                 'Select a category:',
-                sortedCategories.map(cat => ({
+                sortedCategories.map((cat) => ({
                     name: this.formatTitleCase(cat),
                     value: cat
                 }))
             );
-            
+
             if (category === 'back') return null;
-            
-            // Select a prompt from the category
+
             const promptsInCategory = categories[category];
+
             if (!promptsInCategory || promptsInCategory.length === 0) {
                 console.log(chalk.yellow(`No prompts found in category: ${category}`));
                 return null;
             }
-            
-            const prompt = await this.showMenu<{id: number} | 'back'>(
+
+            const prompt = await this.showMenu<{ id: number } | 'back'>(
                 `Select a prompt from ${this.formatTitleCase(category)}:`,
-                promptsInCategory.map(prompt => ({
+                promptsInCategory.map((prompt) => ({
                     name: `${prompt.id.toString().padEnd(4)} | ${chalk.green(prompt.title)}`,
-                    value: {id: Number(prompt.id)},
-                    description: typeof prompt === 'object' && 'one_line_description' in prompt ? String(prompt.one_line_description) : ''
+                    value: { id: Number(prompt.id) },
+                    description:
+                        typeof prompt === 'object' && 'one_line_description' in prompt
+                            ? String(prompt.one_line_description)
+                            : ''
                 }))
             );
-            
+
             if (prompt === 'back') return null;
             return prompt.id.toString();
         } catch (error) {
@@ -331,41 +396,31 @@ Note:
             return null;
         }
     }
-    
-    /**
-     * Browse all prompts
-     */
+
     private async browseAllPrompts(): Promise<string | null> {
         try {
-            // Instead of using the separate selectPrompt function,
-            // use our showMenu method for consistency
-            const allPromptsResult = await allAsync<{ 
-                id: number; 
-                title: string; 
-                directory: string; 
-                primary_category: string; 
-                one_line_description: string 
+            const allPromptsResult = await allAsync<{
+                id: number;
+                title: string;
+                directory: string;
+                primary_category: string;
+                one_line_description: string;
             }>('SELECT id, title, directory, primary_category, one_line_description FROM prompts ORDER BY id');
-            
+
             if (!allPromptsResult.success || !allPromptsResult.data || allPromptsResult.data.length === 0) {
                 console.log(chalk.yellow('No prompts found in the database.'));
                 return null;
             }
-            
-            // Transform prompts to choices
-            const promptChoices = allPromptsResult.data.map(prompt => ({
+
+            const promptChoices = allPromptsResult.data.map((prompt) => ({
                 name: `${prompt.id.toString().padEnd(4)} | ${chalk.green(prompt.title.padEnd(30))} | ${prompt.primary_category}`,
-                value: {id: Number(prompt.id)},
+                value: { id: Number(prompt.id) },
                 description: prompt.one_line_description || ''
             }));
-            
-            // Use our standard showMenu with consistent styling
-            const selectedPrompt = await this.showMenu<{id: number} | 'back'>(
-                'Select a prompt:',
-                promptChoices,
-                { pageSize: 15 } // Show more options at once
-            );
-            
+            const selectedPrompt = await this.showMenu<{ id: number } | 'back'>('Select a prompt:', promptChoices, {
+                pageSize: 15
+            });
+
             if (selectedPrompt === 'back') return null;
             return selectedPrompt.id.toString();
         } catch (error) {
@@ -373,30 +428,26 @@ Note:
             return null;
         }
     }
-    
-    /**
-     * Browse recently used prompts
-     */
+
     private async browseRecentPrompts(): Promise<string | null> {
         try {
-            const { getRecentExecutions } = await import('../utils/database');
             const recentPrompts = await getRecentExecutions(10);
-            
+
             if (!recentPrompts || recentPrompts.length === 0) {
                 console.log(chalk.yellow('No recent prompt executions found.'));
                 console.log(chalk.italic('Execute some prompts first to see them here.'));
                 await this.pressKeyToContinue();
                 return null;
             }
-            
-            const selectedPrompt = await this.showMenu<{id: number} | 'back'>(
+
+            const selectedPrompt = await this.showMenu<{ id: number } | 'back'>(
                 'Select a recently used prompt:',
-                recentPrompts.map(prompt => ({
+                recentPrompts.map((prompt) => ({
                     name: `${prompt.prompt_id.toString().padEnd(4)} | ${chalk.green(prompt.title || 'Untitled')} | ${new Date(prompt.execution_time).toLocaleString()}`,
-                    value: {id: Number(prompt.prompt_id)}
+                    value: { id: Number(prompt.prompt_id) }
                 }))
             );
-            
+
             if (selectedPrompt === 'back') return null;
             return selectedPrompt.id.toString();
         } catch (error) {
@@ -404,31 +455,29 @@ Note:
             return null;
         }
     }
-    
-    /**
-     * Browse favorite prompts
-     */
+
     private async browseFavoritePrompts(): Promise<string | null> {
         try {
-            const { getFavoritePrompts } = await import('../utils/database');
             const favoritesResult = await getFavoritePrompts();
-            
+
             if (!favoritesResult.success || !favoritesResult.data || favoritesResult.data.length === 0) {
                 console.log(chalk.yellow('No favorite prompts found.'));
-                console.log(chalk.italic('You can add favorite prompts using the "Browse prompts" option from the main menu.'));
+                console.log(
+                    chalk.italic('You can add favorite prompts using the "Browse prompts" option from the main menu.')
+                );
                 await this.pressKeyToContinue();
                 return null;
             }
-            
-            const selectedPrompt = await this.showMenu<{id: number} | 'back'>(
+
+            const selectedPrompt = await this.showMenu<{ id: number } | 'back'>(
                 'Select a favorite prompt:',
-                favoritesResult.data.map(prompt => ({
+                favoritesResult.data.map((prompt) => ({
                     name: `${prompt.prompt_id.toString().padEnd(4)} | ${chalk.green(prompt.title || 'Untitled')}`,
-                    value: {id: Number(prompt.prompt_id)},
+                    value: { id: Number(prompt.prompt_id) },
                     description: prompt.description || ''
                 }))
             );
-            
+
             if (selectedPrompt === 'back') return null;
             return selectedPrompt.id.toString();
         } catch (error) {
@@ -436,46 +485,42 @@ Note:
             return null;
         }
     }
-    
-    /**
-     * Search for prompts
-     */
+
     private async searchPrompts(): Promise<string | null> {
         try {
             const keyword = await this.getInput('Enter search term:');
+
             if (!keyword) return null;
-            
-            const { getAllPrompts } = await import('../utils/prompt-utils');
-            const { getPromptCategories } = await import('../utils/prompt-utils');
+
             const categories = await getPromptCategories();
-            
+
             if (!categories) {
                 console.log(chalk.yellow('No categories found.'));
                 return null;
             }
-            
-            // Get all prompts and filter them based on the keyword
+
             const allPrompts = getAllPrompts(categories);
-            const searchResults = allPrompts.filter(prompt => 
-                prompt.title.toLowerCase().includes(keyword.toLowerCase()) ||
-                prompt.category.toLowerCase().includes(keyword.toLowerCase()) ||
-                (prompt.description && prompt.description.toLowerCase().includes(keyword.toLowerCase()))
+            const searchResults = allPrompts.filter(
+                (prompt) =>
+                    prompt.title.toLowerCase().includes(keyword.toLowerCase()) ||
+                    prompt.category.toLowerCase().includes(keyword.toLowerCase()) ||
+                    (prompt.description && prompt.description.toLowerCase().includes(keyword.toLowerCase()))
             );
-            
+
             if (!searchResults || searchResults.length === 0) {
                 console.log(chalk.yellow(`No prompts found matching: "${keyword}"`));
                 return null;
             }
-            
-            const selectedPrompt = await this.showMenu<{id: number} | 'back'>(
+
+            const selectedPrompt = await this.showMenu<{ id: number } | 'back'>(
                 `Search results for "${keyword}":`,
-                searchResults.map(prompt => ({
+                searchResults.map((prompt) => ({
                     name: `${prompt.id.toString().padEnd(4)} | ${chalk.green(prompt.title)} | ${prompt.category}`,
-                    value: {id: Number(prompt.id)},
+                    value: { id: Number(prompt.id) },
                     description: prompt.description || ''
                 }))
             );
-            
+
             if (selectedPrompt === 'back') return null;
             return selectedPrompt.id.toString();
         } catch (error) {
@@ -483,17 +528,14 @@ Note:
             return null;
         }
     }
-    
-    /**
-     * Helper to format title case
-     */
+
     private formatTitleCase(text: string): string {
         return text
             .split('_')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
     }
-    
+
     private async inspectPrompt(metadata: PromptMetadata): Promise<void> {
         try {
             await viewPromptDetails(
@@ -520,196 +562,185 @@ Note:
     ): Promise<string> {
         if (metadata.id) {
             try {
-                const { recordPromptExecution } = await import('../utils/database');
                 await recordPromptExecution(metadata.id);
             } catch (error) {
                 console.error('Failed to record prompt execution:', error);
             }
         }
 
-        // Create a unique temporary file identifier for this execution to prevent conflicts
-        const executionId = `exec_${Date.now()}`;
-        
-        try {
-            // Interactive variable collection mode for CLI
-            if (process.env.CLI_ENV === 'cli' && metadata.variables && metadata.variables.length > 0) {
-                console.log(chalk.cyan('\nPrompt Variables:'));
-                console.log(chalk.gray('─'.repeat(60)));
-                
-                const userInputs: Record<string, string> = {};
-                let needsInput = false;
-                
-                // First, check which variables need user input
-                for (const variable of metadata.variables) {
-                    const variableName = variable.name.replace(/[{}]/g, '');
-                    const snakeCaseName = variableName.toLowerCase();
-                    
-                    // If variable already has a value, use it
-                    if (variable.value) {
-                        userInputs[variable.name] = variable.value;
-                        console.log(`${chalk.green('✓')} ${formatSnakeCase(variableName)}: ${chalk.dim('Using stored value')}`);
-                        continue;
-                    }
-                    
-                    // Check for value in dynamicOptions or fileInputs
-                    const hasValueInOptions = dynamicOptions && snakeCaseName in dynamicOptions;
-                    const hasValueInFiles = fileInputs && snakeCaseName in fileInputs;
-                    
-                    if (hasValueInOptions) {
-                        userInputs[variable.name] = dynamicOptions[snakeCaseName];
-                        console.log(`${chalk.green('✓')} ${formatSnakeCase(variableName)}: ${chalk.dim('Using provided value')}`);
-                    } else if (hasValueInFiles) {
-                        try {
-                            userInputs[variable.name] = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
-                            console.log(`${chalk.green('✓')} ${formatSnakeCase(variableName)}: ${chalk.dim('Using file input')}`);
-                        } catch (error) {
-                            console.log(`${chalk.red('✗')} ${formatSnakeCase(variableName)}: ${chalk.red('Error reading file')}`);
-                            needsInput = true;
-                        }
-                    } else {
-                        // Variable needs user input
-                        console.log(`${chalk.yellow('?')} ${formatSnakeCase(variableName)}${variable.optional_for_user ? '' : chalk.red(' *')}: ${chalk.gray(variable.role || '')}`);
+        if (process.env.CLI_ENV === 'cli' && metadata.variables && metadata.variables.length > 0) {
+            console.log(chalk.cyan('\nPrompt Variables:'));
+            console.log(chalk.gray('─'.repeat(60)));
+
+            const userInputs: Record<string, string> = {};
+            let needsInput = false;
+
+            for (const variable of metadata.variables) {
+                const variableName = variable.name.replace(/[{}]/g, '');
+                const snakeCaseName = variableName.toLowerCase();
+
+                if (variable.value) {
+                    userInputs[variable.name] = variable.value;
+                    console.log(
+                        `${chalk.green('✓')} ${formatSnakeCase(variableName)}: ${chalk.dim('Using stored value')}`
+                    );
+                    continue;
+                }
+
+                const hasValueInOptions = dynamicOptions && snakeCaseName in dynamicOptions;
+                const hasValueInFiles = fileInputs && snakeCaseName in fileInputs;
+
+                if (hasValueInOptions) {
+                    userInputs[variable.name] = dynamicOptions[snakeCaseName];
+                    console.log(
+                        `${chalk.green('✓')} ${formatSnakeCase(variableName)}: ${chalk.dim('Using provided value')}`
+                    );
+                } else if (hasValueInFiles) {
+                    try {
+                        userInputs[variable.name] = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
+                        console.log(
+                            `${chalk.green('✓')} ${formatSnakeCase(variableName)}: ${chalk.dim('Using file input')}`
+                        );
+                    } catch {
+                        console.log(
+                            `${chalk.red('✗')} ${formatSnakeCase(variableName)}: ${chalk.red('Error reading file')}`
+                        );
                         needsInput = true;
                     }
+                } else {
+                    console.log(
+                        `${chalk.yellow('?')} ${formatSnakeCase(variableName)}${variable.optional_for_user ? '' : chalk.red(' *')}: ${chalk.gray(variable.role || '')}`
+                    );
+                    needsInput = true;
                 }
-                
-                // Directly collect values for any needed input
-                if (needsInput) {
-                    console.log(chalk.gray('─'.repeat(60)));
-                    console.log(chalk.cyan('Please provide values for the variables:'));
-                    
-                    // Collect values for variables that need input
-                    for (const variable of metadata.variables) {
-                        if (variable.name in userInputs) continue;
-                        
-                        const variableName = variable.name.replace(/[{}]/g, '');
-                        const snakeCaseName = variableName.toLowerCase();
-                        
-                        console.log(chalk.cyan(`\nEnter value for ${formatSnakeCase(variableName)}:`));
-                        console.log(chalk.gray(variable.role || ''));
-                        
-                        if (!variable.optional_for_user) {
-                            console.log(chalk.red('(Required)'));
-                        }
-                        
-                        // Use multiline input for variables
-                        const value = await this.getMultilineInput(`Value for ${formatSnakeCase(variableName)}:`);
-                        
-                        if (value.trim() || variable.optional_for_user) {
-                            userInputs[variable.name] = value;
-                        } else {
-                            throw new Error(`Required variable ${snakeCaseName} cannot be empty`);
-                        }
-                    }
-                }
-                
-                // Verify all required variables are set
-                const missingVariables = metadata.variables
-                    .filter(v => !v.optional_for_user && (!userInputs[v.name] || userInputs[v.name].trim() === ''))
-                    .map(v => formatSnakeCase(v.name));
-                
-                if (missingVariables.length > 0) {
-                    throw new Error(`Missing required variables: ${missingVariables.join(', ')}`);
-                }
-                
-                // Show summary of variables being used
-                console.log(chalk.cyan('\nUsing variables:'));
-                console.log(chalk.gray('─'.repeat(60)));
-                Object.entries(userInputs).forEach(([key, value]) => {
-                    const displayValue = value.length > 50 ? value.substring(0, 50) + '...' : value;
-                    console.log(`${chalk.green('✓')} ${formatSnakeCase(key)}: ${displayValue}`);
-                });
-                console.log(chalk.gray('─'.repeat(60)));
-                
-                // No confirmation needed - proceed directly to execution
-                console.log(chalk.green('All variables set. Ready to execute prompt.'))
-                
-                // Process the prompt with our collected variables
-                const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
-                console.log(chalk.cyan('\nExecuting prompt...\n'));
-                console.log(chalk.gray('─'.repeat(60)));
-                const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
-                
-                if (typeof result !== 'string') {
-                    throw new Error('Unexpected result format from prompt processing');
-                }
-                
-                console.log(result);
-                console.log(chalk.gray('─'.repeat(60)));
-                console.log(chalk.green('Prompt execution completed successfully.'));
-                await this.pressKeyToContinue();
-                return result;
-            } else {
-                // Non-interactive mode (for direct CLI calls)
-                const userInputs: Record<string, string> = {};
-                const missingVariables: string[] = [];
-                
-                for (const variable of metadata.variables) {
-                    const variableName = variable.name.replace(/[{}]/g, '');
-                    const snakeCaseName = variableName.toLowerCase();
-                    
-                    if (variable.value) {
-                        userInputs[variable.name] = variable.value;
-                        continue;
-                    }
-                    
-                    if (!variable.optional_for_user) {
-                        const hasValue =
-                            (dynamicOptions && snakeCaseName in dynamicOptions) || (fileInputs && snakeCaseName in fileInputs);
-                        
-                        if (!hasValue) {
-                            missingVariables.push(snakeCaseName);
-                        }
-                    }
-                }
-                
-                if (missingVariables.length > 0) {
-                    throw new Error(`Missing required variables: ${missingVariables.join(', ')}`);
-                }
-                
-                for (const variable of metadata.variables) {
-                    const variableName = variable.name.replace(/[{}]/g, '');
-                    const snakeCaseName = variableName.toLowerCase();
-                    
-                    if (variable.name in userInputs) {
-                        continue;
-                    }
-                    
-                    let value = dynamicOptions[snakeCaseName];
-                    
-                    if (fileInputs[snakeCaseName]) {
-                        try {
-                            value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
-                        } catch (error) {
-                            console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
-                            throw new Error(`Failed to read file for ${snakeCaseName}`);
-                        }
-                    }
-                    
-                    if (value !== undefined) {
-                        userInputs[variable.name] = value;
-                    } else if (!variable.optional_for_user) {
-                        throw new Error(`Required variable ${snakeCaseName} is not set`);
-                    }
-                }
-                
-                console.log(chalk.cyan('\nUsing variables:'));
-                Object.entries(userInputs).forEach(([key, value]) => {
-                    console.log(`  ${formatSnakeCase(key)}: ${value.length > 50 ? value.substring(0, 50) + '...' : value}`);
-                });
-                
-                const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
-                const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
-                
-                if (typeof result !== 'string') {
-                    throw new Error('Unexpected result format from prompt processing');
-                }
-                
-                console.log(result);
-                return result;
             }
-        } catch (error) {
-            throw error; // Re-throw to be caught by the handler in browseAndRunWorkflow
+
+            if (needsInput) {
+                console.log(chalk.gray('─'.repeat(60)));
+                console.log(chalk.cyan('Please provide values for the variables:'));
+
+                for (const variable of metadata.variables) {
+                    if (variable.name in userInputs) continue;
+
+                    const variableName = variable.name.replace(/[{}]/g, '');
+                    const snakeCaseName = variableName.toLowerCase();
+                    console.log(chalk.cyan(`\nEnter value for ${formatSnakeCase(variableName)}:`));
+                    console.log(chalk.gray(variable.role || ''));
+
+                    if (!variable.optional_for_user) {
+                        console.log(chalk.red('(Required)'));
+                    }
+
+                    const value = await this.getMultilineInput(`Value for ${formatSnakeCase(variableName)}:`);
+
+                    if (value.trim() || variable.optional_for_user) {
+                        userInputs[variable.name] = value;
+                    } else {
+                        throw new Error(`Required variable ${snakeCaseName} cannot be empty`);
+                    }
+                }
+            }
+
+            const missingVariables = metadata.variables
+                .filter((v) => !v.optional_for_user && (!userInputs[v.name] || userInputs[v.name].trim() === ''))
+                .map((v) => formatSnakeCase(v.name));
+
+            if (missingVariables.length > 0) {
+                throw new Error(`Missing required variables: ${missingVariables.join(', ')}`);
+            }
+
+            console.log(chalk.cyan('\nUsing variables:'));
+            console.log(chalk.gray('─'.repeat(60)));
+            Object.entries(userInputs).forEach(([key, value]) => {
+                const displayValue = value.length > 50 ? value.substring(0, 50) + '...' : value;
+                console.log(`${chalk.green('✓')} ${formatSnakeCase(key)}: ${displayValue}`);
+            });
+            console.log(chalk.gray('─'.repeat(60)));
+
+            console.log(chalk.green('All variables set. Ready to execute prompt.'));
+
+            const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
+            console.log(chalk.cyan('\nExecuting prompt...\n'));
+            console.log(chalk.gray('─'.repeat(60)));
+            const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
+
+            if (typeof result !== 'string') {
+                throw new Error('Unexpected result format from prompt processing');
+            }
+
+            console.log(result);
+            console.log(chalk.gray('─'.repeat(60)));
+            console.log(chalk.green('Prompt execution completed successfully.'));
+            await this.pressKeyToContinue();
+            return result;
+        } else {
+            const userInputs: Record<string, string> = {};
+            const missingVariables: string[] = [];
+
+            for (const variable of metadata.variables) {
+                const variableName = variable.name.replace(/[{}]/g, '');
+                const snakeCaseName = variableName.toLowerCase();
+
+                if (variable.value) {
+                    userInputs[variable.name] = variable.value;
+                    continue;
+                }
+
+                if (!variable.optional_for_user) {
+                    const hasValue =
+                        (dynamicOptions && snakeCaseName in dynamicOptions) ||
+                        (fileInputs && snakeCaseName in fileInputs);
+
+                    if (!hasValue) {
+                        missingVariables.push(snakeCaseName);
+                    }
+                }
+            }
+
+            if (missingVariables.length > 0) {
+                throw new Error(`Missing required variables: ${missingVariables.join(', ')}`);
+            }
+
+            for (const variable of metadata.variables) {
+                const variableName = variable.name.replace(/[{}]/g, '');
+                const snakeCaseName = variableName.toLowerCase();
+
+                if (variable.name in userInputs) {
+                    continue;
+                }
+
+                let value = dynamicOptions[snakeCaseName];
+
+                if (fileInputs[snakeCaseName]) {
+                    try {
+                        value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
+                    } catch (error) {
+                        console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
+                        throw new Error(`Failed to read file for ${snakeCaseName}`);
+                    }
+                }
+
+                if (value !== undefined) {
+                    userInputs[variable.name] = value;
+                } else if (!variable.optional_for_user) {
+                    throw new Error(`Required variable ${snakeCaseName} is not set`);
+                }
+            }
+
+            console.log(chalk.cyan('\nUsing variables:'));
+            Object.entries(userInputs).forEach(([key, value]) => {
+                console.log(`  ${formatSnakeCase(key)}: ${value.length > 50 ? value.substring(0, 50) + '...' : value}`);
+            });
+
+            const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
+            const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
+
+            if (typeof result !== 'string') {
+                throw new Error('Unexpected result format from prompt processing');
+            }
+
+            console.log(result);
+            return result;
         }
     }
 }

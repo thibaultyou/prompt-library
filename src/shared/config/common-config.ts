@@ -22,12 +22,11 @@ export interface CommonConfig {
     LOG_LEVEL: 'debug' | 'info' | 'warn' | 'error';
     REMOTE_REPOSITORY: string;
     CLI_ENV: string;
-    
-    // Git repository settings
+
     DEFAULT_BRANCH: string;
-    UPSTREAM_REPOSITORY: string;  // Repository to push changes to
-    DOWNSTREAM_REPOSITORIES: string[];  // Repositories to pull/fetch from
-    USE_GIT: boolean; // Whether to use git for prompt management
+    UPSTREAM_REPOSITORY: string;
+    DOWNSTREAM_REPOSITORIES: string[];
+    USE_GIT: boolean;
 }
 
 export const commonConfig: CommonConfig = {
@@ -44,11 +43,9 @@ export const commonConfig: CommonConfig = {
     LOG_LEVEL: (process.env.LOG_LEVEL as Config['LOG_LEVEL']) || 'info',
     REMOTE_REPOSITORY: process.env.REMOTE_REPOSITORY || '',
     CLI_ENV: process.env.CLI_ENV || 'cli',
-    
-    // Git repository settings
+
     DEFAULT_BRANCH: process.env.DEFAULT_BRANCH || 'main',
     UPSTREAM_REPOSITORY: process.env.UPSTREAM_REPOSITORY || '',
-    DOWNSTREAM_REPOSITORIES: process.env.DOWNSTREAM_REPOSITORIES ? 
-        process.env.DOWNSTREAM_REPOSITORIES.split(',') : [],
+    DOWNSTREAM_REPOSITORIES: process.env.DOWNSTREAM_REPOSITORIES ? process.env.DOWNSTREAM_REPOSITORIES.split(',') : [],
     USE_GIT: process.env.USE_GIT === 'false' ? false : true
 };
