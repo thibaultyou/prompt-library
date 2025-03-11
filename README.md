@@ -3,9 +3,9 @@
 <div align="center">
 
   <p>
-    <a href="https://github.com/thibaultyou/prompt-library/releases">
+    <!-- <a href="https://github.com/thibaultyou/prompt-library/releases">
       <img src="https://img.shields.io/github/package-json/v/thibaultyou/prompt-library" alt="Version">
-    </a>
+    </a> -->
     <a href="https://github.com/thibaultyou/prompt-library/blob/main/LICENSE.md">
       <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
     </a>
@@ -46,36 +46,24 @@ In today's rapidly evolving AI landscape, maintaining a personal prompt library 
 
 ## ⚡ Quick Start
 
-### Option 1: Global Installation (Recommended for Users)
-
 ```bash
-# Install CLI globally from npm (coming soon)
-npm install -g prompt-library-cli
-
-# Run setup to create your prompt library
-prompt-library-cli setup
-
-# Launch interactive prompt menu
-prompt-library-cli
-```
-
-### Option 2: Development Installation
-
-```bash
-# Clone repository
+# Fork the repository on GitHub first, then clone your fork
 git clone https://github.com/YOUR_USERNAME/prompt-library.git
 
 # Install dependencies
 cd prompt-library && npm install
 
-# Build and install CLI globally
-npm run build && npm install -g .
+# Choose how to run the CLI:
 
-# Run setup to create your prompt library
-prompt-library-cli setup
-
-# Or run directly from source in development mode
+# Option 1: Run directly in development mode
 npm run dev
+
+# Option 2: Build and install globally
+npm run build && npm install -g .
+prompt-library-cli
+
+# After first run, set up your prompt library
+prompt-library-cli setup
 ```
 
 <details>
@@ -107,18 +95,45 @@ The CLI offers a complete prompt management and execution solution:
 
 ### Command Overview
 
+#### Core Commands
+
 | Command | Description | Example |
 |---------|-------------|---------|
-| `prompt-library-cli` | Interactive menu | `prompt-library-cli` |
-| `model` | Configure AI model settings | `prompt-library-cli model` |
+| `prompt-library-cli` | Interactive CLI menu | `prompt-library-cli` |
+| `execute` | Run a specific prompt | `prompt-library-cli execute -p "git_commit"` |
 | `prompts` | List and manage prompts | `prompt-library-cli prompts --list` |
-| `execute` | Run a specific prompt | `prompt-library-cli execute -p 74` |
 | `fragments` | Manage prompt fragments | `prompt-library-cli fragments --list` |
+| `sync` | Sync with prompt repository | `prompt-library-cli sync` |
+
+#### Prompt Management Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `prompts --list` | List all prompts | `prompt-library-cli prompts --list` |
+| `prompts --search` | Search for prompts | `prompt-library-cli prompts --search "git"` |
+| `prompts --categories` | Show prompt categories | `prompt-library-cli prompts --categories` |
+| `prompts create` | Create a new prompt | `prompt-library-cli prompts create` |
+| `prompts edit` | Edit an existing prompt | `prompt-library-cli prompts edit` |
+| `prompts delete` | Delete a prompt | `prompt-library-cli prompts delete` |
+
+#### Fragment Management Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `fragments --list` | List all fragments | `prompt-library-cli fragments --list` |
+| `fragments --search` | Search for fragments | `prompt-library-cli fragments --search "behavior"` |
+| `fragments create` | Create a new fragment | `prompt-library-cli fragments create` |
+| `fragments edit` | Edit a fragment | `prompt-library-cli fragments edit` |
+| `fragments delete` | Delete a fragment | `prompt-library-cli fragments delete` |
+
+#### Configuration Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `model` | Configure AI model settings | `prompt-library-cli model` |
 | `config` | Manage CLI configuration | `prompt-library-cli config` |
 | `env` | Manage environment variables | `prompt-library-cli env` |
-| `sync` | Sync with prompt repository | `prompt-library-cli sync --push` |
 | `repository` | Manage prompt repository | `prompt-library-cli repository` |
-| `settings` | Manage CLI settings | `prompt-library-cli settings` |
 | `setup` | Set up prompt library | `prompt-library-cli setup` |
 | `flush` | Reset all data (preserves config) | `prompt-library-cli flush` |
 
@@ -153,19 +168,19 @@ The streamlined model menu lets you:
 prompt-library-cli prompts --list
 
 # Execute using prompt ID (most reliable)
-prompt-library-cli execute -p 80  # ID for Software Architect Visionary
+prompt-library-cli execute -p 80  # Example: ID might be different in your library
 
 # Execute using prompt name (partial matches work too)
-prompt-library-cli execute -p "git_commit_message_agent"
-prompt-library-cli execute -p "commit message"
+prompt-library-cli execute -p "git_commit_message_agent"  # Example prompt
+prompt-library-cli execute -p "commit message"  # Example of partial name match
 
-# With variables
+# With variables (examples shown below)
 prompt-library-cli execute -p 74 --description "Add user authentication" --files "auth.ts,users.ts"
-# Or by name
+# Or by name with variables
 prompt-library-cli execute -p "commit" --description "Add user authentication" --files "auth.ts,users.ts"
 
-# Use file inputs
-prompt-library-cli execute -p 81 -fi code=./my-code.ts
+# Use file inputs (example)
+prompt-library-cli execute -p "code_review" -fi code=./my-code.ts
 
 # Preview/inspect mode (don't execute, just view variables)
 prompt-library-cli execute -p "translator" -i
@@ -199,12 +214,19 @@ prompt-library-cli prompts --list --json
 
 # Create a new prompt
 prompt-library-cli prompts create
+prompt-library-cli prompts create --directory "my_prompt" --title "My Prompt" --category "coding" --description "Description"
+prompt-library-cli prompts create --no-analyze  # Skip AI analysis for metadata generation
 
 # Edit an existing prompt
 prompt-library-cli prompts edit
+prompt-library-cli prompts edit -p 74
+prompt-library-cli prompts edit -p "commit_message"
+prompt-library-cli prompts edit --no-analyze  # Skip AI analysis when updating
 
 # Delete a prompt
 prompt-library-cli prompts delete
+prompt-library-cli prompts delete -p 74
+prompt-library-cli prompts delete -p "commit_message" -f  # Force delete without confirmation
 ```
 
 <details>
@@ -270,7 +292,7 @@ prompt-library-cli sync -u https://github.com/your-username/your-repo.git
 # Force sync without confirmation
 prompt-library-cli sync --force
 
-# List pending changes that need to be synced
+# Check and manage pending changes
 prompt-library-cli sync --list
 
 # Push local changes to remote repository
@@ -315,6 +337,9 @@ prompt-library-cli repository --list-remotes
 # Enable or disable git integration
 prompt-library-cli repository --enable-git
 prompt-library-cli repository --disable-git
+
+# Update remote settings based on configuration
+prompt-library-cli repository   # Launch interactive repository menu
 ```
 
 #### Setup Options
@@ -408,53 +433,31 @@ prompt-library-cli setup --local
 
 ### Step 1: Installation and Setup
 
-Choose your preferred installation method:
-
-<details>
-<summary>🏆 <strong>Option 1: Standard Installation (Recommended)</strong></summary>
-<p>
-
 ```bash
-# Install CLI globally from npm (coming soon)
-npm install -g prompt-library-cli
-
-# Run setup to create a dedicated prompt library repository
-prompt-library-cli setup
-
-# This will create a repository at ~/.prompt-library/repository
-```
-
-This approach keeps your prompts in a dedicated repository separate from the CLI code, making it easier to:
-- Update the CLI independently from your content
-- Back up your prompts to your own GitHub repository
-- Share your prompt collection with others
-
-</p>
-</details>
-
-<details>
-<summary>💻 <strong>Option 2: Developer Installation</strong></summary>
-<p>
-
-```bash
-# Fork and clone the repository
+# Fork the repository on GitHub first, then clone your fork
 git clone https://github.com/YOUR_USERNAME/prompt-library.git
 cd prompt-library
 
 # Install dependencies
 npm install
 
-# Build and install globally
-npm run build && npm install -g .
+# Choose how to run the CLI:
 
-# Run the setup to create your prompt library
+# Option 1: Run directly in development mode
+npm run dev
+
+# Option 2: Build and install globally
+npm run build && npm install -g .
+prompt-library-cli
+
+# After first run, set up your prompt library
 prompt-library-cli setup
 ```
 
-This approach is ideal if you want to customize the CLI or contribute to development.
-
-</p>
-</details>
+This will create a repository at ~/.prompt-library/repository that:
+- Stores your prompts separately from the CLI code
+- Can be backed up to your own GitHub repository
+- Makes it easy to share your prompt collection with others
 
 ### Step 2: Configure API Access
 

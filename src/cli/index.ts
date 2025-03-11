@@ -22,7 +22,6 @@ import { showMainMenu } from './commands/menu-command';
 import modelCommand from './commands/model-command';
 import promptsCommand from './commands/prompts-command';
 import repositoryCommand from './commands/repository-command';
-import settingsCommand from './commands/settings-command';
 import setupCommand from './commands/setup-command';
 import syncCommand from './commands/sync-command';
 import { initDatabase } from './utils/database';
@@ -193,7 +192,6 @@ Examples:
         modelCommand,
         promptsCommand,
         repositoryCommand,
-        settingsCommand,
         setupCommand,
         syncCommand
     ];

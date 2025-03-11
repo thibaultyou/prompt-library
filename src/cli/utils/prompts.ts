@@ -216,18 +216,31 @@ export async function getPromptMetadata(
 }
 
 export async function viewPromptDetails(details: PromptMetadata, isExecute = false): Promise<void> {
-    console.log(chalk.cyan('Prompt:'), details.title);
+    if (!details) {
+        console.log(chalk.red('Error: No prompt details available'));
+        return;
+    }
+
+    console.log(chalk.cyan('Prompt:'), details.title || 'Untitled');
     console.log(`\n${details.description || ''}`);
     console.log(chalk.cyan('\nCategory:'), formatTitleCase(details.primary_category));
-    let tagsArray: string[];
+    let tagsArray: string[] = [];
 
-    if (typeof details.tags === 'string') {
+    if (!details.tags) {
+        tagsArray = [];
+    } else if (typeof details.tags === 'string') {
         tagsArray = details.tags.split(',');
     } else {
         tagsArray = details.tags;
     }
 
     console.log(chalk.cyan('\nTags:'), tagsArray.length > 0 ? tagsArray.join(', ') : 'No tags');
+
+    if (!details.variables || !Array.isArray(details.variables) || details.variables.length === 0) {
+        console.log(chalk.cyan('\nOptions:'), 'No variables defined');
+        return;
+    }
+
     console.log(chalk.cyan('\nOptions:'), '([*] Required  [ ] Optional)');
     const maxNameLength = Math.max(...details.variables.map((v) => formatSnakeCase(v.name).length));
 

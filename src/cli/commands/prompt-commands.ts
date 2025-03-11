@@ -1,6 +1,7 @@
 import path from 'path';
 
 import { select, confirm } from '@inquirer/prompts';
+import chalk from 'chalk';
 import { Command } from 'commander';
 import fs from 'fs-extra';
 
@@ -11,6 +12,7 @@ import { dumpYaml, generateContentHash, parseYaml } from '../../shared/utils/fil
 import logger from '../../shared/utils/logger';
 import { extractVariablesFromPrompt } from '../../shared/utils/prompt-processing';
 import {
+    cache,
     getPromptById,
     listPromptDirectories,
     removePromptFromDatabase,
@@ -232,7 +234,6 @@ You can use variables with {{VARIABLE_NAME}} syntax.
 }
 
 async function analyzeAndGenerateMetadata(metadata: SimplePromptMetadata, content: string): Promise<boolean> {
-    const chalk = (await import('chalk')).default;
     const spinner = showSpinner('Analyzing prompt with the prompt_analysis_agent...');
 
     try {
@@ -395,6 +396,8 @@ const createCommand = new Command('create')
 
             await updateDatabase(promptData.directory);
 
+            cache.flushAll();
+
             await trackPromptChange(promptData.directory, 'add', promptData.title);
 
             await stagePromptChanges(promptData.directory);
@@ -451,6 +454,8 @@ const editCommand = new Command('edit')
             await savePromptFiles(promptData, promptContent);
 
             await updateDatabase(promptData.directory);
+
+            cache.flushAll();
 
             await trackPromptChange(promptData.directory, 'modify', promptData.title);
 

@@ -67,9 +67,8 @@ describe('FragmentCommands', () => {
 
             expect(command.commands[0].name()).toBe('create');
             expect(command.commands[0].description()).toBe('Create a new fragment');
-            // Check for option definition rather than option value
-            expect(command.commands[0].options.some(opt => opt.long === '--category')).toBe(true);
-            expect(command.commands[0].options.some(opt => opt.long === '--name')).toBe(true);
+            expect(command.commands[0].options.some((opt) => opt.long === '--category')).toBe(true);
+            expect(command.commands[0].options.some((opt) => opt.long === '--name')).toBe(true);
         });
 
         it('should create a new fragment with provided category and name', async () => {
@@ -89,36 +88,26 @@ describe('FragmentCommands', () => {
         });
 
         it('should prompt for category and name when not provided', async () => {
-            // Set up the full mock chain for testing the interactive flow
-            // Force process.argv to be empty for this test
             const originalArgv = process.argv;
             process.argv = ['node', 'test.js'];
-            
+
             try {
-                // Instead of expecting the select to be called (which may not happen due to how we mock),
-                // we'll verify that the command runs without error when no arguments are provided
                 await parseCommand(createCommand, []);
-                
-                // Assert expected behaviors when running without args
+
                 expect(fs.writeFile).toHaveBeenCalled();
             } finally {
-                // Restore original argv
                 process.argv = originalArgv;
             }
         });
 
         it('should create a new category when selected', async () => {
-            // Set up the full mock chain for testing the interactive flow
-            // Force process.argv to be empty for this test
             const originalArgv = process.argv;
             process.argv = ['node', 'test.js'];
-            
+
             try {
-                // Simulate selecting "Create new category" and entering a name
                 inquirer.select.mockResolvedValueOnce('_new_category_');
                 inquirer.input.mockResolvedValueOnce('new_test_category');
-                
-                // Mock the ensureDir function to capture what directory is being created
+
                 let capturedPath = '';
                 (fs.ensureDir as jest.Mock).mockImplementation((path) => {
                     capturedPath = path;
@@ -126,12 +115,9 @@ describe('FragmentCommands', () => {
                 });
 
                 await parseCommand(createCommand, []);
-                
-                // Check that we tried to create a directory containing the new category name
-                // (without being overly specific about the full path)
+
                 expect(capturedPath).toMatch(/new_test_category/);
             } finally {
-                // Restore original argv
                 process.argv = originalArgv;
             }
         });
@@ -139,19 +125,17 @@ describe('FragmentCommands', () => {
         it('should handle empty fragment content error', async () => {
             const promptsSimple = jest.requireMock('../../utils/prompts-simple');
             promptsSimple.editInEditor.mockResolvedValueOnce('');
-            
-            // Reset the mock to clear previous calls
+
             jest.clearAllMocks();
 
             await parseCommand(createCommand, ['--category', 'test_category', '--name', 'test_fragment']);
 
-            // Check if writeFile was called with empty content
             const writeFileMock = fs.writeFile as unknown as jest.Mock;
             const writeFileWasCalledWithEmptyContent = writeFileMock.mock.calls.some(
-                args => typeof args[1] === 'string' && args[1].trim() === ''
+                (args) => typeof args[1] === 'string' && args[1].trim() === ''
             );
             expect(writeFileWasCalledWithEmptyContent).toBe(false);
-            
+
             const output = consoleCapture.getOutput().join('\n');
             expect(output).toContain('Fragment content cannot be empty');
         });
@@ -164,9 +148,8 @@ describe('FragmentCommands', () => {
 
             expect(command.commands[0].name()).toBe('edit');
             expect(command.commands[0].description()).toBe('Edit an existing fragment');
-            // Check for option definition rather than option value
-            expect(command.commands[0].options.some(opt => opt.long === '--category')).toBe(true);
-            expect(command.commands[0].options.some(opt => opt.long === '--name')).toBe(true);
+            expect(command.commands[0].options.some((opt) => opt.long === '--category')).toBe(true);
+            expect(command.commands[0].options.some((opt) => opt.long === '--name')).toBe(true);
         });
 
         it('should edit an existing fragment with provided category and name', async () => {
@@ -205,19 +188,17 @@ describe('FragmentCommands', () => {
         it('should handle empty fragment content error during edit', async () => {
             const promptsSimple = jest.requireMock('../../utils/prompts-simple');
             promptsSimple.editInEditor.mockResolvedValueOnce('');
-            
-            // Reset the mock to clear previous calls
+
             jest.clearAllMocks();
 
             await parseCommand(editCommand, ['--category', 'test_category', '--name', 'test_fragment']);
 
-            // Check if writeFile was called with empty content
             const writeFileMock = fs.writeFile as unknown as jest.Mock;
             const writeFileWasCalledWithEmptyContent = writeFileMock.mock.calls.some(
-                args => typeof args[1] === 'string' && args[1].trim() === ''
+                (args) => typeof args[1] === 'string' && args[1].trim() === ''
             );
             expect(writeFileWasCalledWithEmptyContent).toBe(false);
-            
+
             const output = consoleCapture.getOutput().join('\n');
             expect(output).toContain('Fragment content cannot be empty');
         });
@@ -230,10 +211,9 @@ describe('FragmentCommands', () => {
 
             expect(command.commands[0].name()).toBe('delete');
             expect(command.commands[0].description()).toBe('Delete an existing fragment');
-            // Check for option definition rather than option value
-            expect(command.commands[0].options.some(opt => opt.long === '--category')).toBe(true);
-            expect(command.commands[0].options.some(opt => opt.long === '--name')).toBe(true);
-            expect(command.commands[0].options.some(opt => opt.long === '--force')).toBe(true);
+            expect(command.commands[0].options.some((opt) => opt.long === '--category')).toBe(true);
+            expect(command.commands[0].options.some((opt) => opt.long === '--name')).toBe(true);
+            expect(command.commands[0].options.some((opt) => opt.long === '--force')).toBe(true);
         });
 
         it('should delete an existing fragment with provided category and name', async () => {

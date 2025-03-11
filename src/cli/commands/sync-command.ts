@@ -37,7 +37,7 @@ class SyncCommand extends BaseCommand {
         this.option('-u, --url <url>', 'Set the remote repository URL')
             .option('--force', 'Force sync without confirmation')
             .option('--push', 'Push local changes to remote repository')
-            .option('--list', 'List pending changes that need to be synced')
+            .option('--list', 'List and manage pending changes (interactive menu)')
             .option('--reset', 'Reset/discard local changes')
             .option('--branch <n>', 'Branch name for pushing changes (defaults to prompt/timestamp)')
             .action(this.execute.bind(this));
@@ -267,17 +267,12 @@ class SyncCommand extends BaseCommand {
                 chalk.cyan(`\nTotal: ${convertedPromptChanges.length + convertedFragmentChanges.length} change(s)`)
             );
 
-            console.log('\nAvailable actions:');
-            console.log(chalk.cyan('• To push these changes: prompt-library-cli sync --push'));
-            console.log(chalk.cyan('• To reset changes:     prompt-library-cli sync --reset'));
-            console.log('');
-
             const action = await select({
                 message: 'What would you like to do?',
                 choices: [
                     { name: 'Push changes to remote repository', value: 'push' },
                     { name: 'Reset/discard changes', value: 'reset' },
-                    { name: 'Return to menu', value: 'back' }
+                    { name: chalk.red('Go back'), value: 'back' }
                 ]
             });
 
@@ -305,7 +300,7 @@ class SyncCommand extends BaseCommand {
                     }
                 }
             }
-        } finally {
+
             await this.pressKeyToContinue();
         }
     }

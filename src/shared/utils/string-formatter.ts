@@ -1,4 +1,5 @@
-export function formatTitleCase(category: string): string {
+export function formatTitleCase(category?: string): string {
+    if (!category) return 'Unknown';
     return category
         .split(/[_-]/)
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())

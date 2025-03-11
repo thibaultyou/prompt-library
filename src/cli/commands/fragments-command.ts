@@ -42,35 +42,28 @@ Examples:
     }
 
     async execute(): Promise<void> {
-        // Check for command-line arguments directly
         const hasList = process.argv.includes('--list');
         const hasCategories = process.argv.includes('--categories');
         const hasJson = process.argv.includes('--json');
-        // Find search term if present
         const searchIndex = process.argv.indexOf('--search');
         let searchTerm = null;
 
         if (searchIndex !== -1 && searchIndex < process.argv.length - 1) {
             searchTerm = process.argv[searchIndex + 1];
         }
-        
-        // Use direct argument detection
+
         if (hasList) {
             return this.listAllFragmentsForCI(hasJson);
         }
-        
+
         if (hasCategories) {
             return this.listAllCategoriesForCI(hasJson);
         }
-        
+
         if (searchTerm) {
             return this.searchFragments(searchTerm, hasJson);
         }
-        
-        // Commander options not being used due to detection issue
-        // We're using direct process.argv checking instead
-        
-        // If no options, show interactive menu
+
         while (true) {
             try {
                 const choices = [];
@@ -255,7 +248,7 @@ Examples:
 
             if (!fragmentsResult) return;
 
-            const allFragments = fragmentsResult.map(fragment => ({
+            const allFragments = fragmentsResult.map((fragment) => ({
                 ...fragment,
                 path: `fragments/${fragment.category}/${fragment.name}`
             }));
@@ -265,21 +258,18 @@ Examples:
             } else {
                 console.log(chalk.bold('\n🧩 Available Fragments:'));
                 console.log('─'.repeat(80));
-                
-                // Calculate max lengths for formatting
-                const maxCategoryLength = Math.max(...allFragments.map(f => f.category.length), 'CATEGORY'.length);
-                const maxNameLength = Math.max(...allFragments.map(f => f.name.length), 'NAME'.length);
-                // Print header
+
+                const maxCategoryLength = Math.max(...allFragments.map((f) => f.category.length), 'CATEGORY'.length);
+                const maxNameLength = Math.max(...allFragments.map((f) => f.name.length), 'NAME'.length);
                 console.log(
                     chalk.cyan('CATEGORY'.padEnd(maxCategoryLength + 4)) +
-                    chalk.cyan('NAME'.padEnd(maxNameLength + 4)) +
-                    chalk.cyan('PATH')
+                        chalk.cyan('NAME'.padEnd(maxNameLength + 4)) +
+                        chalk.cyan('PATH')
                 );
                 console.log('─'.repeat(80));
 
-                // Group by category
                 const fragmentsByCategory: Record<string, ExpandedPromptFragment[]> = {};
-                allFragments.forEach(fragment => {
+                allFragments.forEach((fragment) => {
                     if (!fragmentsByCategory[fragment.category]) {
                         fragmentsByCategory[fragment.category] = [];
                     }
@@ -287,21 +277,24 @@ Examples:
                     fragmentsByCategory[fragment.category].push(fragment);
                 });
 
-                // Print fragments by category
                 const sortedCategories = Object.keys(fragmentsByCategory).sort();
-                sortedCategories.forEach(category => {
+                sortedCategories.forEach((category) => {
                     const fragments = fragmentsByCategory[category].sort((a, b) => a.name.localeCompare(b.name));
-                    fragments.forEach(fragment => {
+                    fragments.forEach((fragment) => {
                         console.log(
                             chalk.green(fragment.category.padEnd(maxCategoryLength + 4)) +
-                            chalk.yellow(fragment.name.padEnd(maxNameLength + 4)) +
-                            fragment.path
+                                chalk.yellow(fragment.name.padEnd(maxNameLength + 4)) +
+                                fragment.path
                         );
                     });
                 });
 
                 console.log('─'.repeat(80));
-                console.log(chalk.italic('\nTip: Use these fragments in your prompts with {% raw %}{{FRAGMENT_NAME}}{% endraw %}\n'));
+                console.log(
+                    chalk.italic(
+                        '\nTip: Use these fragments in your prompts with {% raw %}{{FRAGMENT_NAME}}{% endraw %}\n'
+                    )
+                );
             }
         } catch (error) {
             this.handleError(error, 'listing fragments');
@@ -314,29 +307,26 @@ Examples:
 
             if (!fragmentsResult) return;
 
-            // Get unique categories
-            const categories = Array.from(new Set(fragmentsResult.map(f => f.category))).sort();
+            const categories = Array.from(new Set(fragmentsResult.map((f) => f.category))).sort();
 
             if (json) {
                 console.log(JSON.stringify(categories, null, 2));
             } else {
                 console.log(chalk.bold('\n📚 Fragment Categories:'));
                 console.log('─'.repeat(80));
-                
-                // Count fragments per category
+
                 const countByCategory: Record<string, number> = {};
-                fragmentsResult.forEach(fragment => {
+                fragmentsResult.forEach((fragment) => {
                     countByCategory[fragment.category] = (countByCategory[fragment.category] || 0) + 1;
                 });
-                
-                // Print categories with counts
-                categories.forEach(category => {
+
+                categories.forEach((category) => {
                     console.log(
                         chalk.green(formatTitleCase(category).padEnd(30)) +
-                        chalk.yellow(`${countByCategory[category]} fragments`)
+                            chalk.yellow(`${countByCategory[category]} fragments`)
                     );
                 });
-                
+
                 console.log('─'.repeat(80));
                 console.log(chalk.italic('\nView fragments by category:'));
                 console.log(chalk.italic(`  prompt-library-cli fragments\n`));
@@ -352,14 +342,16 @@ Examples:
 
             if (!fragmentsResult) return;
 
-            // Search by name or category
-            const matchingFragments = fragmentsResult.filter(fragment => 
-                fragment.name.toLowerCase().includes(keyword.toLowerCase()) ||
-                fragment.category.toLowerCase().includes(keyword.toLowerCase())
-            ).map(fragment => ({
-                ...fragment,
-                path: `fragments/${fragment.category}/${fragment.name}`
-            }));
+            const matchingFragments = fragmentsResult
+                .filter(
+                    (fragment) =>
+                        fragment.name.toLowerCase().includes(keyword.toLowerCase()) ||
+                        fragment.category.toLowerCase().includes(keyword.toLowerCase())
+                )
+                .map((fragment) => ({
+                    ...fragment,
+                    path: `fragments/${fragment.category}/${fragment.name}`
+                }));
 
             if (matchingFragments.length === 0) {
                 console.log(chalk.yellow(`\nNo fragments found matching '${keyword}'`));
@@ -371,31 +363,33 @@ Examples:
             } else {
                 console.log(chalk.bold(`\n🔍 Found ${matchingFragments.length} fragments matching '${keyword}':`));
                 console.log('─'.repeat(80));
-                
-                // Calculate max lengths for formatting
-                const maxCategoryLength = Math.max(...matchingFragments.map(f => f.category.length), 'CATEGORY'.length);
-                const maxNameLength = Math.max(...matchingFragments.map(f => f.name.length), 'NAME'.length);
-                // Print header
+
+                const maxCategoryLength = Math.max(
+                    ...matchingFragments.map((f) => f.category.length),
+                    'CATEGORY'.length
+                );
+                const maxNameLength = Math.max(...matchingFragments.map((f) => f.name.length), 'NAME'.length);
                 console.log(
                     chalk.cyan('CATEGORY'.padEnd(maxCategoryLength + 4)) +
-                    chalk.cyan('NAME'.padEnd(maxNameLength + 4)) +
-                    chalk.cyan('PATH')
+                        chalk.cyan('NAME'.padEnd(maxNameLength + 4)) +
+                        chalk.cyan('PATH')
                 );
                 console.log('─'.repeat(80));
 
-                // Sort by category then name
-                matchingFragments.sort((a, b) => {
-                    if (a.category !== b.category) {
-                        return a.category.localeCompare(b.category);
-                    }
-                    return a.name.localeCompare(b.name);
-                }).forEach(fragment => {
-                    console.log(
-                        chalk.green(fragment.category.padEnd(maxCategoryLength + 4)) +
-                        chalk.yellow(fragment.name.padEnd(maxNameLength + 4)) +
-                        fragment.path
-                    );
-                });
+                matchingFragments
+                    .sort((a, b) => {
+                        if (a.category !== b.category) {
+                            return a.category.localeCompare(b.category);
+                        }
+                        return a.name.localeCompare(b.name);
+                    })
+                    .forEach((fragment) => {
+                        console.log(
+                            chalk.green(fragment.category.padEnd(maxCategoryLength + 4)) +
+                                chalk.yellow(fragment.name.padEnd(maxNameLength + 4)) +
+                                fragment.path
+                        );
+                    });
 
                 console.log('─'.repeat(80));
                 console.log(chalk.italic('\nTo view a fragment:'));

@@ -3,7 +3,7 @@ import { Command } from 'commander';
 
 import { BaseCommand } from './base-command';
 import { getConfig, getConfigValue } from '../../shared/config';
-import { getPromptById, getRecentExecutions } from '../utils/database';
+import { cache, getPromptById, getRecentExecutions } from '../utils/database';
 import { handleError } from '../utils/errors';
 import { hasFragments, hasPrompts } from '../utils/file-system';
 import { hasLibraryRepositoryChanges } from '../utils/library-repository';
@@ -23,6 +23,7 @@ type MenuAction =
     | 'search_prompts'
     | 'favorites'
     | 'recent'
+    | 'repository'
     | 'header'
     | 'spacer'
     | 'space'
@@ -191,31 +192,26 @@ class MenuCommand extends BaseCommand {
                     disabled: ' '
                 });
 
-                const syncChoices: MenuItem[] = [
+                const repoChoices: MenuItem[] = [
                     {
                         name: formatMenuItem('Sync with remote repository', 'sync', 'warning').name,
                         value: 'sync'
+                    },
+                    {
+                        name: formatMenuItem('Repository settings', 'repository', 'warning').name,
+                        value: 'repository'
                     }
                 ];
 
                 if (hasPendingChanges) {
-                    syncChoices.push({
-                        name: formatMenuItem('List pending changes', 'list_changes', 'warning').name,
+                    // Insert manage changes option at the top of repo choices for visibility
+                    repoChoices.unshift({
+                        name: formatMenuItem('Manage pending changes', 'list_changes', 'warning').name,
                         value: 'list_changes' as MenuAction
-                    });
-
-                    syncChoices.push({
-                        name: formatMenuItem('Reset/discard changes', 'reset_changes', 'warning').name,
-                        value: 'reset_changes' as MenuAction
-                    });
-
-                    syncChoices.push({
-                        name: formatMenuItem('Push changes to remote', 'push_changes', 'warning').name,
-                        value: 'push_changes' as MenuAction
                     });
                 }
 
-                choices.push(...syncChoices);
+                choices.push(...repoChoices);
 
                 const displayChoices = choices;
                 const action = await this.showMenu<MenuAction>('Select an action:', displayChoices, {
@@ -233,22 +229,16 @@ class MenuCommand extends BaseCommand {
 
                     if (lastPromptChoice && lastPromptChoice.description) {
                         try {
-                            // Get the recent executions
                             const recentExecutions = await getRecentExecutions(1);
-                            
+
                             if (recentExecutions && recentExecutions.length > 0) {
                                 const mostRecentPromptId = recentExecutions[0].prompt_id;
-                                
-                                // Directly import the prompts command
                                 const { default: promptsCommand } = await import('./prompts-command');
-                                
                                 console.log(chalk.cyan(`Loading prompt details for ID: ${mostRecentPromptId}...`));
-                                
-                                // Get the actual prompt details
+
                                 const promptDetails = await getPromptById(parseInt(mostRecentPromptId.toString()));
-                                
+
                                 if (promptDetails) {
-                                    // Create a CategoryItem object that managePrompt expects
                                     const selectedPrompt = {
                                         id: mostRecentPromptId.toString(),
                                         title: promptDetails.title,
@@ -258,23 +248,22 @@ class MenuCommand extends BaseCommand {
                                         description: promptDetails.description || '',
                                         subcategories: []
                                     };
-                                    
-                                    // Use the managePrompt method to show the prompt details and execute
                                     await promptsCommand.managePrompt(selectedPrompt);
-                                    
-                                    // Return to main menu
+
                                     console.clear();
                                     firstRun = true;
                                     continue;
                                 } else {
-                                    console.log(chalk.yellow(`Could not find details for prompt ID: ${mostRecentPromptId}`));
+                                    console.log(
+                                        chalk.yellow(`Could not find details for prompt ID: ${mostRecentPromptId}`)
+                                    );
                                     await this.pressKeyToContinue();
                                     console.clear();
                                     firstRun = true;
                                     continue;
                                 }
                             } else {
-                                console.log(chalk.yellow("No recent prompt executions found."));
+                                console.log(chalk.yellow('No recent prompt executions found.'));
                                 await this.pressKeyToContinue();
                                 console.clear();
                                 firstRun = true;
@@ -292,13 +281,9 @@ class MenuCommand extends BaseCommand {
                     const keyword = await this.getInput('Enter search keyword:');
 
                     if (keyword && keyword.trim()) {
-                        // Instead of using the command directly, we'll use the internal logic to have better control
                         const { default: promptsCommand } = await import('./prompts-command');
-                        // Get the categories first
                         const categories = await getPromptCategories();
-                        // Use the searchPrompts method directly
                         await promptsCommand.searchPrompts(categories, keyword.trim(), false);
-                        // After the search is complete and user is done, return to main menu
                         console.clear();
                         firstRun = true;
                         continue;
@@ -339,7 +324,18 @@ class MenuCommand extends BaseCommand {
                         firstRun = true;
                         continue;
                     }
+                } else if (action === 'repository') {
+                    const repoCmd = this.program.commands.find((cmd) => cmd.name() === 'repository');
+                    
+                    if (repoCmd) {
+                        await repoCmd.parseAsync(['node', 'script.js', 'repository']);
+                        console.clear();
+                        firstRun = true;
+                        continue;
+                    }
                 } else {
+                    cache.flushAll();
+
                     await this.runCommand(this.program, action, { clearConsole: true });
                 }
 

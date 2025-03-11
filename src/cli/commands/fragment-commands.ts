@@ -162,14 +162,15 @@ const createCommand = new Command('create')
     .option('-c, --category <category>', 'Category for the new fragment')
     .option('-n, --name <name>', 'Name for the new fragment (snake_case)')
     .action(async (options) => {
-        // For direct argv parsing as a fallback
-        const categoryIndex = process.argv.indexOf('-c') !== -1 ? process.argv.indexOf('-c') : process.argv.indexOf('--category');
-        const nameIndex = process.argv.indexOf('-n') !== -1 ? process.argv.indexOf('-n') : process.argv.indexOf('--name');
-        
+        const categoryIndex =
+            process.argv.indexOf('-c') !== -1 ? process.argv.indexOf('-c') : process.argv.indexOf('--category');
+        const nameIndex =
+            process.argv.indexOf('-n') !== -1 ? process.argv.indexOf('-n') : process.argv.indexOf('--name');
+
         if (categoryIndex !== -1 && categoryIndex < process.argv.length - 1 && !options.category) {
             options.category = process.argv[categoryIndex + 1];
         }
-        
+
         if (nameIndex !== -1 && nameIndex < process.argv.length - 1 && !options.name) {
             options.name = process.argv[nameIndex + 1];
         }
@@ -201,14 +202,15 @@ const editCommand = new Command('edit')
     .option('-c, --category <category>', 'Category of the fragment to edit')
     .option('-n, --name <name>', 'Name of the fragment to edit')
     .action(async (options) => {
-        // For direct argv parsing as a fallback
-        const categoryIndex = process.argv.indexOf('-c') !== -1 ? process.argv.indexOf('-c') : process.argv.indexOf('--category');
-        const nameIndex = process.argv.indexOf('-n') !== -1 ? process.argv.indexOf('-n') : process.argv.indexOf('--name');
-        
+        const categoryIndex =
+            process.argv.indexOf('-c') !== -1 ? process.argv.indexOf('-c') : process.argv.indexOf('--category');
+        const nameIndex =
+            process.argv.indexOf('-n') !== -1 ? process.argv.indexOf('-n') : process.argv.indexOf('--name');
+
         if (categoryIndex !== -1 && categoryIndex < process.argv.length - 1 && !options.category) {
             options.category = process.argv[categoryIndex + 1];
         }
-        
+
         if (nameIndex !== -1 && nameIndex < process.argv.length - 1 && !options.name) {
             options.name = process.argv[nameIndex + 1];
         }
@@ -260,19 +262,20 @@ const deleteCommand = new Command('delete')
     .option('-n, --name <name>', 'Name of the fragment to delete')
     .option('-f, --force', 'Skip confirmation prompt')
     .action(async (options) => {
-        // For direct argv parsing as a fallback
-        const categoryIndex = process.argv.indexOf('-c') !== -1 ? process.argv.indexOf('-c') : process.argv.indexOf('--category');
-        const nameIndex = process.argv.indexOf('-n') !== -1 ? process.argv.indexOf('-n') : process.argv.indexOf('--name');
+        const categoryIndex =
+            process.argv.indexOf('-c') !== -1 ? process.argv.indexOf('-c') : process.argv.indexOf('--category');
+        const nameIndex =
+            process.argv.indexOf('-n') !== -1 ? process.argv.indexOf('-n') : process.argv.indexOf('--name');
         const forceFlag = process.argv.includes('-f') || process.argv.includes('--force');
-        
+
         if (categoryIndex !== -1 && categoryIndex < process.argv.length - 1 && !options.category) {
             options.category = process.argv[categoryIndex + 1];
         }
-        
+
         if (nameIndex !== -1 && nameIndex < process.argv.length - 1 && !options.name) {
             options.name = process.argv[nameIndex + 1];
         }
-        
+
         if (forceFlag && !options.force) {
             options.force = true;
         }

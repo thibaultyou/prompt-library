@@ -141,8 +141,6 @@ describe('MenuCommand', () => {
     });
 
     it.skip('should handle special action: last_prompt', async () => {
-        // This test needs complex mocking and is skipped for now
-        // The functionality has been manually verified to work
         const mockRecentPrompts = [
             {
                 id: 1,
@@ -153,8 +151,7 @@ describe('MenuCommand', () => {
             }
         ];
         mockGetRecentExecutions.mockResolvedValueOnce(mockRecentPrompts);
-        
-        // Mock getPromptById to return a valid prompt
+
         jest.mock('../../utils/database', () => ({
             ...jest.requireActual('../../utils/database'),
             getPromptById: jest.fn().mockResolvedValue({
@@ -164,10 +161,9 @@ describe('MenuCommand', () => {
                 directory: '/test/dir'
             })
         }));
-        
+
         mockSelect.mockResolvedValueOnce('last_prompt').mockResolvedValueOnce('back');
-        
-        // Simply verify the test runs without crashing
+
         await showMainMenu(mockProgram);
     });
 });

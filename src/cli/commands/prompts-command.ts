@@ -7,6 +7,7 @@ import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string-form
 import { ConversationManager } from '../utils/conversation-manager';
 import {
     addPromptToFavorites,
+    cache,
     getFavoritePrompts,
     getPromptById,
     getPromptDetails,
@@ -93,23 +94,21 @@ Related Commands:
 
     async execute(): Promise<void> {
         try {
-            // Check for command-line arguments directly
             const hasList = process.argv.includes('--list');
             const hasCategories = process.argv.includes('--categories');
             const hasRecent = process.argv.includes('--recent');
             const hasFavorites = process.argv.includes('--favorites');
             const hasJson = process.argv.includes('--json');
-            // Find search term if present
             const searchIndex = process.argv.indexOf('--search');
             let searchTerm = null;
 
             if (searchIndex !== -1 && searchIndex < process.argv.length - 1) {
                 searchTerm = process.argv[searchIndex + 1];
             }
-            
+
             const categoriesPromise = getPromptCategories();
             const categories = await showProgress('Loading prompts...', categoriesPromise);
-            
+
             if (hasRecent) {
                 await this.showRecentPrompts(hasJson);
                 return;
@@ -216,7 +215,7 @@ Related Commands:
                                 description: promptDetails.description || '',
                                 subcategories: []
                             };
-                            await this.managePrompt(selectedPrompt, );
+                            await this.managePrompt(selectedPrompt);
                             continue;
                         }
                     }
@@ -309,7 +308,7 @@ Related Commands:
                                 description: promptDetails.description || '',
                                 subcategories: []
                             };
-                            await this.managePrompt(selectedPrompt, );
+                            await this.managePrompt(selectedPrompt);
                             continue;
                         }
                     }
@@ -366,11 +365,7 @@ Related Commands:
         }
     }
 
-    async searchPrompts(
-        categories: Record<string, CategoryItem[]>,
-        keyword: string,
-        json: boolean
-    ): Promise<void> {
+    async searchPrompts(categories: Record<string, CategoryItem[]>, keyword: string, json: boolean): Promise<void> {
         try {
             const matchingPrompts = searchPrompts(categories, keyword);
 
@@ -432,7 +427,7 @@ Related Commands:
                             const selectedPrompt = matchingPrompts.find((p) => p.id === promptId);
 
                             if (selectedPrompt) {
-                                await this.managePrompt(selectedPrompt, );
+                                await this.managePrompt(selectedPrompt);
                                 continue;
                             } else {
                                 const { default: executeCommand } = await import('./execute-command');
@@ -674,8 +669,12 @@ Related Commands:
 
     private async selectAndManagePrompt(prompts: (CategoryItem & { category: string })[]): Promise<void> {
         while (true) {
+            cache.flushAll();
+
+            const categories = await getPromptCategories();
+            const refreshedPrompts = getAllPrompts(categories);
             const promptsByCategory: Record<string, (CategoryItem & { category: string })[]> = {};
-            prompts.forEach((prompt) => {
+            refreshedPrompts.forEach((prompt) => {
                 if (!promptsByCategory[prompt.category]) {
                     promptsByCategory[prompt.category] = [];
                 }
@@ -1015,13 +1014,11 @@ Related Commands:
                 console.log(chalk.yellow('Cannot execute: some required variables are not set.'));
                 return;
             }
-            
-            // Record the prompt execution in the database
+
             try {
                 await recordPromptExecution(promptId);
             } catch (error) {
                 console.error('Failed to record prompt execution:', error);
-                // Continue execution even if recording fails
             }
 
             const userInputs: Record<string, string> = {};
@@ -1119,11 +1116,12 @@ Related Commands:
 
     async handlePromptExecution(promptId: string | number): Promise<void> {
         try {
-            // Convert promptId to string if it's not already
             const promptIdStr = String(promptId);
-            
             while (true) {
-                const details = await this.handleApiResult(await getPromptDetails(promptIdStr), 'Fetched prompt details');
+                const details = await this.handleApiResult(
+                    await getPromptDetails(promptIdStr),
+                    'Fetched prompt details'
+                );
 
                 if (!details) {
                     return;

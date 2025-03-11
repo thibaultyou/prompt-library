@@ -111,47 +111,32 @@ Note:
                 this.outputHelp();
                 return;
             }
-            
-            // Check for command-line arguments directly
+
             const hasPrompt = process.argv.includes('-p') || process.argv.includes('--prompt');
             const hasPromptFile = process.argv.includes('-f') || process.argv.includes('--prompt-file');
             const hasMetadataFile = process.argv.includes('-m') || process.argv.includes('--metadata-file');
             const hasInspect = process.argv.includes('-i') || process.argv.includes('--inspect');
-            // Get values for options
             let promptValue = '';
             let promptFileValue = '';
             let metadataFileValue = '';
-            // Get prompt value
-            const promptIndex = Math.max(
-                process.argv.indexOf('-p'),
-                process.argv.indexOf('--prompt')
-            );
+            const promptIndex = Math.max(process.argv.indexOf('-p'), process.argv.indexOf('--prompt'));
 
             if (promptIndex !== -1 && promptIndex < process.argv.length - 1) {
                 promptValue = process.argv[promptIndex + 1];
             }
-            
-            // Get prompt file value
-            const promptFileIndex = Math.max(
-                process.argv.indexOf('-f'),
-                process.argv.indexOf('--prompt-file')
-            );
+
+            const promptFileIndex = Math.max(process.argv.indexOf('-f'), process.argv.indexOf('--prompt-file'));
 
             if (promptFileIndex !== -1 && promptFileIndex < process.argv.length - 1) {
                 promptFileValue = process.argv[promptFileIndex + 1];
             }
-            
-            // Get metadata file value
-            const metadataFileIndex = Math.max(
-                process.argv.indexOf('-m'),
-                process.argv.indexOf('--metadata-file')
-            );
+
+            const metadataFileIndex = Math.max(process.argv.indexOf('-m'), process.argv.indexOf('--metadata-file'));
 
             if (metadataFileIndex !== -1 && metadataFileIndex < process.argv.length - 1) {
                 metadataFileValue = process.argv[metadataFileIndex + 1];
             }
-            
-            // Collect file inputs
+
             const fileInputs: Record<string, string> = {};
             let fileInputIndex = process.argv.indexOf('-fi');
             while (fileInputIndex !== -1) {
@@ -166,7 +151,7 @@ Note:
 
                 fileInputIndex = process.argv.indexOf('-fi', fileInputIndex + 2);
             }
-            
+
             fileInputIndex = process.argv.indexOf('--file-input');
             while (fileInputIndex !== -1) {
                 if (fileInputIndex < process.argv.length - 1) {
@@ -180,20 +165,20 @@ Note:
 
                 fileInputIndex = process.argv.indexOf('--file-input', fileInputIndex + 2);
             }
-            
-            // Parse dynamic options
+
             const dynamicOptions: Record<string, string> = {};
 
             for (let i = 0; i < process.argv.length; i++) {
                 const arg = process.argv[i];
 
-                if (arg.startsWith('--') && 
-                    arg !== '--prompt' && 
-                    arg !== '--prompt-file' && 
-                    arg !== '--metadata-file' && 
-                    arg !== '--inspect' && 
-                    arg !== '--file-input') {
-                    
+                if (
+                    arg.startsWith('--') &&
+                    arg !== '--prompt' &&
+                    arg !== '--prompt-file' &&
+                    arg !== '--metadata-file' &&
+                    arg !== '--inspect' &&
+                    arg !== '--file-input'
+                ) {
                     const key = arg.slice(2).replace(/-/g, '_');
 
                     if (i < process.argv.length - 1 && !process.argv[i + 1].startsWith('-')) {
@@ -205,13 +190,7 @@ Note:
             if (hasPrompt && promptValue) {
                 await this.handleStoredPrompt(promptValue, dynamicOptions, hasInspect, fileInputs);
             } else if (hasPromptFile && promptFileValue && hasMetadataFile && metadataFileValue) {
-                await this.handleFilePrompt(
-                    promptFileValue,
-                    metadataFileValue,
-                    dynamicOptions,
-                    hasInspect,
-                    fileInputs
-                );
+                await this.handleFilePrompt(promptFileValue, metadataFileValue, dynamicOptions, hasInspect, fileInputs);
             } else if (process.env.CLI_ENV === 'cli') {
                 await this.browseAndRunWorkflow(hasInspect, fileInputs);
             } else {
@@ -247,11 +226,12 @@ Note:
 
             const { promptContent, metadata } = promptFiles;
 
-            // If we're in CLI mode with no dynamic options or file inputs
-            if (process.env.CLI_ENV === 'cli' && 
-                Object.keys(dynamicOptions).length === 0 && 
-                Object.keys(fileInputs).length === 0 && 
-                !inspect) {
+            if (
+                process.env.CLI_ENV === 'cli' &&
+                Object.keys(dynamicOptions).length === 0 &&
+                Object.keys(fileInputs).length === 0 &&
+                !inspect
+            ) {
                 const { default: promptsCommand } = await import('./prompts-command');
                 await promptsCommand.handlePromptExecution(promptId);
                 return;
