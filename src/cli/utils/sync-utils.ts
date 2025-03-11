@@ -212,11 +212,25 @@ export async function createBranchAndPushChanges(branchName: string): Promise<vo
             throw new Error('Not a git repository');
         }
 
-        await git.checkoutLocalBranch(branchName);
+        const branches = await git.branchLocal();
+        
+        if (branches.all.includes(branchName)) {
+            await git.checkout(branchName);
+            logger.info(`Switched to existing branch: ${branchName}`);
+        } else {
+            await git.checkoutLocalBranch(branchName);
+            logger.info(`Created and switched to new branch: ${branchName}`);
+        }
 
         await git.add('.');
 
-        await git.commit('Add new prompt via CLI');
+        const status = await git.status();
+        if (status.staged.length > 0) {
+            await git.commit('Update prompt library via CLI');
+            logger.info('Committed changes');
+        } else {
+            logger.info('No changes to commit');
+        }
 
         const remotes = await git.getRemotes();
 

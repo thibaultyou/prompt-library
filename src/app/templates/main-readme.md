@@ -76,8 +76,17 @@ See detailed instructions in [Getting Started](#-getting-started).
 
 ## 🛠️ How It Works
 
+### Option 1: CLI Workflow (Recommended)
+
+1. **Create Prompts**: Use `prompt-library-cli prompts create` to create new prompts interactively
+2. **Generate Metadata**: AI analysis automatically generates metadata for your prompts
+3. **Organize and Manage**: Update, search, and execute prompts through the CLI
+4. **Push to GitHub**: Optionally sync your changes with a remote repository
+
+### Option 2: Git-based Workflow
+
 1. **Create Prompts**: Write markdown prompt files in the `prompts` directory
-2. **Generate Metadata**: Commit to trigger automatic metadata generation
+2. **Generate Metadata**: Commit to trigger automatic metadata generation via GitHub Actions
 3. **Organize Automatically**: README files update with categorized prompt listings
 4. **Execute via CLI**: Run prompts through the interactive CLI or command line
 
@@ -85,7 +94,12 @@ See detailed instructions in [Getting Started](#-getting-started).
 <summary>💡 Pro Tip: Working with GitHub Actions</summary>
 <p>
 
-Create and commit `prompt.md` files individually to allow GitHub Actions to generate corresponding `metadata.yml` files. Both files are required for CLI prompt usage.
+To use the GitHub Actions workflow for metadata generation:
+1. Add your AI provider API key (Anthropic or OpenAI) to your GitHub repository secrets
+2. Create and commit `prompt.md` files to trigger the automatic generation of `metadata.yml` files
+3. Both files are required for CLI prompt usage
+
+The CLI-based workflow doesn't require GitHub Actions and can be used entirely offline.
 </p>
 </details>
 
@@ -95,268 +109,103 @@ The CLI offers a complete prompt management and execution solution:
 
 ### Command Overview
 
-#### Core Commands
-
-| Command | Description | Example |
-|---------|-------------|---------|
-| `prompt-library-cli` | Interactive CLI menu | `prompt-library-cli` |
-| `execute` | Run a specific prompt | `prompt-library-cli execute -p "git_commit"` |
-| `prompts` | List and manage prompts | `prompt-library-cli prompts --list` |
-| `fragments` | Manage prompt fragments | `prompt-library-cli fragments --list` |
-| `sync` | Sync with prompt repository | `prompt-library-cli sync` |
-
-#### Prompt Management Commands
-
-| Command | Description | Example |
-|---------|-------------|---------|
-| `prompts --list` | List all prompts | `prompt-library-cli prompts --list` |
-| `prompts --search` | Search for prompts | `prompt-library-cli prompts --search "git"` |
-| `prompts --categories` | Show prompt categories | `prompt-library-cli prompts --categories` |
-| `prompts create` | Create a new prompt | `prompt-library-cli prompts create` |
-| `prompts edit` | Edit an existing prompt | `prompt-library-cli prompts edit` |
-| `prompts delete` | Delete a prompt | `prompt-library-cli prompts delete` |
-
-#### Fragment Management Commands
-
-| Command | Description | Example |
-|---------|-------------|---------|
-| `fragments --list` | List all fragments | `prompt-library-cli fragments --list` |
-| `fragments --search` | Search for fragments | `prompt-library-cli fragments --search "behavior"` |
-| `fragments create` | Create a new fragment | `prompt-library-cli fragments create` |
-| `fragments edit` | Edit a fragment | `prompt-library-cli fragments edit` |
-| `fragments delete` | Delete a fragment | `prompt-library-cli fragments delete` |
-
-#### Configuration Commands
-
-| Command | Description | Example |
-|---------|-------------|---------|
-| `model` | Configure AI model settings | `prompt-library-cli model` |
-| `config` | Manage CLI configuration | `prompt-library-cli config` |
-| `env` | Manage environment variables | `prompt-library-cli env` |
-| `repository` | Manage prompt repository | `prompt-library-cli repository` |
-| `setup` | Set up prompt library | `prompt-library-cli setup` |
-| `flush` | Reset all data (preserves config) | `prompt-library-cli flush` |
-
-### Global Options
-
 ```bash
 Usage: prompt-library-cli [options] [command]
 
-Options:
-  -V, --version               Output the version number
-  -e, --execute <id_or_name>  Execute a prompt by ID or name
-  -l, --list                  List all available prompts
-  -s, --search <keyword>      Search prompts by keyword
-  -h, --help                  Display help for command
+Commands:
+  # Core Commands
+  execute                Run a specific prompt by ID or name
+  prompts                List and manage prompts
+  fragments              Manage prompt fragments
+  sync                   Sync with prompt repository
+  
+  # Prompt Management Commands
+  prompts --list         List all prompts
+  prompts --search       Search for prompts by keyword
+  prompts --categories   Show prompt categories
+  prompts create         Create a new prompt
+  prompts edit           Edit an existing prompt
+  prompts delete         Delete a prompt
+  
+  # Fragment Management Commands
+  fragments --list       List all fragments
+  fragments --search     Search for fragments by keyword
+  fragments --categories Show fragment categories
+  fragments create       Create a new fragment
+  fragments edit         Edit a fragment
+  fragments delete       Delete a fragment
+  
+  # Configuration Commands
+  model                  Configure AI model settings
+  config                 Manage CLI configuration
+  env                    Manage environment variables
+  repository             Manage prompt repository
+  setup                  Set up prompt library
+  flush                  Reset all data (preserves config)
+  
+  # Global Options
+  -V, --version          Output the version number
+  -e, --execute <id>     Execute a prompt by ID or name
+  -l, --list             List all available prompts
+  -s, --search <keyword> Search prompts by keyword
+  -h, --help             Display help for command
 ```
 
-### 🔄 Switch AI Models
+### Common Tasks
 
 ```bash
+# Switch between AI models (Claude/GPT)
 prompt-library-cli model
+
+# Execute a prompt
+prompt-library-cli execute -p "git_commit"    # By name (fuzzy matching)
+prompt-library-cli execute -p 74              # By ID (more reliable)
+
+# Execute with variables
+prompt-library-cli execute -p "commit" --description "Add auth" --files "auth.ts,users.ts"
+
+# Execute with file inputs
+prompt-library-cli execute -p "translator" -fi input=./document.txt
+
+# Manage prompts
+prompt-library-cli prompts --list             # List all prompts
+prompt-library-cli prompts --search "git"     # Search by keyword
+prompt-library-cli prompts --categories       # Show categories
+prompt-library-cli prompts create             # Create a new prompt  
+prompt-library-cli prompts edit -p 74         # Edit a prompt
+prompt-library-cli prompts delete -p 74       # Delete a prompt
 ```
 
-The streamlined model menu lets you:
-- 🤖 **Change AI provider**: Switch between Anthropic (Claude) or OpenAI (GPT)
-- 🧠 **Change model**: Select from available models for your provider
-- 🔋 **Change max tokens**: Adjust token limits for your responses
-
-### 🚀 Execute Prompts
-
-```bash
-# List available prompts (to see IDs and names)
-prompt-library-cli prompts --list
-
-# Execute using prompt ID (most reliable)
-prompt-library-cli execute -p 80  # Example: ID might be different in your library
-
-# Execute using prompt name (partial matches work too)
-prompt-library-cli execute -p "git_commit_message_agent"  # Example prompt
-prompt-library-cli execute -p "commit message"  # Example of partial name match
-
-# With variables (examples shown below)
-prompt-library-cli execute -p 74 --description "Add user authentication" --files "auth.ts,users.ts"
-# Or by name with variables
-prompt-library-cli execute -p "commit" --description "Add user authentication" --files "auth.ts,users.ts"
-
-# Use file inputs (example)
-prompt-library-cli execute -p "code_review" -fi code=./my-code.ts
-
-# Preview/inspect mode (don't execute, just view variables)
-prompt-library-cli execute -p "translator" -i
-
-# Specify metadata and prompt files directly
-prompt-library-cli execute -f ./my-prompt.md -m ./my-metadata.yml
-```
-
-> **Tip**: While both prompt IDs and names are supported, using IDs is more reliable. Directory names follow the pattern `{function}_{domain}_agent` and are matched using fuzzy search.
-
-### 🔎 Managing Prompts
-
-```bash
-# List all prompts with their IDs and categories
-prompt-library-cli prompts --list
-
-# List all prompt categories
-prompt-library-cli prompts --categories
-
-# Search prompts by keyword (title, description, category)
-prompt-library-cli prompts --search "git"
-
-# Show favorite prompts
-prompt-library-cli prompts --favorites
-
-# Show recently executed prompts
-prompt-library-cli prompts --recent
-
-# Output in JSON format (for scripting/CI)
-prompt-library-cli prompts --list --json
-
-# Create a new prompt
-prompt-library-cli prompts create
-prompt-library-cli prompts create --directory "my_prompt" --title "My Prompt" --category "coding" --description "Description"
-prompt-library-cli prompts create --no-analyze  # Skip AI analysis for metadata generation
-
-# Edit an existing prompt
-prompt-library-cli prompts edit
-prompt-library-cli prompts edit -p 74
-prompt-library-cli prompts edit -p "commit_message"
-prompt-library-cli prompts edit --no-analyze  # Skip AI analysis when updating
-
-# Delete a prompt
-prompt-library-cli prompts delete
-prompt-library-cli prompts delete -p 74
-prompt-library-cli prompts delete -p "commit_message" -f  # Force delete without confirmation
-```
+> **Tip**: While both names and IDs work, using IDs (like 74) is more reliable than names.
 
 <details>
 <summary>📚 Advanced CLI Usage</summary>
-<p>
-
-#### Executing Prompts with Files
 
 ```bash
-# Execute a prompt with file input
-prompt-library-cli execute -p "translator" -fi input=./document.txt
+# Working with Fragments
+prompt-library-cli fragments                  # Interactive fragments menu
+prompt-library-cli fragments --list           # List all fragments
+prompt-library-cli fragments --search "fmt"   # Search fragments
+prompt-library-cli fragments create -c prompt_engineering -n my_fragment  # Create
+prompt-library-cli fragments edit -c prompt_engineering -n my_fragment    # Edit
+prompt-library-cli fragments delete -c prompt_engineering -n my_fragment  # Delete
 
-# Execute with multiple file inputs
-prompt-library-cli execute -p "code_review" -fi code=./src/app.js -fi tests=./tests/app.test.js
+# Repository Management
+prompt-library-cli sync                       # Sync with remote repository
+prompt-library-cli sync --list                # Check pending changes
+prompt-library-cli sync --push                # Push changes to remote
+prompt-library-cli sync --reset               # Discard local changes
+prompt-library-cli repository                 # Repository settings menu
+prompt-library-cli repository --status        # Show repo status
 
-# Execute with both file inputs and regular variables
-prompt-library-cli execute -p "document_generator" -fi template=./template.md --title "Project Overview" --author "Team"
+# Configuration
+prompt-library-cli env                        # Manage API keys
+prompt-library-cli config                     # Configure CLI settings
+prompt-library-cli setup -r https://github.com/your-username/repo.git  # Custom repo
+prompt-library-cli flush                      # Reset all data (preserves config)
 ```
 
-#### Working with Fragments
-
-```bash
-# Open interactive fragments menu
-prompt-library-cli fragments
-
-# List all available fragments
-prompt-library-cli fragments --list
-
-# List all fragment categories
-prompt-library-cli fragments --categories
-
-# Search fragments by keyword (name or category)
-prompt-library-cli fragments --search "formatting"
-
-# Output in JSON format (for CI/scripting)
-prompt-library-cli fragments --list --json
-
-# Create a new fragment
-prompt-library-cli fragments create -c prompt_engineering -n my_fragment
-
-# Edit an existing fragment
-prompt-library-cli fragments edit -c prompt_engineering -n existing_fragment  
-
-# Delete a fragment
-prompt-library-cli fragments delete -c prompt_engineering -n obsolete_fragment
-
-# Force delete without confirmation
-prompt-library-cli fragments delete -c prompt_engineering -n obsolete_fragment -f
-
-# Use with scripts (pipe output to another program)
-prompt-library-cli fragments --list --json | jq
-```
-
-#### Sync Options
-
-```bash
-# Fetch latest prompts from the default repository
-prompt-library-cli sync
-
-# Specify a custom repository URL
-prompt-library-cli sync -u https://github.com/your-username/your-repo.git
-
-# Force sync without confirmation
-prompt-library-cli sync --force
-
-# Check and manage pending changes
-prompt-library-cli sync --list
-
-# Push local changes to remote repository
-prompt-library-cli sync --push
-
-# Reset/discard local changes
-prompt-library-cli sync --reset
-
-# Push to specific branch name
-prompt-library-cli sync --push --branch my-feature-branch
-```
-
-#### Environment Management
-
-```bash
-# Set environment variables for API keys
-prompt-library-cli env
-
-# The interactive menu guides you through setting API keys and other environment variables
-```
-
-> **Note**: For security, your API keys are stored securely and never logged or displayed in full.
-
-#### Repository Management
-
-```bash
-# Show repository status (current branch, changes, remotes)
-prompt-library-cli repository --status
-
-# Set upstream repository URL
-prompt-library-cli repository --upstream https://github.com/your-username/your-repo.git
-
-# Add a downstream repository URL
-prompt-library-cli repository --downstream https://github.com/contributor/fork-repo.git
-
-# Set default branch name
-prompt-library-cli repository --branch main
-
-# List remote repositories
-prompt-library-cli repository --list-remotes
-
-# Enable or disable git integration
-prompt-library-cli repository --enable-git
-prompt-library-cli repository --disable-git
-
-# Update remote settings based on configuration
-prompt-library-cli repository   # Launch interactive repository menu
-```
-
-#### Setup Options
-
-```bash
-# Setup with a specific repository URL
-prompt-library-cli setup -r https://github.com/your-username/your-repo.git
-
-# Force setup (overwrites existing repository)
-prompt-library-cli setup --force
-
-# Use local development repository instead of cloning from remote
-prompt-library-cli setup --local
-```
-
-
-</p>
+> **Note**: API keys are stored securely and never displayed in full.
 </details>
 
 ## 📂 Prompt Showcase
@@ -459,16 +308,21 @@ prompt-library-cli model
 
 ### Step 4: For GitHub Actions (Optional)
 
-If you want automatic README generation, add your API key to repository secrets:
-- Go to your GitHub repository → Settings → Secrets → New repository secret
-- Add `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`
+If you want automatic metadata generation and README updates via GitHub Actions:
+1. Fork the repository to your GitHub account
+2. Add your API key to repository secrets:
+   - Go to your GitHub repository → Settings → Secrets → New repository secret
+   - Add `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`
+3. When you commit new prompt files, GitHub Actions will:
+   - Generate metadata.yml files for new prompts
+   - Update all README files with the latest prompt information
 
 ## 🧩 Prompt Composition with Fragments
 
-Fragments are modular, reusable prompt components that help you build complex prompts efficiently:
+Fragments are reusable prompt components that help build complex prompts efficiently:
 
 ```markdown
-# Example prompt using fragments
+# Example prompt with fragments
 I need you to help me with {% raw %}{{TASK_TYPE}}{% endraw %}.
 
 {% raw %}{{BEHAVIOR_GUIDELINES}}{% endraw %}
@@ -479,40 +333,30 @@ Context:
 Now, please {% raw %}{{SPECIFIC_INSTRUCTION}}{% endraw %}.
 ```
 
-### Creating Fragments
+### Using Fragments
 
-1. Add `.md` files to the `fragments/` directory (categorized by type)
-2. Reference them in your prompt files with `{% raw %}{{FRAGMENT_NAME}}{% endraw %}`
-3. Browse and manage fragments with `prompt-library-cli fragments`
+1. Create fragment as `.md` files in `fragments/` directory
+2. Reference them with `{% raw %}{{FRAGMENT_NAME}}{% endraw %}` syntax
+3. Manage them with `prompt-library-cli fragments`
 
-<details>
-<summary>🔍 <strong>Fragment Examples</strong></summary>
-<p>
-
-Check the [prompt_engineering](/fragments/prompt_engineering/) directory for example fragments including:
-- Behavior attributes
-- Formatting guidelines 
-- Safety guidelines
-- Output templates
-
-</p>
-</details>
+> **Examples**: Check [prompt_engineering](/fragments/prompt_engineering/) fragments for behavior guidelines, formatting instructions, safety rules, and output templates.
 
 ## ⚙️ Customizing Metadata Generation
 
-The system automatically analyzes prompts and generates metadata. To customize this process:
+The system automatically analyzes prompts and generates metadata using AI:
 
-1. Modify the system prompt at `src/system_prompts/prompt_analysis_agent/prompt.md`
-2. Test your changes with `npm run update-metadata`
-3. Commit to trigger automatic updates
+```bash
+# CLI-based Customization
+prompt-library-cli prompts edit               # Edit a prompt interactively
+prompt-library-cli prompts edit --no-analyze  # Skip AI analysis
 
-<details>
-<summary>⚠️ <strong>Important Notes</strong></summary>
-<p>
+# System-level Customization
+# 1. Modify src/system_prompts/prompt_analysis_agent/prompt.md
+# 2. Test with: npm run update-metadata
+# 3. Commit to trigger GitHub Actions updates
+```
 
-Changes to the metadata system affect all future prompt analyses. Test thoroughly before committing.
-</p>
-</details>
+> **Note**: System prompt changes affect all future analyses in both CLI and GitHub Actions. You can work entirely offline with the CLI without GitHub Actions.
 
 ## 🤝 Contributing
 

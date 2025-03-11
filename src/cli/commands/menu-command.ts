@@ -112,37 +112,35 @@ class MenuCommand extends BaseCommand {
                     // Silently handle errors when retrieving recent executions
                 }
 
-                if (recentPrompts && recentPrompts.length > 0) {
-                    choices.push({
-                        name: createSectionHeader<MenuAction>('QUICK ACTIONS', '✨', 'success').name,
-                        value: 'quick_actions_header',
-                        disabled: ' '
-                    });
+                choices.push({
+                    name: createSectionHeader<MenuAction>('QUICK ACTIONS', '✨', 'success').name,
+                    value: 'quick_actions_header',
+                    disabled: ' '
+                });
 
-                    if (recentPrompts.length > 0) {
-                        const lastPrompt = recentPrompts[0];
-                        choices.push({
-                            name: formatMenuItem(
-                                `Run last prompt: ${chalk.italic(lastPrompt.title || 'Unknown')}`,
-                                'last_prompt',
-                                'success'
-                            ).name,
-                            value: 'last_prompt',
-                            description: lastPrompt.id
-                        });
-                    }
-
+                if (recentPrompts.length > 0) {
+                    const lastPrompt = recentPrompts[0];
                     choices.push({
-                        name: formatMenuItem('Search prompts by keyword', 'search_prompts', 'success').name,
-                        value: 'search_prompts'
-                    });
-
-                    choices.push({
-                        name: '─'.repeat(50),
-                        value: 'spacer',
-                        disabled: ' '
+                        name: formatMenuItem(
+                            `Run last prompt: ${chalk.italic(lastPrompt.title || 'Unknown')}`,
+                            'last_prompt',
+                            'success'
+                        ).name,
+                        value: 'last_prompt',
+                        description: lastPrompt.id
                     });
                 }
+
+                choices.push({
+                    name: formatMenuItem('Search prompts by keyword', 'search_prompts', 'success').name,
+                    value: 'search_prompts'
+                });
+
+                choices.push({
+                    name: '─'.repeat(50),
+                    value: 'spacer',
+                    disabled: ' '
+                });
 
                 choices.push({
                     name: createSectionHeader<MenuAction>('MAIN MENU', '📚', 'info').name,
@@ -204,7 +202,6 @@ class MenuCommand extends BaseCommand {
                 ];
 
                 if (hasPendingChanges) {
-                    // Insert manage changes option at the top of repo choices for visibility
                     repoChoices.unshift({
                         name: formatMenuItem('Manage pending changes', 'list_changes', 'warning').name,
                         value: 'list_changes' as MenuAction

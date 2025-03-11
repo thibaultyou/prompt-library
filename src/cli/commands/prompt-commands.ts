@@ -352,14 +352,15 @@ async function offerRemoteSync(): Promise<void> {
     if (doSync) {
         try {
             const spinner = showSpinner('Syncing to remote repository...');
-            const branchName = `prompt/${Date.now()}`;
-            await createBranchAndPushChanges(branchName);
+            const config = getConfig();
+            const defaultBranch = config.DEFAULT_BRANCH || 'main';
+            await createBranchAndPushChanges(defaultBranch);
 
             await clearPendingChanges();
 
             spinner.succeed('Changes pushed to remote repository');
-            logger.info(`Created branch: ${branchName}`);
-            logger.info('Please create a pull request on the repository to merge your changes.');
+            logger.info(`Pushed to branch: ${defaultBranch}`);
+            logger.info('Please create a pull request on the repository if needed.');
         } catch (error) {
             logger.error('Failed to sync to remote repository:', error);
         }
