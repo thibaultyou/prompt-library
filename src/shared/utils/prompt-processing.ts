@@ -42,25 +42,33 @@ export async function processPromptContent(
     }
 
     try {
-        if (logging) {
+        // Only log inputs and 'AI:' prefix if in interactive mode or explicitly requested
+        // Never log if in JSON mode
+        const isCliMode = process.env.CLI_ENV === 'cli';
+        const isJsonMode = process.argv.includes('--json');
+        const isVerbose = process.argv.includes('--verbose');
+        const shouldLog = !isJsonMode && logging && (isCliMode || isVerbose);
+
+        if (shouldLog) {
             console.log(chalk.blue(chalk.bold('You:')));
             console.log(messages[messages.length - 1]?.content);
-
             console.log(chalk.green(chalk.bold('AI:')));
         }
 
         const client = await getAIClient();
+        let responseContent = '';
 
         if (useStreaming) {
-            return await processStreamingResponse(client, messages);
+            responseContent = await processStreamingResponse(client, messages);
         } else {
             const response = await client.sendRequest(messages);
-
             if (response && response.content) {
-                return response.content;
+                responseContent = response.content;
             }
-            return '';
         }
+
+        // Always return the content, but don't print it here - let the caller handle printing
+        return responseContent;
     } catch (error) {
         handleError(error, 'processing prompt content');
         throw error;

@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import yaml from 'js-yaml';
 
 import { BaseCommand } from './base-command';
+import promptsCommand from './prompts-command';
 import { PromptMetadata } from '../../shared/types';
 import { processPromptContent, updatePromptWithVariables } from '../../shared/utils/prompt-processing';
 import { formatSnakeCase } from '../../shared/utils/string-formatter';
@@ -186,7 +187,7 @@ Note:
                     }
                 }
             }
-
+            
             if (hasPrompt && promptValue) {
                 await this.handleStoredPrompt(promptValue, dynamicOptions, hasInspect, fileInputs);
             } else if (hasPromptFile && promptFileValue && hasMetadataFile && metadataFileValue) {
@@ -226,13 +227,73 @@ Note:
 
             const { promptContent, metadata } = promptFiles;
 
+            // Check if required variables are missing
+            const missingRequired = metadata.variables.filter(v => !v.optional_for_user && !v.value).map(v => 
+                v.name.replace(/[{}]/g, '')
+            );
+            
+            const hasAllRequiredVars = missingRequired.every(varName => {
+                const snakeCaseName = varName.toLowerCase();
+                return dynamicOptions[snakeCaseName] || fileInputs[snakeCaseName];
+            });
+            
+            // Check if using JSON format
+            const isJsonMode = process.argv.includes('--json');
+            
+            // If running directly without all required variables, show a helpful error
+            if (!hasAllRequiredVars && !inspect && process.argv.includes('-p')) {
+                // If in JSON mode, output error as JSON
+                if (isJsonMode) {
+                    const missingVarsInfo = missingRequired.map(varName => {
+                        const snakeCaseName = varName.toLowerCase();
+                        const variable = metadata.variables.find(v => v.name.replace(/[{}]/g, '') === varName);
+                        return {
+                            name: snakeCaseName,
+                            description: variable?.role || '',
+                            optional: false,
+                            set: !!(dynamicOptions[snakeCaseName] || fileInputs[snakeCaseName])
+                        };
+                    });
+                    
+                    console.log(JSON.stringify({
+                        success: false,
+                        error: 'Missing required variables',
+                        prompt_id: promptId,
+                        prompt_title: metadata.title,
+                        missing_variables: missingVarsInfo,
+                        example_command: `prompt-library-cli execute -p ${promptId} ${missingRequired.map(v => `--${v.toLowerCase()} "value"`).join(' ')}`
+                    }, null, 2));
+                    return;
+                }
+                
+                // Standard error output
+                console.error(chalk.red('Error: Missing required variables for this prompt.'));
+                console.log(chalk.cyan('\nRequired variables:'));
+                
+                missingRequired.forEach(varName => {
+                    const snakeCaseName = varName.toLowerCase();
+                    const variable = metadata.variables.find(v => v.name.replace(/[{}]/g, '') === varName);
+                    if (!variable) return;
+                    
+                    if (!(dynamicOptions[snakeCaseName] || fileInputs[snakeCaseName])) {
+                        console.log(chalk.yellow(`  --${snakeCaseName}: ${chalk.gray(variable.role || '')}`));
+                    }
+                });
+                
+                console.log(chalk.cyan('\nExample usage:'));
+                const exampleVars = missingRequired.map(v => `--${v.toLowerCase()} "value"`).join(' ');
+                console.log(`  prompt-library-cli execute -p ${promptId} ${exampleVars}`);
+                console.log('\nOr run without variables to use interactive mode.');
+                return;
+            }
+            
+            // If running in CLI and not explicitly passing variables, use interactive mode
             if (
                 process.env.CLI_ENV === 'cli' &&
                 Object.keys(dynamicOptions).length === 0 &&
                 Object.keys(fileInputs).length === 0 &&
                 !inspect
             ) {
-                const { default: promptsCommand } = await import('./prompts-command');
                 await promptsCommand.handlePromptExecution(promptId);
                 return;
             }
@@ -292,7 +353,7 @@ Note:
                 const browseAction = await this.showMenu<
                     'category' | 'all' | 'recent' | 'favorites' | 'search' | 'back'
                 >(
-                    'Select a browsing option:',
+                    'Use ↑↓ to select an action:',
                     choices.map((item) => ({
                         name: item.name,
                         value: item.value as any,
@@ -404,7 +465,7 @@ Note:
                 value: { id: Number(prompt.id) },
                 description: prompt.one_line_description || ''
             }));
-            const selectedPrompt = await this.showMenu<{ id: number } | 'back'>('Select a prompt:', promptChoices, {
+            const selectedPrompt = await this.showMenu<{ id: number } | 'back'>('Use ↑↓ to select a prompt:', promptChoices, {
                 pageSize: 15
             });
 
@@ -525,14 +586,17 @@ Note:
 
     private async inspectPrompt(metadata: PromptMetadata): Promise<void> {
         try {
+            // Ensure we're passing all the metadata intact
             await viewPromptDetails(
                 {
-                    id: '',
+                    id: metadata.id || '', // Preserve the ID if it exists
                     title: metadata.title,
                     primary_category: metadata.primary_category,
                     description: metadata.description,
                     tags: metadata.tags,
-                    variables: metadata.variables
+                    variables: metadata.variables,
+                    subcategories: metadata.subcategories || [],
+                    directory: metadata.directory || '',
                 } as PromptMetadata,
                 true
             );
@@ -555,7 +619,20 @@ Note:
             }
         }
 
-        if (process.env.CLI_ENV === 'cli' && metadata.variables && metadata.variables.length > 0) {
+        // Check if we're in CLI mode AND running interactively (not with direct variables)
+        const isProvidingAllVars = metadata.variables.every(variable => {
+            const varName = variable.name.replace(/[{}]/g, '').toLowerCase();
+            return variable.optional_for_user || variable.value || dynamicOptions[varName] || fileInputs[varName];
+        });
+        
+        // Check for JSON mode early - will override other output formats
+        const isJsonMode = process.argv.includes('--json');
+        const isVerbose = process.argv.includes('--verbose');
+        
+        // In JSON mode, we'll collect all the data but not display any CLI output until the end
+        const shouldShowFullOutput = !isJsonMode && ((process.env.CLI_ENV === 'cli' && !isProvidingAllVars) || isVerbose);
+        
+        if (shouldShowFullOutput && metadata.variables && metadata.variables.length > 0) {
             console.log(chalk.cyan('\nPrompt Variables:'));
             console.log(chalk.gray('─'.repeat(60)));
 
@@ -566,22 +643,16 @@ Note:
                 const variableName = variable.name.replace(/[{}]/g, '');
                 const snakeCaseName = variableName.toLowerCase();
 
-                if (variable.value) {
-                    userInputs[variable.name] = variable.value;
-                    console.log(
-                        `${chalk.green('✓')} ${formatSnakeCase(variableName)}: ${chalk.dim('Using stored value')}`
-                    );
-                    continue;
-                }
-
                 const hasValueInOptions = dynamicOptions && snakeCaseName in dynamicOptions;
                 const hasValueInFiles = fileInputs && snakeCaseName in fileInputs;
 
+                // Check CLI arguments first (highest priority)
                 if (hasValueInOptions) {
                     userInputs[variable.name] = dynamicOptions[snakeCaseName];
                     console.log(
                         `${chalk.green('✓')} ${formatSnakeCase(variableName)}: ${chalk.dim('Using provided value')}`
                     );
+                // Check file inputs next
                 } else if (hasValueInFiles) {
                     try {
                         userInputs[variable.name] = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
@@ -594,6 +665,13 @@ Note:
                         );
                         needsInput = true;
                     }
+                // Use stored value if available
+                } else if (variable.value) {
+                    userInputs[variable.name] = variable.value;
+                    console.log(
+                        `${chalk.green('✓')} ${formatSnakeCase(variableName)}: ${chalk.dim('Using stored value')}`
+                    );
+                // Need user input
                 } else {
                     console.log(
                         `${chalk.yellow('?')} ${formatSnakeCase(variableName)}${variable.optional_for_user ? '' : chalk.red(' *')}: ${chalk.gray(variable.role || '')}`
@@ -628,6 +706,7 @@ Note:
                 }
             }
 
+            // Check for missing required variables
             const missingVariables = metadata.variables
                 .filter((v) => !v.optional_for_user && (!userInputs[v.name] || userInputs[v.name].trim() === ''))
                 .map((v) => formatSnakeCase(v.name));
@@ -636,29 +715,61 @@ Note:
                 throw new Error(`Missing required variables: ${missingVariables.join(', ')}`);
             }
 
-            console.log(chalk.cyan('\nUsing variables:'));
-            console.log(chalk.gray('─'.repeat(60)));
-            Object.entries(userInputs).forEach(([key, value]) => {
-                const displayValue = value.length > 50 ? value.substring(0, 50) + '...' : value;
-                console.log(`${chalk.green('✓')} ${formatSnakeCase(key)}: ${displayValue}`);
-            });
-            console.log(chalk.gray('─'.repeat(60)));
-
-            console.log(chalk.green('All variables set. Ready to execute prompt.'));
+            // Display the variables we're using only if in verbose mode or interactive CLI mode
+            if (shouldShowFullOutput) {
+                console.log(chalk.cyan('\nUsing variables:'));
+                console.log(chalk.gray('─'.repeat(60)));
+                Object.entries(userInputs).forEach(([key, value]) => {
+                    const displayValue = value.length > 50 ? value.substring(0, 50) + '...' : value;
+                    console.log(`${chalk.green('✓')} ${formatSnakeCase(key)}: ${displayValue}`);
+                });
+                console.log(chalk.gray('─'.repeat(60)));
+                console.log(chalk.green('All variables set. Ready to execute prompt.'));
+                console.log(chalk.cyan('\nExecuting prompt...\n'));
+            }
 
             const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
-            console.log(chalk.cyan('\nExecuting prompt...\n'));
-            console.log(chalk.gray('─'.repeat(60)));
-            const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
+            
+            // Only show formatting in full output mode
+            if (shouldShowFullOutput) {
+                console.log(chalk.gray('─'.repeat(60)));
+            }
+            
+            const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, shouldShowFullOutput);
 
             if (typeof result !== 'string') {
                 throw new Error('Unexpected result format from prompt processing');
             }
 
-            console.log(result);
-            console.log(chalk.gray('─'.repeat(60)));
-            console.log(chalk.green('Prompt execution completed successfully.'));
-            await this.pressKeyToContinue();
+            // Check if using JSON format for interactive mode too
+            const isJsonMode = process.argv.includes('--json');
+            
+            // If in JSON mode, output structured data
+            if (isJsonMode) {
+                console.log(JSON.stringify({
+                    success: true,
+                    prompt_id: metadata.id,
+                    prompt_title: metadata.title,
+                    variables: Object.fromEntries(
+                        Object.entries(userInputs).map(([key, value]) => [
+                            key.replace(/[{}]/g, ''),
+                            value.length > 100 ? value.substring(0, 100) + '...' : value
+                        ])
+                    ),
+                    result: result
+                }, null, 2));
+            }
+            // Always print the result, with or without formatting (unless in JSON mode)
+            else if (shouldShowFullOutput) {
+                // In verbose mode, the result is already shown by processPromptContent if streaming
+                console.log(result);
+                console.log(chalk.gray('─'.repeat(60)));
+                console.log(chalk.green('Prompt execution completed successfully.'));
+                await this.pressKeyToContinue();
+            } else {
+                // Just print the raw result without any formatting
+                console.log(result);
+            }
             return result;
         } else {
             const userInputs: Record<string, string> = {};
@@ -668,19 +779,32 @@ Note:
                 const variableName = variable.name.replace(/[{}]/g, '');
                 const snakeCaseName = variableName.toLowerCase();
 
+                // Check CLI arguments first (highest priority)
+                if (dynamicOptions && snakeCaseName in dynamicOptions) {
+                    userInputs[variable.name] = dynamicOptions[snakeCaseName];
+                    continue;
+                }
+                
+                // Check file inputs next
+                if (fileInputs && snakeCaseName in fileInputs) {
+                    try {
+                        userInputs[variable.name] = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
+                        continue;
+                    } catch (error) {
+                        console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
+                        throw new Error(`Failed to read file for ${snakeCaseName}`);
+                    }
+                }
+                
+                // Use stored value if available
                 if (variable.value) {
                     userInputs[variable.name] = variable.value;
                     continue;
                 }
 
+                // Track missing required variables
                 if (!variable.optional_for_user) {
-                    const hasValue =
-                        (dynamicOptions && snakeCaseName in dynamicOptions) ||
-                        (fileInputs && snakeCaseName in fileInputs);
-
-                    if (!hasValue) {
-                        missingVariables.push(snakeCaseName);
-                    }
+                    missingVariables.push(snakeCaseName);
                 }
             }
 
@@ -688,45 +812,50 @@ Note:
                 throw new Error(`Missing required variables: ${missingVariables.join(', ')}`);
             }
 
-            for (const variable of metadata.variables) {
-                const variableName = variable.name.replace(/[{}]/g, '');
-                const snakeCaseName = variableName.toLowerCase();
-
-                if (variable.name in userInputs) {
-                    continue;
-                }
-
-                let value = dynamicOptions[snakeCaseName];
-
-                if (fileInputs[snakeCaseName]) {
-                    try {
-                        value = await fs.readFile(fileInputs[snakeCaseName], 'utf-8');
-                    } catch (error) {
-                        console.error(chalk.red(`Error reading file for ${snakeCaseName}:`, error));
-                        throw new Error(`Failed to read file for ${snakeCaseName}`);
-                    }
-                }
-
-                if (value !== undefined) {
-                    userInputs[variable.name] = value;
-                } else if (!variable.optional_for_user) {
-                    throw new Error(`Required variable ${snakeCaseName} is not set`);
-                }
+            // Check if in verbose or JSON mode
+            const isVerbose = process.argv.includes('--verbose');
+            const isJsonMode = process.argv.includes('--json');
+            const shouldShowDetails = isVerbose || isJsonMode;
+            
+            if (shouldShowDetails && !isJsonMode) {
+                console.log(chalk.cyan('\nUsing variables:'));
+                Object.entries(userInputs).forEach(([key, value]) => {
+                    console.log(`  ${formatSnakeCase(key)}: ${value.length > 50 ? value.substring(0, 50) + '...' : value}`);
+                });
             }
 
-            console.log(chalk.cyan('\nUsing variables:'));
-            Object.entries(userInputs).forEach(([key, value]) => {
-                console.log(`  ${formatSnakeCase(key)}: ${value.length > 50 ? value.substring(0, 50) + '...' : value}`);
-            });
-
             const updatedPromptContent = updatePromptWithVariables(promptContent, userInputs);
-            const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, false);
+            const result = await processPromptContent([{ role: 'user', content: updatedPromptContent }], false, shouldShowDetails);
 
             if (typeof result !== 'string') {
                 throw new Error('Unexpected result format from prompt processing');
             }
 
+            // If in JSON mode, output structured data
+            if (isJsonMode) {
+                console.log(JSON.stringify({
+                    success: true,
+                    prompt_id: metadata.id,
+                    prompt_title: metadata.title,
+                    variables: Object.fromEntries(
+                        Object.entries(userInputs).map(([key, value]) => [
+                            key.replace(/[{}]/g, ''),
+                            value.length > 100 ? value.substring(0, 100) + '...' : value
+                        ])
+                    ),
+                    result: result
+                }, null, 2));
+                return result;
+            }
+
+            // Print the result with minimal formatting in non-verbose mode
             console.log(result);
+            
+            if (isVerbose) {
+                console.log(chalk.gray('─'.repeat(60)));
+                console.log(chalk.green('Prompt execution completed successfully.'));
+            }
+            
             return result;
         }
     }

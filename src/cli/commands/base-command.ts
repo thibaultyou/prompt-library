@@ -65,6 +65,8 @@ export class BaseCommand extends Command {
             goBackLabel?: string;
             clearConsole?: boolean;
             pageSize?: number;
+            nonInteractive?: boolean;
+            defaultValue?: T;
         } = {}
     ): Promise<T> {
         const {
@@ -72,7 +74,9 @@ export class BaseCommand extends Command {
             goBackValue = 'back' as T,
             goBackLabel = 'Go back',
             clearConsole = true,
-            pageSize = cliConfig.MENU_PAGE_SIZE
+            pageSize = cliConfig.MENU_PAGE_SIZE,
+            nonInteractive = false,
+            defaultValue
         } = options;
 
         if (clearConsole) {
@@ -85,25 +89,107 @@ export class BaseCommand extends Command {
         if (includeGoBack) {
             processedChoices.push(formatMenuItem(goBackLabel, goBackValue, 'danger'));
         }
-        return select<T>({
-            message,
-            choices: processedChoices as any,
-            pageSize: pageSize
-        });
+
+        // If non-interactive mode is requested or we detect we're in a CI environment,
+        // return the default value to avoid UI interactions
+        if (nonInteractive || process.env.CI === 'true') {
+            if (defaultValue !== undefined) {
+                console.log(chalk.cyan(`Using default selection: ${defaultValue}`));
+                return defaultValue;
+            } else if (processedChoices.length > 0 && processedChoices[0].value !== undefined) {
+                console.log(chalk.cyan(`Auto-selecting first option in non-interactive mode`));
+                return processedChoices[0].value;
+            } else {
+                return goBackValue;
+            }
+        }
+
+        try {
+            return await select<T>({
+                message,
+                choices: processedChoices as any,
+                pageSize: pageSize
+            });
+        } catch (error) {
+            // Handle the "User force closed" error gracefully
+            if (error && error.toString().includes('User force closed the prompt')) {
+                console.log(chalk.yellow('\nSelection cancelled. Using default option.'));
+                
+                // Return a sensible default if available
+                if (defaultValue !== undefined) {
+                    return defaultValue;
+                } else if (includeGoBack) {
+                    return goBackValue;
+                } else if (processedChoices.length > 0) {
+                    return processedChoices[0].value;
+                }
+            }
+            
+            // Re-throw other errors
+            throw error;
+        }
     }
 
     protected async handleApiResult<T>(result: ApiResult<T>, message: string): Promise<T | null> {
         return handleApiResult(result, message);
     }
 
-    protected async getInput(message: string, validate?: (input: string) => boolean | string): Promise<string> {
-        return input({
-            message,
-            validate: validate || ((value: string): boolean | string => value.trim() !== '' || 'Value cannot be empty')
-        });
+    protected async getInput(
+        message: string, 
+        options: {
+            validate?: (input: string) => boolean | string;
+            default?: string;
+            nonInteractive?: boolean;
+        } = {}
+    ): Promise<string> {
+        const { 
+            validate = ((value: string): boolean | string => value.trim() !== '' || 'Value cannot be empty'),
+            default: defaultValue = '',
+            nonInteractive = false
+        } = options;
+        
+        // Handle non-interactive mode
+        if (nonInteractive || process.env.CI === 'true') {
+            if (defaultValue) {
+                console.log(chalk.cyan(`Using default input: ${defaultValue}`));
+                return defaultValue;
+            } else {
+                console.log(chalk.yellow('No default value provided in non-interactive mode'));
+                return '';
+            }
+        }
+        
+        try {
+            return await input({
+                message,
+                validate,
+                default: defaultValue
+            });
+        } catch (error) {
+            // Handle "User force closed" error
+            if (error && error.toString().includes('User force closed the prompt')) {
+                console.log(chalk.yellow('\nInput cancelled. Using default value.'));
+                return defaultValue;
+            }
+            throw error;
+        }
     }
 
-    protected async getMultilineInput(message: string, initialValue: string = ''): Promise<string> {
+    protected async getMultilineInput(
+        message: string, 
+        initialValue: string = '', 
+        options: { 
+            nonInteractive?: boolean 
+        } = {}
+    ): Promise<string> {
+        const { nonInteractive = false } = options;
+        
+        // Handle non-interactive mode
+        if (nonInteractive || process.env.CI === 'true') {
+            console.log(chalk.cyan(`Using provided input in non-interactive mode`));
+            return initialValue;
+        }
+        
         console.log(chalk.cyan(message));
         const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cli-input-'));
         const tempFilePath = path.join(tempDir, 'input.txt');
@@ -112,30 +198,72 @@ export class BaseCommand extends Command {
             const cleanedInitialValue =
                 initialValue.startsWith(FRAGMENT_PREFIX) || initialValue.startsWith(ENV_PREFIX) ? '' : initialValue;
             await fs.writeFile(tempFilePath, cleanedInitialValue);
-            const input = await editor({
-                message: 'Edit your input',
-                default: cleanedInitialValue,
-                waitForUseInput: false,
-                postfix: '.txt'
-            });
-            return input;
+            
+            try {
+                const input = await editor({
+                    message: 'Edit your input',
+                    default: cleanedInitialValue,
+                    waitForUseInput: false,
+                    postfix: '.txt'
+                });
+                return input;
+            } catch (error) {
+                // Handle "User force closed" error
+                if (error && error.toString().includes('User force closed the prompt')) {
+                    console.log(chalk.yellow('\nEditor cancelled. Using initial value.'));
+                    return cleanedInitialValue;
+                }
+                throw error;
+            }
         } finally {
             await fs.remove(tempDir);
         }
     }
 
     protected async pressKeyToContinue(): Promise<void> {
-        await input({ message: 'Press Enter to continue...' });
+        // Just return in CI mode
+        if (process.env.CI === 'true') {
+            return;
+        }
+        
+        try {
+            await input({ message: 'Press Enter to continue...' });
+        } catch (error) {
+            // Silently handle the "User force closed" error
+            if (error && !error.toString().includes('User force closed the prompt')) {
+                throw error;
+            }
+        }
     }
 
-    protected async confirmAction(message: string): Promise<boolean> {
+    protected async confirmAction(
+        message: string, 
+        options: { 
+            nonInteractive?: boolean;
+            defaultValue?: boolean;
+        } = {}
+    ): Promise<boolean> {
+        const { 
+            nonInteractive = false,
+            defaultValue = false
+        } = options;
+
+        // Handle non-interactive mode
+        if (nonInteractive || process.env.CI === 'true') {
+            console.log(chalk.cyan(`Using default confirmation (${defaultValue ? 'yes' : 'no'}) in non-interactive mode`));
+            return defaultValue;
+        }
+
         const action = await this.showMenu<'yes' | 'no'>(
             message,
             [
                 { name: 'Yes', value: 'yes' },
                 { name: 'No', value: 'no' }
             ],
-            { includeGoBack: false }
+            { 
+                includeGoBack: false,
+                defaultValue: defaultValue ? 'yes' : 'no'
+            }
         );
         return action === 'yes';
     }

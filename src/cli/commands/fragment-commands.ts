@@ -7,35 +7,43 @@ import fs from 'fs-extra';
 import { PromptFragment } from '../../shared/types';
 import logger from '../../shared/utils/logger';
 import { cliConfig } from '../config/cli-config';
-import { selectFragmentForEditing } from '../utils/fragments';
+import { selectFragmentForEditing, selectFragmentForDeletion } from '../utils/fragments';
 import { stagePromptChanges } from '../utils/library-repository';
 import { editInEditor } from '../utils/prompts-simple';
 import { clearPendingChanges, createBranchAndPushChanges, trackPromptChange } from '../utils/sync-utils';
-import { getInput, showSpinner } from '../utils/ui-components';
+import { getInput, printSectionHeader, showSpinner } from '../utils/ui-components';
+import chalk from 'chalk';
 
-async function collectFragmentData(options: any): Promise<PromptFragment> {
+async function collectFragmentData(options: any): Promise<PromptFragment | null> {
+    console.clear();
+    printSectionHeader('Create New Fragment', '🌱');
+    
+    // Get category
     let category = options.category;
-
     if (!category) {
         category = await selectFragmentCategory();
+        if (category === null) return null;
     }
 
+    // Get name
     let name = options.name;
-
     if (!name) {
-        name = await getInput('Enter fragment name (snake_case):');
+        name = await getInput('Enter fragment name (snake_case):', undefined, true);
+        if (name === null) return null;
+        
         name = name
             .toLowerCase()
             .replace(/\s+/g, '_')
             .replace(/[^a-z0-9_]/g, '');
     }
+    
     return {
         category,
         name
     };
 }
 
-async function selectFragmentCategory(): Promise<string> {
+async function selectFragmentCategory(): Promise<string | null> {
     try {
         const dirExists = await fs.pathExists(cliConfig.FRAGMENTS_DIR);
 
@@ -47,15 +55,27 @@ async function selectFragmentCategory(): Promise<string> {
         const categories = await fs.readdir(cliConfig.FRAGMENTS_DIR);
         const choices = [
             { name: '+ Create new category', value: '_new_category_' },
-            ...categories.map((c) => ({ name: c, value: c }))
+            ...categories.map((c) => ({ name: c, value: c })),
+            { name: chalk.red(chalk.bold('Go back')), value: '_cancel_' }
         ];
+        
         const category = await select({
             message: 'Select a category:',
             choices
         });
 
+        if (category === '_cancel_') {
+            return null;
+        }
+
         if (category === '_new_category_') {
-            const newCategory = await getInput('Enter new category name (snake_case):');
+            const newCategory = await getInput('Enter new category name (snake_case):', undefined, true);
+            
+            // Check if user cancelled
+            if (newCategory === null) {
+                return null;
+            }
+            
             const formattedCategory = newCategory
                 .toLowerCase()
                 .replace(/\s+/g, '_')
@@ -68,7 +88,7 @@ async function selectFragmentCategory(): Promise<string> {
         return category;
     } catch (error) {
         logger.error('Error selecting fragment category:', error);
-        throw error;
+        return null;
     }
 }
 
@@ -159,13 +179,13 @@ async function loadFragmentForEditing(category: string, name: string): Promise<P
 
 const createCommand = new Command('create')
     .description('Create a new fragment')
-    .option('-c, --category <category>', 'Category for the new fragment')
-    .option('-n, --name <name>', 'Name for the new fragment (snake_case)')
+    .option('--category <category>', 'Category for the new fragment')
+    .option('--name <name>', 'Name for the new fragment (snake_case)')
     .action(async (options) => {
         const categoryIndex =
-            process.argv.indexOf('-c') !== -1 ? process.argv.indexOf('-c') : process.argv.indexOf('--category');
+            process.argv.indexOf('--category');
         const nameIndex =
-            process.argv.indexOf('-n') !== -1 ? process.argv.indexOf('-n') : process.argv.indexOf('--name');
+            process.argv.indexOf('--name');
 
         if (categoryIndex !== -1 && categoryIndex < process.argv.length - 1 && !options.category) {
             options.category = process.argv[categoryIndex + 1];
@@ -177,10 +197,18 @@ const createCommand = new Command('create')
 
         try {
             const fragmentData = await collectFragmentData(options);
+            
+            // Check if user cancelled
+            if (!fragmentData) {
+                console.log(chalk.yellow('Fragment creation cancelled.'));
+                return;
+            }
+            
             const fragmentContent = await collectFragmentContent(fragmentData);
 
+            // Check if user cancelled during content creation
             if (!fragmentContent || fragmentContent.trim() === '') {
-                logger.error('Fragment content cannot be empty');
+                console.log(chalk.yellow('Fragment creation cancelled - content was empty.'));
                 return;
             }
 
@@ -197,15 +225,41 @@ const createCommand = new Command('create')
             logger.error('Failed to create fragment:', error);
         }
     });
+/**
+ * Edit a fragment directly with the given content
+ */
+async function editFragmentDirect(category: string, name: string, content: string): Promise<boolean> {
+    try {
+        const fragmentData = await loadFragmentForEditing(category, name);
+
+        if (!fragmentData) {
+            return false;
+        }
+
+        if (!content || content.trim() === '') {
+            logger.error('Fragment content cannot be empty');
+            return false;
+        }
+
+        await saveFragmentContent(fragmentData, content);
+
+        await trackPromptChange(`fragments/${fragmentData.category}/${fragmentData.name}`, 'modify', 'fragment');
+        await stagePromptChanges(`fragments/${fragmentData.category}`);
+
+        return true;
+    } catch (error) {
+        logger.error('Failed to edit fragment:', error);
+        return false;
+    }
+}
+
 const editCommand = new Command('edit')
     .description('Edit an existing fragment')
-    .option('-c, --category <category>', 'Category of the fragment to edit')
-    .option('-n, --name <name>', 'Name of the fragment to edit')
+    .option('--category <category>', 'Category of the fragment to edit')
+    .option('--name <name>', 'Name of the fragment to edit')
     .action(async (options) => {
-        const categoryIndex =
-            process.argv.indexOf('-c') !== -1 ? process.argv.indexOf('-c') : process.argv.indexOf('--category');
-        const nameIndex =
-            process.argv.indexOf('-n') !== -1 ? process.argv.indexOf('-n') : process.argv.indexOf('--name');
+        const categoryIndex = process.argv.indexOf('--category');
+        const nameIndex = process.argv.indexOf('--name');
 
         if (categoryIndex !== -1 && categoryIndex < process.argv.length - 1 && !options.category) {
             options.category = process.argv[categoryIndex + 1];
@@ -223,7 +277,7 @@ const editCommand = new Command('edit')
                 const selectedFragment = await selectFragmentForEditing();
 
                 if (!selectedFragment) {
-                    logger.error('No fragment selected. Exiting.');
+                    logger.info('No fragment selected or operation cancelled.');
                     return;
                 }
 
@@ -256,17 +310,58 @@ const editCommand = new Command('edit')
             logger.error('Failed to edit fragment:', error);
         }
     });
+
+// Add the editFragment method to the editCommand object for direct access
+(editCommand as any).editFragment = editFragmentDirect;
+/**
+ * Delete a fragment directly
+ */
+async function deleteFragmentDirect(category: string, name: string): Promise<boolean> {
+    try {
+        const fragmentData = await loadFragmentForEditing(category, name);
+
+        if (!fragmentData) {
+            return false;
+        }
+
+        const fragmentPath = path.join(cliConfig.FRAGMENTS_DIR, fragmentData.category, `${fragmentData.name}.md`);
+        await fs.remove(fragmentPath);
+
+        await trackPromptChange(`fragments/${fragmentData.category}/${fragmentData.name}`, 'delete', 'fragment');
+
+        const categoryPath = path.join(cliConfig.FRAGMENTS_DIR, fragmentData.category);
+
+        try {
+            const remainingFiles = await fs.readdir(categoryPath);
+
+            if (remainingFiles.length === 0) {
+                await fs.remove(categoryPath);
+                logger.info(`Removed empty category directory: ${fragmentData.category}`);
+
+                await trackPromptChange(`fragments/${fragmentData.category}`, 'delete', 'fragment category');
+            }
+        } catch (error) {
+            logger.warn(`Could not check if category is empty: ${error}`);
+        }
+
+        await stagePromptChanges(`fragments/${fragmentData.category}`);
+
+        return true;
+    } catch (error) {
+        logger.error('Failed to delete fragment:', error);
+        return false;
+    }
+}
+
 const deleteCommand = new Command('delete')
     .description('Delete an existing fragment')
-    .option('-c, --category <category>', 'Category of the fragment to delete')
-    .option('-n, --name <name>', 'Name of the fragment to delete')
-    .option('-f, --force', 'Skip confirmation prompt')
+    .option('--category <category>', 'Category of the fragment to delete')
+    .option('--name <name>', 'Name of the fragment to delete')
+    .option('--force', 'Skip confirmation prompt')
     .action(async (options) => {
-        const categoryIndex =
-            process.argv.indexOf('-c') !== -1 ? process.argv.indexOf('-c') : process.argv.indexOf('--category');
-        const nameIndex =
-            process.argv.indexOf('-n') !== -1 ? process.argv.indexOf('-n') : process.argv.indexOf('--name');
-        const forceFlag = process.argv.includes('-f') || process.argv.includes('--force');
+        const categoryIndex = process.argv.indexOf('--category');
+        const nameIndex = process.argv.indexOf('--name');
+        const forceFlag = process.argv.includes('--force');
 
         if (categoryIndex !== -1 && categoryIndex < process.argv.length - 1 && !options.category) {
             options.category = process.argv[categoryIndex + 1];
@@ -285,10 +380,10 @@ const deleteCommand = new Command('delete')
             let name = options.name;
 
             if (!category || !name) {
-                const selectedFragment = await selectFragmentForEditing();
+                const selectedFragment = await selectFragmentForDeletion();
 
                 if (!selectedFragment) {
-                    logger.error('No fragment selected. Exiting.');
+                    logger.info('No fragment selected or operation cancelled.');
                     return;
                 }
 
@@ -304,7 +399,7 @@ const deleteCommand = new Command('delete')
 
             if (!options.force) {
                 const shouldDelete = await confirm({
-                    message: `Are you sure you want to delete the fragment ${fragmentData.category}/${fragmentData.name}? This cannot be undone.`,
+                    message: chalk.yellow(`Are you sure you want to delete the fragment ${fragmentData.category}/${fragmentData.name}? This cannot be undone.`),
                     default: false
                 });
 
@@ -314,28 +409,8 @@ const deleteCommand = new Command('delete')
                 }
             }
 
-            const fragmentPath = path.join(cliConfig.FRAGMENTS_DIR, fragmentData.category, `${fragmentData.name}.md`);
-            await fs.remove(fragmentPath);
-
-            await trackPromptChange(`fragments/${fragmentData.category}/${fragmentData.name}`, 'delete', 'fragment');
-
-            const categoryPath = path.join(cliConfig.FRAGMENTS_DIR, fragmentData.category);
-
-            try {
-                const remainingFiles = await fs.readdir(categoryPath);
-
-                if (remainingFiles.length === 0) {
-                    await fs.remove(categoryPath);
-                    logger.info(`Removed empty category directory: ${fragmentData.category}`);
-
-                    await trackPromptChange(`fragments/${fragmentData.category}`, 'delete', 'fragment category');
-                }
-            } catch (error) {
-                logger.warn(`Could not check if category is empty: ${error}`);
-            }
-
-            await stagePromptChanges(`fragments/${fragmentData.category}`);
-
+            await deleteFragmentDirect(category, name);
+            
             logger.info(`Fragment ${fragmentData.category}/${fragmentData.name} successfully deleted`);
 
             await offerRemoteSync();
@@ -343,5 +418,8 @@ const deleteCommand = new Command('delete')
             logger.error('Failed to delete fragment:', error);
         }
     });
+    
+// Add the deleteFragment method to the deleteCommand object for direct access
+(deleteCommand as any).deleteFragment = deleteFragmentDirect;
 
 export { createCommand, deleteCommand, editCommand };

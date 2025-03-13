@@ -1,14 +1,19 @@
+import path from 'path';
+
 import chalk from 'chalk';
 import { Command } from 'commander';
 
-import { BaseCommand } from './base-command';
+import { BaseCommand, LIBRARY_PROMPTS_DIR, LIBRARY_FRAGMENTS_DIR } from './base-command';
+import promptsCommand from './prompts-command';
 import { getConfig, getConfigValue } from '../../shared/config';
-import { cache, getPromptById, getRecentExecutions } from '../utils/database';
+import { formatRelativeTime } from '../../shared/utils/string-formatter';
+import { cache, getPromptById, getRecentExecutions, hasFavoritePrompts } from '../utils/database';
 import { handleError } from '../utils/errors';
 import { hasFragments, hasPrompts } from '../utils/file-system';
 import { hasLibraryRepositoryChanges } from '../utils/library-repository';
 import { getPromptCategories } from '../utils/prompt-utils';
-import { createSectionHeader, formatMenuItem, printSectionHeader, warningMessage } from '../utils/ui-components';
+import { diffDirectories } from '../utils/sync-utils';
+import { createSectionHeader, formatMenuItem, getInput, printSectionHeader, warningMessage } from '../utils/ui-components';
 
 type MenuAction =
     | 'sync'
@@ -89,7 +94,7 @@ class MenuCommand extends BaseCommand {
                 const modelName = getConfigValue(modelProvider === 'anthropic' ? 'ANTHROPIC_MODEL' : 'OPENAI_MODEL');
                 const repoUrl = getConfigValue('REMOTE_REPOSITORY');
                 const hasPendingChanges = await hasLibraryRepositoryChanges();
-                console.log(chalk.bold(chalk.cyan(`🧠 Prompt Library CLI`)));
+                printSectionHeader('Prompt Library CLI', '🧠');
                 console.log(`${chalk.gray('Using:')} ${chalk.cyan(modelProvider)} / ${chalk.cyan(modelName)}`);
 
                 let repoDisplay = chalk.gray('Not configured');
@@ -101,16 +106,24 @@ class MenuCommand extends BaseCommand {
 
                 console.log(`${chalk.gray('Repository:')} ${repoDisplay}`);
                 console.log(
-                    `${chalk.gray('Status:')} ${hasPendingChanges ? chalk.yellow('⚠️  Changes pending') : chalk.green('✓ Up to date')}`
+                    `${chalk.gray('Status:')} ${hasPendingChanges ? chalk.yellow('⚠️ Changes pending') : chalk.green('✓ Up to date')}`
                 );
 
                 let recentPrompts: any[] = [];
+                let hasFavorites = false;
 
                 try {
                     recentPrompts = await getRecentExecutions(3);
-                } catch {
-                    // Silently handle errors when retrieving recent executions
+                    hasFavorites = await hasFavoritePrompts();
+                } catch (error) {
+                    // Silently handle errors when retrieving data
                 }
+
+                choices.push({
+                    name: '─'.repeat(50),
+                    value: 'spacer',
+                    disabled: ' '
+                });
 
                 choices.push({
                     name: createSectionHeader<MenuAction>('QUICK ACTIONS', '✨', 'success').name,
@@ -130,6 +143,13 @@ class MenuCommand extends BaseCommand {
                         description: lastPrompt.id
                     });
                 }
+                
+                if (hasFavorites) {
+                    choices.push({
+                        name: formatMenuItem('Favorite prompts', 'favorites', 'success').name,
+                        value: 'favorites'
+                    });
+                }
 
                 choices.push({
                     name: formatMenuItem('Search prompts by keyword', 'search_prompts', 'success').name,
@@ -143,60 +163,68 @@ class MenuCommand extends BaseCommand {
                 });
 
                 choices.push({
-                    name: createSectionHeader<MenuAction>('MAIN MENU', '📚', 'info').name,
+                    name: createSectionHeader<MenuAction>('LIBRARY', '📚', 'info').name,
                     value: 'menu_header',
                     disabled: ' '
                 });
 
                 choices.push(
                     {
-                        name: formatMenuItem('Prompts Library', 'prompts', 'primary').name,
+                        name: formatMenuItem('Prompts library', 'prompts', 'primary').name,
                         value: 'prompts'
                     },
                     {
-                        name: formatMenuItem('Prompt Fragments', 'fragments', 'primary').name,
+                        name: formatMenuItem('Prompt fragments', 'fragments', 'primary').name,
                         value: 'fragments'
                     },
                     {
-                        name: formatMenuItem('Environment Variables', 'env', 'primary').name,
+                        name: formatMenuItem('Environment variables', 'env', 'primary').name,
                         value: 'env'
                     }
                 );
 
                 choices.push({
-                    name: createSectionHeader<MenuAction>('CONFIGURATION', '⚙️', 'info').name,
+                    name: '─'.repeat(50),
+                    value: 'spacer',
+                    disabled: ' '
+                });
+
+                choices.push({
+                    name: createSectionHeader<MenuAction>('CONFIGURATION', '🔧', 'info').name,
                     value: 'config_header',
                     disabled: ' '
                 });
 
                 choices.push(
                     {
-                        name: formatMenuItem('Configure AI Model', 'model', 'primary').name,
+                        name: formatMenuItem('Configure AI model', 'model', 'primary').name,
                         value: 'model'
                     },
                     {
                         name: formatMenuItem('Configure CLI', 'config', 'primary').name,
                         value: 'config'
-                    },
-                    {
-                        name: formatMenuItem('Flush and Reset Data', 'flush', 'primary').name,
-                        value: 'flush'
                     }
                 );
 
                 choices.push({
-                    name: createSectionHeader<MenuAction>('REPOSITORY', '🔄', 'warning').name,
+                    name: '─'.repeat(50),
+                    value: 'spacer',
+                    disabled: ' '
+                });
+
+                choices.push({
+                    name: createSectionHeader<MenuAction>('REPOSITORY', '💾', 'info').name,
                     value: 'repo_header',
                     disabled: ' '
                 });
 
                 const repoChoices: MenuItem[] = [
                     {
-                        name: formatMenuItem('Sync with remote repository', 'sync', 'warning').name,
+                        name: formatMenuItem('Sync with remote repository', 'sync', 'primary').name,
                         value: 'sync'
                     },
                     {
-                        name: formatMenuItem('Repository settings', 'repository', 'warning').name,
+                        name: formatMenuItem('Configure repository', 'repository', 'primary').name,
                         value: 'repository'
                     }
                 ];
@@ -210,8 +238,14 @@ class MenuCommand extends BaseCommand {
 
                 choices.push(...repoChoices);
 
+                choices.push({
+                    name: '─'.repeat(50),
+                    value: 'spacer',
+                    disabled: ' '
+                });
+
                 const displayChoices = choices;
-                const action = await this.showMenu<MenuAction>('Select an action:', displayChoices, {
+                const action = await this.showMenu<MenuAction>('Use ↑↓ to select an action:', displayChoices, {
                     goBackLabel: 'Exit',
                     clearConsole: false
                 });
@@ -230,9 +264,9 @@ class MenuCommand extends BaseCommand {
 
                             if (recentExecutions && recentExecutions.length > 0) {
                                 const mostRecentPromptId = recentExecutions[0].prompt_id;
-                                const { default: promptsCommand } = await import('./prompts-command');
                                 console.log(chalk.cyan(`Loading prompt details for ID: ${mostRecentPromptId}...`));
-
+                                console.clear();
+                                printSectionHeader('Run Last Prompt', '⚡');
                                 const promptDetails = await getPromptById(parseInt(mostRecentPromptId.toString()));
 
                                 if (promptDetails) {
@@ -275,10 +309,11 @@ class MenuCommand extends BaseCommand {
                         }
                     }
                 } else if (action === 'search_prompts') {
-                    const keyword = await this.getInput('Enter search keyword:');
+                    console.clear();
+                    printSectionHeader('Search Prompts', '🔍');
+                    const keyword = await getInput('Enter search keyword:', undefined, true);
 
                     if (keyword && keyword.trim()) {
-                        const { default: promptsCommand } = await import('./prompts-command');
                         const categories = await getPromptCategories();
                         await promptsCommand.searchPrompts(categories, keyword.trim(), false);
                         console.clear();
@@ -286,23 +321,164 @@ class MenuCommand extends BaseCommand {
                         continue;
                     }
                 } else if (action === 'list_changes') {
-                    const syncCmd = this.program.commands.find((cmd) => cmd.name() === 'sync');
+                    // Directly show changes without going through sync --list
+                    console.clear();
+                    
+                    // Display header
+                    printSectionHeader('Manage Pending Changes', '📋');
+                    
+                    // Get config and paths
+                    const config = getConfig();
+                    const cliPromptsDir = config.PROMPTS_DIR;
+                    const cliFragmentsDir = config.FRAGMENTS_DIR;
+                    
+                    try {
+                        // Fetch changes
+                        const promptChanges = await diffDirectories(cliPromptsDir, LIBRARY_PROMPTS_DIR);
+                        const fragmentChanges = await diffDirectories(cliFragmentsDir, LIBRARY_FRAGMENTS_DIR);
+                        
+                        // Display changes
+                        if (promptChanges.length > 0) {
+                            console.log(chalk.bold('\nPrompt changes:'));
+                            console.log('─'.repeat(100));
+                            
+                            for (const change of promptChanges) {
+                                const pathParts = change.path.split(path.sep);
+                                const directory = pathParts[0];
+                                const displayName = `Prompt: ${directory}`;
+                                const changeTime = new Date();
+                                const relativeTime = formatRelativeTime(changeTime);
+                                const changeType = change.type === 'deleted' ? 'add' : 
+                                                  change.type === 'added' ? 'delete' : 'modify';
+                                console.log(
+                                    `${
+                                        changeType === 'add'
+                                            ? chalk.green('add'.padEnd(7))
+                                            : changeType === 'modify'
+                                              ? chalk.yellow('modify'.padEnd(7))
+                                              : chalk.red('delete'.padEnd(7))
+                                    } ${displayName.padEnd(60)} ${chalk.gray(relativeTime)}`
+                                );
+                            }
+                        }
+                        
+                        if (fragmentChanges.length > 0) {
+                            console.log(chalk.bold('\nFragment changes:'));
+                            console.log('─'.repeat(100));
+                            
+                            for (const change of fragmentChanges) {
+                                const pathParts = change.path.split(path.sep);
+                                let category = '';
+                                let name = '';
+                                
+                                if (pathParts.length >= 2) {
+                                    category = pathParts[0];
+                                    name = pathParts[1].replace(/\.md$/, '');
+                                } else if (pathParts.length === 1) {
+                                    name = pathParts[0].replace(/\.md$/, '');
+                                }
+                                
+                                const displayName = `Fragment: ${category}/${name}`;
+                                const changeTime = new Date();
+                                const relativeTime = formatRelativeTime(changeTime);
+                                const changeType = change.type === 'deleted' ? 'add' : 
+                                                  change.type === 'added' ? 'delete' : 'modify';
+                                console.log(
+                                    `${
+                                        changeType === 'add'
+                                            ? chalk.green('add'.padEnd(7))
+                                            : changeType === 'modify'
+                                              ? chalk.yellow('modify'.padEnd(7))
+                                              : chalk.red('delete'.padEnd(7))
+                                    } ${displayName.padEnd(60)} ${chalk.gray(relativeTime)}`
+                                );
+                            }
+                        }
+                        
+                        // Display options
+                        console.log('─'.repeat(100));
+                        console.log(
+                            chalk.cyan(`\nTotal: ${promptChanges.length + fragmentChanges.length} change(s)`)
+                        );
+                        
+                        const { select } = require('@inquirer/prompts');
+                        const action = await select({
+                            message: 'What would you like to do?',
+                            choices: [
+                                { name: 'Push changes to remote repository', value: 'push' },
+                                { name: 'Reset/discard changes', value: 'reset' },
+                                { name: chalk.red('Go back'), value: 'back' }
+                            ]
+                        });
+                        
+                        if (action === 'push') {
+                            console.clear();
+                            // Run the push command
+                            const syncCmd = this.program.commands.find((cmd) => cmd.name() === 'sync');
 
-                    if (syncCmd) {
-                        await syncCmd.parseAsync(['node', 'script.js', 'sync', '--list']);
+                            if (syncCmd) {
+                                await syncCmd.parseAsync(['node', 'script.js', 'sync', '--push']);
+                            }
+                        } else if (action === 'reset') {
+                            console.clear();
+                            // Run the reset command
+                            const syncCmd = this.program.commands.find((cmd) => cmd.name() === 'sync');
+
+                            if (syncCmd) {
+                                await syncCmd.parseAsync(['node', 'script.js', 'sync', '--reset']);
+                            }
+                        }
+                    } catch (error) {
+                        console.error(chalk.red('Error displaying changes:'), error);
+                        await this.pressKeyToContinue();
                     }
+                    
+                    // Reset the menu state
+                    console.clear();
+                    firstRun = true;
+                    continue;
                 } else if (action === 'reset_changes') {
                     const syncCmd = this.program.commands.find((cmd) => cmd.name() === 'sync');
-
+                    
                     if (syncCmd) {
-                        await syncCmd.parseAsync(['node', 'script.js', 'sync', '--reset']);
+                        // Force reset command options
+                        if ((syncCmd as any)._optionValues) {
+                            (syncCmd as any)._optionValues = {};
+                        }
+                        
+                        try {
+                            await syncCmd.parseAsync(['node', 'script.js', 'sync', '--reset']);
+                        } catch (error) {
+                            this.handleError(error, 'sync reset command');
+                            await this.pressKeyToContinue();
+                        }
                     }
+                    
+                    // No matter what, reset the menu state
+                    console.clear();
+                    firstRun = true;
+                    continue;
                 } else if (action === 'push_changes') {
                     const syncCmd = this.program.commands.find((cmd) => cmd.name() === 'sync');
-
+                    
                     if (syncCmd) {
-                        await syncCmd.parseAsync(['node', 'script.js', 'sync', '--push']);
+                        // Force reset command options
+                        if ((syncCmd as any)._optionValues) {
+                            (syncCmd as any)._optionValues = {};
+                        }
+                        
+                        try {
+                            await syncCmd.parseAsync(['node', 'script.js', 'sync', '--push']);
+                        } catch (error) {
+                            this.handleError(error, 'sync push command');
+                            await this.pressKeyToContinue();
+                        }
                     }
+                    
+                    // No matter what, reset the menu state
+                    console.clear();
+                    firstRun = true;
+                    continue;
                 } else if (action === 'recent') {
                     const promptsCmd = this.program.commands.find((cmd) => cmd.name() === 'prompts');
 
@@ -313,14 +489,18 @@ class MenuCommand extends BaseCommand {
                         continue;
                     }
                 } else if (action === 'favorites') {
-                    const promptsCmd = this.program.commands.find((cmd) => cmd.name() === 'prompts');
-
-                    if (promptsCmd) {
-                        await promptsCmd.parseAsync(['node', 'script.js', 'prompts', '--favorites']);
-                        console.clear();
-                        firstRun = true;
-                        continue;
+                    // Call showFavoritePrompts directly instead of going through command parsing
+                    try {
+                        await promptsCommand.showFavoritePrompts(false);
+                    } catch (error) {
+                        this.handleError(error, 'showing favorite prompts');
+                        await this.pressKeyToContinue();
                     }
+                    
+                    // Reset menu state
+                    console.clear();
+                    firstRun = true;
+                    continue;
                 } else if (action === 'repository') {
                     const repoCmd = this.program.commands.find((cmd) => cmd.name() === 'repository');
                     
@@ -330,10 +510,37 @@ class MenuCommand extends BaseCommand {
                         firstRun = true;
                         continue;
                     }
+                } else if (action === 'sync') {
+                    cache.flushAll();
+                    
+                    // We'll just launch the sync command directly through Commander
+                    const syncCmd = this.program.commands.find((cmd) => cmd.name() === 'sync');
+                    
+                    if (syncCmd) {
+                        // Force reset command options
+                        if ((syncCmd as any)._optionValues) {
+                            (syncCmd as any)._optionValues = {};
+                        }
+                        
+                        try {
+                            await syncCmd.parseAsync(['node', 'script.js', 'sync']);
+                        } catch (error) {
+                            this.handleError(error, 'sync command');
+                            await this.pressKeyToContinue();
+                        }
+                    }
+                    
+                    // No matter what, reset the menu state
+                    console.clear();
+                    firstRun = true;
+                    continue;
                 } else {
                     cache.flushAll();
-
                     await this.runCommand(this.program, action, { clearConsole: true });
+                    // Ensure we always refresh the menu after any command
+                    console.clear();
+                    firstRun = true;
+                    continue;
                 }
 
                 firstRun = true;

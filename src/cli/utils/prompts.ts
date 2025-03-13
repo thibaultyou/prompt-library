@@ -6,7 +6,9 @@ import { handleError } from './errors';
 import { ApiResult, PromptFragment, PromptMetadata, PromptVariable } from '../../shared/types';
 import { formatSnakeCase, formatTitleCase } from '../../shared/utils/string-formatter';
 import { FRAGMENT_PREFIX, ENV_PREFIX } from '../constants';
+import { formatPromptsForDisplay } from './prompt-utils';
 import { readEnvVars } from './env-vars';
+import { printSectionHeader } from './ui-components';
 
 interface GetPromptFilesOptions {
     cleanVariables?: boolean;
@@ -288,12 +290,13 @@ export async function viewPromptDetails(details: PromptMetadata, isExecute = fal
                 console.log(`      ${status}`);
             }
         }
+        console.log()
     } catch (error) {
         handleError(error, 'viewing prompt details');
     }
 }
 
-export async function selectPrompt(): Promise<{ id: number; title: string; directory: string } | null> {
+export async function selectPrompt(title: string, emoji: string): Promise<{ id: number; title: string; directory: string; primary_category: string; one_line_description: string } | null> {
     try {
         const allPrompts = await allAsync<{
             id: number;
@@ -308,22 +311,82 @@ export async function selectPrompt(): Promise<{ id: number; title: string; direc
             return null;
         }
 
-        const choices = allPrompts.data.map((prompt) => ({
-            name: `${prompt.id.toString().padEnd(4)} | ${prompt.title.padEnd(30)} | ${prompt.primary_category}`,
-            value: prompt,
-            description: prompt.one_line_description
+        console.clear();
+        printSectionHeader(title, emoji);
+
+        // Format data for display
+        const prompts = allPrompts.data.map(prompt => ({
+            id: prompt.id.toString(),
+            title: prompt.title,
+            category: prompt.primary_category,
+            primary_category: prompt.primary_category,
+            path: prompt.directory,
+            description: prompt.one_line_description,
+            subcategories: [] // Required by CategoryItem interface
         }));
-        choices.push({
+
+        // Format table data
+        const tableResult = formatPromptsForDisplay(prompts, {
+            showDirectory: false,
+            tableWidth: 80
+        });
+        
+        // Create menu choices that look like a table
+        const tableChoices: Array<{ name: string; value: any; description?: string; disabled?: boolean }> = [];
+        
+        // Add a header row
+        tableChoices.push({
+            name: tableResult.headers,
+            value: null,
+            disabled: true
+        });
+        
+        // Add a separator
+        tableChoices.push({
+            name: tableResult.separator,
+            value: null,
+            disabled: true
+        });
+        
+        // Add each row as a selectable item
+        tableResult.rows.forEach((row: string, index: number) => {
+            if (allPrompts.data && index < allPrompts.data.length) {
+                const prompt = allPrompts.data[index];
+                tableChoices.push({
+                    name: row,
+                    value: prompt,
+                    description: prompt.one_line_description
+                });
+            }
+        });
+        
+        // Add a separator at the bottom
+        tableChoices.push({
+            name: tableResult.separator,
+            value: null,
+            disabled: true
+        });
+        
+        // Add info
+        tableChoices.push({
+            name: chalk.italic(`Found ${allPrompts.data.length} prompts.`),
+            value: null,
+            disabled: true
+        });
+        
+        // Add a back option
+        tableChoices.push({
             name: chalk.red(chalk.bold('Go back')),
-            value: null as any,
+            value: null,
             description: 'Return to the previous menu'
         });
 
         const selectedPrompt = await select({
-            message: 'Select a prompt:',
-            choices,
-            pageSize: 10
+            message: 'Use ↑↓ to select a prompt:',
+            choices: tableChoices,
+            pageSize: 15
         });
+        
         return selectedPrompt;
     } catch (error) {
         handleError(error, 'selecting prompt');

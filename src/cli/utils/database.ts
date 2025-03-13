@@ -644,4 +644,18 @@ export async function removePromptFromDatabase(directory: string): Promise<boole
     }
 }
 
+export async function hasFavoritePrompts(): Promise<boolean> {
+    try {
+        const result = await getAsync<{ count: number }>('SELECT COUNT(*) as count FROM favorite_prompts');
+
+        if (result.success && result.data) {
+            return result.data.count > 0;
+        }
+        return false;
+    } catch (error) {
+        handleError(error, 'checking if favorite prompts exist');
+        return false;
+    }
+}
+
 export { db, isPromptInFavorites };

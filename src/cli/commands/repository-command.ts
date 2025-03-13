@@ -8,15 +8,15 @@ import { BaseCommand, LIBRARY_REPO_DIR } from './base-command';
 import { getConfig, setConfig } from '../../shared/config';
 import logger from '../../shared/utils/logger';
 import { isLibraryRepositorySetup } from '../utils/library-repository';
-import { showSpinner } from '../utils/ui-components';
+import { printSectionHeader, showSpinner } from '../utils/ui-components';
 
 class RepositoryCommand extends BaseCommand {
     constructor() {
         super('repository', 'Manage prompt library repository settings');
-        this.option('-s, --status', 'Show repository status')
-            .option('-u, --upstream <url>', 'Set upstream repository URL')
-            .option('-d, --downstream <url>', 'Add downstream repository URL')
-            .option('-b, --branch <name>', 'Set default branch name')
+        this.option('--status', 'Show repository status')
+            .option('--upstream <url>', 'Set upstream repository URL')
+            .option('--downstream <url>', 'Add downstream repository URL')
+            .option('--branch <name>', 'Set default branch name')
             .option('--list-remotes', 'List configured remote repositories')
             .option('--disable-git', 'Disable git integration')
             .option('--enable-git', 'Enable git integration')
@@ -88,8 +88,8 @@ class RepositoryCommand extends BaseCommand {
         const defaultBranch = config.DEFAULT_BRANCH;
         const upstreamRepo = config.UPSTREAM_REPOSITORY;
         const downstreamRepos = config.DOWNSTREAM_REPOSITORIES;
-        console.log(chalk.bold(chalk.cyan('\n📦 Repository Settings\n')));
-        console.log('─'.repeat(60));
+        console.clear();
+        printSectionHeader('Configure Repository', '📦');
         console.log(
             `${chalk.cyan('Git Integration:')}       ${useGit ? chalk.green('Enabled') : chalk.yellow('Disabled')}`
         );
@@ -129,7 +129,10 @@ class RepositoryCommand extends BaseCommand {
         }
 
         while (true) {
-            const action = await this.showMenu<string>('Select an action:', [
+            console.clear();
+            printSectionHeader('Configure Repository', '📦');
+
+            const action = await this.showMenu<string>('Use ↑↓ to select an action:', [
                 { name: 'Show repository status', value: 'status' },
                 { name: useGit ? 'Disable Git integration' : 'Enable Git integration', value: 'toggle-git' },
                 { name: 'Set default branch name', value: 'branch' },
@@ -137,7 +140,11 @@ class RepositoryCommand extends BaseCommand {
                 { name: 'Add downstream repository', value: 'downstream' },
                 { name: 'List configured remotes', value: 'list-remotes' },
                 { name: 'Update remote settings', value: 'update-remotes' }
-            ]);
+            ], 
+            {
+                clearConsole: false
+            }
+        );
             switch (action) {
                 case 'status':
                     await this.showRepositoryStatus();
@@ -173,7 +180,8 @@ class RepositoryCommand extends BaseCommand {
     private async showRepositoryStatus(): Promise<void> {
         const config = getConfig();
         const useGit = config.USE_GIT;
-        console.log(chalk.bold(chalk.cyan('\n📦 Repository Status\n')));
+        console.clear();
+        printSectionHeader('Repository Status', '📦');
 
         if (!useGit) {
             console.log(chalk.yellow('Git integration is disabled.'));
@@ -315,7 +323,9 @@ class RepositoryCommand extends BaseCommand {
     private async setDefaultBranchFromInput(): Promise<void> {
         const branchName = await this.getInput(
             'Enter default branch name:',
-            (input) => input.trim() !== '' || 'Branch name cannot be empty'
+            {
+                validate: (input: string) => input.trim() !== '' || 'Branch name cannot be empty'
+            }
         );
         await this.setDefaultBranch(branchName);
     }
@@ -353,7 +363,10 @@ class RepositoryCommand extends BaseCommand {
         const currentUpstream = getConfig().UPSTREAM_REPOSITORY;
         const repoUrl = await this.getInput(
             `Enter upstream repository URL ${currentUpstream ? `(current: ${currentUpstream})` : ''}:`,
-            (input) => input.trim() !== '' || 'Repository URL cannot be empty'
+            {
+                validate: (input: string) => input.trim() !== '' || 'Repository URL cannot be empty',
+                default: currentUpstream || ''
+            }
         );
         await this.setUpstreamRepository(repoUrl);
     }
@@ -393,7 +406,9 @@ class RepositoryCommand extends BaseCommand {
     private async addDownstreamRepositoryFromInput(): Promise<void> {
         const repoUrl = await this.getInput(
             'Enter downstream repository URL:',
-            (input) => input.trim() !== '' || 'Repository URL cannot be empty'
+            {
+                validate: (input: string) => input.trim() !== '' || 'Repository URL cannot be empty'
+            }
         );
         await this.addDownstreamRepository(repoUrl);
     }

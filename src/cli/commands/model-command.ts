@@ -7,6 +7,7 @@ import { ModelProvider } from '../../shared/config/common-config';
 import { getAIClient, AIModelInfo } from '../../shared/utils/ai-client';
 import { AnthropicClient } from '../../shared/utils/anthropic-client';
 import { OpenAIClient } from '../../shared/utils/openai-client';
+import { getInput, printSectionHeader } from '../utils/ui-components';
 
 class ModelCommand extends BaseCommand {
     constructor() {
@@ -26,16 +27,21 @@ class ModelCommand extends BaseCommand {
                 const maxTokensKey = provider === 'anthropic' ? 'ANTHROPIC_MAX_TOKENS' : 'OPENAI_MAX_TOKENS';
                 const currentModel = getConfigValue(modelKey);
                 const currentMaxTokens = getConfigValue(maxTokensKey);
-                console.log(chalk.cyan('Current Configuration:'));
+                console.clear();
+                printSectionHeader('Configure AI Model', '🤖');
                 console.log(chalk.cyan(`Provider: ${provider}`));
                 console.log(chalk.cyan(`Model: ${currentModel}`));
                 console.log(chalk.cyan(`Max Tokens: ${currentMaxTokens}`));
 
-                const action = await this.showMenu<'provider' | 'model' | 'max_tokens' | 'back'>('Select an action:', [
+                const action = await this.showMenu<'provider' | 'model' | 'max_tokens' | 'back'>('Use ↑↓ to select an action:', [
                     { name: 'Change AI provider (Anthropic/OpenAI)', value: 'provider' },
                     { name: `Change model (current: ${chalk.cyan(currentModel)})`, value: 'model' },
                     { name: `Change max tokens (current: ${chalk.cyan(currentMaxTokens)})`, value: 'max_tokens' }
-                ]);
+                ],
+                {
+                    clearConsole: false
+                }
+            );
                 switch (action) {
                     case 'provider':
                         await this.changeProvider();
@@ -49,10 +55,10 @@ class ModelCommand extends BaseCommand {
                     case 'max_tokens': {
                         const validProvider =
                             provider === 'anthropic' || provider === 'openai' ? provider : 'anthropic';
-                        const maxTokensInput = await this.getInput(
+                        const maxTokensInput = await getInput(
                             `Enter max tokens for ${validProvider} (current: ${currentMaxTokens}):`
-                        );
-                        const maxTokens = parseInt(maxTokensInput, 10);
+                            , undefined, true);
+                        const maxTokens = maxTokensInput ? parseInt(maxTokensInput, 10) : 8000;
 
                         if (isNaN(maxTokens) || maxTokens <= 0) {
                             console.log(chalk.red('Invalid input. Please enter a positive number.'));
@@ -75,6 +81,8 @@ class ModelCommand extends BaseCommand {
 
     private async changeProvider(): Promise<void> {
         const currentProvider = getConfigValue('MODEL_PROVIDER');
+        console.clear();
+        printSectionHeader('Configure AI Model', '🤖');
         const provider = await this.showMenu<ModelProvider | 'back'>('Select AI provider:', [
             {
                 name: `Anthropic Claude ${currentProvider === 'anthropic' ? chalk.green('(current)') : ''}`,
@@ -84,7 +92,11 @@ class ModelCommand extends BaseCommand {
                 name: `OpenAI ${currentProvider === 'openai' ? chalk.green('(current)') : ''}`,
                 value: 'openai'
             }
-        ]);
+        ],
+        {
+            clearConsole: false
+        }   
+    );
 
         if (provider === 'back') {
             return;
@@ -214,14 +226,19 @@ class ModelCommand extends BaseCommand {
             });
             modelOptions.push({ name: 'Enter custom model name', value: 'custom' });
 
-            const selectedModel = await this.showMenu<string | 'back'>(`Select ${provider} model:`, modelOptions);
+            console.clear();
+            printSectionHeader('Configure AI Model', '🤖');
+
+            const selectedModel = await this.showMenu<string | 'back'>(`Use ↑↓ to select an ${provider} model:`, modelOptions, {
+                clearConsole: false
+            });
 
             if (selectedModel === 'back') {
                 return;
             }
 
             if (selectedModel === 'custom') {
-                const customModel = await this.getInput('Enter custom model name:');
+                const customModel = await getInput('Enter custom model name:', undefined, true);
 
                 if (customModel) {
                     setConfig(modelKey as keyof Config, customModel);

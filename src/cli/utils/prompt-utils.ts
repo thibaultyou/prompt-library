@@ -55,34 +55,82 @@ export function searchPrompts(
     );
 }
 
-export function formatPromptsForDisplay(prompts: Array<CategoryItem & { category: string }>): {
+export interface TableFormatOptions {
+    showDirectory?: boolean;
+    sortById?: boolean;
+    highlightCategory?: string | null;
+    maxRows?: number;
+    tableWidth?: number;
+}
+
+export interface TableDisplayResult {
     headers: string;
     rows: string[];
     maxLengths: { id: number; dir: number; category: number };
-} {
-    const maxIdLength = Math.max(...prompts.map((p) => p.id.toString().length));
-    const maxDirLength = Math.max(
-        ...prompts.map((p) => {
-            const directory = p.path.split('/').pop() || '';
-            return directory.length;
-        }),
-        10
-    );
-    const maxCategoryLength = Math.max(...prompts.map((p) => p.category.length));
-    const headers =
-        `${chalk.bold('ID'.padEnd(maxIdLength + 2))}` +
-        `${chalk.bold('Directory'.padEnd(maxDirLength + 2))}` +
-        `${chalk.bold('Category'.padEnd(maxCategoryLength + 2))}` +
-        `${chalk.bold('Title')}`;
-    const rows = prompts.map((prompt) => {
+    separator: string;
+    promptsRowMap: Array<CategoryItem & { category: string }>; // Maps row indices to prompt objects
+}
+
+export function formatPromptsForDisplay(
+    prompts: Array<CategoryItem & { category: string }>, 
+    options: TableFormatOptions = {}
+): TableDisplayResult {
+    const {
+        showDirectory = true,
+        sortById = false,
+        highlightCategory = null,
+        tableWidth = 80
+    } = options;
+    // Sort prompts if requested
+    const sortedPrompts = [...prompts];
+
+    if (sortById) {
+        sortedPrompts.sort((a, b) => Number(a.id) - Number(b.id));
+    }
+    
+    // Calculate max lengths for columns
+    const maxIdLength = Math.max(...sortedPrompts.map((p) => p.id.toString().length), 2);
+    const maxDirLength = showDirectory 
+        ? Math.max(
+            ...sortedPrompts.map((p) => {
+                const directory = p.path.split('/').pop() || '';
+                return directory.length;
+            }),
+            10
+        ) 
+        : 0;
+    const maxCategoryLength = Math.max(...sortedPrompts.map((p) => p.category.length), 8);
+    // Build headers based on options
+    let headers = `${chalk.bold('ID'.padEnd(maxIdLength + 2))}`;
+    
+    if (showDirectory) {
+        headers += `${chalk.bold('Directory'.padEnd(maxDirLength + 2))}`;
+    }
+    
+    headers += `${chalk.bold('Category'.padEnd(maxCategoryLength + 2))}${chalk.bold('Title')}`;
+    
+    // This array will maintain the mapping between table rows and prompt objects
+    const promptsRowMap = [...sortedPrompts];
+    // Build rows
+    const rows = sortedPrompts.map((prompt) => {
         const directory = prompt.path.split('/').pop() || '';
-        return (
-            `${chalk.green(prompt.id.toString().padEnd(maxIdLength + 2))}` +
-            `${chalk.yellow(directory.padEnd(maxDirLength + 2))}` +
-            `${chalk.cyan(prompt.category.padEnd(maxCategoryLength + 2))}` +
-            `${prompt.title}`
-        );
+        const isCategoryHighlighted = highlightCategory && prompt.category === highlightCategory;
+        let row = `${chalk.green(prompt.id.toString().padEnd(maxIdLength + 2))}`;
+        
+        if (showDirectory) {
+            row += `${chalk.yellow(directory.padEnd(maxDirLength + 2))}`;
+        }
+        
+        if (isCategoryHighlighted) {
+            row += `${chalk.bold(chalk.cyan(prompt.category.padEnd(maxCategoryLength + 2)))}`;
+        } else {
+            row += `${chalk.cyan(prompt.category.padEnd(maxCategoryLength + 2))}`;
+        }
+        
+        row += `${prompt.title}`;
+        return row;
     });
+    const separator = '─'.repeat(tableWidth);
     return {
         headers,
         rows,
@@ -90,7 +138,9 @@ export function formatPromptsForDisplay(prompts: Array<CategoryItem & { category
             id: maxIdLength,
             dir: maxDirLength,
             category: maxCategoryLength
-        }
+        },
+        separator,
+        promptsRowMap
     };
 }
 

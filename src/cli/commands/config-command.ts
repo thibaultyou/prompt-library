@@ -2,6 +2,8 @@ import chalk from 'chalk';
 
 import { BaseCommand } from './base-command';
 import { Config, getConfig, setConfig } from '../../shared/config';
+import flushCommand from './flush-command';
+import { formatMenuItem, getInput, printSectionHeader } from '../utils/ui-components';
 
 class ConfigCommand extends BaseCommand {
     constructor() {
@@ -12,10 +14,16 @@ class ConfigCommand extends BaseCommand {
     async execute(): Promise<void> {
         while (true) {
             try {
-                const action = await this.showMenu<'view' | 'set' | 'back'>('Select an action:', [
+                console.clear();
+                printSectionHeader('Configure CLI', '🔧');
+                const action = await this.showMenu<'view' | 'set' | 'flush' | 'back'>('Use ↑↓ to select an action:', [
                     { name: 'View current configuration', value: 'view' },
-                    { name: 'Set a configuration value', value: 'set' }
-                ]);
+                    { name: 'Set a configuration value', value: 'set' },
+                    { name: formatMenuItem('Flush and reset data', 'flush', 'danger').name, value: 'flush' }
+                ],
+            {
+                clearConsole: false
+            });
                 switch (action) {
                     case 'view':
                         this.viewConfig();
@@ -23,6 +31,9 @@ class ConfigCommand extends BaseCommand {
                         break;
                     case 'set':
                         await this.setConfigValue();
+                        break;
+                    case 'flush':
+                        await flushCommand.execute();
                         break;
                     case 'back':
                         return;
@@ -36,8 +47,6 @@ class ConfigCommand extends BaseCommand {
 
     private viewConfig(): void {
         const currentConfig = getConfig();
-        console.log(chalk.cyan('Current configuration:'));
-
         if (Object.keys(currentConfig).length === 0) {
             console.log(chalk.yellow('The configuration is empty.'));
         } else {
@@ -52,15 +61,24 @@ class ConfigCommand extends BaseCommand {
     private async setConfigValue(): Promise<void> {
         const currentConfig = getConfig();
         const configKeys = Object.keys(currentConfig) as Array<keyof Config>;
+        console.clear();
+        printSectionHeader('Edit Configuration', '🔧');
         const key = await this.showMenu<keyof Config | 'back'>(
-            'Select the configuration key:',
-            configKeys.map((k) => ({ value: k, name: k }))
+            'Use ↑↓ to select the configuration key:',
+            configKeys.map((k) => ({ value: k, name: k })),
+            {
+                clearConsole: false
+            }
         );
 
         if (key === 'back') return;
 
-        const value = await this.getInput(`Enter the value for ${chalk.cyan(key)}:`);
-        setConfig(key, value);
+        const value = await getInput(`Enter the value for ${chalk.cyan(key)}:`, undefined, true);
+        if (value !== null) {
+            setConfig(key, value);
+        } else {
+            console.log(chalk.red('Invalid value. Configuration not updated.'));
+        }
         console.log(chalk.green(`Configuration updated: ${key} = ${value}`));
     }
 }

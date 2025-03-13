@@ -152,9 +152,9 @@ export async function showProgress<T>(message: string, promise: Promise<T>): Pro
     }
 }
 
-export function printSectionHeader(title: string): void {
-    console.log('\n' + chalk.bold(chalk.cyan(`📚 ${title}`)));
-    console.log('─'.repeat(80));
+export function printSectionHeader(title: string, emoji: string = '📚'): void {
+    console.log('\n' + chalk.bold(chalk.cyan(`${emoji} ${title}`)));
+    console.log('─'.repeat(50));
 }
 
 export function printExamples(examples: string[]): void {
@@ -207,11 +207,22 @@ export function showSpinner(
     return spinner as Spinner & { succeed: (text?: string) => void; fail: (text?: string) => void };
 }
 
-export async function getInput(message: string, defaultValue?: string): Promise<string> {
-    return input({
-        message,
-        default: defaultValue
-    });
+export async function getInput(message: string, defaultValue?: string, allowCancel: boolean = false): Promise<string | null> {
+    try {
+        const result = await input({
+            message: allowCancel ? `${message} (type 'cancel' to go back)` : message,
+            default: defaultValue
+        });
+        
+        if (allowCancel && (result.toLowerCase() === 'cancel' || result.toLowerCase() === 'back')) {
+            return null;
+        }
+        
+        return result;
+    } catch (error) {
+        // If an error occurs (like Ctrl+C), treat it as cancel
+        return null;
+    }
 }
 
 export async function getMultilineInput(initialValue?: string): Promise<string> {

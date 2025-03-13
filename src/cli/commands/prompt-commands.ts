@@ -23,7 +23,7 @@ import { stagePromptChanges } from '../utils/library-repository';
 import { selectPrompt } from '../utils/prompts';
 import { editInEditor } from '../utils/prompts-simple';
 import { clearPendingChanges, createBranchAndPushChanges, trackPromptChange } from '../utils/sync-utils';
-import { showSpinner, getInput } from '../utils/ui-components';
+import { showSpinner, getInput, printSectionHeader } from '../utils/ui-components';
 
 interface SimplePromptMetadata {
     title: string;
@@ -77,34 +77,43 @@ async function loadPromptForEditing(promptIdentifier: string): Promise<SimplePro
     }
 }
 
-async function collectInitialMetadata(options: any): Promise<SimplePromptMetadata> {
+async function collectInitialMetadata(options: any): Promise<SimplePromptMetadata | null> {
+    console.clear();
+    printSectionHeader('Create New Prompt', '🌱');
+    
+    // Get title
     let title = options.title;
-
     if (!title) {
-        title = await getInput('Enter prompt title:');
+        title = await getInput('Enter prompt title:', undefined, true);
+        if (title === null) return null;
     }
 
+    // Get directory name
     let directory = options.directory;
-
     if (!directory) {
-        directory = await getInput('Enter directory name (snake_case):');
+        directory = await getInput('Enter directory name (snake_case):', undefined, true);
+        if (directory === null) return null;
+        
         directory = directory
             .toLowerCase()
             .replace(/\s+/g, '_')
             .replace(/[^a-z0-9_]/g, '');
     }
 
+    // Get category
     let primaryCategory = options.category;
-
     if (!primaryCategory) {
         primaryCategory = await selectCategory();
+        if (primaryCategory === null) return null;
     }
 
+    // Get description
     let oneLineDescription = options.description;
-
     if (!oneLineDescription) {
-        oneLineDescription = await getInput('Enter one-line description:');
+        oneLineDescription = await getInput('Enter one-line description:', undefined, true);
+        if (oneLineDescription === null) return null;
     }
+    
     return {
         title,
         directory,
@@ -118,49 +127,65 @@ async function collectInitialMetadata(options: any): Promise<SimplePromptMetadat
     };
 }
 
-async function selectCategory(): Promise<string> {
-    const categories = [
-        // Original core categories
-        'analysis', // Data and information analysis
-        'art_and_design', // Visual and aesthetic creation
-        'business', // Business operations and strategy
-        'coding', // Development, programming, and software engineering
-        'content_creation', // Documentation, writing, and creative content
-        'customer_service', // Support and client communication
-        'data_processing', // Data analysis, visualization, transformation
-        'education', // Teaching, learning, and knowledge sharing
-        'entertainment', // Recreation, gaming, media consumption
-        'finance', // Money management and financial planning
-        'gaming', // Game design, playing, and strategies
-        'healthcare', // Health, wellness, medicine, fitness
-        'language', // Language learning, linguistics
-        'legal', // Law, compliance, and legal documents
-        'marketing', // Promotion, advertising, brand development
-        'music', // Music creation, theory, and production
-        'personal_assistant', // Task management and daily support
-        'problem_solving', // General problem analysis and solution frameworks
-        'productivity', // Efficiency, workflow optimization
-        'prompt_engineering', // Creating and optimizing AI prompts
-        'research', // Academic or professional research assistance
-        'science', // Scientific inquiry and methodology
-        'social_media', // Online platform content and strategy
-        'translation', // Text, concept, or knowledge translation
-        'writing', // Written content creation
+async function selectCategory(): Promise<string | null> {
+    try {
+        const categories = [
+            // Original core categories
+            'analysis', // Data and information analysis
+            'art_and_design', // Visual and aesthetic creation
+            'business', // Business operations and strategy
+            'coding', // Development, programming, and software engineering
+            'content_creation', // Documentation, writing, and creative content
+            'customer_service', // Support and client communication
+            'data_processing', // Data analysis, visualization, transformation
+            'education', // Teaching, learning, and knowledge sharing
+            'entertainment', // Recreation, gaming, media consumption
+            'finance', // Money management and financial planning
+            'gaming', // Game design, playing, and strategies
+            'healthcare', // Health, wellness, medicine, fitness
+            'language', // Language learning, linguistics
+            'legal', // Law, compliance, and legal documents
+            'marketing', // Promotion, advertising, brand development
+            'music', // Music creation, theory, and production
+            'personal_assistant', // Task management and daily support
+            'problem_solving', // General problem analysis and solution frameworks
+            'productivity', // Efficiency, workflow optimization
+            'prompt_engineering', // Creating and optimizing AI prompts
+            'research', // Academic or professional research assistance
+            'science', // Scientific inquiry and methodology
+            'social_media', // Online platform content and strategy
+            'translation', // Text, concept, or knowledge translation
+            'writing', // Written content creation
 
-        // Additional categories
-        'personal_growth', // Self-improvement, life coaching
-        'communication', // Interpersonal skills, writing, messaging
-        'creative', // Creative expression across mediums
-        'specialized' // Domain-specific agents that don't fit elsewhere
-    ];
-    const categoryChoices = categories.map((category) => ({
-        name: category.padEnd(20) + '- ' + getCategoryDescription(category),
-        value: category
-    }));
-    return select({
-        message: 'Select a primary category:',
-        choices: categoryChoices
-    });
+            // Additional categories
+            'personal_growth', // Self-improvement, life coaching
+            'communication', // Interpersonal skills, writing, messaging
+            'creative', // Creative expression across mediums
+            'specialized' // Domain-specific agents that don't fit elsewhere
+        ];
+        
+        const categoryChoices = categories.map((category) => ({
+            name: category.padEnd(20) + '- ' + getCategoryDescription(category),
+            value: category
+        }));
+        
+        // Add a Go back option
+        categoryChoices.push({
+            name: chalk.red(chalk.bold('Go back')),
+            value: '_cancel_'
+        });
+        
+        const category = await select({
+            message: 'Select a primary category:',
+            choices: categoryChoices,
+            pageSize: 20
+        });
+        
+        return category === '_cancel_' ? null : category;
+    } catch (error) {
+        // If an error occurs (like Ctrl+C), treat it as cancel
+        return null;
+    }
 }
 
 function getCategoryDescription(category: string): string {
@@ -215,16 +240,24 @@ async function collectPromptContent(metadata: SimplePromptMetadata): Promise<str
     } else {
         logger.info('Opening editor for new prompt content...');
 
-        const templateContent = `# Your Prompt Title
+        const templateContent = `# ${metadata.title}
+
+## Description
+${metadata.one_line_description}
 
 ## Instructions
-Enter your prompt content here. 
+Enter instructions here.
 
+## Input parameters
+Enter input parameters here.
 You can use variables with {{VARIABLE_NAME}} syntax.
 
-## Example Input/Output
-- Input: Sample input
-- Output: Sample output`;
+## Output
+Enter output description here.
+
+## Examples
+Enter examples here.
+`;
         const newContent = await editInEditor(templateContent, {
             message: 'Create your prompt content (it will open in your default editor):',
             postfix: '.md'
@@ -371,7 +404,7 @@ async function offerRemoteSync(): Promise<void> {
 
 const createCommand = new Command('create')
     .description('Create a new prompt')
-    .option('-d, --directory <name>', 'Directory name for the new prompt (snake_case)')
+    .option('--directory <name>', 'Directory name for the new prompt (snake_case)')
     .option('--title <title>', 'Title for the new prompt')
     .option('--category <category>', 'Primary category for the prompt')
     .option('--description <description>', 'One-line description for the prompt')
@@ -379,10 +412,18 @@ const createCommand = new Command('create')
     .action(async (options) => {
         try {
             const promptData = await collectInitialMetadata(options);
+            
+            // Check if user cancelled
+            if (!promptData) {
+                console.log(chalk.yellow('Prompt creation cancelled.'));
+                return;
+            }
+            
             const promptContent = await collectPromptContent(promptData);
 
+            // Check if user cancelled during content creation
             if (!promptContent || promptContent.trim() === '') {
-                logger.error('Prompt content cannot be empty');
+                console.log(chalk.yellow('Prompt creation cancelled - content was empty.'));
                 return;
             }
 
@@ -413,7 +454,7 @@ const createCommand = new Command('create')
     });
 const editCommand = new Command('edit')
     .description('Edit an existing prompt')
-    .option('-p, --prompt <promptId>', 'ID or directory name of the prompt to edit')
+    .option('--prompt <promptId>', 'ID or directory name of the prompt to edit')
     .argument('[promptId]', 'ID or directory name of the prompt to edit')
     .option('--no-analyze', 'Skip AI analysis of prompt to generate metadata (uses prompt_analysis_agent)')
     .action(async (promptId, options) => {
@@ -422,7 +463,7 @@ const editCommand = new Command('edit')
             let promptToEdit = promptIdentifier;
 
             if (!promptIdentifier) {
-                const selectedPrompt = await selectPrompt();
+                const selectedPrompt = await selectPrompt('Edit Prompt', '♻️');
 
                 if (!selectedPrompt) {
                     logger.error('No prompt selected. Exiting.');
@@ -472,16 +513,16 @@ const editCommand = new Command('edit')
     });
 const deleteCommand = new Command('delete')
     .description('Delete an existing prompt')
-    .option('-p, --prompt <promptId>', 'ID or directory name of the prompt to delete')
+    .option('--prompt <promptId>', 'ID or directory name of the prompt to delete')
     .argument('[promptId]', 'ID or directory name of the prompt to delete')
-    .option('-f, --force', 'Skip confirmation prompt')
+    .option('--force', 'Skip confirmation prompt')
     .action(async (promptId, options) => {
         try {
             const promptIdentifier = promptId || options.prompt;
             let promptToDelete = promptIdentifier;
 
             if (!promptIdentifier) {
-                const selectedPrompt = await selectPrompt();
+                const selectedPrompt = await selectPrompt('Delete Prompt', '🔥');
 
                 if (!selectedPrompt) {
                     logger.error('No prompt selected. Exiting.');
@@ -499,7 +540,7 @@ const deleteCommand = new Command('delete')
 
             if (!options.force) {
                 const shouldDelete = await confirm({
-                    message: `Are you sure you want to delete the prompt "${promptData.title}"? This cannot be undone.`,
+                    message: chalk.yellow(`Are you sure you want to delete the prompt "${promptData.title}"? This cannot be undone.`),
                     default: false
                 });
 

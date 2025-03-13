@@ -225,6 +225,7 @@ export async function createBranchAndPushChanges(branchName: string): Promise<vo
         await git.add('.');
 
         const status = await git.status();
+
         if (status.staged.length > 0) {
             await git.commit('Update prompt library via CLI');
             logger.info('Committed changes');

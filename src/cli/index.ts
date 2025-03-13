@@ -79,11 +79,13 @@ async function simplifiedMenu(program: Command): Promise<void> {
         await showMainMenu(program);
         return;
     } catch (error) {
+        // Gracefully handle "User force closed the prompt" errors
         if (error && error.toString().includes('User force closed the prompt')) {
-            console.log(chalk.yellow('\nExiting...'));
+            console.log(chalk.yellow('\nExiting CLI menu mode...'));
             return;
         }
 
+        // If it's a different error, log it for debugging
         console.error('Error in menu:', error);
     }
 }
@@ -127,25 +129,8 @@ Examples:
   $ prompt-library-cli model               Configure AI model settings
         `
         )
-        .option('-e, --execute <id_or_name>', 'Execute a prompt by ID or name')
-        .option('-l, --list', 'List all available prompts')
-        .option('-s, --search <keyword>', 'Search prompts by keyword')
         .action(async (options) => {
             const repoSetup = await isLibraryRepositorySetup();
-
-            if (options.execute) {
-                console.clear();
-                await executeCommand.parseAsync(['node', 'script.js', '-p', options.execute]);
-                return;
-            } else if (options.list) {
-                console.clear();
-                await promptsCommand.parseAsync(['node', 'script.js', '--list']);
-                return;
-            } else if (options.search) {
-                console.clear();
-                await promptsCommand.parseAsync(['node', 'script.js', '--search', options.search]);
-                return;
-            }
 
             if (process.argv.length <= 2) {
                 if (!repoSetup) {
@@ -202,11 +187,27 @@ Examples:
 }
 
 main().catch((_error) => {
+    // Handle "User force closed" errors gracefully without showing a stack trace
     if (_error && _error.toString().includes('User force closed the prompt')) {
-        console.log(chalk.yellow('\nExiting...'));
+        console.log(chalk.yellow('\nCommand execution cancelled by user. Exiting...'));
         process.exit(0);
     }
 
-    console.error('An error occurred:', _error);
+    // For other errors, provide more details to help with debugging
+    console.error(chalk.red('An error occurred:'));
+    
+    if (_error instanceof Error) {
+        console.error(chalk.red(`  Error: ${_error.message}`));
+        if (_error.stack) {
+            // Show a cleaner stack trace
+            const stackLines = _error.stack.split('\n').slice(1, 5);
+            console.error(chalk.dim('  Stack trace:'));
+            stackLines.forEach(line => {
+                console.error(chalk.dim(`    ${line.trim()}`));
+            });
+        }
+    } else {
+        console.error(chalk.red(`  ${_error}`));
+    }
     process.exit(1);
 });

@@ -145,9 +145,6 @@ Commands:
   
   # Global Options
   -V, --version          Output the version number
-  -e, --execute <id>     Execute a prompt by ID or name
-  -l, --list             List all available prompts
-  -s, --search <keyword> Search prompts by keyword
   -h, --help             Display help for command
 ```
 
@@ -161,11 +158,15 @@ prompt-library-cli model
 prompt-library-cli execute -p "git_commit"    # By name (fuzzy matching)
 prompt-library-cli execute -p 74              # By ID (more reliable)
 
-# Execute with variables
+# Execute with clean output (only AI response, ideal for scripting)
 prompt-library-cli execute -p "commit" --description "Add auth" --files "auth.ts,users.ts"
+prompt-library-cli execute -p "mail_agent" --email_content "Your inquiry"
 
 # Execute with file inputs
 prompt-library-cli execute -p "translator" -fi input=./document.txt
+
+# Execute with verbose output
+prompt-library-cli execute -p "mail_agent" --email_content "Your inquiry" --verbose
 
 # Manage prompts
 prompt-library-cli prompts --list             # List all prompts
@@ -186,9 +187,15 @@ prompt-library-cli prompts delete -p 74       # Delete a prompt
 prompt-library-cli fragments                  # Interactive fragments menu
 prompt-library-cli fragments --list           # List all fragments
 prompt-library-cli fragments --search "fmt"   # Search fragments
-prompt-library-cli fragments create -c prompt_engineering -n my_fragment  # Create
-prompt-library-cli fragments edit -c prompt_engineering -n my_fragment    # Edit
-prompt-library-cli fragments delete -c prompt_engineering -n my_fragment  # Delete
+prompt-library-cli fragments create --category prompt_engineering --name my_fragment  # Create
+prompt-library-cli fragments edit --category prompt_engineering --name my_fragment    # Edit
+prompt-library-cli fragments delete --category prompt_engineering --name my_fragment  # Delete
+
+# Advanced Prompt Execution
+prompt-library-cli execute -p 74 --json                # Show detailed execution info as JSON
+prompt-library-cli execute -p 74 --var1 "val" --var2 "val2"  # Set multiple variables
+prompt-library-cli execute -p 74 -i                    # Inspect prompt variables
+prompt-library-cli execute -p 74 > output.txt          # Redirect clean output to file
 
 # Repository Management
 prompt-library-cli sync                       # Sync with remote repository
@@ -198,10 +205,22 @@ prompt-library-cli sync --reset               # Discard local changes
 prompt-library-cli repository                 # Repository settings menu
 prompt-library-cli repository --status        # Show repo status
 
-# Configuration
-prompt-library-cli env                        # Manage API keys
+# Environment Variable Management
+prompt-library-cli env                        # Manage environment variables interactively  
+prompt-library-cli env --list                 # List all environment variables
+prompt-library-cli env --set KEY=value        # Set an environment variable
+prompt-library-cli env --fragment KEY=cat/name # Set variable to fragment reference
+prompt-library-cli env --unset KEY            # Unset a variable's value
+prompt-library-cli env --info KEY             # Show detailed variable info
+prompt-library-cli env --view KEY             # View raw variable value
+prompt-library-cli env --sources KEY          # Show all prompts using this variable
+prompt-library-cli env --sources KEY --show-titles # Show prompts with titles
+prompt-library-cli env --list --json          # Get variables in JSON format
+prompt-library-cli env --info KEY --json      # Get variable details as JSON
+
+# Configuration Settings
 prompt-library-cli config                     # Configure CLI settings
-prompt-library-cli setup -r https://github.com/your-username/repo.git  # Custom repo
+prompt-library-cli setup --repository https://github.com/your-username/repo.git  # Custom repo
 prompt-library-cli flush                      # Reset all data (preserves config)
 ```
 

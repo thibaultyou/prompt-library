@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 
 import { BaseCommand } from './base-command';
+import executeCommand from './execute-command';
 import { createCommand, editCommand, deleteCommand } from './prompt-commands';
 import { CategoryItem, EnvVariable, PromptFragment, PromptMetadata, PromptVariable } from '../../shared/types';
 import { formatTitleCase, formatSnakeCase } from '../../shared/utils/string-formatter';
@@ -35,9 +36,9 @@ import {
 } from '../utils/prompt-utils';
 import { viewPromptDetails } from '../utils/prompts';
 import {
-    createCategoryHeader,
     createSectionHeader,
     formatMenuItem,
+    getInput,
     printSectionHeader,
     showProgress,
     successMessage,
@@ -61,12 +62,12 @@ type SelectPromptMenuAction = PromptVariable | 'execute' | 'unset_all' | 'add_to
 class PromptCommand extends BaseCommand {
     constructor() {
         super('prompts', 'List all prompts and view details');
-        this.option('-l, --list', 'List all prompts with their IDs and categories')
-            .option('-c, --categories', 'List all prompt categories')
-            .option('-s, --search <keyword>', 'Search prompts by keyword (title, description, category)')
-            .option('-j, --json', 'Output in JSON format (for CI use)')
-            .option('-f, --favorites', 'Show favorite prompts')
-            .option('-r, --recent', 'Show recently executed prompts')
+        this.option('--list', 'List all prompts with their IDs and categories')
+            .option('--categories', 'List all prompt categories')
+            .option('--search <keyword>', 'Search prompts by keyword (title, description, category)')
+            .option('--json', 'Output in JSON format (for CI use)')
+            .option('--favorites', 'Show favorite prompts')
+            .option('--recent', 'Show recently executed prompts')
             .addCommand(createCommand)
             .addCommand(editCommand)
             .addCommand(deleteCommand)
@@ -159,68 +160,86 @@ Related Commands:
             let stayInRecentPrompts = true;
             while (stayInRecentPrompts) {
                 console.clear();
-                printSectionHeader('Recent Prompt Executions');
+                printSectionHeader('Recent Prompt Executions', '⏱️');
 
-                console.log('─'.repeat(80));
-                console.log(
-                    chalk.cyan('ID'.padEnd(6)) +
-                        chalk.cyan('Prompt'.padEnd(40)) +
-                        chalk.cyan('Category'.padEnd(20)) +
-                        chalk.cyan('Executed At')
-                );
-                console.log('─'.repeat(80));
-
-                recentPrompts.forEach((item: any) => {
-                    const date = new Date(item.execution_time);
-                    const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-                    console.log(
-                        item.prompt_id.toString().padEnd(6) +
-                            (item.title || 'Unknown').substring(0, 37).padEnd(40) +
-                            (item.primary_category || 'Unknown').substring(0, 17).padEnd(20) +
-                            formattedDate
-                    );
-                });
-
-                console.log('─'.repeat(80));
-                console.log(chalk.italic(`\nFound ${recentPrompts.length} recently executed prompts.\n`));
-
-                const promptItems = recentPrompts.map((item) => ({
+                // Convert to CategoryItem format
+                const recentItems = recentPrompts.map((item: any) => ({
                     id: item.prompt_id.toString(),
                     title: item.title || 'Unknown',
-                    category: 'recent',
+                    category: item.primary_category || 'Unknown',
                     primary_category: item.primary_category || 'Unknown',
-                    path: '',
-                    description: '',
+                    path: item.directory || '',
+                    description: item.description || '',
                     subcategories: []
                 }));
-                const action = await this.showMenu<'execute' | 'back'>(
-                    'What would you like to do next?',
-                    [formatMenuItem('Execute a prompt', 'execute', 'success')],
-                    { clearConsole: false }
-                );
+                // Format table data 
+                const tableResult = formatPromptsForDisplay(recentItems, {
+                    showDirectory: false,
+                    tableWidth: 80
+                });
+                
+                // Create menu choices that look like a table
+                const tableChoices: Array<{ name: string; value: CategoryItem | 'back'; disabled?: boolean }> = [];
+                
+                // Add a header row
+                tableChoices.push({
+                    name: tableResult.headers,
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add a separator
+                tableChoices.push({
+                    name: tableResult.separator,
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add each row as a selectable item
+                tableResult.rows.forEach((row, index) => {
+                    tableChoices.push({
+                        name: row,
+                        value: tableResult.promptsRowMap[index]
+                    });
+                });
+                
+                // Add a separator at the bottom
+                tableChoices.push({
+                    name: tableResult.separator,
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add info
+                tableChoices.push({
+                    name: chalk.italic(`Found ${recentPrompts.length} recently executed prompts.`),
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add a back option
+                tableChoices.push({
+                    name: formatMenuItem('Go back', 'back', 'danger').name,
+                    value: 'back'
+                });
 
-                if (action === 'execute') {
-                    const promptId = await this.selectPromptFromList(promptItems, 'Select a prompt to execute:');
-
-                    if (promptId) {
-                        const promptDetails = await getPromptById(parseInt(promptId));
-
-                        if (promptDetails) {
-                            const selectedPrompt = {
-                                id: promptId,
-                                title: promptDetails.title,
-                                category: promptDetails.primary_category,
-                                primary_category: promptDetails.primary_category,
-                                path: promptDetails.directory,
-                                description: promptDetails.description || '',
-                                subcategories: []
-                            };
-                            await this.managePrompt(selectedPrompt);
-                            continue;
-                        }
+                // Select directly from the table
+                const selection = await this.showMenu<CategoryItem | 'back'>(
+                    'Use ↑↓ to select a recent prompt:',
+                    tableChoices,
+                    {
+                        clearConsole: false,
+                        includeGoBack: false
                     }
-                } else {
+                );
+                
+                if (selection === 'back') {
                     stayInRecentPrompts = false;
+                    continue;
+                } else if (typeof selection !== 'string') {
+                    // A prompt was selected, manage it directly
+                    await this.managePrompt(selection);
+                    continue;
                 }
             }
         } catch (error) {
@@ -229,7 +248,7 @@ Related Commands:
         }
     }
 
-    private async showFavoritePrompts(json: boolean = false): Promise<void> {
+    async showFavoritePrompts(json: boolean = false): Promise<void> {
         try {
             const result = await getFavoritePrompts();
 
@@ -249,76 +268,101 @@ Related Commands:
             let stayInFavorites = true;
             while (stayInFavorites) {
                 console.clear();
-                printSectionHeader('Favorite Prompts');
+                printSectionHeader('Favorite Prompts', '⭐');
 
-                console.log('─'.repeat(80));
-                console.log(
-                    chalk.cyan('ID'.padEnd(6)) +
-                        chalk.cyan('Prompt'.padEnd(40)) +
-                        chalk.cyan('Category'.padEnd(20)) +
-                        chalk.cyan('Added At')
-                );
-                console.log('─'.repeat(80));
-
-                favorites.forEach((item: any) => {
-                    const date = new Date(item.added_time);
-                    const formattedDate = `${date.toLocaleDateString()}`;
-                    console.log(
-                        item.prompt_id.toString().padEnd(6) +
-                            (item.title || 'Unknown').substring(0, 37).padEnd(40) +
-                            (item.primary_category || 'Unknown').substring(0, 17).padEnd(20) +
-                            formattedDate
-                    );
-                });
-
-                console.log('─'.repeat(80));
-                console.log(chalk.italic(`\nFound ${favorites.length} favorite prompts.\n`));
-
-                const promptItems = favorites.map((item) => ({
+                // Convert to CategoryItem format
+                const favoriteItems = favorites.map((item: any) => ({
                     id: item.prompt_id.toString(),
                     title: item.title || 'Unknown',
-                    category: 'favorite',
+                    category: item.primary_category || 'Unknown',
                     primary_category: item.primary_category || 'Unknown',
-                    path: '',
+                    path: item.directory || '',
                     description: item.description || '',
                     subcategories: []
                 }));
-                const action = await this.showMenu<'execute' | 'remove' | 'back'>(
-                    'What would you like to do next?',
-                    [
-                        formatMenuItem('Execute a prompt', 'execute', 'success'),
-                        formatMenuItem('Remove from favorites', 'remove', 'danger')
-                    ],
-                    { clearConsole: false }
+                // Format table data 
+                const tableResult = formatPromptsForDisplay(favoriteItems, {
+                    showDirectory: false,
+                    tableWidth: 80
+                });
+                
+                // Create menu choices that look like a table
+                const tableChoices: Array<{ name: string; value: CategoryItem | 'execute' | 'remove' | 'back'; disabled?: boolean }> = [];
+                
+                // Add a header row
+                tableChoices.push({
+                    name: tableResult.headers,
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add a separator
+                tableChoices.push({
+                    name: tableResult.separator,
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add each row as a selectable item
+                tableResult.rows.forEach((row, index) => {
+                    tableChoices.push({
+                        name: row,
+                        value: tableResult.promptsRowMap[index]
+                    });
+                });
+                
+                // Add a separator at the bottom
+                tableChoices.push({
+                    name: tableResult.separator,
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add action options
+                tableChoices.push({
+                    name: formatMenuItem('Remove selected from favorites', 'remove', 'danger').name,
+                    value: 'remove'
+                });
+                
+                // Add info
+                tableChoices.push({
+                    name: chalk.italic(`Found ${favorites.length} favorite prompts.`),
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add a back option
+                tableChoices.push({
+                    name: formatMenuItem('Go back', 'back', 'danger').name,
+                    value: 'back'
+                });
+
+                // Select directly from the table
+                const selection = await this.showMenu<CategoryItem | 'execute' | 'remove' | 'back'>(
+                    'Use ↑↓ to select a favorite:',
+                    tableChoices,
+                    {
+                        clearConsole: false,
+                        includeGoBack: false
+                    }
                 );
 
-                if (action === 'execute') {
-                    const promptId = await this.selectPromptFromList(promptItems, 'Select a prompt to execute:');
-
-                    if (promptId) {
-                        const promptDetails = await getPromptById(parseInt(promptId));
-
-                        if (promptDetails) {
-                            const selectedPrompt = {
-                                id: promptId,
-                                title: promptDetails.title,
-                                category: promptDetails.primary_category,
-                                primary_category: promptDetails.primary_category,
-                                path: promptDetails.directory,
-                                description: promptDetails.description || '',
-                                subcategories: []
-                            };
-                            await this.managePrompt(selectedPrompt);
-                            continue;
-                        }
-                    }
-                } else if (action === 'remove') {
-                    const promptId = await this.selectPromptFromList(
-                        promptItems,
-                        'Select a prompt to remove from favorites:'
+                if (selection === 'back') {
+                    stayInFavorites = false;
+                    continue;
+                } else if (selection === 'remove') {
+                    // Show remove from favorites selection menu
+                    const choices = tableResult.promptsRowMap.map((prompt) => ({
+                        name: `${prompt.title} (ID: ${prompt.id})`,
+                        value: prompt.id
+                    }));
+                    const promptId = await this.showMenu<string | 'back'>(
+                        'Select a prompt to remove from favorites:',
+                        choices,
+                        { clearConsole: false }
                     );
 
-                    if (promptId) {
+                    if (promptId && promptId !== 'back') {
                         const result = await removePromptFromFavorites(promptId);
 
                         if (result.success) {
@@ -332,11 +376,13 @@ Related Commands:
                             }
 
                             await new Promise((resolve) => setTimeout(resolve, 1000));
-                            continue;
                         }
                     }
-                } else {
-                    stayInFavorites = false;
+                    continue;
+                } else if (typeof selection !== 'string') {
+                    // A prompt was selected, manage it directly
+                    await this.managePrompt(selection);
+                    continue;
                 }
             }
         } catch (error) {
@@ -385,62 +431,79 @@ Related Commands:
             while (stayInSearchResults) {
                 console.clear();
 
-                printSectionHeader(`Search Results for "${keyword}"`);
+                printSectionHeader(`Search Results for "${keyword}"`, '🔍');
 
-                const { headers, rows } = formatPromptsForDisplay(matchingPrompts);
-                console.log('─'.repeat(80));
-                console.log(headers);
-                console.log('─'.repeat(80));
-                rows.forEach((row) => console.log(row));
+                const tableResult = formatPromptsForDisplay(matchingPrompts, {
+                    showDirectory: true,
+                    tableWidth: 80
+                });
+                
+                // Create menu choices that look like a table
+                const tableChoices: Array<{ name: string; value: CategoryItem | 'execute' | 'favorites' | 'back'; disabled?: boolean }> = [];
+                
+                // Add a header row
+                tableChoices.push({
+                    name: tableResult.headers,
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add a separator
+                tableChoices.push({
+                    name: tableResult.separator,
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add each row as a selectable item
+                tableResult.rows.forEach((row, index) => {
+                    tableChoices.push({
+                        name: row,
+                        value: tableResult.promptsRowMap[index]
+                    });
+                });
+                
+                // Add a separator at the bottom
+                tableChoices.push({
+                    name: tableResult.separator,
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add info
+                tableChoices.push({
+                    name: chalk.italic(`Found ${matchingPrompts.length} matching prompts.`),
+                    value: 'back',
+                    disabled: true
+                });
+                
+                // Add a back option
+                tableChoices.push({
+                    name: formatMenuItem('Go back', 'back', 'danger').name,
+                    value: 'back'
+                });
 
-                console.log('─'.repeat(80));
-                console.log(
-                    chalk.italic(`\nFound ${matchingPrompts.length} matching prompts. Execute any prompt with:`)
-                );
-                console.log(chalk.italic(`  prompt-library-cli execute -p <id>\n`));
-
-                if (matchingPrompts.length > 0) {
-                    const action = await this.showMenu<'execute' | 'favorites' | 'back'>(
-                        'What would you like to do next?',
-                        [
-                            formatMenuItem('Execute a prompt', 'execute', 'success'),
-                            formatMenuItem('Add a prompt to favorites', 'favorites', 'primary')
-                        ],
-                        { clearConsole: false }
-                    );
-
-                    if (action === 'favorites') {
-                        const promptId = await this.selectPromptToAddToFavorites(matchingPrompts);
-
-                        if (promptId) {
-                            const result = await addPromptToFavorites(promptId);
-
-                            if (result.success) {
-                                console.log(successMessage('Prompt added to favorites!'));
-                                await new Promise((resolve) => setTimeout(resolve, 1000));
-                            }
-                        }
-                    } else if (action === 'execute') {
-                        const promptId = await this.selectPromptToExecute(matchingPrompts);
-
-                        if (promptId) {
-                            const selectedPrompt = matchingPrompts.find((p) => p.id === promptId);
-
-                            if (selectedPrompt) {
-                                await this.managePrompt(selectedPrompt);
-                                continue;
-                            } else {
-                                const { default: executeCommand } = await import('./execute-command');
-                                await executeCommand.parseAsync(['-p', promptId]);
-                                stayInSearchResults = false;
-                            }
-                        }
-                    } else {
-                        stayInSearchResults = false;
+                // Select directly from the table
+                const selection = await this.showMenu<CategoryItem | 'execute' | 'favorites' | 'back'>(
+                    'Use ↑↓ to select a result or action:',
+                    tableChoices,
+                    {
+                        clearConsole: false,
+                        includeGoBack: false
                     }
-                } else {
+                );
+                
+                if (selection === 'back') {
                     stayInSearchResults = false;
+                    continue;
+                } else if (typeof selection !== 'string') {
+                    // A prompt was selected, manage it
+                    await this.managePrompt(selection);
+                    continue;
                 }
+                
+                // If we get here, something went wrong
+                stayInSearchResults = false;
             }
         } catch (error) {
             this.handleError(error, 'searching prompts');
@@ -490,14 +553,17 @@ Related Commands:
     private async showPromptMenu(categories: Record<string, CategoryItem[]>): Promise<void> {
         while (true) {
             try {
+                console.clear();
+                printSectionHeader('Prompts Library', '📚');
+
                 const choices = [];
-                choices.push(createSectionHeader<PromptMenuAction>('BROWSE & EXECUTE', '🔍', 'primary'));
-                choices.push(formatMenuItem('By Category', 'category', 'primary'));
-                choices.push(formatMenuItem('All Prompts', 'all', 'primary'));
+                choices.push(createSectionHeader<PromptMenuAction>('BROWSE & EXECUTE', '🔍', 'info'));
+                choices.push(formatMenuItem('By category', 'category', 'primary'));
+                choices.push(formatMenuItem('All prompts', 'all', 'primary'));
                 choices.push(formatMenuItem('By ID', 'id', 'primary'));
-                choices.push(formatMenuItem('Search Prompts', 'search', 'primary'));
-                choices.push(formatMenuItem('Recent Prompts', 'recent', 'primary'));
-                choices.push(formatMenuItem('Favorite Prompts', 'favorites', 'primary'));
+                choices.push(formatMenuItem('Search prompts', 'search', 'primary'));
+                choices.push(formatMenuItem('Recent prompts', 'recent', 'primary'));
+                choices.push(formatMenuItem('Favorite prompts', 'favorites', 'primary'));
 
                 choices.push({
                     name: '─'.repeat(50),
@@ -505,29 +571,27 @@ Related Commands:
                     disabled: ' '
                 });
 
-                choices.push(createSectionHeader<PromptMenuAction>('MANAGE', '✏️', 'success'));
-                choices.push(formatMenuItem('Create New Prompt', 'create', 'success'));
-                choices.push(formatMenuItem('Edit Prompt', 'edit', 'warning'));
-                choices.push(formatMenuItem('Delete Prompt', 'delete', 'danger'));
+                choices.push(createSectionHeader<PromptMenuAction>('MANAGE', '🔧', 'info'));
+                choices.push(formatMenuItem('Create new prompt', 'create', 'success'));
+                choices.push(formatMenuItem('Edit prompt', 'edit', 'warning'));
+                choices.push(formatMenuItem('Delete prompt', 'delete', 'danger'));
 
                 choices.push({
                     name: '─'.repeat(50),
                     value: 'separator',
-                    disabled: ' '
-                });
-                choices.push({
-                    name: chalk.italic('To run a prompt, use the "Run a prompt" option from the main menu'),
-                    value: 'back',
                     disabled: ' '
                 });
 
                 const action = await this.showMenu<PromptMenuAction>(
-                    'Select an action:',
+                    'Use ↑↓ to select an action:',
                     choices as Array<{
                         name: string;
                         value: PromptMenuAction;
                         disabled?: boolean | string;
-                    }>
+                    }>,
+                    {
+                        clearConsole: false,
+                    }
                 );
                 switch (action) {
                     case 'all':
@@ -540,7 +604,10 @@ Related Commands:
                         await this.listPromptsSortedById(categories);
                         break;
                     case 'search': {
-                        const keyword = await this.getInput('Enter search keyword:');
+                        console.clear();
+                        printSectionHeader('Search Prompts', '🔍');
+                        const keyword = await getInput('Enter search keyword:', undefined, true);
+
 
                         if (keyword && keyword.trim()) {
                             await this.searchPrompts(categories, keyword.trim(), false);
@@ -582,8 +649,8 @@ Related Commands:
             console.log(chalk.bold('\n🔍 Available Prompts:'));
             console.log('─'.repeat(80));
 
-            const { headers, maxLengths } = formatPromptsForDisplay(allPrompts);
-            console.log(headers);
+            const tableResult = formatPromptsForDisplay(allPrompts);
+            console.log(tableResult.headers);
             console.log('─'.repeat(80));
 
             const promptsByCategory: Record<string, Array<CategoryItem & { category: string }>> = {};
@@ -600,18 +667,22 @@ Related Commands:
                 prompts.forEach((prompt) => {
                     const directory = prompt.path.split('/').pop() || '';
                     console.log(
-                        `${chalk.green(prompt.id.toString().padEnd(maxLengths.id + 2))}` +
-                            `${chalk.yellow(directory.padEnd(maxLengths.dir + 2))}` +
-                            `${chalk.cyan(prompt.category.padEnd(maxLengths.category + 2))}` +
+                        `${chalk.green(prompt.id.toString().padEnd(tableResult.maxLengths.id + 2))}` +
+                            `${chalk.yellow(directory.padEnd(tableResult.maxLengths.dir + 2))}` +
+                            `${chalk.cyan(prompt.category.padEnd(tableResult.maxLengths.category + 2))}` +
                             `${prompt.title}`
                     );
                 });
             });
 
             console.log('─'.repeat(80));
-            console.log(chalk.italic('\nTip: Use either ID or directory name with the execute command:'));
-            console.log(chalk.italic(`  prompt-library-cli execute -p 74       # By ID`));
-            console.log(chalk.italic(`  prompt-library-cli execute -p "commit" # By name\n`));
+            
+            // Only show CLI execution tips if not in interactive mode
+            if (process.env.CLI_ENV !== 'cli') {
+                console.log(chalk.italic('\nTip: Use either ID or directory name with the execute command:'));
+                console.log(chalk.italic(`  prompt-library-cli execute -p 74       # By ID`));
+                console.log(chalk.italic(`  prompt-library-cli execute -p "commit" # By name\n`));
+            }
         }
     }
 
@@ -631,25 +702,94 @@ Related Commands:
             rows.forEach((row) => console.log(row));
 
             console.log('─'.repeat(80));
-            console.log(chalk.italic('\nView prompts by category:'));
-            console.log(chalk.italic(`  prompt-library-cli\n`));
+            
+            // Only show CLI execution tips in non-interactive mode
+            if (process.env.CLI_ENV !== 'cli') {
+                console.log(chalk.italic('\nView prompts by category:'));
+                console.log(chalk.italic(`  prompt-library-cli\n`));
+            }
         }
     }
 
     private async listAllPrompts(categories: Record<string, CategoryItem[]>): Promise<void> {
         const allPrompts = getAllPrompts(categories);
-        await this.selectAndManagePrompt(allPrompts);
+        await this.selectAndManagePrompt(allPrompts, 'Available Prompts');
     }
 
     private async listPromptsByCategory(categories: Record<string, CategoryItem[]>): Promise<void> {
         while (true) {
+            console.clear();
+            printSectionHeader('Prompt Categories', '📚');
+            
+            // Get sorted categories
             const sortedCategories = Object.keys(categories).sort((a, b) => a.localeCompare(b));
-            const category = await this.showMenu<string | 'back'>(
-                'Select a category:',
-                sortedCategories.map((category) => ({
-                    name: chalk.cyan(chalk.bold(formatTitleCase(category))),
+            
+            // Calculate counts for each category
+            const countByCategory: Record<string, number> = {};
+            sortedCategories.forEach(category => {
+                countByCategory[category] = categories[category].length;
+            });
+            
+            // Format table data
+            const maxCategoryLength = Math.max(...sortedCategories.map(c => formatTitleCase(c).length), 'Category'.length);
+            const tableWidth = maxCategoryLength + 20; // Add space for count
+            
+            // Create headers
+            const headers = `${chalk.bold('Category'.padEnd(maxCategoryLength + 2))}${chalk.bold('Count')}`;
+            const separator = '─'.repeat(tableWidth);
+            
+            // Create menu choices that look like a table
+            const tableChoices: Array<{ name: string; value: string | 'back'; disabled?: boolean }> = [];
+            
+            // Add a header row
+            tableChoices.push({
+                name: headers,
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add a separator
+            tableChoices.push({
+                name: separator,
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add each row as a selectable item
+            sortedCategories.forEach(category => {
+                tableChoices.push({
+                    name: `${chalk.green(formatTitleCase(category).padEnd(maxCategoryLength + 2))}${chalk.yellow(countByCategory[category].toString())}`,
                     value: category
-                }))
+                });
+            });
+            
+            // Add a separator at the bottom
+            tableChoices.push({
+                name: separator,
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add info
+            tableChoices.push({
+                name: chalk.italic(`Found ${sortedCategories.length} categories.`),
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add a back option with danger formatting
+            tableChoices.push({
+                name: formatMenuItem('Go back', 'back', 'danger').name,
+                value: 'back'
+            });
+
+            const category = await this.showMenu<string | 'back'>(
+                'Use ↑↓ to select a category:',
+                tableChoices,
+                {
+                    clearConsole: false,
+                    includeGoBack: false
+                }
             );
 
             if (category === 'back') return;
@@ -658,52 +798,169 @@ Related Commands:
                 ...prompt,
                 category
             }));
-            await this.selectAndManagePrompt(promptsWithCategory);
+            await this.selectAndManagePrompt(promptsWithCategory, `Prompts in ${formatTitleCase(category)}`);
         }
     }
 
     private async listPromptsSortedById(categories: Record<string, CategoryItem[]>): Promise<void> {
         const allPrompts = getPromptsSortedById(categories);
-        await this.selectAndManagePrompt(allPrompts);
+        await this.selectAndManagePromptById(allPrompts);
     }
 
-    private async selectAndManagePrompt(prompts: (CategoryItem & { category: string })[]): Promise<void> {
+    private async selectAndManagePromptById(prompts: (CategoryItem & { category: string })[]): Promise<void> {
         while (true) {
             cache.flushAll();
-
-            const categories = await getPromptCategories();
-            const refreshedPrompts = getAllPrompts(categories);
-            const promptsByCategory: Record<string, (CategoryItem & { category: string })[]> = {};
-            refreshedPrompts.forEach((prompt) => {
-                if (!promptsByCategory[prompt.category]) {
-                    promptsByCategory[prompt.category] = [];
-                }
-
-                promptsByCategory[prompt.category].push(prompt);
+            
+            console.clear();
+            printSectionHeader('Prompts By ID', '📚');
+            
+            // Format prompts in a table format
+            const tableResult = formatPromptsForDisplay(prompts, {
+                sortById: true,
+                showDirectory: false,
+                tableWidth: 80
             });
-
+            
+            // Create menu choices that look like a table
             const choices: Array<{ name: string; value: CategoryItem | 'back'; disabled?: boolean }> = [];
-            const sortedCategories = Object.keys(promptsByCategory).sort();
-
-            for (const category of sortedCategories) {
-                choices.push({
-                    name: createCategoryHeader(formatTitleCase(category)).name,
-                    value: 'back' as const,
-                    disabled: true
-                });
-
-                const sortedPrompts = promptsByCategory[category].sort((a, b) => a.title.localeCompare(b.title));
-                sortedPrompts.forEach((prompt) => {
-                    choices.push({
-                        name: `  ${chalk.green(prompt.title)} (ID: ${prompt.id})`,
-                        value: prompt
-                    });
-                });
-            }
-
-            const selectedPrompt = await this.showMenu<CategoryItem | 'back'>('Select a prompt:', choices, {
-                clearConsole: true
+            
+            // Add a header row
+            choices.push({
+                name: tableResult.headers,
+                value: 'back',
+                disabled: true
             });
+            
+            // Add a separator
+            choices.push({
+                name: tableResult.separator,
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add each row as a selectable item
+            tableResult.rows.forEach((row, index) => {
+                choices.push({
+                    name: row,
+                    value: tableResult.promptsRowMap[index]
+                });
+            });
+            
+            // Add a separator at the bottom
+            choices.push({
+                name: tableResult.separator,
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add info
+            choices.push({
+                name: chalk.italic(`Found ${prompts.length} prompts.`),
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add a back option with danger formatting
+            choices.push({
+                name: formatMenuItem('Go back', 'back', 'danger').name,
+                value: 'back'
+            });
+
+            const selectedPrompt = await this.showMenu<CategoryItem | 'back'>(
+                'Use ↑↓ to select a prompt by ID:', 
+                choices, 
+                {
+                    clearConsole: false,
+                    includeGoBack: false // We're adding our own back option
+                }
+            );
+
+            if (selectedPrompt === 'back') return;
+
+            await this.managePrompt(selectedPrompt as CategoryItem);
+        }
+    }
+
+    private async selectAndManagePrompt(
+        prompts: (CategoryItem & { category: string })[], 
+        menuTitle: string = 'Select a prompt:'
+    ): Promise<void> {
+        while (true) {
+            cache.flushAll();
+            console.clear();
+            
+            // Get the category if we're filtering by a single category
+            const singleCategory = prompts.length > 0 && 
+                prompts.every(p => p.category === prompts[0].category) ? 
+                prompts[0].category : null;
+                
+            // Display the appropriate header
+            if (singleCategory) {
+                printSectionHeader(`Prompts in ${formatTitleCase(singleCategory)}`);
+            } else {
+                printSectionHeader(menuTitle);
+            }
+            
+            // Format table data
+            const tableResult = formatPromptsForDisplay(prompts, {
+                showDirectory: true,
+                highlightCategory: singleCategory,
+                tableWidth: 80
+            });
+            
+            // Create menu choices that look like a table
+            const choices: Array<{ name: string; value: CategoryItem | 'back'; disabled?: boolean }> = [];
+            
+            // Add a header row
+            choices.push({
+                name: tableResult.headers,
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add a separator
+            choices.push({
+                name: tableResult.separator,
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add each row as a selectable item
+            tableResult.rows.forEach((row, index) => {
+                choices.push({
+                    name: row,
+                    value: tableResult.promptsRowMap[index]
+                });
+            });
+            
+            // Add a separator at the bottom
+            choices.push({
+                name: tableResult.separator,
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add info
+            choices.push({
+                name: chalk.italic(`Found ${prompts.length} prompts.`),
+                value: 'back',
+                disabled: true
+            });
+            
+            // Add a back option with danger formatting
+            choices.push({
+                name: formatMenuItem('Go back', 'back', 'danger').name,
+                value: 'back'
+            });
+
+            const selectedPrompt = await this.showMenu<CategoryItem | 'back'>(
+                'Use ↑↓ to select a prompt:', 
+                choices, 
+                {
+                    clearConsole: false,
+                    includeGoBack: false // We're adding our own back option
+                }
+            );
 
             if (selectedPrompt === 'back') return;
 
@@ -718,6 +975,8 @@ Related Commands:
 
                 if (!details) return;
 
+                console.clear();
+                printSectionHeader('Prompt Details', '🔬');
                 await viewPromptDetails(details);
 
                 const action = await this.selectPromptAction(details);
@@ -743,54 +1002,40 @@ Related Commands:
     }
 
     private async selectPromptAction(details: PromptMetadata): Promise<SelectPromptMenuAction> {
-        const choices: Array<{ name: string; value: SelectPromptMenuAction; disabled?: boolean }> = [];
+        const choices: Array<{ name: string; value: SelectPromptMenuAction; disabled?: boolean | string }> = [];
         const allRequiredSet = allRequiredVariablesSet(details);
         const promptId = details.id || '';
         const isInFavorites = await isPromptInFavorites(promptId);
 
         if (allRequiredSet) {
             choices.push({
-                name: formatMenuItem('Execute prompt', 'execute', 'success').name,
-                value: 'execute'
+                name: '─'.repeat(50),
+                value: 'separator',
+                disabled: ' '
             });
 
-            if (!isInFavorites) {
-                choices.push({
-                    name: formatMenuItem('Add to favorites', 'add_to_favorites', 'primary').name,
-                    value: 'add_to_favorites'
-                });
-            } else {
-                choices.push({
-                    name: chalk.gray('★ Already in favorites'),
-                    value: 'add_to_favorites',
-                    disabled: true
-                });
-            }
+            choices.push({
+                name: chalk.bold(formatMenuItem('Execute prompt', 'execute', 'success').name),
+                value: 'execute'
+            });
 
             choices.push({
                 name: createSectionHeader('Configure variables:', '', 'primary').name,
                 value: 'separator',
-                disabled: true
+                disabled: ' '
             });
         } else {
             choices.push({
-                name: createSectionHeader('Configure required variables first:', '', 'warning').name,
+                name: '─'.repeat(50),
                 value: 'separator',
-                disabled: true
+                disabled: ' '
             });
 
-            if (!isInFavorites) {
-                choices.push({
-                    name: formatMenuItem('Add to favorites', 'add_to_favorites', 'primary').name,
-                    value: 'add_to_favorites'
-                });
-            } else {
-                choices.push({
-                    name: chalk.gray('★ Already in favorites'),
-                    value: 'add_to_favorites',
-                    disabled: true
-                });
-            }
+            choices.push({
+                name: createSectionHeader('Configure required variables first:', '', 'warning').name,
+                value: 'separator',
+                disabled: ' '
+            });
         }
 
         const envVarsResult = await readEnvVars();
@@ -801,7 +1046,21 @@ Related Commands:
             name: formatMenuItem('Unset all variables', 'unset_all', 'danger').name,
             value: 'unset_all'
         });
-        return this.showMenu<SelectPromptMenuAction>(`Prompt: "${chalk.cyan(details.title)}"`, choices, {
+        
+        // Add the "Add to favorites" option near the end, just before the implied "Go back" option
+        if (!isInFavorites) {
+            choices.push({
+                name: formatMenuItem('Add to favorites', 'add_to_favorites', 'primary').name,
+                value: 'add_to_favorites'
+            });
+        } else {
+            choices.push({
+                name: chalk.gray('★ Already in favorites'),
+                value: 'add_to_favorites',
+                disabled: ' '
+            });
+        }
+        return this.showMenu<SelectPromptMenuAction>(`Use ↑↓ to select an action for ${chalk.cyan(details.title)}:`, choices, {
             clearConsole: false
         });
     }
@@ -811,7 +1070,7 @@ Related Commands:
         const envVars = envVarsResult.success ? envVarsResult.data || [] : [];
         const matchingEnvVar = envVars.find((env) => env.name === variable.name);
         const assignAction = await this.showMenu<'enter' | 'fragment' | 'env' | 'unset' | 'back'>(
-            `Choose action for ${formatSnakeCase(variable.name)}:`,
+            `Use ↑↓ to select an action for ${formatSnakeCase(variable.name)}:`,
             [
                 { name: 'Enter value', value: 'enter' },
                 { name: 'Use fragment', value: 'fragment' },
@@ -954,7 +1213,7 @@ Related Commands:
         if (!details) return;
 
         const confirm = await this.confirmAction(
-            chalk.red('Are you sure you want to unset all variables for this prompt?')
+            chalk.yellow('Are you sure you want to unset all variables for this prompt?')
         );
 
         if (!confirm) {

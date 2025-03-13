@@ -34,7 +34,7 @@ import { showSpinner } from '../utils/ui-components';
 class SyncCommand extends BaseCommand {
     constructor() {
         super('sync', 'Sync prompts with the remote repository');
-        this.option('-u, --url <url>', 'Set the remote repository URL')
+        this.option('--url <url>', 'Set the remote repository URL')
             .option('--force', 'Force sync without confirmation')
             .option('--push', 'Push local changes to remote repository')
             .option('--list', 'List and manage pending changes (interactive menu)')

@@ -17,9 +17,9 @@ import { showSpinner } from '../utils/ui-components';
 class SetupCommand extends BaseCommand {
     constructor() {
         super('setup', 'Setup the prompt library repository');
-        this.option('-f, --force', 'Force setup even if repository already exists')
+        this.option('--force', 'Force setup even if repository already exists')
             .option(
-                '-r, --repository <url>',
+                '--repository <url>',
                 'URL of the repository to clone',
                 'https://github.com/thibaultyou/prompt-library.git'
             )
