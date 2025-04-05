@@ -3,6 +3,8 @@
         "target": "ES2022",
         "module": "CommonJS",
         "declaration": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "moduleResolution": "node",
         "outDir": "./dist",
         "rootDir": "./src",
@@ -12,8 +14,8 @@
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "baseUrl": ".",
-        "typeRoots": ["src/shared/types", "./node_modules/@types"]
+        "typeRoots": ["./node_modules/@types"]
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "test"],
     "exclude": ["node_modules", "dist", "**/__tests__/**"]
 }

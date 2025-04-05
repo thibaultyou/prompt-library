@@ -1,5 +1,6 @@
-# Ignore environment config
+# Ignore config files
 .env
+.promptignore
 
 # Ignore specific directories
 dist/
@@ -7,6 +8,7 @@ node_modules/
 archive/
 coverage/
 .vscode/
+.config/
 
 # Ignore local database
 *.sqlite

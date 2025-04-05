@@ -6,9 +6,9 @@ on:
       - ".github/workflows/**/*.yml"
       - "prompts/**/*.md"
       - "prompts/prompt.md"
-      - "src/app/**/*.ts"
+      - "src/**/*.ts"
       - "src/system_prompts/**/*.md"
-      - "src/app/templates/*.md"
+      - "src/application/templates/*.md.njk"
 
 jobs:
   update_views:
@@ -42,7 +42,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Lint TypeScript files
         run: npm run lint
 
@@ -55,6 +55,12 @@ jobs:
       - name: Validate YAML files
         run: npm run validate-yaml
 
+      - name: Build CLI
+        run: npm run build
+
+      - name: Install CLI globally
+        run: npm install -g .
+
       - name: Check for system prompt changes
         id: check_changes
         run: |
@@ -64,15 +70,14 @@ jobs:
             echo "FORCE_REGENERATE=false" >> $GITHUB_ENV
           fi
 
-      - name: Update metadata files
+      - name: Update metadata files via CLI
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FORCE_REGENERATE: ${{ env.FORCE_REGENERATE }}
-          CLI_ENV: ci
-        run: npm run update-metadata
+        run: prompt-library-cli prompt refresh-metadata --all --nonInteractive
 
-      - name: Update views
-        run: npm run update-views
+      - name: Update views via CLI
+        run: prompt-library-cli generate-docs
 
       - name: Generate TOC
         run: npm run toc
@@ -81,9 +86,8 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add prompts/
-          git add README.md
+          git add prompts/ fragments/ README.md
           git status
           git diff --staged --name-status
-          git commit -m "♻️ chore: Update metadata and views" || echo "No changes to commit"
+          git commit -m "♻️ chore: Update metadata and views [skip ci]" || echo "No changes to commit"
           git push
