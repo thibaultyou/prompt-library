@@ -31,7 +31,7 @@ export const AIClientProvider: FactoryProvider<AIClient> = {
 
         const provider = providerResult.data;
         switch (provider) {
-            case PROVIDERS.ANTHROPIC:
+            case PROVIDERS.ANTHROPIC: {
                 const anthropicKeyResult = configService.getConfigValue('ANTHROPIC_API_KEY');
 
                 if (!anthropicKeyResult.success || !anthropicKeyResult.data) {
@@ -41,7 +41,8 @@ export const AIClientProvider: FactoryProvider<AIClient> = {
                     );
                 }
                 return anthropicClient;
-            case PROVIDERS.OPENAI:
+            }
+            case PROVIDERS.OPENAI: {
                 const openAIKeyResult = configService.getConfigValue('OPENAI_API_KEY');
 
                 if (!openAIKeyResult.success || !openAIKeyResult.data) {
@@ -51,6 +52,7 @@ export const AIClientProvider: FactoryProvider<AIClient> = {
                     );
                 }
                 return openAIClient;
+            }
             default:
                 throw new AppError('CONFIG_ERROR', `Unsupported AI provider configured: ${provider}`);
         }

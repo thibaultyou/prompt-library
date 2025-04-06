@@ -28,7 +28,7 @@ export class DatabaseRepository implements OnModuleInit, OnModuleDestroy {
         });
     }
 
-    async onModuleInit() {
+    async onModuleInit(): Promise<void> {
         this.loggerService.debug('DatabaseRepository onModuleInit: Initializing DB connection...');
         this.db = new sqlite3.Database(DB_PATH, (err) => {
             if (err) {
@@ -54,17 +54,16 @@ export class DatabaseRepository implements OnModuleInit, OnModuleDestroy {
         return this.db;
     }
 
-    async onModuleDestroy() {
+    async onModuleDestroy(): Promise<void> {
         await this.closeConnection();
     }
 
     async runAsync(sql: string, params: unknown[] = []): Promise<ApiResult<RunResult>> {
-        const self = this;
+        // Using the context of 'this' to interact with repository methods from within inner callback
         const db = await this.ensureDbReady();
         return new Promise((resolve) => {
             db.run(sql, params, function (this: RunResult, err) {
                 if (err) {
-                    self.errorService.handleError(new AppError('DB_ERROR', err.message), 'runAsync');
                     resolve(Result.failure(err.message));
                 } else {
                     resolve(Result.success(this));

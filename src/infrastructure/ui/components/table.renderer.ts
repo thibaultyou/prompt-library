@@ -105,7 +105,7 @@ export class TableRenderer {
 
         const sort = preserveOrder
             ? undefined
-            : (a: CategoryItem, b: CategoryItem) => {
+            : (a: CategoryItem, b: CategoryItem): number => {
                   if (sortById) return parseInt(a.id) - parseInt(b.id);
 
                   const aCat = a.category || a.primary_category;
@@ -122,8 +122,11 @@ export class TableRenderer {
         options: { tableWidth?: number; showPath?: boolean } = {}
     ): TableFormatResult<PromptFragment> {
         const { tableWidth = TABLE_FORMAT.WIDTH.DEFAULT, showPath = false } = options;
-        const sort = (a: PromptFragment, b: PromptFragment) =>
-            a.category !== b.category ? a.category.localeCompare(b.category) : a.name.localeCompare(b.name);
+
+        function sort(a: PromptFragment, b: PromptFragment): number {
+            return a.category !== b.category ? a.category.localeCompare(b.category) : a.name.localeCompare(b.name);
+        }
+
         const columns: TableColumn<PromptFragment>[] = [
             { key: 'category', header: 'Category', formatter: (v) => chalk.green(String(v)) },
             { key: 'name', header: 'Name', formatter: (v) => chalk.cyan(String(v)) }
@@ -140,9 +143,9 @@ export class TableRenderer {
 
     formatCategoryTable(
         categoriesData: Array<{ category: string; count: number }>,
-        options: { maxCategoryLength?: number; tableWidth?: number; includeDescriptions?: boolean } = {}
+        options: { maxCategoryLength?: number; tableWidth?: number } = {}
     ): TableFormatResult<{ category: string; count: number; description?: string }> {
-        const { tableWidth = TABLE_FORMAT.WIDTH.DEFAULT, includeDescriptions = false, maxCategoryLength } = options;
+        const { tableWidth = TABLE_FORMAT.WIDTH.DEFAULT, maxCategoryLength } = options;
         const tableData = categoriesData.map((item) => ({
             ...item,
             description: undefined

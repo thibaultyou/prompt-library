@@ -25,7 +25,7 @@ export class RepositoryCommand extends BaseCommandRunner {
         super(uiFacade, errorService, infraRepoService);
     }
 
-    async run(passedParams: string[], options?: Record<string, any>): Promise<void> {
+    async run(_passedParams: string[], _options?: Record<string, any>): Promise<void> {
         await this.executeWithErrorHandling('repository command', async () => {
             this.uiFacade.clearConsole();
             this.uiFacade.printSectionHeader(REPOSITORY_UI.SECTION_HEADER.TITLE, REPOSITORY_UI.SECTION_HEADER.ICON);

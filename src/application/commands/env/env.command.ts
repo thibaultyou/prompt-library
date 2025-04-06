@@ -37,7 +37,7 @@ export class EnvCommand extends DomainCommandRunner {
     }
 
     async run(passedParams: string[], options?: IParsedEnvOptions): Promise<void> {
-        const opts = options || {};
+        const _opts = options || {};
         await this.executeWithErrorHandling('env command', async () => {
             await this.envInteractionOrchestratorService.startEnvInteractionWorkflow(this);
         });

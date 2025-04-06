@@ -119,7 +119,7 @@ export class SearchPromptCommand extends PromptCommandRunner {
         return keyword?.trim() || undefined;
     }
 
-    private async handleNoResults(keyword: string): Promise<void> {
+    private async handleNoResults(_keyword: string): Promise<void> {
         const action = await this.selectMenu<'new_search' | 'back'>(PROMPT_UI.MENU.ACTION_PROMPT, [
             { name: PROMPT_UI.LABELS.TRY_SEARCH, value: 'new_search' }
         ]);

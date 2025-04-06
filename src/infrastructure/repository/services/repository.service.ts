@@ -24,7 +24,7 @@ export class RepositoryService implements OnModuleInit {
         this.loggerService.debug('RepositoryService Constructor called.');
     }
 
-    async onModuleInit() {
+    async onModuleInit(): Promise<void> {
         this.loggerService.debug('RepositoryService onModuleInit: Initializing Git instance...');
 
         try {
@@ -181,7 +181,7 @@ export class RepositoryService implements OnModuleInit {
         try {
             if (!(await this.isRepositoryInitialized())) return Result.failure('Repository not initialized');
 
-            const sanitizedBranchName = branchName.replace(/[^a-zA-Z0-9_\-\/]/g, '-');
+            const sanitizedBranchName = branchName.replace(/[^a-zA-Z0-9_\-/]/g, '-');
             const git = this.getGitInstance();
             await git.checkoutLocalBranch(sanitizedBranchName);
             this.loggerService.info(`Created and checked out branch: ${sanitizedBranchName}`);
@@ -269,10 +269,9 @@ export class RepositoryService implements OnModuleInit {
             }
 
             const sourceIsGitRepo = await fs.pathExists(path.join(normalizedPath, '.git'));
-            let url: string | undefined;
+            const remoteUrl: string | undefined = await this.setupGitRepository(sourceIsGitRepo, normalizedPath);
             await fs.ensureDir(BASE_DIR);
             await this.copyContentDirectories(normalizedPath);
-            url = await this.setupGitRepository(sourceIsGitRepo, normalizedPath);
             await this.ensureGitignore();
 
             try {
@@ -284,7 +283,7 @@ export class RepositoryService implements OnModuleInit {
             }
 
             this.dbService.flushCache();
-            return Result.success({ path: BASE_DIR, url });
+            return Result.success({ path: BASE_DIR, url: remoteUrl });
         } catch (error) {
             this.errorService.handleError(error, 'setting up from local directory');
             return Result.failure(

@@ -428,7 +428,8 @@ Use the following syntax to avoid errors:
                         spinner?.fail('AI analysis failed.');
                         this.loggerService.warn('AI analysis failed, using basic metadata.');
                     }
-                } catch (error) {
+                    // eslint-disable-next-line unused-imports/no-unused-vars
+                } catch (_error) {
                     this.loggerService.warn('AI analysis failed, using basic metadata.');
                 }
             }
@@ -454,7 +455,8 @@ Use the following syntax to avoid errors:
             }));
             const selection = await this.selectMenu<string | 'back'>('Select primary category:', choices);
             return selection === 'back' ? null : selection;
-        } catch (error) {
+            // eslint-disable-next-line unused-imports/no-unused-vars
+        } catch (_error) {
             this.loggerService.error('Failed load categories');
             return await this.getInput('Enter primary category:', { allowCancel: true });
         }

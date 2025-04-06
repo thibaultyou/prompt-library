@@ -18,7 +18,7 @@ export class CliInitializationService implements OnModuleInit {
         private readonly repositoryFacade: RepositoryFacade
     ) {}
 
-    async onModuleInit() {
+    async onModuleInit(): Promise<void> {
         this.loggerService.debug('>>> Entering CliInitializationService.onModuleInit');
 
         try {

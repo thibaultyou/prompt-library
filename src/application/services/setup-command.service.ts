@@ -163,7 +163,7 @@ export class SetupCommandService {
         }
     }
 
-    private async createDefaultRepository(command: CommandInterface): Promise<void> {
+    private async createDefaultRepository(_command: CommandInterface): Promise<void> {
         try {
             const spinner = this.textFormatter.createSpinner(SETUP_UI.SPINNER.DEFAULT_REPO);
             spinner.start();

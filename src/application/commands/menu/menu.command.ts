@@ -25,7 +25,7 @@ export class MenuCommand extends BaseCommandRunner {
         super(uiFacade, errorService, repositoryService);
     }
 
-    async run(passedParams: string[], options?: Record<string, any>): Promise<void> {
+    async run(_passedParams: string[], _options?: Record<string, any>): Promise<void> {
         this.loggerService.debug('MenuCommand run: Starting main menu loop via MenuCommandService.');
 
         try {

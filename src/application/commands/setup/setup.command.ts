@@ -23,7 +23,7 @@ export class SetupCommand extends BaseCommandRunner {
         super(uiFacade, errorService, infraRepoService);
     }
 
-    async run(passedParams: string[], options?: Record<string, any>): Promise<void> {
+    async run(_passedParams: string[], _options?: Record<string, any>): Promise<void> {
         await this.executeWithErrorHandling('setup command', async () => {
             const setupNeededResult = await this.setupCommandService.checkIfSetupNeeded();
 

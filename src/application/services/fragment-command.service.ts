@@ -61,7 +61,8 @@ export class FragmentCommandService {
                     }
 
                     name = result.trim();
-                } catch (error) {
+                    // eslint-disable-next-line unused-imports/no-unused-vars
+                } catch (_error) {
                     return Result.failure('Fragment creation cancelled');
                 }
             } else if (!name) {
@@ -237,7 +238,7 @@ export class FragmentCommandService {
 
     public async trackFragmentChange(
         fragment: PromptFragment,
-        changeType: 'add' | 'modify' | 'delete'
+        _changeType: 'add' | 'modify' | 'delete'
     ): Promise<ApiResult<void>> {
         try {
             await this.repositoryService.stageFragmentChanges(fragment.category, fragment.name);

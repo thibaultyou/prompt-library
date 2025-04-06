@@ -25,7 +25,7 @@ export class GenerateDocsCommand extends DomainCommandRunner {
         super(uiFacade, errorService, repositoryService, loggerService);
     }
 
-    async run(passedParams: string[], options?: Record<string, any>): Promise<void> {
+    async run(_passedParams: string[], _options?: Record<string, any>): Promise<void> {
         await this.executeWithErrorHandling('generate-docs', async () => {
             this.loggerService.info('Starting documentation generation...');
             const result = await this.documentationService.generateDocumentation();

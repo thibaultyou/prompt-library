@@ -23,7 +23,7 @@ export class OpenAIClient implements AIClient, OnModuleInit {
         @Inject(forwardRef(() => LoggerService)) private readonly loggerService: LoggerService
     ) {}
 
-    onModuleInit() {
+    onModuleInit(): void {
         this.getClient();
     }
 

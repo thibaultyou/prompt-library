@@ -375,7 +375,8 @@ export class UpdatePromptCommand extends PromptCommandRunner {
                         spinner?.fail('AI analysis failed.');
                         this.loggerService.warn('AI analysis failed, using existing metadata structure.');
                     }
-                } catch (error) {
+                    // eslint-disable-next-line unused-imports/no-unused-vars
+                } catch (_error) {
                     spinner?.fail('AI analysis failed.');
                     this.loggerService.warn('AI analysis failed, using existing metadata structure.');
                 }

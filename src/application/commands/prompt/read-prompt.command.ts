@@ -224,7 +224,7 @@ export class ReadPromptCommand extends PromptCommandRunner {
             { name: PROMPT_UI.LABELS.VIEW_VARIABLES, value: PROMPT_UI.ACTIONS.VARIABLES }
         ]);
         switch (action) {
-            case PROMPT_UI.ACTIONS.EXECUTE:
+            case PROMPT_UI.ACTIONS.EXECUTE: {
                 const execResult = await this.promptInteractionService.resolveAndExecutePrompt(this, prompt);
 
                 if (!execResult.success) {
@@ -235,11 +235,13 @@ export class ReadPromptCommand extends PromptCommandRunner {
                 }
 
                 break;
-            case PROMPT_UI.ACTIONS.EDIT:
+            }
+            case PROMPT_UI.ACTIONS.EDIT: {
                 this.loggerService.info(`Triggering update command for prompt ID: ${prompt.id}`);
                 await this.updateProvider.run([], { prompt: prompt.id, nonInteractive: false });
                 break;
-            case PROMPT_UI.ACTIONS.VARIABLES:
+            }
+            case PROMPT_UI.ACTIONS.VARIABLES: {
                 await this.promptInteractionService.managePrompt(this, {
                     id: prompt.id,
                     title: prompt.title,
@@ -250,6 +252,7 @@ export class ReadPromptCommand extends PromptCommandRunner {
                     subcategories: prompt.subcategories || []
                 });
                 break;
+            }
         }
     }
 }

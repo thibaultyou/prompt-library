@@ -272,7 +272,7 @@ export class MenuCommandService {
                 case 'repository':
                     await this.repositoryCommandService.setupRepositoryMenu(command);
                     break;
-                case 'sync':
+                case 'sync': {
                     this.syncCommandService.performDbSync();
                     const syncResult = await this.syncCommandService.executeSyncWithRemote(undefined, false);
 
@@ -288,15 +288,18 @@ export class MenuCommandService {
 
                     await command.pressKeyToContinue();
                     break;
-                case 'favorites':
+                }
+                case 'favorites': {
                     await this.favoritesProvider.run([], { nonInteractive: false });
                     await command.pressKeyToContinue();
                     break;
-                case 'recent':
+                }
+                case 'recent': {
                     await this.recentProvider.run([], { nonInteractive: false });
                     await command.pressKeyToContinue();
                     break;
-                default:
+                }
+                default: {
                     const validActions: MenuAction[] = [
                         'last_prompt',
                         'search_prompts',
@@ -320,6 +323,7 @@ export class MenuCommandService {
                         this.loggerService.error(`Invalid action received: ${action}`);
                     }
                     return Result.failure(`Unhandled or invalid menu action: ${action}`);
+                }
             }
             return Result.success(undefined);
         } catch (error) {

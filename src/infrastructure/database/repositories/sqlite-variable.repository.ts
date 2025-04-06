@@ -14,11 +14,12 @@ export class SqliteVariableRepository implements IVariableRepository {
     private readonly CACHE_KEYS = {
         ALL_ENV_VARS: `${CACHE_KEYS.VARIABLE}_all`,
         GLOBAL_ENV_VARS: `${CACHE_KEYS.VARIABLE}_global`,
-        GLOBAL_AND_PROMPT_VARS: (promptId: number | string) => `${CACHE_KEYS.VARIABLE}_global_prompt_${promptId}`,
-        PROMPT_ENV_VARS: (promptId: number | string) => `${CACHE_KEYS.VARIABLE}_prompt_${promptId}`,
-        ENV_VAR_BY_NAME: (name: string) => `${CACHE_KEYS.VARIABLE}_name_${name}`,
+        GLOBAL_AND_PROMPT_VARS: (promptId: number | string): string =>
+            `${CACHE_KEYS.VARIABLE}_global_prompt_${promptId}`,
+        PROMPT_ENV_VARS: (promptId: number | string): string => `${CACHE_KEYS.VARIABLE}_prompt_${promptId}`,
+        ENV_VAR_BY_NAME: (name: string): string => `${CACHE_KEYS.VARIABLE}_name_${name}`,
         ALL_UNIQUE_VARS: `${CACHE_KEYS.VARIABLE}_unique_all`,
-        PROMPTS_USING_VAR: (name: string) => `${CACHE_KEYS.VARIABLE}_prompts_using_${name}`
+        PROMPTS_USING_VAR: (name: string): string => `${CACHE_KEYS.VARIABLE}_prompts_using_${name}`
     };
 
     constructor(

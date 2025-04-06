@@ -56,7 +56,7 @@ export type EnvCreationAction = 'value' | 'fragment' | 'back';
  */
 export interface EnvListCommandOptions extends BaseEnvCommandOptions {
     // Currently, only inherits base options. Add specific list options here if needed.
-    // list?: boolean; // This flag is implicit when using the 'list' subcommand.
+    list?: boolean; // This flag is implicit when using the 'list' subcommand.
 }
 
 /**

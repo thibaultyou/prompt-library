@@ -221,7 +221,7 @@ export class MenuBuilder {
             const formattedChoices = choices.map((choice) => {
                 if (typeof choice === 'string') return { name: choice, value: choice as unknown as T };
 
-                const { type, ...rest } = choice;
+                const { type: _type, ...rest } = choice;
                 return rest;
             });
             return await checkbox({ message, choices: formattedChoices as any });

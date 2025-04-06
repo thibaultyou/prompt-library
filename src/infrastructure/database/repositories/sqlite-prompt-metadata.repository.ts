@@ -12,7 +12,7 @@ import { DatabaseService } from '../services/database.service';
 export class SqlitePromptMetadataRepository implements IPromptMetadataRepository {
     private readonly CACHE_KEYS = {
         CATEGORIES: 'all_prompts_by_category',
-        PROMPT_METADATA_BY_ID: (id: string) => `prompt_metadata_${id}`,
+        PROMPT_METADATA_BY_ID: (id: string): string => `prompt_metadata_${id}`,
         ALL_PROMPTS_LIST: 'all_prompts_list'
     };
 

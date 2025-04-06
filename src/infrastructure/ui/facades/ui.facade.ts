@@ -32,7 +32,8 @@ export class UiFacade {
                     const output = execSync('tput lines', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
 
                     if (output && !isNaN(parseInt(output, 10))) terminalRows = parseInt(output, 10);
-                } catch (err) {
+                    // eslint-disable-next-line unused-imports/no-unused-vars
+                } catch (_err) {
                     console.debug('Failed to get terminal size via tput');
                 }
             }
@@ -61,7 +62,7 @@ export class UiFacade {
         return this.textFormatter.formatMenuItem(text, value, effectiveStyle, disabled);
     }
 
-    public createPromptActionChoices<T = string>(options?: {
+    public createPromptActionChoices<_T = string>(options?: {
         isPromptFavorite?: boolean;
         hasConversationHistory?: boolean;
         canEditPrompt?: boolean;

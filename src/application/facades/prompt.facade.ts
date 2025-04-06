@@ -61,6 +61,7 @@ export class PromptFacade {
 
     async searchPrompts(keyword: string): Promise<CategoryItem[]> {
         const result = await this.promptService.searchPrompts(keyword);
+        // eslint-disable-next-line unused-imports/no-unused-vars
         return result.success && result.data ? result.data.map(({ matchScore, ...item }) => item) : [];
     }
 

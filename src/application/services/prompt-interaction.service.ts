@@ -114,7 +114,7 @@ export class PromptInteractionService {
 
                 if (typeof action === 'string') {
                     switch (action) {
-                        case 'execute':
+                        case 'execute': {
                             const execResult = await this.resolveAndExecutePrompt(command, details);
 
                             if (!execResult.success) {
@@ -125,7 +125,8 @@ export class PromptInteractionService {
                             }
 
                             break;
-                        case 'unset_all':
+                        }
+                        case 'unset_all': {
                             const unsetResult = await this.promptFacade.unsetAllVariables(prompt.id, details.variables);
 
                             if (unsetResult.success) this.loggerService.success('All variables unset.');
@@ -138,7 +139,8 @@ export class PromptInteractionService {
 
                             await command.pressKeyToContinue();
                             break;
-                        case 'view_content':
+                        }
+                        case 'view_content': {
                             const promptFiles = await this.promptFacade.getPromptFiles(prompt.id);
 
                             if (promptFiles?.promptContent) {
@@ -154,7 +156,8 @@ export class PromptInteractionService {
                             }
 
                             break;
-                        case 'favorite':
+                        }
+                        case 'favorite': {
                             const favResult = await this.promptFacade.addToFavorites(prompt.id);
 
                             if (favResult) this.loggerService.success('Added to favorites!');
@@ -162,7 +165,8 @@ export class PromptInteractionService {
 
                             await command.pressKeyToContinue();
                             break;
-                        case 'unfavorite':
+                        }
+                        case 'unfavorite': {
                             const unfavResult = await this.promptFacade.removeFromFavorites(prompt.id);
 
                             if (unfavResult) this.loggerService.success('Removed from favorites!');
@@ -170,6 +174,7 @@ export class PromptInteractionService {
 
                             await command.pressKeyToContinue();
                             break;
+                        }
                         default:
                             this.loggerService.warn(`Unhandled action string in managePrompt: ${action}`);
                             await command.pressKeyToContinue();

@@ -50,7 +50,7 @@ export class PromptCommand extends DomainCommandRunner {
     }
 
     async run(passedParams: string[], options?: IParsedPromptsOptions): Promise<void> {
-        const opts = options || {};
+        const _opts = options || {};
         await this.executeWithErrorHandling('prompts command', async () => {
             await this.promptInteractionOrchestratorService.startPromptInteractionWorkflow(this);
         });

@@ -25,7 +25,7 @@ export class FlushCommand extends DomainCommandRunner {
         super(uiFacade, errorService, repositoryService, loggerService);
     }
 
-    async run(passedParams: string[], options?: Record<string, any>): Promise<void> {
+    async run(_passedParams: string[], _options?: Record<string, any>): Promise<void> {
         await this.executeWithErrorHandling('flush command', async () => {
             const confirmResult = await this.flushCommandService.confirmFlush(this);
 

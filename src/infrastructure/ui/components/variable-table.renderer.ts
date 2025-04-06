@@ -38,14 +38,14 @@ export class VariableTableRenderer extends TableRenderer {
             {
                 key: 'name',
                 header: 'Status',
-                formatter: (v) => {
+                formatter: (v): string => {
                     const formattedName = this.stringFormatterService.formatSnakeCase(String(v));
                     const envVar = formattedEnvVars.find((ev) => ev.formattedName === formattedName);
                     return this.getVariableStatus(envVar);
                 }
             }
         ];
-        const sort = (a: { name: string }, b: { name: string }) =>
+        const sort = (a: { name: string }, b: { name: string }): number =>
             this.stringFormatterService
                 .formatSnakeCase(a.name)
                 .localeCompare(this.stringFormatterService.formatSnakeCase(b.name));

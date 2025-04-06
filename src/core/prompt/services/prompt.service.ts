@@ -70,12 +70,13 @@ export class PromptService {
                 PATH: 25
             };
             const matchedPrompts: Array<CategoryItem & { matchScore: number }> = [];
-            const hasExactWordMatch = (text: string, term: string): boolean => {
+
+            function hasExactWordMatch(text: string, term: string): boolean {
                 if (!text) return false;
 
                 const regex = new RegExp(`\\b${term}\\b`, 'i');
                 return regex.test(text);
-            };
+            }
 
             for (const prompt of allPrompts) {
                 let matchScore = 0;

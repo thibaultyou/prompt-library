@@ -43,7 +43,10 @@ export class ConsoleService {
             if (level === 'error') {
                 try {
                     console.error(`Error (formatting failed): ${message}`);
-                } catch (_) {}
+                    // eslint-disable-next-line unused-imports/no-unused-vars
+                } catch (_unused) {
+                    // Empty catch block - last resort error handling
+                }
                 return Result.failure(`Failed to format error message: ${error}`);
             }
             return Result.failure(`Failed to display ${level} message: ${error}`);

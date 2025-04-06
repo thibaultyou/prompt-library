@@ -100,7 +100,7 @@ export class ExecuteCommand extends DomainCommandRunner {
         return val;
     }
 
-    @Option({ flags: '-n, --nonInteractive', description: 'Run without prompts', defaultValue: true})
+    @Option({ flags: '-n, --nonInteractive', description: 'Run without prompts', defaultValue: true })
     parseNonInteractive(val: boolean): boolean {
         return val;
     }

@@ -170,9 +170,7 @@ export class ListFragmentCommand extends FragmentBaseCommandRunner {
             category: cat,
             count: fragmentsByCategory[cat].length
         }));
-        const tableData = this.uiFacade.tableRenderer.formatCategoryTable(tableDataInput, {
-            includeDescriptions: false
-        });
+        const tableData = this.uiFacade.tableRenderer.formatCategoryTable(tableDataInput);
         this.uiFacade.printSectionHeader(
             FRAGMENT_UI.SECTION_HEADER.FRAGMENT_CATEGORIES,
             FRAGMENT_UI.SECTION_HEADER.CATEGORIES_ICON
@@ -323,7 +321,7 @@ export class ListFragmentCommand extends FragmentBaseCommandRunner {
         }
     }
 
-    private async createNewCategory(fragmentsByCategory: Record<string, PromptFragment[]>): Promise<void> {
+    private async createNewCategory(_fragmentsByCategory: Record<string, PromptFragment[]>): Promise<void> {
         this.uiFacade.clearConsole();
         this.uiFacade.printSectionHeader(
             FRAGMENT_UI.SECTION_HEADER.CREATE_CATEGORY,
@@ -418,7 +416,7 @@ export class ListFragmentCommand extends FragmentBaseCommandRunner {
 
     private async handleEmptyCategory(
         category: string,
-        fragmentsByCategory: Record<string, PromptFragment[]>
+        _fragmentsByCategory: Record<string, PromptFragment[]>
     ): Promise<void> {
         this.uiFacade.clearConsole();
         this.uiFacade.printSectionHeader(

@@ -116,7 +116,7 @@ export class ConfigCommand extends DomainCommandRunner {
                         data: { key: options.key, value: options.value }
                     });
             } else {
-                const result = this.configCommandService.viewConfigKey(options.key);
+                this.configCommandService.viewConfigKey(options.key);
 
                 if (isJsonOutput) {
                     const configResult = this.configCommandService.getConfig();

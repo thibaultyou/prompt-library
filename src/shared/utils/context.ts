@@ -29,13 +29,11 @@ export function isPackageMode(): boolean {
     //   (e.g., globally installed command run from a random directory).
     // - Otherwise (not in node_modules but *in* project root), it's development mode.
     const packageMode = isRunningFromNodeModules || !isInProjectRoot;
-
     // console.log(`[DEBUG] isPackageMode Check:
     //   Entry Script: ${entryScriptPath}
     //   In node_modules: ${isRunningFromNodeModules}
     //   In Project Root: ${isInProjectRoot}
     //   Result (Package Mode): ${packageMode}`);
-
     return packageMode;
 }
 

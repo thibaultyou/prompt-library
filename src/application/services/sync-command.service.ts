@@ -236,7 +236,8 @@ export class SyncCommandService {
 
                                 try {
                                     await git.reset(['--', fullPath]);
-                                } catch (resetErr) {
+                                    // eslint-disable-next-line unused-imports/no-unused-vars
+                                } catch (_resetErr) {
                                     /* ignore */
                                 }
 

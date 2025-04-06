@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 
 process.env.CLI_ENV = 'cli';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
     try {
         await CommandFactory.run(AppModule, {
             logger: ['error', 'warn']
@@ -13,11 +13,12 @@ async function bootstrap() {
             console.error('Unhandled Rejection at:', promise, 'reason:', reason);
             process.exit(1);
         });
-        process.on('uncaughtException', (error) => {
-            console.error('Uncaught Exception:', error);
+        process.on('uncaughtException', (_error) => {
+            console.error('Uncaught Exception:');
             process.exit(1);
         });
-    } catch (error) {
+        // eslint-disable-next-line unused-imports/no-unused-vars
+    } catch (_error) {
         process.exit(1);
     }
 }

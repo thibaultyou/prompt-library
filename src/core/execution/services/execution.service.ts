@@ -43,8 +43,6 @@ export class ExecutionService {
                 return Result.failure(detailsResult.error || ERROR_MESSAGES.PROMPT_NOT_FOUND.replace('{0}', promptId));
             }
 
-            const details = detailsResult.data;
-
             try {
                 await this.promptExecRepo.recordExecution(promptId);
                 this.loggerService.debug(`Execution recorded for prompt ID: ${promptId}`);
@@ -93,13 +91,13 @@ export class ExecutionService {
             }
         }
 
+        // eslint-disable-next-line unused-imports/no-unused-vars
         const { isJsonMode = false, isVerbose = false } = options;
         const updatedPromptContent = this.stringFormatterService.updatePromptWithVariables(
             promptContent,
             resolvedInputs
         );
         this.loggerService.debug(`Sending final prompt (length: ${updatedPromptContent.length}) to AI.`);
-        const useStreamingForOutput = !isJsonMode && options.shouldShowFullOutput;
         const result = await processPromptContent(
             [{ role: 'user', content: updatedPromptContent }],
             false,
