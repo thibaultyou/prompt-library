@@ -24,10 +24,34 @@ export class OpenAIClient implements AIClient, OnModuleInit {
     ) {}
 
     onModuleInit(): void {
-        this.getClient();
+        const providerResult = this.configService.getConfigValue('MODEL_PROVIDER');
+        const isOpenAISelected = providerResult.success && providerResult.data === 'openai';
+
+        if (isOpenAISelected) {
+            this.loggerService.debug('OpenAI is the selected provider, initializing client');
+
+            try {
+                this.getClient();
+            } catch (error) {
+                this.loggerService.warn('Failed to initialize OpenAI client during module init', error);
+            }
+        } else {
+            this.loggerService.debug('OpenAI is not the selected provider, skipping client initialization');
+        }
     }
 
     private getClient(): OpenAI {
+        const providerResult = this.configService.getConfigValue('MODEL_PROVIDER');
+        const isOpenAISelected = providerResult.success && providerResult.data === 'openai';
+
+        if (!isOpenAISelected) {
+            this.loggerService.warn('Attempted to use OpenAI client when it is not the selected provider');
+            throw new AppError(
+                'CONFIG_ERROR',
+                'OpenAI is not the selected provider. Please use the model command to change providers.'
+            );
+        }
+
         if (!this.client) {
             const apiKeyResult = this.configService.getConfigValue('OPENAI_API_KEY');
 

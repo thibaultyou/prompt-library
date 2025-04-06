@@ -9,7 +9,12 @@ on:
       - "src/**/*.ts"
       - "src/system_prompts/**/*.md"
       - "src/application/templates/*.md.njk"
-
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual run'
+        required: false
+    
 jobs:
   update_views:
     runs-on: ubuntu-latest
@@ -74,6 +79,8 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FORCE_REGENERATE: ${{ env.FORCE_REGENERATE }}
+          MODEL_PROVIDER: 'anthropic'
+          OPENAI_API_KEY: ''
         run: prompt-library-cli prompt refresh-metadata --all --nonInteractive
 
       - name: Update views via CLI

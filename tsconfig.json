@@ -14,7 +14,9 @@
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "baseUrl": ".",
-        "typeRoots": ["./node_modules/@types"]
+        "typeRoots": ["./node_modules/@types"],
+        "preserveSymlinks": true,
+        "preserveConstEnums": true
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist", "**/__tests__/**"]

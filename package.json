@@ -9,7 +9,7 @@
         "prompt-library-cli": "./dist/main.js"
     },
     "scripts": {
-        "build": "tsc && chmod +x dist/main.js",
+        "build": "node build.js",
         "dev": "ts-node src/main.ts",
         "format": "npm run lint:fix && npm run prettify",
         "lint": "eslint '**/*.ts'",
