@@ -41,15 +41,19 @@ export function isPackageMode(): boolean {
  * Determines the appropriate base directory for the application's user-specific data
  * (like the repository clone, config files, database).
  *
- * - In **Package Mode** (installed tool), it uses a hidden directory in the user's home folder
- *   (e.g., `~/.prompt-library`) to avoid cluttering the installation location and ensure
- *   data persistence across updates.
- * - In **Development Mode** (running from source), it uses the current working directory
- *   (assumed to be the project root) for easier development and testing.
+ * Priority order:
+ * 1. PROMPT_LIBRARY_PATH environment variable (if set) - for custom/shared locations
+ * 2. Package Mode: ~/.prompt-library (user-specific)
+ * 3. Development Mode: current working directory
  *
  * @returns {string} The absolute path to the application's base directory.
  */
 export function getBaseDir(): string {
+    // Check for custom path via environment variable (highest priority)
+    if (process.env.PROMPT_LIBRARY_PATH) {
+        return path.resolve(process.env.PROMPT_LIBRARY_PATH);
+    }
+
     if (isPackageMode()) {
         // Use ~/.prompt-library for user-specific data when installed
         return path.join(os.homedir(), '.prompt-library');

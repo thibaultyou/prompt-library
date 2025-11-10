@@ -14,8 +14,10 @@ const content = fs.readFileSync(mainJsPath, 'utf8');
 const shebang = '#!/usr/bin/env node\n';
 fs.writeFileSync(mainJsPath, shebang + content);
 
-// Make executable
-console.log('Making main.js executable...');
-execSync(`chmod +x ${mainJsPath}`, { stdio: 'inherit' });
+// Make executable (only on Unix-like systems)
+if (process.platform !== 'win32') {
+    console.log('Making main.js executable...');
+    execSync(`chmod +x ${mainJsPath}`, { stdio: 'inherit' });
+}
 
 console.log('Build complete!');
