@@ -176,7 +176,8 @@ export class ListPromptCommand extends PromptCommandRunner {
             headers: tableData.headers,
             rows: tableData.rows,
             separator: tableData.separator,
-            infoText: `Found ${allPrompts.length} prompts.`
+            infoText: `Found ${allPrompts.length} prompts.`,
+            includeGoBack: true
         });
         type SelectionType = CategoryItem | 'back' | 'header' | 'separator' | 'info';
         const selection = await this.selectMenu<SelectionType>(
@@ -204,7 +205,8 @@ export class ListPromptCommand extends PromptCommandRunner {
             headers: tableData.headers,
             rows: tableData.rows,
             separator: tableData.separator,
-            infoText: `Found ${sortedPromptsResult.length} prompts.`
+            infoText: `Found ${sortedPromptsResult.length} prompts.`,
+            includeGoBack: true
         });
         type SelectionType = CategoryItem | 'back' | 'header' | 'separator' | 'info';
         const selection = await this.selectMenu<SelectionType>(
@@ -289,7 +291,7 @@ export class ListPromptCommand extends PromptCommandRunner {
                         '{0}',
                         String(categoryPrompts.length)
                     ).replace('{1}', category),
-                    includeGoBack: false
+                    includeGoBack: true
                 });
                 type PromptSelectionType = CategoryItem | 'back' | 'header' | 'separator' | 'info';
                 const selection = await this.selectMenu<PromptSelectionType>(
